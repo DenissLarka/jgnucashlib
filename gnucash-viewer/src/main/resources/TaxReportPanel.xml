@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>UTF-8
+sum.([0-9]*).name - name of the entry 
+sum.([0-9]*).target.([0-9]*) - (may be ommited) Look at all transactions containing these accounts You can specify qualified names, unqualified names or ids
+sum.([0-9]*).source.([0-9]*) - of these accounts add all splits that refer to these accounts
+sum.([0-9]*).type = ONLYTO        - sum only the ones that increase the balance of the account (other values: ONLYFROM, ALL)
+sum.([0-9]*).type = ONLYFROM      - sum only the ones that decrease the balance of the account (other values: ONLYFROM, ALL)
+sum.([0-9]*).type = ALL           - sum all the ones that increase or decreas the balance of the account (other values: ONLYFROM, ALL)
+
+</comment>
+<entry key="sum.0.name">abgeführte Umsatzteuer(alle)</entry>
+<entry key="sum.0.target.0">Root Account::Passiva::C. Verbindlichkeiten::8. sonstige Verbindlichkeiten::Umsatzsteuer 16/19%</entry>
+<entry key="sum.0.target.1">Root Account::Passiva::C. Verbindlichkeiten::8. sonstige Verbindlichkeiten::Umsatzsteuer 7%</entry>
+<entry key="sum.0.source.0">Root Account::1. Umsatzerlöse</entry>
+<entry key="sum.0.source.1">Root Account::Aktiva</entry>
+<entry key="sum.0.type">ONLYTO</entry>
+
+
+<entry key="sum.1.name">betriebliche Ausgaben(alle) - incl angeschafftes Anlagevermögen</entry>
+<entry key="sum.1.target.0">Root Account::8. sonstige betriebliche Aufwendungen</entry>
+<entry key="sum.1.target.1">Root Account::Aktiva::B. Umlaufvermögen::I. Vorräte</entry>
+<entry key="sum.1.target.2">Root Account::Aktiva::A. Anlagevermögen:</entry>
+<entry key="sum.1.source.0">Root Account::Aktiva::B. Umlaufvermögen::II. Forderungen und sonstige Vermögensgegenstände</entry>
+<entry key="sum.1.source.1">Root Account::Aktiva::B. Umlaufvermögen::IV. Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks</entry>
+<entry key="sum.1.source.2">Root Account::Aktiva::privat</entry>
+<entry key="sum.1.type">ONLYTO</entry>
+
+
+</properties>
