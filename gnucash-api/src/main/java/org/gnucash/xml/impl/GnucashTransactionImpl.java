@@ -12,7 +12,9 @@ package org.gnucash.xml.impl;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Currency;
@@ -21,8 +23,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-
-import javax.xml.bind.JAXBException;
 
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
@@ -335,7 +335,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	 * @see GnucashTransaction#getSplits()
 	 */
 	@SuppressWarnings("unchecked")
-	public List<GnucashTransactionSplit> getSplits()  {
+	public List<GnucashTransactionSplit> getSplits() {
 		if (mySplits == null) {
 			List<GncTransaction.TrnSplits.TrnSplit> jwsdpSplits = jwsdpPeer.getTrnSplits().getTrnSplit();
 
@@ -354,31 +354,30 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	 * @param element the jaxb-data
 	 * @return the new split-instance
 	 */
-	protected GnucashTransactionSplitImpl createSplit(final GncTransaction.TrnSplits.TrnSplit element)  {
+	protected GnucashTransactionSplitImpl createSplit(final GncTransaction.TrnSplits.TrnSplit element) {
 		return new GnucashTransactionSplitImpl(element, this);
 	}
 
 	/**
 	 * @see GnucashTransaction#getDateEntered()
 	 */
-	protected static final DateFormat DATEENTEREDFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	protected static final DateTimeFormatter DATE_ENTERED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * @see GnucashTransaction#getDateEntered()
 	 */
-	protected Date dateEntered;
+	protected LocalDateTime dateEntered;
 
 	/**
 	 * @see GnucashTransaction#getDateEntered()
 	 */
-	public Date getDateEntered() {
+	public LocalDateTime getDateEntered() {
 		if (dateEntered == null) {
 			String s = jwsdpPeer.getTrnDateEntered().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				dateEntered = DATEENTEREDFORMAT.parse(s);
-			}
-			catch (Exception e) {
+				dateEntered = LocalDateTime.parse(s, DATE_ENTERED_FORMAT);
+			} catch (Exception e) {
 				IllegalStateException ex =
 						new IllegalStateException(
 								"unparsable date '" + s + "' in transaction!");
@@ -393,12 +392,12 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	/**
 	 * format of the dataPosted-field in the xml(jwsdp)-file.
 	 */
-	private static final DateFormat DATEPOSTEDFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	private static final DateTimeFormatter DATE_POSTED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * @see GnucashTransaction#getDatePosted()
 	 */
-	protected Date datePosted;
+	protected LocalDateTime datePosted;
 
 	/**
 	 * The Currency-Format to use if no locale is given.
@@ -425,23 +424,22 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	}
 
 	/**
-	 * @see GnucashTransaction#getDatePostedFormatet()
+	 * @see GnucashTransaction#getDatePostedFormatted()
 	 */
-	public String getDatePostedFormatet() {
+	public String getDatePostedFormatted() {
 		return DateFormat.getDateInstance().format(getDatePosted());
 	}
 
 	/**
 	 * @see GnucashTransaction#getDatePosted()
 	 */
-	public Date getDatePosted() {
+	public LocalDateTime getDatePosted() {
 		if (datePosted == null) {
 			String s = jwsdpPeer.getTrnDatePosted().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				datePosted = DATEPOSTEDFORMAT.parse(s);
-			}
-			catch (Exception e) {
+				datePosted = LocalDateTime.parse(s, DATE_POSTED_FORMAT);
+			} catch (Exception e) {
 				IllegalStateException ex =
 						new IllegalStateException(
 								"unparsable date '" + s + "' in transaction with id='"
@@ -471,8 +469,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 		buffer.append(" dateEntered: ");
 		try {
 			buffer.append(DateFormat.getDateTimeInstance().format(getDateEntered()));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			buffer.append("ERROR '" + e.getMessage() + "'");
 
@@ -498,8 +495,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 			}
 
 			return other.getDateEntered().compareTo(getDateEntered());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
 		}

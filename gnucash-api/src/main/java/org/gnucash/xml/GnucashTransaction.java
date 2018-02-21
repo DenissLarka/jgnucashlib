@@ -13,6 +13,8 @@
  */
 package org.gnucash.xml;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -60,7 +62,7 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      * Do not modify the returned collection!
      * @return all splits of this transaction.
      */
-    List<? extends GnucashTransactionSplit> getSplits();
+    List<GnucashTransactionSplit> getSplits();
 
     /**
      * Get a split of this transaction it's id.
@@ -88,22 +90,21 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
 
     /**
      *
-     * @return the date the transaction was entered
-     *         into the system
+     * @return the date the transaction was entered into the system
      */
-    Date getDateEntered();
+    LocalDateTime getDateEntered();
 
     /**
      *
      * @return the date the transaction happened
      */
-    Date getDatePosted();
+    LocalDateTime getDatePosted();
 
     /**
      *
      * @return date the transaction happened
      */
-    String getDatePostedFormatet();
+    String getDatePostedFormatted();
 
     /**
      *

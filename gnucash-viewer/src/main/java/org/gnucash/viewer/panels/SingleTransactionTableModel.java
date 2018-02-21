@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class SingleTransactionTableModel implements GnucashTransactionsSplitsTab
 	/**
 	 * How to format dates.
 	 */
-	public static final DateFormat DATEFORMAT = DateFormat.getDateInstance(DateFormat.SHORT);
+	public static final DateTimeFormatter DATEFORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	/**
 	 * How to format currencies.

@@ -14,7 +14,7 @@
 	<name>${project.title} : Viewer</name>
 
 	<properties>
-		<logback.version>1.2.2</logback.version>
+		<logback.version>1.2.3</logback.version>
 	</properties>
 
 	<dependencies>
@@ -23,6 +23,26 @@
 			<artifactId>gnucash-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jpf</groupId>
+			<artifactId>jpf</artifactId>
+			<version>1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jpf</groupId>
+			<artifactId>jpf-boot</artifactId>
+			<version>1.5</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>

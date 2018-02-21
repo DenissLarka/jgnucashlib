@@ -152,7 +152,7 @@ public class GnucashInvoiceEntryImpl extends GnucashObjectImpl implements Gnucas
 	 * @return The taxtable in the gnucash xml-file.
 	 * It defines what sales-tax-rates are known.
 	 */
-	protected GnucashTaxTable getTaxTable() {
+	public GnucashTaxTable getTaxTable() {
 		if (myTaxtable == null) {
 			String taxTableId = jwsdpPeer.getEntryITaxtable().getValue();
 			if (taxTableId == null) {
@@ -399,7 +399,7 @@ public class GnucashInvoiceEntryImpl extends GnucashObjectImpl implements Gnucas
 	/**
 	 * @return The JWSDP-Object we are wrapping.
 	 */
-	protected GncV2.GncBook.GncGncEntry getJwsdpPeer() {
+	public GncV2.GncBook.GncGncEntry getJwsdpPeer() {
 		return jwsdpPeer;
 	}
 

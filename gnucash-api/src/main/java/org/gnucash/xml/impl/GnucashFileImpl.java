@@ -101,7 +101,7 @@ public class GnucashFileImpl implements GnucashFile {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		return Collections.unmodifiableCollection(new TreeSet<GnucashAccount>(accountid2account.values()));
+		return Collections.unmodifiableCollection(new TreeSet<>(accountid2account.values()));
 	}
 
 	/**
@@ -162,12 +162,10 @@ public class GnucashFileImpl implements GnucashFile {
 			}
 
 			return retval;
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			LOGGER.error("Problem getting all root-account", e);
 			throw e;
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			LOGGER.error("SERIOUS Problem getting all root-account", e);
 			return new LinkedList<GnucashAccount>();
 		}
@@ -324,7 +322,6 @@ public class GnucashFileImpl implements GnucashFile {
 				retval.add(invoice);
 			}
 		}
-
 		return retval;
 	}
 
@@ -339,7 +336,6 @@ public class GnucashFileImpl implements GnucashFile {
 				retval.add(invoice);
 			}
 		}
-
 		return retval;
 	}
 
@@ -353,7 +349,6 @@ public class GnucashFileImpl implements GnucashFile {
 				retval.add(invoice);
 			}
 		}
-
 		return retval;
 	}
 
@@ -368,8 +363,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @return the latest price-quote in the gnucash-file in EURO
 	 * @see {@link GnucashFile#getLatestPrice(String, String)}
 	 */
-	public FixedPointNumber getLatestPrice(final String pCmdtySpace,
-			final String pCmdtyId) {
+	public FixedPointNumber getLatestPrice(final String pCmdtySpace, final String pCmdtyId) {
 		return getLatestPrice(pCmdtySpace, pCmdtyId, 0);
 	}
 
@@ -436,13 +430,12 @@ public class GnucashFileImpl implements GnucashFile {
 	 * Set the new root-element and load all accounts, transactions,... from it.
 	 *
 	 * @param pRootElement the new root-element
-	 * @throws JAXBException if we cannot create a potentially missingg SLOTS-element in XML.
+	 * @throws JAXBException if we cannot create a potentially missing SLOTS-element in XML.
 	 */
 	@SuppressWarnings("unchecked")
-	protected void setRootElement(final GncV2 pRootElement) throws JAXBException {
+	protected void setRootElement(final GncV2 pRootElement) {
 		if (pRootElement == null) {
-			throw new IllegalArgumentException(
-					"null not allowed for field this.rootElement");
+			throw new IllegalArgumentException("null not allowed for field this.rootElement");
 		}
 		rootElement = pRootElement;
 
@@ -455,9 +448,8 @@ public class GnucashFileImpl implements GnucashFile {
 		myGnucashObject = new GnucashObjectImpl(pRootElement.getGncBook().getBookSlots(), this);
 
 		// fill maps
-		accountid2account = new HashMap<String, GnucashAccount>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements()
-				.iterator(); iter.hasNext(); ) {
+		accountid2account = new HashMap<>();
+		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
 			if (!(bookElement instanceof GncAccount)) {
 				continue;
@@ -466,15 +458,13 @@ public class GnucashFileImpl implements GnucashFile {
 			try {
 				GnucashAccount account = createAccount(jwsdpAccount);
 				accountid2account.put(account.getId(), account);
-			}
-			catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 				LOGGER.error("[RuntimeException] Problem in "
 								+ getClass().getName()
 								+ "ignoring illegal Account-Entry with id="
 								+ jwsdpAccount.getActId().getValue(),
 						e);
-			}
-			catch (JAXBException e) {
+			} catch (JAXBException e) {
 				LOGGER.error("[JAXBException] Problem in "
 								+ getClass().getName()
 								+ "ignoring illegal Account-Entry with id="
@@ -484,7 +474,7 @@ public class GnucashFileImpl implements GnucashFile {
 
 		}
 
-		invoiceid2invoice = new HashMap<String, GnucashInvoice>();
+		invoiceid2invoice = new HashMap<>();
 		for (Iterator iter = pRootElement.getGncBook().getBookElements()
 				.iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
@@ -497,8 +487,7 @@ public class GnucashFileImpl implements GnucashFile {
 		}
 		// invoiceEntries reer to invoices, therefore they must be loaded after
 		// them
-		for (Iterator iter = pRootElement.getGncBook().getBookElements()
-				.iterator(); iter.hasNext(); ) {
+		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
 			if (!(bookElement instanceof GncV2.GncBook.GncGncEntry)) {
 				continue;
@@ -506,28 +495,23 @@ public class GnucashFileImpl implements GnucashFile {
 			GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry = (GncV2.GncBook.GncGncEntry) bookElement;
 			try {
 				createInvoiceEntry(jwsdpInvoiceEntry);
-			}
-			catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 				LOGGER.error("[RuntimeException] Problem in "
-								+ getClass().getName()
-								+ "ignoring illegal Invoice-Entry with id="
-								+ jwsdpInvoiceEntry.getEntryGuid().getValue(),
-						e);
-			}
-			catch (JAXBException e) {
+						+ getClass().getName()
+						+ "ignoring illegal Invoice-Entry with id="
+						+ jwsdpInvoiceEntry.getEntryGuid().getValue(), e);
+			} catch (JAXBException e) {
 				LOGGER.error("[JAXBException] Problem in "
-								+ getClass().getName()
-								+ "ignoring illegal Invoice-Entry with id="
-								+ jwsdpInvoiceEntry.getEntryGuid().getValue(),
-						e);
+						+ getClass().getName()
+						+ "ignoring illegal Invoice-Entry with id="
+						+ jwsdpInvoiceEntry.getEntryGuid().getValue(), e);
 			}
 		}
 
 		// transactions refer to invoices, therefore they must be loaded after
 		// them
-		transactionid2transaction = new HashMap<String, GnucashTransaction>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements()
-				.iterator(); iter.hasNext(); ) {
+		transactionid2transaction = new HashMap<>();
+		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
 			if (!(bookElement instanceof GncTransaction)) {
 				continue;
@@ -541,27 +525,23 @@ public class GnucashFileImpl implements GnucashFile {
 					/*String accountID = */
 					split.getAccountID();
 				}
-			}
-			catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 				LOGGER.error("[RuntimeException] Problem in "
 								+ getClass().getName()
 								+ "ignoring illegal Transaction-Entry with id="
 								+ jwsdpTransaction.getTrnId().getValue(),
 						e);
-			}
-			catch (JAXBException e) {
+			} catch (JAXBException e) {
 				LOGGER.error("[JAXBException] Problem in "
-								+ getClass().getName()
-								+ "ignoring illegal Transaction-Entry with id="
-								+ jwsdpTransaction.getTrnId().getValue(),
-						e);
+						+ getClass().getName()
+						+ "ignoring illegal Transaction-Entry with id="
+						+ jwsdpTransaction.getTrnId().getValue(), e);
 			}
 
 		}
 
-		customerid2customer = new HashMap<String, GnucashCustomer>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements()
-				.iterator(); iter.hasNext(); ) {
+		customerid2customer = new HashMap<>();
+		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
 			if (!(bookElement instanceof GncV2.GncBook.GncGncCustomer)) {
 				continue;
@@ -571,8 +551,7 @@ public class GnucashFileImpl implements GnucashFile {
 			try {
 				GnucashCustomerImpl customer = createCustomer(jwsdpCustomer);
 				customerid2customer.put(customer.getId(), customer);
-			}
-			catch (JAXBException e) {
+			} catch (JAXBException e) {
 				LOGGER.error("[JAXBException] Problem in "
 								+ getClass().getName(),
 						e);
@@ -580,8 +559,7 @@ public class GnucashFileImpl implements GnucashFile {
 		}
 
 		jobid2job = new HashMap<String, GnucashJob>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements()
-				.iterator(); iter.hasNext(); ) {
+		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
 			if (!(bookElement instanceof GncV2.GncBook.GncGncJob)) {
 				continue;
@@ -598,8 +576,7 @@ public class GnucashFileImpl implements GnucashFile {
 		}
 
 		// check for unknown book-elements
-		for (Iterator iter = pRootElement.getGncBook().getBookElements()
-				.iterator(); iter.hasNext(); ) {
+		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
 			if (bookElement instanceof GncTransaction) {
 				continue;
@@ -769,8 +746,8 @@ public class GnucashFileImpl implements GnucashFile {
 	 */
 	@SuppressWarnings("unchecked")
 	private FixedPointNumber getLatestPrice(final String pCmdtySpace,
-			final String pCmdtyId,
-			final int depth) {
+											final String pCmdtyId,
+											final int depth) {
 		if (pCmdtySpace == null) {
 			throw new IllegalArgumentException("null parameter 'pCmdtySpace' "
 					+ "given");
@@ -903,8 +880,7 @@ public class GnucashFileImpl implements GnucashFile {
 								+ priceQuote.getPriceValue());
 					}
 
-				}
-				catch (NumberFormatException e) {
+				} catch (NumberFormatException e) {
 					LOGGER.error("[NumberFormatException] Problem in "
 									+ getClass().getName()
 									+ ".getLatestPrice(pCmdtySpace='"
@@ -915,8 +891,7 @@ public class GnucashFileImpl implements GnucashFile {
 									+ priceQuote
 									+ "'",
 							e);
-				}
-				catch (ParseException e) {
+				} catch (ParseException e) {
 					LOGGER.error("[ParseException] Problem in "
 									+ getClass().getName()
 									+ ".getLatestPrice(pCmdtySpace='"
@@ -927,8 +902,7 @@ public class GnucashFileImpl implements GnucashFile {
 									+ priceQuote
 									+ "'",
 							e);
-				}
-				catch (NullPointerException e) {
+				} catch (NullPointerException e) {
 					LOGGER.error("[NullPointerException] Problem in "
 									+ getClass().getName()
 									+ ".getLatestPrice(pCmdtySpace='"
@@ -939,8 +913,7 @@ public class GnucashFileImpl implements GnucashFile {
 									+ priceQuote
 									+ "'",
 							e);
-				}
-				catch (ArithmeticException e) {
+				} catch (ArithmeticException e) {
 					LOGGER.error("[ArithmeticException] Problem in "
 									+ getClass().getName()
 									+ ".getLatestPrice(pCmdtySpace='"
@@ -1038,7 +1011,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @throws JAXBException on jaxb-errors (invalid xml,...)
 	 * @see #loadFile(File)
 	 */
-	public GnucashFileImpl(final File pFile) throws IOException, JAXBException {
+	public GnucashFileImpl(final File pFile) throws IOException {
 		super();
 		loadFile(pFile);
 	}
@@ -1058,8 +1031,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 */
 	protected void setFile(final File pFile) {
 		if (pFile == null) {
-			throw new IllegalArgumentException(
-					"null not allowed for field this.file");
+			throw new IllegalArgumentException("null not allowed for field this.file");
 		}
 		file = pFile;
 	}
@@ -1073,7 +1045,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @throws JAXBException on jaxb-errors (invalid xml,...)
 	 * @see #setRootElement(GncV2)
 	 */
-	protected void loadFile(final File pFile) throws IOException, JAXBException {
+	protected void loadFile(final File pFile) throws IOException {
 
 		long start = System.currentTimeMillis();
 
@@ -1106,77 +1078,29 @@ public class GnucashFileImpl implements GnucashFile {
 			}
 		}
 
-		// reader = new NamespaceRemovererReader(new FileReader(file));
-        /* V1
-         NamespaceRemovererReader reader = new NamespaceRemovererReader(
-                new EuroConverterReader(new InputStreamReader(
-                        in, "ISO8859-15")));
-         */
-
-		// works with V1.9 and V2.0
-		NamespaceRemovererReader reader
-				= new NamespaceRemovererReader(new InputStreamReader(
-				in, "utf-8"));
+		NamespaceRemovererReader reader = new NamespaceRemovererReader(new InputStreamReader(in, "utf-8"));
 		try {
 
-			try {
+			JAXBContext myContext = getJAXBContext();
+			Unmarshaller unmarshaller = myContext.createUnmarshaller();
 
-				JAXBContext myContext = getJAXBContext();
-				Unmarshaller unmarshaller = myContext.createUnmarshaller();
+			GncV2 o = (GncV2) unmarshaller.unmarshal(new InputSource(new BufferedReader(reader)));
+			long start2 = System.currentTimeMillis();
+			setRootElement(o);
+			long end = System.currentTimeMillis();
+			LOGGER.info("GnucashFileImpl.loadFile took "
+					+ (end - start) + " ms (total) "
+					+ (start2 - start) + " ms (jaxb-loading)"
+					+ (end - start2) + " ms (building facades)"
+			);
 
-				GncV2 o = (GncV2) unmarshaller.unmarshal(new InputSource(
-						new BufferedReader(reader)));
-				long start2 = System.currentTimeMillis();
-				setRootElement(o);
-				long end = System.currentTimeMillis();
-				LOGGER.info("GnucashFileImpl.loadFile took "
-						+ (end - start) + " ms (total) "
-						+ (start2 - start) + " ms (jaxb-loading)"
-						+ (end - start2) + " ms (building facades)"
-				);
-
-			}
-			finally {
-				reader.close();
-			}
+		} catch (JAXBException e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new IllegalStateException(e);
+		} finally {
+			reader.close();
 		}
-		catch (JAXBException ex) {
 
-			// output what has been reat to far
-			if (reader instanceof NamespaceRemovererReader) {
-				try {
-					NamespaceRemovererReader nsr = reader;
-					int pos = (int) nsr.getPosition();
-					char[] c = new char[pos];
-					NamespaceRemovererReader reader2 = new NamespaceRemovererReader(
-							new EuroConverterReader(new InputStreamReader(
-									new FileInputStream(pFile), "ISO8859-15")));
-					try {
-						reader2.read(c);
-					}
-					finally {
-						reader2.close();
-					}
-					System.err.println("reat so far:");
-					String s = new String(c);
-					System.err.println(s.substring(Math.max(0, s.length() - 500)));
-				}
-				catch (Throwable x) {
-					// ignore
-				}
-			}
-
-			if (reader instanceof NamespaceRemovererReader && (reader).debugLastReatLength > 0) {
-				NamespaceRemovererReader nsr = reader;
-				System.err.println("last reat chars: '"
-						+ new String(nsr.debugLastTeat, 0,
-						nsr.debugLastReatLength) + "'");
-			} else {
-				System.err.println("last reat chars: none!");
-			}
-
-			throw ex;
-		}
 	}
 
 	/**
@@ -1189,7 +1113,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 * this
 	 * @throws JAXBException o jaxb-errors
 	 */
-	protected ObjectFactory getObjectFactory() throws JAXBException {
+	public ObjectFactory getObjectFactory() {
 		if (myJAXBFactory == null) {
 			myJAXBFactory = new ObjectFactory();
 		}
@@ -1205,10 +1129,14 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @return the JAXB-context
 	 * @throws JAXBException on jaxb-errors
 	 */
-	protected JAXBContext getJAXBContext() throws JAXBException {
+	protected JAXBContext getJAXBContext() {
 		if (myJAXBContext == null) {
-			myJAXBContext = JAXBContext
-					.newInstance("org.gnucash.generated", this.getClass().getClassLoader());
+			try {
+				myJAXBContext = JAXBContext.newInstance("org.gnucash.generated", this.getClass().getClassLoader());
+			} catch (JAXBException e) {
+				LOGGER.error(e.getMessage(), e);
+				throw new IllegalStateException(e);
+			}
 		}
 		return myJAXBContext;
 	}
@@ -1367,9 +1295,7 @@ public class GnucashFileImpl implements GnucashFile {
 		if (transactionid2transaction == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
-
-		return Collections.unmodifiableCollection(transactionid2transaction
-				.values());
+		return Collections.unmodifiableCollection(transactionid2transaction.values());
 	}
 
 	/**
@@ -1462,14 +1388,13 @@ public class GnucashFileImpl implements GnucashFile {
 		 * @param reat how much
 		 */
 		private void logReatBytes(final char[] cbuf,
-				final int off,
-				final int reat) {
+								  final int off,
+								  final int reat) {
 			debugLastReatLength = Math.min(debugLastTeat.length, reat);
 			try {
 				System.arraycopy(cbuf, off, debugLastTeat, 0,
 						debugLastTeat.length);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				LOGGER.debug("debugLastReatLength=" + debugLastReatLength
 						+ "\n" + "off=" + off + "\n" + "reat=" + reat + "\n"
@@ -1484,8 +1409,8 @@ public class GnucashFileImpl implements GnucashFile {
 		 */
 		@Override
 		public int read(final char[] cbuf,
-				final int off,
-				final int len) throws IOException {
+						final int off,
+						final int len) throws IOException {
 
 			int reat = input.read(cbuf, off, len);
 
@@ -1580,8 +1505,8 @@ public class GnucashFileImpl implements GnucashFile {
 		 */
 		@Override
 		public int read(final char[] cbuf,
-				final int off,
-				final int len) throws IOException {
+						final int off,
+						final int len) throws IOException {
 
 			int reat = input.read(cbuf, off, len);
 

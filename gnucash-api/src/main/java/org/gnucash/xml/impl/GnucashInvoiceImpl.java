@@ -13,6 +13,8 @@ package org.gnucash.xml.impl;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -71,15 +73,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 * {@inheritDoc}
 	 */
 	public void addPayingTransaction(final GnucashTransactionSplit trans) {
-
-		//        System.err.println("DEBUG: "
-		//                         + getClass().getName()
-		//                         + ".addPayingTransaction(split-action="
-		//                         + trans.getSplitAction()
-		//                         + ")");
-
 		payingTransactions.add(trans.getTransaction());
-
 	}
 
 	/**
@@ -326,22 +320,22 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 *
 	 * @see GnucashInvoice#getDateOpened()
 	 */
-	protected static final DateFormat DATEOPENEDFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	protected static final DateTimeFormatter DATEOPENEDFORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss ZZZZZ");
 
 	/**
 	 * @see GnucashInvoice#getDateOpened()
 	 */
-	protected Date dateOpened;
+	protected LocalDateTime dateOpened;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Date getDateOpened() {
+	public LocalDateTime getDateOpened() {
 		if (dateOpened == null) {
 			String s = getJwsdpPeer().getInvoiceOpened().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				dateOpened = DATEOPENEDFORMAT.parse(s);
+				dateOpened =LocalDateTime.parse(s, DATEOPENEDFORMAT);
 			}
 			catch (Exception e) {
 				IllegalStateException ex = new IllegalStateException(
@@ -398,17 +392,17 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	/**
 	 * @see GnucashInvoice#getDatePosted()
 	 */
-	protected Date datePosted;
+	protected LocalDateTime datePosted;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Date getDatePosted() {
+	public LocalDateTime getDatePosted() {
 		if (datePosted == null) {
 			String s = getJwsdpPeer().getInvoiceOpened().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				datePosted = DATEPOSTEDFORMAT.parse(s);
+				datePosted =LocalDateTime.parse(s, DATEOPENEDFORMAT);
 			}
 			catch (Exception e) {
 				IllegalStateException ex = new IllegalStateException(

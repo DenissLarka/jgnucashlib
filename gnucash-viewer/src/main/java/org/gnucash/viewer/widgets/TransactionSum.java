@@ -34,6 +34,7 @@ package org.gnucash.viewer.widgets;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -105,11 +106,11 @@ public class TransactionSum extends JPanel {
 	/**
 	 * We ignore all transactions that are before this date.
 	 */
-	private Date myMinDate;
+	private LocalDate myMinDate;
 	/**
 	 * We ignore all transactions that are after this date.
 	 */
-	private Date myMaxDate;
+	private LocalDate myMaxDate;
 
 	/**
 	 * The type of summations we are to calculate.
@@ -220,8 +221,8 @@ public class TransactionSum extends JPanel {
 			final Set<GnucashAccount> targetAccounts,
 			final SUMMATIONTYPE summationType,
 			final String name,
-			final Date minDate,
-			final Date maxDate) {
+			final LocalDate minDate,
+			final LocalDate maxDate) {
 		initializeUI(name);
 		setName(name);
 		setBooks(books);
@@ -316,10 +317,10 @@ public class TransactionSum extends JPanel {
 				= aSourceAccount.getTransactionSplits();
 		for (GnucashTransactionSplit split : splits) {
 			GnucashTransaction transaction = split.getTransaction();
-			if (getMinDate() != null && transaction.getDatePosted().before(getMinDate())) {
+			if (getMinDate() != null && transaction.getDatePosted().isBefore(getMinDate().atStartOfDay())) {
 				continue;
 			}
-			if (getMaxDate() != null && transaction.getDatePosted().after(getMaxDate())) {
+			if (getMaxDate() != null && transaction.getDatePosted().isAfter(getMaxDate().atStartOfDay())) {
 				continue;
 			}
 			if (aTargetAccountsIDs.size() > 0 && !hasSplitWithAccount(transaction, aTargetAccountsIDs)) {
@@ -663,7 +664,7 @@ public class TransactionSum extends JPanel {
 	 * @return Returns the minDate.
 	 * @see #myMinDate
 	 */
-	public Date getMinDate() {
+	public LocalDate getMinDate() {
 		return myMinDate;
 	}
 
@@ -671,7 +672,7 @@ public class TransactionSum extends JPanel {
 	 * @param aMinDate The minDate to set.
 	 * @see #myMinDate
 	 */
-	public void setMinDate(final Date aMinDate) {
+	public void setMinDate(final LocalDate aMinDate) {
 		//        if (aMinDate == null) {
 		//            throw new IllegalArgumentException("null 'aMinDate' given!");
 		//        }
@@ -693,7 +694,7 @@ public class TransactionSum extends JPanel {
 	 * @return Returns the maxDate.
 	 * @see #myMaxDate
 	 */
-	public Date getMaxDate() {
+	public LocalDate getMaxDate() {
 		return myMaxDate;
 	}
 
@@ -701,7 +702,7 @@ public class TransactionSum extends JPanel {
 	 * @param aMaxDate The maxDate to set.
 	 * @see #myMaxDate
 	 */
-	public void setMaxDate(final Date aMaxDate) {
+	public void setMaxDate(final LocalDate aMaxDate) {
 		//        if (aMaxDate == null) {
 		//            throw new IllegalArgumentException("null 'aMaxDate' given!");
 		//        }

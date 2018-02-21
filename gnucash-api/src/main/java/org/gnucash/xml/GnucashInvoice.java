@@ -10,6 +10,7 @@
  */
 package org.gnucash.xml;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
@@ -59,7 +60,7 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	/**
 	 * @return the date when this transaction was added to or modified in the books.
 	 */
-	Date getDateOpened();
+	LocalDateTime getDateOpened();
 
 	/**
 	 * @return the date when this transaction was added to or modified in the books.
@@ -69,7 +70,7 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	/**
 	 * @return the date when this transaction hapened.
 	 */
-	Date getDatePosted();
+	LocalDateTime getDatePosted();
 
 	/**
 	 * @return the date when this transaction hapened.
@@ -158,7 +159,7 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	 * the 16%-items.
 	 * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
 	 */
-	public static class TaxedSum {
+	class TaxedSum {
 		/**
 		 * @param pTaxpercent how much tax it is
 		 * @param pTaxsum the sum of payed taxes

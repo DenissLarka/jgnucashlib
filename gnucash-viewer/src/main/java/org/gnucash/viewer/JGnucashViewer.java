@@ -555,8 +555,7 @@ public class JGnucashViewer extends JFrame {
 	 * @return the GnucashFile
 	 * @throws IOException   if the file cannot be loaded from disk
 	 */
-	protected GnucashFile createModelFromFile(final File f)
-			throws IOException, JAXBException {
+	protected GnucashFile createModelFromFile(final File f) throws IOException, JAXBException {
 		return new GnucashFileImpl(f);
 	}
 

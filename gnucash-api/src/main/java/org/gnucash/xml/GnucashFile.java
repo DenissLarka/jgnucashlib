@@ -112,14 +112,14 @@ public interface GnucashFile extends GnucashObject {
 	/**
 	 * @return all accounts
 	 */
-	Collection<? extends GnucashAccount> getAccounts();
+	Collection<GnucashAccount> getAccounts();
 
 	/**
 	 *
 	 * @param id if null, gives all account that have no parent
 	 * @return all accounts with that parent in no particular order
 	 */
-	Collection<? extends GnucashAccount> getAccountsByParentID(String id);
+	Collection<GnucashAccount> getAccountsByParentID(String id);
 
 	/**
 	 * @param id the unique id of the invoice to look for
@@ -248,5 +248,4 @@ public interface GnucashFile extends GnucashObject {
 	 */
 	Collection<GnucashCustomer> getCustomers();
 
-	//public abstract GnucashTransaction getTransactionByID(String id);
 }

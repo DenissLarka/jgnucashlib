@@ -43,6 +43,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -306,7 +307,7 @@ public class TaxReportPanel extends JPanel {
 			// we do NOT use getCurrencyInstance because it
 			// contains a locale-specific currency-symbol
 			for (int i = 0; i < 100; i++) {
-				Date maxDate = cal.getTime();
+				LocalDate maxDate = LocalDate.from(cal.toInstant());
 
 				fw.write(dateFormat.format(maxDate));
 				int transactionsCounted = 0;
@@ -428,7 +429,7 @@ public class TaxReportPanel extends JPanel {
 	/**
 	 * @return the minimum date for the {@link TransactionSum}.
 	 */
-	private Date getMinDate() {
+	private LocalDate getMinDate() {
 		//TODO: provide an input-field for the year.
 		return null;/*new Date ((new GregorianCalendar(1970, 01, 01))
 				.getTimeInMillis())*/
@@ -437,7 +438,7 @@ public class TaxReportPanel extends JPanel {
 	/**
 	 * @return the maximum date for the {@link TransactionSum}.
 	 */
-	private Date getMaxDate() {
+	private LocalDate getMaxDate() {
 		//      TODO: provide an input-field for the year.
 		return null/*new Date ((new GregorianCalendar(2100, 12, 31)
 		).getTimeInMillis())*/;

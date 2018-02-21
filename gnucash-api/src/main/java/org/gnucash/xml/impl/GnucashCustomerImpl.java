@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import javax.xml.bind.JAXBException;
 
+import org.gnucash.generated.Address;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
@@ -260,8 +261,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		/**
 		 * @param newPeer the JWSDP-object we are wrapping.
 		 */
-		public AddressImpl(
-				final org.gnucash.generated.Address newPeer) {
+		public AddressImpl(final org.gnucash.generated.Address newPeer) {
 			super();
 			jwsdpPeer = newPeer;
 		}
