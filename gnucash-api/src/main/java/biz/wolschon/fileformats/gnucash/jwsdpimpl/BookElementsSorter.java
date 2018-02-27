@@ -97,7 +97,7 @@ public class BookElementsSorter implements Comparator<Object> {
 		} else if (element instanceof GncV2.GncBook.GncGncVendor) {
 			return 15;
 		} else {
-			throw new IllegalStateException("Unecpected element in GNC:Book found! <" + element.toString() + ">");
+			throw new IllegalStateException("Unexpected element in GNC:Book found! <" + element.toString() + ">");
 		}
 	}
 }
