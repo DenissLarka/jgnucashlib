@@ -13,6 +13,7 @@ package org.gnucash.read.impl;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,13 +28,12 @@ import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
 import org.gnucash.generated.SlotValue;
 import org.gnucash.generated.SlotsType;
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
-
-import org.gnucash.numbers.FixedPointNumber;
 
 /**
  * created: 13.05.2005 <br/>
@@ -364,17 +364,17 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	/**
 	 * @see GnucashTransaction#getDateEntered()
 	 */
-	protected LocalDateTime dateEntered;
+	protected ZonedDateTime dateEntered;
 
 	/**
 	 * @see GnucashTransaction#getDateEntered()
 	 */
-	public LocalDateTime getDateEntered() {
+	public ZonedDateTime getDateEntered() {
 		if (dateEntered == null) {
 			String s = jwsdpPeer.getTrnDateEntered().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				dateEntered = LocalDateTime.parse(s, DATE_ENTERED_FORMAT);
+				dateEntered = ZonedDateTime.parse(s, DATE_ENTERED_FORMAT);
 			} catch (Exception e) {
 				IllegalStateException ex =
 						new IllegalStateException(
@@ -395,7 +395,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	/**
 	 * @see GnucashTransaction#getDatePosted()
 	 */
-	protected LocalDateTime datePosted;
+	protected ZonedDateTime datePosted;
 
 	/**
 	 * The Currency-Format to use if no locale is given.
@@ -431,12 +431,12 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	/**
 	 * @see GnucashTransaction#getDatePosted()
 	 */
-	public LocalDateTime getDatePosted() {
+	public ZonedDateTime getDatePosted() {
 		if (datePosted == null) {
 			String s = jwsdpPeer.getTrnDatePosted().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				datePosted = LocalDateTime.parse(s, DATE_POSTED_FORMAT);
+				datePosted = ZonedDateTime.parse(s, DATE_POSTED_FORMAT);
 			} catch (Exception e) {
 				IllegalStateException ex =
 						new IllegalStateException(

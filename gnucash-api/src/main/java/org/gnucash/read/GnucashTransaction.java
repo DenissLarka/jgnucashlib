@@ -13,7 +13,7 @@
  */
 package org.gnucash.read;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -88,13 +88,13 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      *
      * @return the date the transaction was entered into the system
      */
-    LocalDateTime getDateEntered();
+    ZonedDateTime getDateEntered();
 
     /**
      *
      * @return the date the transaction happened
      */
-    LocalDateTime getDatePosted();
+    ZonedDateTime getDatePosted();
 
     /**
      *
