@@ -236,7 +236,7 @@ public class JGnucashViewer extends JFrame {
 		ste.getJSplitPane().setDividerLocation(0.3);
 	}
 
-	private static void installNimbusLaF() {
+	protected static void installNimbusLaF() {
 		try {
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
 		}
@@ -258,7 +258,7 @@ public class JGnucashViewer extends JFrame {
 	 *
 	 * @return javax.swing.JSplitPane
 	 */
-	private JSplitPane getJSplitPane() {
+	protected JSplitPane getJSplitPane() {
 		if (jSplitPane == null) {
 			jSplitPane = new JSplitPane();
 			jSplitPane.setLeftComponent(getTreeScrollPane());

@@ -11,6 +11,7 @@ import java.awt.Toolkit;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -140,7 +141,7 @@ public class TransactionsPanel extends JPanel {
 		// set column-width
 		FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(transactionTable.getFont());
 		getTransactionTable().getColumn("date").setPreferredWidth(
-				SwingUtilities.computeStringWidth(metrics, GnucashSimpleAccountTransactionsTableModel.dateFormat.format(new Date())) + 5);
+				SwingUtilities.computeStringWidth(metrics, GnucashSimpleAccountTransactionsTableModel.dateFormat.format(LocalDateTime.now())) + 5);
 		getTransactionTable().getColumn("+").setPreferredWidth(
 				SwingUtilities.computeStringWidth(metrics, GnucashSimpleAccountTransactionsTableModel.defaultCurrencyFormat.format(10000)));
 		getTransactionTable().getColumn("-").setPreferredWidth(
@@ -159,7 +160,7 @@ public class TransactionsPanel extends JPanel {
 		}
 
 		getTransactionTable().getColumn("date").setMaxWidth(
-				SwingUtilities.computeStringWidth(metrics, GnucashSimpleAccountTransactionsTableModel.dateFormat.format(new Date())) + 5);
+				SwingUtilities.computeStringWidth(metrics, GnucashSimpleAccountTransactionsTableModel.dateFormat.format(LocalDateTime.now())) + 5);
 		getTransactionTable().getColumn("+").setMaxWidth(
 				SwingUtilities.computeStringWidth(metrics, GnucashSimpleAccountTransactionsTableModel.defaultCurrencyFormat.format(1000000)));
 		getTransactionTable().getColumn("-").setMaxWidth(
