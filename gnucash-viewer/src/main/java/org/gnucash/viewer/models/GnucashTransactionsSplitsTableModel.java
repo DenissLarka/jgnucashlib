@@ -8,7 +8,7 @@ package org.gnucash.viewer.models;
 
 import javax.swing.table.TableModel;
 
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashTransactionSplit;
 
 
 /**

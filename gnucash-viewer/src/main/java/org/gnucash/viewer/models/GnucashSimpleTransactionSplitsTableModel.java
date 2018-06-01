@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelListener;
 
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashTransactionSplit;
 
 /**
  * created: 15.05.2005 <br/>

@@ -26,8 +26,8 @@ import javax.swing.tree.TreePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashFile;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashFile;
 
 /**
  * created: 15.05.2005 <br/>

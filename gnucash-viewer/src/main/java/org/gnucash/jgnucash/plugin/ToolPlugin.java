@@ -30,8 +30,8 @@
  */
 package org.gnucash.jgnucash.plugin;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableAccount;
-import org.gnucash.fileformats.gnucash.GnucashWritableFile;
+import org.gnucash.write.GnucashWritableAccount;
+import org.gnucash.write.GnucashWritableFile;
 
 /**
  * created: 29.11.2008 <br/>

@@ -36,7 +36,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -44,14 +43,13 @@ import java.util.Set;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.xml.bind.JAXBException;
 
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashFile;
-import org.gnucash.xml.GnucashTransaction;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,7 +212,6 @@ public class TransactionSum extends JPanel {
 	 * @param name           the name to display left of the sum
 	 * @param minDate        We ignore all transactions that are before this date.
 	 * @param maxDate        We ignore all transactions that are after this date.
-	 * @throws JAXBException if we have issues with the XML-backend
 	 */
 	public TransactionSum(final GnucashFile books,
 			final Set<GnucashAccount> sourceAccounts,
@@ -362,7 +359,6 @@ public class TransactionSum extends JPanel {
 	 * @param aTransaction
 	 * @param aTargetAccountsIDs
 	 * @return
-	 * @throws JAXBException
 	 */
 	private boolean hasSplitWithAccount(GnucashTransaction aTransaction, Set<String> aTargetAccountsIDs) {
 		List<? extends GnucashTransactionSplit> splits = aTransaction.getSplits();

@@ -17,7 +17,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -31,8 +30,8 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.gnucash.xml.GnucashTransaction;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.viewer.actions.TransactionSplitAction;
 import org.gnucash.viewer.models.GnucashTransactionsSplitsTableModel;
 

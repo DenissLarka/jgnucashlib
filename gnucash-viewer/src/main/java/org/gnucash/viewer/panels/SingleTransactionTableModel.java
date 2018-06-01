@@ -2,7 +2,6 @@ package org.gnucash.viewer.panels;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,8 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TableModelListener;
 
 import org.gnucash.viewer.models.GnucashTransactionsSplitsTableModel;
-import org.gnucash.xml.GnucashTransaction;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 
 /**
  * (c) 2009 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>

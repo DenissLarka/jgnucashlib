@@ -32,9 +32,7 @@ package org.gnucash.jgnucash.plugin;
 
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
-
-import org.gnucash.fileformats.gnucash.GnucashWritableFile;
+import org.gnucash.write.GnucashWritableFile;
 
 /**
  * created: 28.09.2008 <br/>
@@ -63,23 +61,20 @@ public interface DataSourcePlugin {
      * Runt the actual import.
      * @return the loaded file or null
      * @throws IOException on IO-issues
-     * @throws JAXBException on IO-issues
      */
-    GnucashWritableFile loadFile() throws IOException, JAXBException;
+    GnucashWritableFile loadFile() throws IOException;
 
     /**
      * Write to where this file was loaded from.
      * @param file the file to write
      * @throws IOException on IO-issues
-     * @throws JAXBException on IO-issues
      */
-    void write(GnucashWritableFile file) throws IOException, JAXBException;
+    void write(GnucashWritableFile file) throws IOException;
 
     /**
      * Let the user choose a location to write to.
      * @param file the file to write
      * @throws IOException on IO-issues
-     * @throws JAXBException on IO-issues
      */
-    void writeTo(GnucashWritableFile file) throws IOException, JAXBException;
+    void writeTo(GnucashWritableFile file) throws IOException;
 }

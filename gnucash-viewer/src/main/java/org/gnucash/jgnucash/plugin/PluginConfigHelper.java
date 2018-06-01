@@ -41,10 +41,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.xml.bind.JAXBException;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableAccount;
-import org.gnucash.fileformats.gnucash.GnucashWritableFile;
+import org.gnucash.write.GnucashWritableAccount;
+import org.gnucash.write.GnucashWritableFile;
 
 /**
  * (c) 2009 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
@@ -114,14 +113,13 @@ public final class PluginConfigHelper {
 	 * @param aDefaultValue the value to apply if an account needed to be selected
 	 * @param aQuestion     the translated question to ask the user when selecting an account.
 	 * @return the account
-	 * @throws JAXBException if setting the user-defined-property does not work
 	 * @see #getAccountWithKey(GnucashWritableFile, String)
 	 */
 	@SuppressWarnings("unchecked")
 	public static GnucashWritableAccount getOrConfigureAccountWithKey(final GnucashWritableFile aModel,
 			final String aKey,
 			final String aDefaultValue,
-			final String aQuestion) throws JAXBException {
+			final String aQuestion) {
 		GnucashWritableAccount retval = getAccountWithKey(aModel, aKey);
 		if (retval != null) {
 			return retval;
@@ -163,14 +161,13 @@ public final class PluginConfigHelper {
 	 * @param aDefaultValue the default value to present to the user
 	 * @param aQuestion     the translated question to ask the user when selecting an account.
 	 * @return the entered value (not empty)
-	 * @throws JAXBException if setting the user-defined-property does not work
-	 * @see #getStringWithKey(GnucashWritableAccount, String)
+	 * @see #getOrConfigureStringWithKey(GnucashWritableAccount, String, String, String)
 	 */
 	@SuppressWarnings("unchecked")
 	public static String getOrConfigureStringWithKey(final GnucashWritableAccount aRootAccount,
 			final String aKey,
 			final String aDefaultValue,
-			final String aQuestion) throws JAXBException {
+			final String aQuestion) {
 		if (aRootAccount == null) {
 			throw new IllegalArgumentException("null root account given!");
 		}

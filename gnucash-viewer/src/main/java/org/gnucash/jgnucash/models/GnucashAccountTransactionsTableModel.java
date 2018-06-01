@@ -31,11 +31,11 @@
 
 package org.gnucash.jgnucash.models;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableAccount;
-import org.gnucash.fileformats.gnucash.GnucashWritableTransactionSplit;
+import org.gnucash.write.GnucashWritableAccount;
+import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.viewer.models.GnucashSimpleAccountTransactionsTableModel;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransactionSplit;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;

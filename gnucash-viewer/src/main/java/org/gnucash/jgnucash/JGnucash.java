@@ -19,15 +19,42 @@
  */
 package org.gnucash.jgnucash;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableFile;
-import org.gnucash.fileformats.gnucash.jwsdpimpl.GnucashFileWritingImpl;
-import org.gnucash.jgnucash.actions.*;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
+import org.gnucash.jgnucash.actions.ImportPluginMenuAction;
+import org.gnucash.jgnucash.actions.OpenAccountInNewTabWritable;
+import org.gnucash.jgnucash.actions.OpenAccountInNewWindowWritable;
+import org.gnucash.jgnucash.actions.OpenFilePluginMenuAction;
+import org.gnucash.jgnucash.actions.SaveAsFilePluginMenuAction;
+import org.gnucash.jgnucash.actions.ToolPluginMenuAction;
 import org.gnucash.jgnucash.panels.WritableTransactionsPanel;
+import org.gnucash.read.GnucashFile;
 import org.gnucash.viewer.JGnucashViewer;
 import org.gnucash.viewer.actions.AccountAction;
 import org.gnucash.viewer.actions.TransactionSplitAction;
 import org.gnucash.viewer.panels.TransactionsPanel;
-import org.gnucash.xml.GnucashFile;
+import org.gnucash.write.GnucashWritableFile;
+import org.gnucash.write.impl.GnucashFileWritingImpl;
 import org.java.plugin.PluginManager;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.Extension.Parameter;
@@ -37,28 +64,14 @@ import org.java.plugin.registry.PluginDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import javax.xml.bind.JAXBException;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 /**
  * created: 16.05.2005 <br/>
- *
  * (Shall become a simple java-reimplementation of gnucash
  * that can read and write gnucash-files.)<br/>
- *
  * Extended version of JGnucashViewer that allows for
  * changing and writing the gnucash-file.
  * <br/>
+ *
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class JGnucash extends JGnucashViewer {
@@ -72,7 +85,8 @@ public class JGnucash extends JGnucashViewer {
 
 	/**
 	 * Use this constructor.
-	 * @param manager the plugin-manager to use for loading plugins attached to extension-points of the main-plugin
+	 *
+	 * @param manager    the plugin-manager to use for loading plugins attached to extension-points of the main-plugin
 	 * @param descriptor the descriptor for the main-plugin
 	 */
 	public JGnucash(final PluginManager manager, final PluginDescriptor descriptor) {
@@ -81,7 +95,6 @@ public class JGnucash extends JGnucashViewer {
 		setPluginDescriptor(descriptor);
 		initializeGUI();
 	}
-
 
 	/**
 	 * Our logger for debug- and error-output.
@@ -131,11 +144,11 @@ public class JGnucash extends JGnucashViewer {
 	 */
 	private JMenuItem fileSaveAsMenuItem = null;
 
-//    /**
-//     * File-Menu to import other gnucash-files
-//     * into this one.
-//     */
-//    private JMenuItem fileImport = null;
+	//    /**
+	//     * File-Menu to import other gnucash-files
+	//     * into this one.
+	//     */
+	//    private JMenuItem fileImport = null;
 
 	/**
 	 * The Import-Menu.
@@ -185,6 +198,7 @@ public class JGnucash extends JGnucashViewer {
 
 	/**
 	 * The main-entry-point to our plugin-api.
+	 *
 	 * @return the pluginManager
 	 */
 	public PluginManager getPluginManager() {
@@ -193,6 +207,7 @@ public class JGnucash extends JGnucashViewer {
 
 	/**
 	 * The main-entry-point to our plugin-api.
+	 *
 	 * @param aPluginManager the pluginManager to set
 	 */
 	public void setPluginManager(final PluginManager aPluginManager) {
@@ -201,6 +216,7 @@ public class JGnucash extends JGnucashViewer {
 
 	/**
 	 * The descriptor for our top-level application-plugin.
+	 *
 	 * @return the pluginDescriptor
 	 */
 	public PluginDescriptor getPluginDescriptor() {
@@ -209,12 +225,12 @@ public class JGnucash extends JGnucashViewer {
 
 	/**
 	 * The descriptor for our top-level application-plugin.
+	 *
 	 * @param aPluginDescriptor the pluginDescriptor to set
 	 */
 	public void setPluginDescriptor(final PluginDescriptor aPluginDescriptor) {
 		pluginDescriptor = aPluginDescriptor;
 	}
-
 
 	/**
 	 * @return a menu-item to show a report on plugin-loading
@@ -242,9 +258,9 @@ public class JGnucash extends JGnucashViewer {
                             severity = "Info: ";
                         };*/
 														   message.append(severity)
-                               /*.append('(')
-                               .append(reportItem.getCode())
-                               .append(')')*/
+																   /*.append('(')
+																   .append(reportItem.getCode())
+																   .append(')')*/
 																   .append(reportItem.getMessage())
 																   .append('\n');
 													   }
@@ -258,7 +274,6 @@ public class JGnucash extends JGnucashViewer {
 		}
 		return helpPluginReport;
 	}
-
 
 	/**
 	 * This method initializes transactionsPanel.
@@ -283,9 +298,9 @@ public class JGnucash extends JGnucashViewer {
 		return writableTransactionsPanel;
 	}
 
-
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @see org.gnucash.jgnucash.JGnucash#getJMenuBar()
 	 */
 	@Override
@@ -343,7 +358,8 @@ public class JGnucash extends JGnucashViewer {
 								if (iconUrl != null) {
 									newMenuItem.setIcon(new ImageIcon(iconUrl));
 								}
-							} catch (Exception e) {
+							}
+							catch (Exception e) {
 								LOGGER.error("cannot load icon for Loader-Plugin '" + pluginName + "'", e);
 							}
 						}
@@ -365,7 +381,8 @@ public class JGnucash extends JGnucashViewer {
 							fileMenu.add(newSaveAsMenuItem, 2); // Open
 
 						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						LOGGER.error("cannot load Loader-Plugin '" + pluginName + "'", e);
 						JOptionPane.showMessageDialog(this, "Error",
 								"Cannot load Loader-Plugin '" + pluginName + "'",
@@ -376,7 +393,6 @@ public class JGnucash extends JGnucashViewer {
 		}
 		return fileMenu;
 	}
-
 
 	/**
 	 * This method initializes import-menu with
@@ -415,7 +431,8 @@ public class JGnucash extends JGnucashViewer {
 								if (iconUrl != null) {
 									newMenuItem.setIcon(new ImageIcon(iconUrl));
 								}
-							} catch (Exception e) {
+							}
+							catch (Exception e) {
 								LOGGER.error("cannot load icon for Importer-Plugin '" + pluginName + "'", e);
 							}
 						}
@@ -425,7 +442,8 @@ public class JGnucash extends JGnucashViewer {
 						}
 						newMenuItem.addActionListener(new ImportPluginMenuAction(this, ext, pluginName));
 						importMenu.add(newMenuItem);
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						LOGGER.error("cannot load Importer-Plugin '" + pluginName + "'", e);
 						JOptionPane.showMessageDialog(this, "Error",
 								"Cannot load Importer-Plugin '" + pluginName + "'",
@@ -474,7 +492,8 @@ public class JGnucash extends JGnucashViewer {
 								if (iconUrl != null) {
 									newMenuItem.setIcon(new ImageIcon(iconUrl));
 								}
-							} catch (Exception e) {
+							}
+							catch (Exception e) {
 								LOGGER.error("cannot load icon for Tool-Plugin '" + pluginName + "'", e);
 							}
 						}
@@ -484,7 +503,8 @@ public class JGnucash extends JGnucashViewer {
 						}
 						newMenuItem.addActionListener(new ToolPluginMenuAction(this, ext, pluginName));
 						toolMenu.add(newMenuItem);
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						LOGGER.error("cannot load Tool-Plugin '" + pluginName + "'", e);
 						JOptionPane.showMessageDialog(this, "Error",
 								"Cannot load Tool-Plugin '" + pluginName + "'",
@@ -551,22 +571,20 @@ public class JGnucash extends JGnucashViewer {
 				getWritableModel().writeFile(f);
 				saveFile();
 				setTitle(f.getName());
-			} catch (FileNotFoundException e) {
+			}
+			catch (FileNotFoundException e) {
 				LOGGER.error("cannot save file '" + f.getAbsolutePath() + "' (file not found)", e);
 				JOptionPane.showMessageDialog(this, "Error",
 						"cannot save file '" + f.getAbsolutePath() + "' (file not found)",
 						JOptionPane.ERROR_MESSAGE);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				LOGGER.error("cannot save file '" + f.getAbsolutePath() + "' (io-problem)", e);
 				JOptionPane.showMessageDialog(this, "Error",
 						"cannot save file '" + f.getAbsolutePath() + "' (io-problem)",
 						JOptionPane.ERROR_MESSAGE);
-			} catch (JAXBException e) {
-				LOGGER.error("cannot save file '" + f.getAbsolutePath() + "' (gnucash-format-problem)", e);
-				JOptionPane.showMessageDialog(this, "Error",
-						"cannot save file '" + f.getAbsolutePath() + "' (gnucash-format-problem)",
-						JOptionPane.ERROR_MESSAGE);
-			} finally {
+			}
+			finally {
 				setCursor(Cursor.getDefaultCursor());
 			}
 		}
@@ -583,7 +601,8 @@ public class JGnucash extends JGnucashViewer {
 		String file = "unknown";
 		try {
 			getJFileChooser().getSelectedFile().getAbsolutePath();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 		JOptionPane.showMessageDialog(this, sw.toString(),
@@ -594,7 +613,6 @@ public class JGnucash extends JGnucashViewer {
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
-	 * @throws JAXBException
 	 */
 	private void saveFile() {
 		try {
@@ -603,7 +621,8 @@ public class JGnucash extends JGnucashViewer {
 
 			getWritableModel().writeFile(getWritableModel().getFile());
 			hasChanged = false;
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			File f = getWritableModel().getFile();
 			if (f == null) {
 				f = new File("unknown");
@@ -612,7 +631,8 @@ public class JGnucash extends JGnucashViewer {
 			JOptionPane.showMessageDialog(this, "Error",
 					"cannot save file '" + f.getAbsolutePath() + "' (file not found)",
 					JOptionPane.ERROR_MESSAGE);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			File f = getWritableModel().getFile();
 			if (f == null) {
 				f = new File("unknown");
@@ -621,16 +641,8 @@ public class JGnucash extends JGnucashViewer {
 			JOptionPane.showMessageDialog(this, "Error",
 					"cannot save file '" + f.getAbsolutePath() + "' (io-problem)",
 					JOptionPane.ERROR_MESSAGE);
-		} catch (JAXBException e) {
-			File f = getWritableModel().getFile();
-			if (f == null) {
-				f = new File("unknown");
-			}
-			LOGGER.error("cannot save file '" + f.getAbsolutePath() + "' (gnucash-format-problem)", e);
-			JOptionPane.showMessageDialog(this, "Error",
-					"cannot save file '" + f.getAbsolutePath() + "' (gnucash-format-problem)",
-					JOptionPane.ERROR_MESSAGE);
 		}
+
 	}
 
 	/**
@@ -651,7 +663,6 @@ public class JGnucash extends JGnucashViewer {
 	}
 
 	/**
-	 *
 	 * @return our model
 	 */
 	public GnucashWritableFile getWritableModel() {
@@ -678,7 +689,6 @@ public class JGnucash extends JGnucashViewer {
 	}
 
 	/**
-	 *
 	 * @param newModel our new model
 	 */
 	public void setWritableModel(final GnucashWritableFile newModel) {
@@ -697,7 +707,8 @@ public class JGnucash extends JGnucashViewer {
 			getFileSaveAsMenuItem().setEnabled(true);
 			getFileSaveMenuItem().setEnabled(true);
 			getImportMenu().setEnabled(true);
-		} finally {
+		}
+		finally {
 			if (!ok) {
 				model = oldModel;
 			}
@@ -731,7 +742,6 @@ public class JGnucash extends JGnucashViewer {
 		LOGGER.info("JGnucashEditor has " + actionsCount + " split-actions");
 		return myWritableSplitActions;
 	}
-
 
 	/**
 	 * @return the {@link AccountAction} we have including the ones offered by plugins.
@@ -770,7 +780,8 @@ public class JGnucash extends JGnucashViewer {
 						} else {
 							myAccountActions.add((AccountAction) o);
 						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						LOGGER.error("cannot load TransactionMenuAction-Plugin '" + pluginName + "'", e);
 						JOptionPane.showMessageDialog(this, "Error",
 								"Cannot load AccountAction-Plugin '" + pluginName + "'",

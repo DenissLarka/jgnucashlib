@@ -37,8 +37,8 @@ package org.gnucash.jgnucash.panels;
 
 import org.gnucash.viewer.panels.ShowTransactionPanel;
 import org.gnucash.viewer.panels.SingleTransactionTableModel;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransaction;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
 
 import javax.swing.*;
 import java.awt.*;

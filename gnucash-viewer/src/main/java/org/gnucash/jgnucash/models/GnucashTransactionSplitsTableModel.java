@@ -31,9 +31,9 @@
 
 package org.gnucash.jgnucash.models;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableTransactionSplit;
+import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.viewer.models.GnucashSimpleTransactionSplitsTableModel;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashTransactionSplit;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;

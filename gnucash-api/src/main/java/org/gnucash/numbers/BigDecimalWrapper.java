@@ -66,8 +66,7 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 *
 	 * @param listener The PropertyChangeListener to be added
 	 */
-	public final void addPropertyChangeListener(
-			final PropertyChangeListener listener) {
+	public final void addPropertyChangeListener(final PropertyChangeListener listener) {
 		if (myPropertyChange == null) {
 			myPropertyChange = new PropertyChangeSupport(this);
 		}
@@ -82,9 +81,7 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 * @param propertyName The name of the property to listen on.
 	 * @param listener     The PropertyChangeListener to be added
 	 */
-	public final void addPropertyChangeListener(
-			final String propertyName,
-			final PropertyChangeListener listener) {
+	public final void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
 		if (myPropertyChange == null) {
 			myPropertyChange = new PropertyChangeSupport(this);
 		}
@@ -97,9 +94,7 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 * @param propertyName The name of the property that was listened on.
 	 * @param listener     The PropertyChangeListener to be removed
 	 */
-	public final void removePropertyChangeListener(
-			final String propertyName,
-			final PropertyChangeListener listener) {
+	public final void removePropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
 		if (myPropertyChange != null) {
 			myPropertyChange.removePropertyChangeListener(propertyName, listener);
 		}
@@ -112,8 +107,7 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 *
 	 * @param listener The PropertyChangeListener to be removed
 	 */
-	public synchronized void removePropertyChangeListener(
-			final PropertyChangeListener listener) {
+	public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
 		if (myPropertyChange != null) {
 			myPropertyChange.removePropertyChangeListener(listener);
 		}
@@ -150,7 +144,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal abs(MathContext mc) {
-
 		return getBigDecimal().abs(mc);
 	}
 
@@ -159,7 +152,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal add(BigDecimal augend, MathContext mc) {
-
 		return getBigDecimal().add(augend, mc);
 	}
 
@@ -168,7 +160,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal add(BigDecimal augend) {
-
 		return getBigDecimal().add(augend);
 	}
 
@@ -177,7 +168,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public byte byteValueExact() {
-
 		return getBigDecimal().byteValueExact();
 	}
 
@@ -186,7 +176,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public int compareTo(BigDecimal val) {
-
 		return getBigDecimal().compareTo(val);
 	}
 
@@ -195,7 +184,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divide(BigDecimal divisor, int scale, int roundingMode) {
-
 		return getBigDecimal().divide(divisor, scale, roundingMode);
 	}
 
@@ -204,7 +192,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode) {
-
 		return getBigDecimal().divide(divisor, scale, roundingMode);
 	}
 
@@ -213,7 +200,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divide(BigDecimal divisor, int roundingMode) {
-
 		return getBigDecimal().divide(divisor, roundingMode);
 	}
 
@@ -222,7 +208,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divide(BigDecimal divisor, MathContext mc) {
-
 		return getBigDecimal().divide(divisor, mc);
 	}
 
@@ -231,7 +216,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divide(BigDecimal divisor, RoundingMode roundingMode) {
-
 		return getBigDecimal().divide(divisor, roundingMode);
 	}
 
@@ -240,7 +224,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divide(BigDecimal divisor) {
-
 		return getBigDecimal().divide(divisor);
 	}
 
@@ -249,7 +232,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal[] divideAndRemainder(BigDecimal divisor, MathContext mc) {
-
 		return getBigDecimal().divideAndRemainder(divisor, mc);
 	}
 
@@ -258,7 +240,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal[] divideAndRemainder(BigDecimal divisor) {
-
 		return getBigDecimal().divideAndRemainder(divisor);
 	}
 
@@ -267,7 +248,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divideToIntegralValue(BigDecimal divisor, MathContext mc) {
-
 		return getBigDecimal().divideToIntegralValue(divisor, mc);
 	}
 
@@ -276,7 +256,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal divideToIntegralValue(BigDecimal divisor) {
-
 		return getBigDecimal().divideToIntegralValue(divisor);
 	}
 
@@ -285,7 +264,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public double doubleValue() {
-
 		return getBigDecimal().doubleValue();
 	}
 
@@ -294,7 +272,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public boolean equals(Object x) {
-
 		return getBigDecimal().equals(x);
 	}
 
@@ -303,7 +280,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public float floatValue() {
-
 		return getBigDecimal().floatValue();
 	}
 
@@ -312,7 +288,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public int hashCode() {
-
 		return getBigDecimal().hashCode();
 	}
 
@@ -321,7 +296,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public int intValue() {
-
 		return getBigDecimal().intValue();
 	}
 
@@ -330,7 +304,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public int intValueExact() {
-
 		return getBigDecimal().intValueExact();
 	}
 
@@ -339,7 +312,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public long longValue() {
-
 		return getBigDecimal().longValue();
 	}
 
@@ -348,7 +320,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public long longValueExact() {
-
 		return getBigDecimal().longValueExact();
 	}
 
@@ -357,7 +328,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal max(BigDecimal val) {
-
 		return getBigDecimal().max(val);
 	}
 
@@ -366,7 +336,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal min(BigDecimal val) {
-
 		return getBigDecimal().min(val);
 	}
 
@@ -375,7 +344,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal movePointLeft(int n) {
-
 		return getBigDecimal().movePointLeft(n);
 	}
 
@@ -384,7 +352,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal movePointRight(int n) {
-
 		return getBigDecimal().movePointRight(n);
 	}
 
@@ -393,7 +360,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal multiply(BigDecimal multiplicand, MathContext mc) {
-
 		return getBigDecimal().multiply(multiplicand, mc);
 	}
 
@@ -402,7 +368,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal multiply(BigDecimal multiplicand) {
-
 		return getBigDecimal().multiply(multiplicand);
 	}
 
@@ -411,7 +376,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal negate() {
-
 		return getBigDecimal().negate();
 	}
 
@@ -420,7 +384,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal negate(MathContext mc) {
-
 		return getBigDecimal().negate(mc);
 	}
 
@@ -429,7 +392,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal plus() {
-
 		return getBigDecimal().plus();
 	}
 
@@ -438,7 +400,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal plus(MathContext mc) {
-
 		return getBigDecimal().plus(mc);
 	}
 
@@ -447,7 +408,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal pow(int n, MathContext mc) {
-
 		return getBigDecimal().pow(n, mc);
 	}
 
@@ -456,7 +416,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal pow(int n) {
-
 		return getBigDecimal().pow(n);
 	}
 
@@ -465,7 +424,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public int precision() {
-
 		return getBigDecimal().precision();
 	}
 
@@ -474,7 +432,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal remainder(BigDecimal divisor, MathContext mc) {
-
 		return getBigDecimal().remainder(divisor, mc);
 	}
 
@@ -483,7 +440,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal remainder(BigDecimal divisor) {
-
 		return getBigDecimal().remainder(divisor);
 	}
 
@@ -492,7 +448,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal round(MathContext mc) {
-
 		return getBigDecimal().round(mc);
 	}
 
@@ -501,7 +456,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public int scale() {
-
 		return getBigDecimal().scale();
 	}
 
@@ -510,7 +464,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal scaleByPowerOfTen(int n) {
-
 		return getBigDecimal().scaleByPowerOfTen(n);
 	}
 
@@ -519,7 +472,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal setScale(int newScale, int roundingMode) {
-
 		return getBigDecimal().setScale(newScale, roundingMode);
 	}
 
@@ -528,7 +480,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal setScale(int newScale, RoundingMode roundingMode) {
-
 		return getBigDecimal().setScale(newScale, roundingMode);
 	}
 
@@ -537,7 +488,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal setScale(int newScale) {
-
 		return getBigDecimal().setScale(newScale);
 	}
 
@@ -546,7 +496,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public short shortValueExact() {
-
 		return getBigDecimal().shortValueExact();
 	}
 
@@ -555,7 +504,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public int signum() {
-
 		return getBigDecimal().signum();
 	}
 
@@ -564,7 +512,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal stripTrailingZeros() {
-
 		return getBigDecimal().stripTrailingZeros();
 	}
 
@@ -573,7 +520,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal subtract(BigDecimal subtrahend, MathContext mc) {
-
 		return getBigDecimal().subtract(subtrahend, mc);
 	}
 
@@ -582,7 +528,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal subtract(BigDecimal subtrahend) {
-
 		return getBigDecimal().subtract(subtrahend);
 	}
 
@@ -591,7 +536,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigInteger toBigInteger() {
-
 		return getBigDecimal().toBigInteger();
 	}
 
@@ -600,7 +544,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigInteger toBigIntegerExact() {
-
 		return getBigDecimal().toBigIntegerExact();
 	}
 
@@ -609,7 +552,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public String toEngineeringString() {
-
 		return getBigDecimal().toEngineeringString();
 	}
 
@@ -618,7 +560,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public String toPlainString() {
-
 		return getBigDecimal().toPlainString();
 	}
 
@@ -627,7 +568,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigDecimal ulp() {
-
 		return getBigDecimal().ulp();
 	}
 
@@ -636,7 +576,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public BigInteger unscaledValue() {
-
 		return getBigDecimal().unscaledValue();
 	}
 
@@ -645,7 +584,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 */
 	@Override
 	public byte byteValue() {
-
 		return getBigDecimal().byteValue();
 	}
 

@@ -50,19 +50,17 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import javax.xml.bind.JAXBException;
 
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashFile;
+import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.viewer.actions.AccountAction;
-import org.gnucash.viewer.actions.FileBugInBrowserAction;
 import org.gnucash.viewer.actions.OpenAccountInNewTab;
 import org.gnucash.viewer.actions.OpenAccountInNewWindow;
 import org.gnucash.viewer.actions.TransactionSplitAction;
 import org.gnucash.viewer.models.GnucashAccountsTreeModel;
 import org.gnucash.viewer.panels.TaxReportPanel;
 import org.gnucash.viewer.panels.TransactionsPanel;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashFile;
-import org.gnucash.xml.impl.GnucashFileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -555,7 +553,7 @@ public class JGnucashViewer extends JFrame {
 	 * @return the GnucashFile
 	 * @throws IOException   if the file cannot be loaded from disk
 	 */
-	protected GnucashFile createModelFromFile(final File f) throws IOException, JAXBException {
+	protected GnucashFile createModelFromFile(final File f) throws IOException {
 		return new GnucashFileImpl(f);
 	}
 
@@ -585,7 +583,6 @@ public class JGnucashViewer extends JFrame {
 	public boolean loadFile(final File f) {
 		try {
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
 			setModel(createModelFromFile(f));
 			return true;
 		}

@@ -19,7 +19,7 @@
  */
 package org.gnucash.jgnucash.actions;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableFile;
+import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.jgnucash.JGnucash;
 import org.gnucash.jgnucash.plugin.DataSourcePlugin;
 import org.java.plugin.registry.Extension;

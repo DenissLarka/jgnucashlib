@@ -33,7 +33,7 @@ package org.gnucash.viewer.actions;
 
 import javax.swing.Action;
 
-import org.gnucash.xml.GnucashAccount;
+import org.gnucash.read.GnucashAccount;
 
 /**
  * (c) 2009 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>

@@ -35,9 +35,9 @@ package org.gnucash.jgnucash.actions;
 import org.gnucash.jgnucash.panels.WritableTransactionsPanel;
 import org.gnucash.viewer.actions.AccountAction;
 import org.gnucash.viewer.actions.TransactionSplitAction;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransaction;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

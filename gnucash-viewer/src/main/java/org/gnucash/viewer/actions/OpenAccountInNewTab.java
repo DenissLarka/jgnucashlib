@@ -48,9 +48,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransaction;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 
 import org.gnucash.viewer.panels.TransactionsPanel;
 

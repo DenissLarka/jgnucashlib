@@ -13,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,16 +28,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import javax.xml.bind.JAXBException;
 
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.viewer.actions.TransactionSplitAction;
 import org.gnucash.viewer.models.GnucashSimpleAccountTransactionsTableModel;
 import org.gnucash.viewer.models.GnucashTransactionsSplitsTableModel;
 import org.gnucash.viewer.widgets.MultiLineToolTip;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransaction;
-import org.gnucash.xml.GnucashTransactionSplit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -502,7 +500,6 @@ public class TransactionsPanel extends JPanel {
 	 *
 	 * @param retval the list of splits to add to
 	 * @param split  the split who's transaction to look at
-	 * @throws JAXBException if we have issues accessing the XML-Backend.
 	 */
 	private void replaceSplitsWithSelectedAccountsSplits(final Set<GnucashTransactionSplit> retval, final GnucashTransactionSplit split) {
 

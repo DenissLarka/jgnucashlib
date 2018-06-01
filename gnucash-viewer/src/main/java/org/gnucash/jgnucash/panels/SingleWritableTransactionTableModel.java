@@ -1,21 +1,25 @@
 package org.gnucash.jgnucash.panels;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableTransaction;
-import org.gnucash.fileformats.gnucash.GnucashWritableTransactionSplit;
-import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.viewer.panels.SingleTransactionTableModel;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransaction;
-
-import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.xml.bind.JAXBException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
+
+import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+
+import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.viewer.panels.SingleTransactionTableModel;
+import org.gnucash.write.GnucashWritableTransaction;
+import org.gnucash.write.GnucashWritableTransactionSplit;
 
 /**
  * (c) 2008 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
@@ -112,16 +116,10 @@ class SingleWritableTransactionTableModel extends SingleTransactionTableModel {
 	public List<GnucashWritableTransactionSplit> getWritableTransactionSplits() {
 		GnucashWritableTransaction transaction = getWritableTransaction();
 		if (transaction == null) {
-			return new LinkedList<GnucashWritableTransactionSplit>();
+			return new LinkedList<>();
 		}
-		try {
-			return new ArrayList<GnucashWritableTransactionSplit>(transaction.getWritingSplits());
-		} catch (JAXBException e) {
-			ShowWritableTransactionPanel.LOG.log(Level.SEVERE, "[JAXBException] Problem in "
-							+ getClass().getName(),
-					e);
-			return new LinkedList<GnucashWritableTransactionSplit>();
-		}
+		return new ArrayList<>(transaction.getWritingSplits());
+
 	}
 
 	/**
@@ -215,7 +213,8 @@ class SingleWritableTransactionTableModel extends SingleTransactionTableModel {
 						if (account != null) {
 							split.setAccount(account);
 						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						ShowWritableTransactionPanel.LOG.log(Level.SEVERE, "[Exception] Problem in "
 										+ getClass().getName(),
 								e);
@@ -263,7 +262,8 @@ class SingleWritableTransactionTableModel extends SingleTransactionTableModel {
 						if (!split.getTransaction().isBalanced()) {
 							balanceTransaction();
 						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						ShowWritableTransactionPanel.LOG.log(Level.SEVERE, "[Exception] Problem in "
 										+ getClass().getName(),
 								e);
@@ -314,7 +314,8 @@ class SingleWritableTransactionTableModel extends SingleTransactionTableModel {
 						if (!split.getTransaction().isBalanced()) {
 							balanceTransaction();
 						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						ShowWritableTransactionPanel.LOG.log(Level.SEVERE, "[Exception] Problem in "
 										+ getClass().getName(),
 								e);
@@ -329,8 +330,8 @@ class SingleWritableTransactionTableModel extends SingleTransactionTableModel {
 					throw new IllegalArgumentException("illegal columnIndex " + columnIndex);
 			}
 
-
-		} catch (Exception x) {
+		}
+		catch (Exception x) {
 
 			String message = "Internal Error in "
 					+ getClass().getName() + ":setValueAt(int rowIndex="
@@ -363,9 +364,8 @@ class SingleWritableTransactionTableModel extends SingleTransactionTableModel {
 	}
 
 	/**
-	 * @throws JAXBException error in the underlying xml-model
 	 */
-	protected void balanceTransaction() throws JAXBException {
+	protected void balanceTransaction() {
 		GnucashWritableTransaction transaction = getWritableTransaction();
 		if (transaction.isBalanced()) {
 			return;
@@ -394,8 +394,7 @@ class SingleWritableTransactionTableModel extends SingleTransactionTableModel {
 	 * @param transaction
 	 * @return
 	 */
-	private GnucashAccount getBalancingAccount(
-			final GnucashWritableTransaction transaction) {
+	private GnucashAccount getBalancingAccount(final GnucashWritableTransaction transaction) {
 		return transaction.getGnucashFile().getAccountByIDorName("c3e524eccc4e66cde2dc8eb3666ff469", "Ausgleichskonto-EUR");
 	}
 

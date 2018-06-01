@@ -29,8 +29,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.java.plugin.registry.Extension;
 
-import org.gnucash.fileformats.gnucash.GnucashWritableAccount;
-import org.gnucash.fileformats.gnucash.GnucashWritableFile;
+import org.gnucash.write.GnucashWritableAccount;
+import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.jgnucash.JGnucash;
 import org.gnucash.jgnucash.plugin.ImporterPlugin;
 

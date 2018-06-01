@@ -34,9 +34,7 @@ package org.gnucash.jgnucash.plugin;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.xml.bind.JAXBException;
-
-import org.gnucash.fileformats.gnucash.GnucashWritableTransactionSplit;
+import org.gnucash.write.GnucashWritableTransactionSplit;
 
 
 /**
@@ -53,8 +51,7 @@ public interface TransactionMenuAction {
     /**
      * Handle the selected transactions.
      * @param transactions the selection
-     * @throws JAXBException on backend-issues
      * @throws IOException on comunication-issues
      */
-    void handleSelectedTransactions(final Collection<GnucashWritableTransactionSplit> transactions) throws JAXBException, IOException;
+    void handleSelectedTransactions(final Collection<GnucashWritableTransactionSplit> transactions) throws IOException;
 }

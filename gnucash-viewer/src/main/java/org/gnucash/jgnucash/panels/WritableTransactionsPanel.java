@@ -33,7 +33,7 @@ package org.gnucash.jgnucash.panels;
 //other imports
 
 
-import org.gnucash.fileformats.gnucash.GnucashWritableTransactionSplit;
+import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.jgnucash.models.GnucashAccountTransactionsTableModel;
 import org.gnucash.jgnucash.models.GnucashTransactionSplitsTableModel;
 import org.gnucash.jgnucash.plugin.TransactionMenuAction;
@@ -42,8 +42,8 @@ import org.apache.commons.logging.LogFactory;
 import org.gnucash.viewer.models.GnucashSimpleAccountTransactionsTableModel;
 import org.gnucash.viewer.panels.ShowTransactionPanel;
 import org.gnucash.viewer.panels.TransactionsPanel;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.java.plugin.PluginManager;
 import org.java.plugin.registry.Extension;
 import org.java.plugin.registry.ExtensionPoint;

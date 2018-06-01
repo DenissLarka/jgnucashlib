@@ -47,7 +47,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import org.gnucash.xml.GnucashTransactionSplit;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.viewer.models.GnucashTransactionsSplitsTableModel;
 
 

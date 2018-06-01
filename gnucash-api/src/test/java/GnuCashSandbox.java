@@ -1,7 +1,7 @@
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashTransaction;
-import org.gnucash.xml.GnucashTransactionSplit;
-import org.gnucash.xml.impl.GnucashFileImpl;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
+import org.gnucash.read.impl.GnucashFileImpl;
 
 import java.io.File;
 import java.io.IOException;

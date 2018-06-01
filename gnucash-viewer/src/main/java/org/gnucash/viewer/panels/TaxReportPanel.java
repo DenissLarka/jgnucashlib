@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -64,8 +63,8 @@ import javax.xml.bind.JAXBException;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.viewer.widgets.TransactionSum;
 import org.gnucash.viewer.widgets.TransactionSum.SUMMATIONTYPE;
-import org.gnucash.xml.GnucashAccount;
-import org.gnucash.xml.GnucashFile;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
