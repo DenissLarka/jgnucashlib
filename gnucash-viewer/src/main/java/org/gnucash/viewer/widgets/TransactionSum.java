@@ -35,6 +35,7 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
+import java.time.chrono.ChronoZonedDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -314,10 +315,10 @@ public class TransactionSum extends JPanel {
 				= aSourceAccount.getTransactionSplits();
 		for (GnucashTransactionSplit split : splits) {
 			GnucashTransaction transaction = split.getTransaction();
-			if (getMinDate() != null && transaction.getDatePosted().isBefore(getMinDate().atStartOfDay())) {
+			if (getMinDate() != null && transaction.getDatePosted().isBefore( ChronoZonedDateTime.from(getMinDate().atStartOfDay()) )) {
 				continue;
 			}
-			if (getMaxDate() != null && transaction.getDatePosted().isAfter(getMaxDate().atStartOfDay())) {
+			if (getMaxDate() != null && transaction.getDatePosted().isAfter( ChronoZonedDateTime.from(getMaxDate().atStartOfDay()) )) {
 				continue;
 			}
 			if (aTargetAccountsIDs.size() > 0 && !hasSplitWithAccount(transaction, aTargetAccountsIDs)) {

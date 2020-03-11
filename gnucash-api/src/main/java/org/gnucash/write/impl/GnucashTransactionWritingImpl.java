@@ -19,6 +19,7 @@
 package org.gnucash.write.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -302,7 +303,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	/**
 	 * @see GnucashWritableTransaction#setDatePosted(LocalDateTime)
 	 */
-	public void setDatePosted(final LocalDateTime datePosted) {
+	public void setDatePosted(final ZonedDateTime datePosted) {
 		this.datePosted = datePosted;
 		getJwsdpPeer().getTrnDatePosted().setTsDate(DATE_ENTERED_FORMAT.format(datePosted));
 		getWritingFile().setModified(true);
@@ -346,5 +347,15 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 			}
 		}
 	}
+
+  @Override
+  public void setDateEntered(LocalDateTime dateEntered) {
+    setDateEntered(dateEntered.atZone(ZoneId.systemDefault()));
+  }
+
+  @Override
+  public void setDatePosted(LocalDateTime datePosted) {
+    setDatePosted(datePosted.atZone(ZoneId.systemDefault()));
+  }
 
 }

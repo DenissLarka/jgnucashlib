@@ -37,8 +37,6 @@ import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.jgnucash.models.GnucashAccountTransactionsTableModel;
 import org.gnucash.jgnucash.models.GnucashTransactionSplitsTableModel;
 import org.gnucash.jgnucash.plugin.TransactionMenuAction;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.gnucash.viewer.models.GnucashSimpleAccountTransactionsTableModel;
 import org.gnucash.viewer.panels.ShowTransactionPanel;
 import org.gnucash.viewer.panels.TransactionsPanel;
@@ -58,7 +56,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //automatically created propertyChangeListener-Support
 //import java.beans.PropertyChangeListener;
@@ -79,7 +78,7 @@ public class WritableTransactionsPanel extends TransactionsPanel {
 	/**
 	 * Our logger for debug- and error-output.
 	 */
-	static final Log LOGGER = LogFactory.getLog(WritableTransactionsPanel.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(WritableTransactionsPanel.class);
 
 	/**
 	 * (c) 2008 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
@@ -140,7 +139,7 @@ public class WritableTransactionsPanel extends TransactionsPanel {
 				// Create Tool instance.
 				Object o = toolCls.newInstance();
 				if (!(o instanceof TransactionMenuAction)) {
-					LOG.log(Level.SEVERE, "Plugin '" + pluginName + "' does not implement TransactionMenuAction-interface.");
+					LOG.error("Plugin '" + pluginName + "' does not implement TransactionMenuAction-interface.");
 					JOptionPane.showMessageDialog(WritableTransactionsPanel.this, "Error",
 							"Plugin '" + pluginName + "' does not implement v-interface.",
 							JOptionPane.ERROR_MESSAGE);
@@ -152,7 +151,7 @@ public class WritableTransactionsPanel extends TransactionsPanel {
 					WritableTransactionsPanel.this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 					action.handleSelectedTransactions(transactions);
 				} catch (Exception e1) {
-					LOG.log(Level.SEVERE, "MenuAction via Plugin '" + pluginName + "' failed.", e1);
+					LOG.error("MenuAction via Plugin '" + pluginName + "' failed.", e1);
 					JOptionPane.showMessageDialog(WritableTransactionsPanel.this, "Error",
 							"MenuAction via Plugin '" + pluginName + "' failed.\n"
 									+ "[" + e1.getClass().getName() + "]: " + e1.getMessage(),
@@ -218,7 +217,7 @@ public class WritableTransactionsPanel extends TransactionsPanel {
 	/**
 	 * Automatically created logger for debug and error-output.
 	 */
-	private static final Logger LOG = Logger
+	private static final Logger LOG = LoggerFactory
 			.getLogger(WritableTransactionsPanel.class.getName());
 
 
@@ -403,7 +402,7 @@ public class WritableTransactionsPanel extends TransactionsPanel {
 						newMenuItem.addActionListener(new TransactionMenuActionMenuAction(ext, pluginName));
 						myContextMenu.add(newMenuItem);
 					} catch (Exception e) {
-						LOG.log(Level.SEVERE, "cannot load TransactionMenuAction-Plugin '" + pluginName + "'", e);
+						LOG.error("cannot load TransactionMenuAction-Plugin '" + pluginName + "'", e);
 						JOptionPane.showMessageDialog(this, "Error",
 								"Cannot load TransactionMenuAction-Plugin '" + pluginName + "'",
 								JOptionPane.ERROR_MESSAGE);
