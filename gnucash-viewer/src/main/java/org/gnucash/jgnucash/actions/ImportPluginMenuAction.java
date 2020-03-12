@@ -25,14 +25,14 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.java.plugin.registry.Extension;
 
 import org.gnucash.write.GnucashWritableAccount;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.jgnucash.JGnucash;
 import org.gnucash.jgnucash.plugin.ImporterPlugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The action-listeners we use for the ImportMenu.
@@ -41,7 +41,7 @@ public final class ImportPluginMenuAction implements ActionListener {
     /**
      * Our logger for debug- and error-output.
      */
-    static final Log LOGGER = LogFactory.getLog(ImportPluginMenuAction.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(ImportPluginMenuAction.class);
 
     /**
      * Our JGnucash.java.

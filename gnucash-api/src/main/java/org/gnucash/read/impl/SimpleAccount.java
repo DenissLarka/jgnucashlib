@@ -11,6 +11,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.chrono.ChronoZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Currency;
@@ -258,7 +259,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 
 		for (Object element : getTransactionSplits()) {
 			GnucashTransactionSplit split = (GnucashTransactionSplit) element;
-			if (date == null || split.getTransaction().getDatePosted().isBefore(date.atStartOfDay())) {
+			if (date == null || split.getTransaction().getDatePosted().isBefore( ChronoZonedDateTime.from(date.atStartOfDay()) )) {
 				if (lastSplit == null || split.getTransaction().getDatePosted().isAfter(lastSplit.getTransaction().getDatePosted())) {
 					lastSplit = split;
 				}
@@ -499,7 +500,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 
 			if (date != null
 					&&
-					split.getTransaction().getDatePosted().isAfter(date.atStartOfDay())) {
+					split.getTransaction().getDatePosted().isAfter( ChronoZonedDateTime.from(date.atStartOfDay()) )) {
 				if (after != null) {
 					after.add(split);
 				}

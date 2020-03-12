@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -517,7 +518,7 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 
 		for (Object element : getTransactionSplits()) {
 			GnucashTransactionSplit split = (GnucashTransactionSplit) element;
-			LocalDateTime whenHappened = split.getTransaction().getDatePosted();
+			LocalDateTime whenHappened = split.getTransaction().getDatePosted().toLocalDateTime();
 			if (!whenHappened.isBefore(to.atStartOfDay())) {
 				continue;
 			}
