@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by Denis Larka
+ * Created by Deniss Larka
  * on 19.Apr.2017
  */
 public class GnuCashSandbox {

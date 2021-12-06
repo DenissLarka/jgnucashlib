@@ -9,14 +9,13 @@
 	<name>${project.title}</name>
 
 	<properties>
-		<slf4j.version>1.7.25</slf4j.version>
-		<junit.version>4.13.1</junit.version>
+		<java.version>17</java.version>
+		<slf4j.version>2.0.0-alpha4</slf4j.version>
 		<project.title>GnuCash.org</project.title>
 	</properties>
 
 	<modules>
 		<module>gnucash-api</module>
-		<module>gnucash-viewer</module>
 	</modules>
 
 
@@ -31,15 +30,16 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 		<!-- TEST -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>7.4.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
 	</dependencies>
 
@@ -51,8 +51,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<source>13</source>
-					<target>13</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 					<debug>true</debug>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>

@@ -14,9 +14,6 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 //automatically created propertyChangeListener-Support
 
 /**
@@ -33,15 +30,12 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BigDecimalWrapper extends BigDecimal {
 
+
+
 	/**
 	 * @return the value as a BigDecimal.
 	 */
 	public abstract BigDecimal getBigDecimal();
-
-	/**
-	 * Automatically created logger for debug and error-output.
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BigDecimalWrapper.class);
 
 	//------------------------ support for propertyChangeListeners ------------------
 
@@ -121,13 +115,15 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	 *
 	 * @return className and hashCode
 	 */
+	@Override
 	public String toString() {
 		return getBigDecimal().toString();
 	}
 
 	/**
+	 *
 	 */
-	public BigDecimalWrapper() {
+	protected BigDecimalWrapper() {
 		super("0");
 	}
 
@@ -180,27 +176,11 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	}
 
 	/**
-	 * @see java.math.BigDecimal#divide(java.math.BigDecimal, int, int)
-	 */
-	@Override
-	public BigDecimal divide(BigDecimal divisor, int scale, int roundingMode) {
-		return getBigDecimal().divide(divisor, scale, roundingMode);
-	}
-
-	/**
 	 * @see java.math.BigDecimal#divide(java.math.BigDecimal, int, java.math.RoundingMode)
 	 */
 	@Override
 	public BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode) {
 		return getBigDecimal().divide(divisor, scale, roundingMode);
-	}
-
-	/**
-	 * @see java.math.BigDecimal#divide(java.math.BigDecimal, int)
-	 */
-	@Override
-	public BigDecimal divide(BigDecimal divisor, int roundingMode) {
-		return getBigDecimal().divide(divisor, roundingMode);
 	}
 
 	/**
@@ -465,14 +445,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	@Override
 	public BigDecimal scaleByPowerOfTen(int n) {
 		return getBigDecimal().scaleByPowerOfTen(n);
-	}
-
-	/**
-	 * @see java.math.BigDecimal#setScale(int, int)
-	 */
-	@Override
-	public BigDecimal setScale(int newScale, int roundingMode) {
-		return getBigDecimal().setScale(newScale, roundingMode);
 	}
 
 	/**

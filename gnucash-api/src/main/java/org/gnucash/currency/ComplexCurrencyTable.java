@@ -42,14 +42,14 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 
 	public void addComplexCurrencyTableChangeListener(final ComplexCurrencyTableChangeListener listener) {
 		if (listeners == null) {
-			listeners = new LinkedList<ComplexCurrencyTableChangeListener>();
+			listeners = new LinkedList<>();
 		}
 		listeners.add(listener);
 	}
 
 	public void removeComplexCurrencyTableChangeListener(final ComplexCurrencyTableChangeListener listener) {
 		if (listeners == null) {
-			listeners = new LinkedList<ComplexCurrencyTableChangeListener>();
+			listeners = new LinkedList<>();
 		}
 		listeners.remove(listener);
 	}
@@ -66,11 +66,6 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	 * Namespace is e.g. "ISO4217" or "FUND"
 	 */
 	private Map<String, SimpleCurrencyTable> namespace2CurrencyTable;
-
-	/**
-	 * Automatically created logger for debug and error-output.
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ComplexCurrencyTable.class);
 
 	//------------------------ support for propertyChangeListeners ------------------
 	//
