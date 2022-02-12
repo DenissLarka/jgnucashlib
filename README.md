@@ -4,7 +4,7 @@
 
 
 A Java-library for manipulating the XML file-format of the GnuCash open
-source accounting software. Usable to automate accounting-tasks, taxes. Contains a portable GnuCash-viewer.
+source accounting software. Usable to automate accounting-tasks, taxes.
 
 Editable GUI not ready yet. All other function should work. Any feedback will be highly appreciated.
 
