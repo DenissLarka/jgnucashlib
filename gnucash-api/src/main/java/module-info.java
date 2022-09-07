@@ -4,8 +4,8 @@
  */
 module gnucash.api {
 	requires static org.slf4j;
-	requires java.xml.bind;
 	requires java.desktop;
+	requires jakarta.xml.bind;
 	exports org.gnucash.currency;
 	exports org.gnucash.numbers;
 	exports org.gnucash.read;

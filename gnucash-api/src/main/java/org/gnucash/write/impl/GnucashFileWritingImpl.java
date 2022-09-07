@@ -36,9 +36,6 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.zip.GZIPOutputStream;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
@@ -74,6 +71,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * @author Marcus@Wolschon.biz

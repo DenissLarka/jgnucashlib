@@ -38,10 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
@@ -63,6 +59,10 @@ import org.gnucash.read.GnucashTransactionSplit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 /**
  * created: 13.05.2005<br/>

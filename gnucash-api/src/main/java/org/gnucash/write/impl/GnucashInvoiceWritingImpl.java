@@ -23,8 +23,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 
-import javax.xml.bind.JAXBElement;
-
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
@@ -49,6 +47,8 @@ import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableInvoice;
 import org.gnucash.write.GnucashWritableInvoiceEntry;
 import org.gnucash.write.GnucashWritableTransaction;
+
+import jakarta.xml.bind.JAXBElement;
 
 /**
  * @author Marcus@Wolschon.biz
