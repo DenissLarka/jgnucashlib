@@ -42,11 +42,8 @@
 		</dependency>
 	</dependencies>
 
-
 	<build>
-
 		<plugins>
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
@@ -63,13 +60,10 @@
 					<!-- The package of your generated sources -->
 					<packageName>org.gnucash.generated</packageName>
 					<sources>
-						<source>src/main/resources</source>
+						<source>src/main/resources/xsd</source>
 					</sources>
 				</configuration>
 			</plugin>
-
 		</plugins>
-
 	</build>
-
 </project>
