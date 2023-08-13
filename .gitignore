@@ -6,3 +6,4 @@ target/*
 *.jar
 *.war
 *.ear
+gnucash-api/.settings/
