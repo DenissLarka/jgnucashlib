@@ -1,4 +1,9 @@
+<<<<<<<< HEAD:gnucash-api/src/test/java/test/GnuCashSandbox.java
 package test;
+========
+package zandbak;
+
+>>>>>>>> c46a14e (Tussenresultaat):gnucash-api/src/test/java/zandbak/GnuCashSandbox.java
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransaction;
