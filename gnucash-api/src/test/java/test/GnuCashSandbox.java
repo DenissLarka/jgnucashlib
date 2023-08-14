@@ -1,3 +1,4 @@
+package test;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransaction;
