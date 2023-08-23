@@ -298,7 +298,6 @@ public class GnucashFileImpl implements GnucashFile {
   /**
    * @see GnucashFile#getInvoices()
    */
-  @SuppressWarnings("unchecked")
   public Collection<GnucashInvoice> getInvoices() {
 
     Collection<GnucashInvoice> c = invoiceid2invoice.values();
@@ -427,7 +426,6 @@ public class GnucashFileImpl implements GnucashFile {
    *
    * @param pRootElement the new root-element
    */
-  @SuppressWarnings("unchecked")
   protected void setRootElement(final GncV2 pRootElement) {
     if (pRootElement == null) {
       throw new IllegalArgumentException("null not allowed for field this.rootElement");
@@ -962,7 +960,7 @@ public class GnucashFileImpl implements GnucashFile {
       long start2 = System.currentTimeMillis();
       setRootElement(o);
       long end = System.currentTimeMillis();
-      LOGGER.info("GnucashFileImpl.loadFile took " + (end - start) + " ms (total), " + (start2 - start)
+      LOGGER.debug("GnucashFileImpl.loadFile took " + (end - start) + " ms (total), " + (start2 - start)
           + " ms (jaxb-loading), " + (end - start2) + " ms (building facades).");
 
     } catch (JAXBException e) {
