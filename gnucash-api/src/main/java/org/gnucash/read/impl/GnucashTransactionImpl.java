@@ -466,11 +466,9 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 		buffer.append(mySplits.size());
 		buffer.append(" dateEntered: ");
 		try {
-			buffer.append(DateFormat.getDateTimeInstance().format(getDateEntered()));
+		    buffer.append(DateFormat.getDateTimeInstance().format(getDateEntered()));
 		} catch (Exception e) {
-			e.printStackTrace();
-			buffer.append("ERROR '" + e.getMessage() + "'");
-
+          buffer.append(getDateEntered().toString());
 		}
 		buffer.append("]");
 		return buffer.toString();
