@@ -923,9 +923,15 @@ public class GnucashFileImpl implements GnucashFile {
 				+ "')= " + latestQuote
 				+ " from "
 				+ latestDate);
+
 		if (latestQuote == null) {
 			return null;
 		}
+
+		if ( factor == null ) {
+		  factor = new FixedPointNumber(1);
+		}
+
 		return factor.multiply(latestQuote);
 	}
 
