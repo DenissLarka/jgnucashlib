@@ -496,13 +496,12 @@ public abstract class SimpleAccount implements GnucashAccount {
 		FixedPointNumber balance = new FixedPointNumber();
 
 		for (GnucashTransactionSplit split : getTransactionSplits()) {
-			if (date != null
-					&&
-					split.getTransaction().getDatePosted().isAfter( ChronoZonedDateTime.from(date.atStartOfDay()) )) {
-				if (after != null) {
-					after.add(split);
-				}
-				continue;
+			if ( date  != null &&
+			     after != null ) {
+			  if ( split.getTransaction().getDatePosted().isAfter( ChronoZonedDateTime.from(date.atStartOfDay()) ) ) {
+	              after.add(split);
+	              continue;
+			  }
 			}
 
 			// the currency of the quantity is the one of the account
