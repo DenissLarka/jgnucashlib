@@ -19,6 +19,8 @@
 package org.gnucash.write.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -664,8 +666,8 @@ public class GnucashInvoiceWritingImpl extends GnucashInvoiceImpl implements Gnu
 	 */
 	public void setDateOpened(final LocalDateTime d) {
 		atemptChange();
-		super.dateOpened = d;
-		getJwsdpPeer().getInvoiceOpened().setTsDate(DATEOPENEDFORMAT.format(d));
+		super.dateOpened = d.atZone(ZoneId.systemDefault());
+		getJwsdpPeer().getInvoiceOpened().setTsDate(DATE_OPENED_FORMAT.format(d));
 		getFile().setModified(true);
 	}
 
@@ -674,7 +676,7 @@ public class GnucashInvoiceWritingImpl extends GnucashInvoiceImpl implements Gnu
 	 */
 	public void setDateOpened(final String d) throws java.text.ParseException {
 		atemptChange();
-		setDateOpened(LocalDateTime.parse(d, DATEOPENEDFORMAT));
+		setDateOpened(LocalDateTime.parse(d, DATE_OPENED_FORMAT));
 		getFile().setModified(true);
 	}
 
@@ -685,8 +687,8 @@ public class GnucashInvoiceWritingImpl extends GnucashInvoiceImpl implements Gnu
 
 		atemptChange();
 
-		super.datePosted = d;
-		getJwsdpPeer().getInvoicePosted().setTsDate(DATEOPENEDFORMAT.format(d));
+		super.datePosted = d.atZone(ZoneId.systemDefault());
+		getJwsdpPeer().getInvoicePosted().setTsDate(DATE_OPENED_FORMAT.format(d));
 		getFile().setModified(true);
 
 		// change the date of the transaction too
@@ -700,7 +702,7 @@ public class GnucashInvoiceWritingImpl extends GnucashInvoiceImpl implements Gnu
 	 * @see GnucashWritableInvoice#setDatePosted(java.lang.String)
 	 */
 	public void setDatePosted(final String d) throws java.text.ParseException {
-		setDatePosted(LocalDateTime.parse(d, DATEOPENEDFORMAT));
+		setDatePosted(LocalDateTime.parse(d, DATE_OPENED_FORMAT));
 	}
 
 	/**
