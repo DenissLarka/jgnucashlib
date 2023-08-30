@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.gnucash</groupId>
 		<artifactId>gnucash</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.1.0</version>
 	</parent>
 
 	<artifactId>gnucash-api</artifactId>
