@@ -495,9 +495,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 
 		FixedPointNumber balance = new FixedPointNumber();
 
-		for (Object element : getTransactionSplits()) {
-			GnucashTransactionSplit split = (GnucashTransactionSplit) element;
-
+		for (GnucashTransactionSplit split : getTransactionSplits()) {
 			if (date != null
 					&&
 					split.getTransaction().getDatePosted().isAfter( ChronoZonedDateTime.from(date.atStartOfDay()) )) {
@@ -519,9 +517,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	public FixedPointNumber getBalance(final GnucashTransactionSplit lastIncludesSplit) {
 
 		FixedPointNumber balance = new FixedPointNumber();
-		for (Object element : getTransactionSplits()) {
-			GnucashTransactionSplit split = (GnucashTransactionSplit) element;
-
+		for (GnucashTransactionSplit split : getTransactionSplits()) {
 			balance.add(split.getQuantity());
 
 			if (split == lastIncludesSplit) {
@@ -540,10 +536,9 @@ public abstract class SimpleAccount implements GnucashAccount {
 			throw new IllegalArgumentException("null id given!");
 		}
 
-		for (Object element2 : getTransactionSplits()) {
-			GnucashTransactionSplit element = (GnucashTransactionSplit) element2;
-			if (id.equals(element.getId())) {
-				return element;
+		for (GnucashTransactionSplit split : getTransactionSplits()) {
+			if (id.equals(split.getId())) {
+				return split;
 			}
 
 		}

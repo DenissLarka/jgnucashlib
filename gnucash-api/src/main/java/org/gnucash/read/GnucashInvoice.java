@@ -10,7 +10,7 @@
  */
 package org.gnucash.read;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import org.gnucash.numbers.FixedPointNumber;
@@ -57,7 +57,7 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	/**
 	 * @return the date when this transaction was added to or modified in the books.
 	 */
-	LocalDateTime getDateOpened();
+	ZonedDateTime getDateOpened();
 
 	/**
 	 * @return the date when this transaction was added to or modified in the books.
@@ -67,7 +67,7 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	/**
 	 * @return the date when this transaction hapened.
 	 */
-	LocalDateTime getDatePosted();
+	ZonedDateTime getDatePosted();
 
 	/**
 	 * @return the date when this transaction hapened.
@@ -85,6 +85,12 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	 * @return the user-defines number of this invoice (may contain non-digits)
 	 */
 	String getInvoiceNumber();
+
+    /**
+    *
+    * @return Invoice' owner (i.e., either a supplier or oneself) 
+    */
+    String getOwner();
 
 	/**
 	 * Note that a job may lead to multiple o no invoices.

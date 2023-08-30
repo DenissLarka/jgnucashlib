@@ -13,7 +13,7 @@ package org.gnucash.read.impl;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.generated.GncV2;
-
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
@@ -30,7 +30,6 @@ import org.gnucash.read.GnucashInvoiceEntry;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
-import org.gnucash.numbers.FixedPointNumber;
 
 /**
  *
@@ -59,7 +58,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	/**
 	 * Format of the JWSDP-field openedDate.
 	 */
-	protected static final DateFormat OPENEDDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	protected static final DateFormat OPENEDDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * The transactions that are paying for this invoice.
@@ -167,7 +166,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		List<TaxedSum> taxedSums = new LinkedList<TaxedSum>();
 
 		invoiceentries:
-		for (Object element : getEntries()) {
+		for (GnucashInvoiceEntry element : getEntries()) {
 			GnucashInvoiceEntry entry = (GnucashInvoiceEntry) element;
 
 			FixedPointNumber taxpercent = entry.getApplicableTaxPercend();
@@ -297,8 +296,8 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 * {@inheritDoc}
 	 */
 	public Collection<GnucashInvoiceEntry> getEntries() {
-		return entries;
-	}
+	    return entries;
+	 }
 
 	/**
 	 * {@inheritDoc}
@@ -317,22 +316,22 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 *
 	 * @see GnucashInvoice#getDateOpened()
 	 */
-	protected static final DateTimeFormatter DATEOPENEDFORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * @see GnucashInvoice#getDateOpened()
 	 */
-	protected LocalDateTime dateOpened;
+	protected ZonedDateTime dateOpened;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public LocalDateTime getDateOpened() {
+	public ZonedDateTime getDateOpened() {
 		if (dateOpened == null) {
 			String s = getJwsdpPeer().getInvoiceOpened().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				dateOpened =LocalDateTime.parse(s, DATEOPENEDFORMAT);
+				dateOpened = ZonedDateTime.parse(s, DATE_OPENED_FORMAT);
 			}
 			catch (Exception e) {
 				IllegalStateException ex = new IllegalStateException(
@@ -384,22 +383,22 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 *
 	 * @see GnucashInvoice#getDatePosted()
 	 */
-	private static final DateFormat DATEPOSTEDFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	private static final DateFormat DATEPOSTEDFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * @see GnucashInvoice#getDatePosted()
 	 */
-	protected LocalDateTime datePosted;
+	protected ZonedDateTime datePosted;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public LocalDateTime getDatePosted() {
+	public ZonedDateTime getDatePosted() {
 		if (datePosted == null) {
 			String s = getJwsdpPeer().getInvoiceOpened().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				datePosted =LocalDateTime.parse(s, DATEOPENEDFORMAT);
+				datePosted = ZonedDateTime.parse(s, DATE_OPENED_FORMAT);
 			}
 			catch (Exception e) {
 				IllegalStateException ex = new IllegalStateException(
@@ -420,6 +419,27 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	public String getInvoiceNumber() {
 		return getJwsdpPeer().getInvoiceBillingId();
 	}
+
+    public String getOwner() {
+      String result = "[InvoiceOwner: ";
+      result += "id: " + getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue()+ ", "; 
+      String ownerType = getJwsdpPeer().getInvoiceOwner().getOwnerType();
+      result += "type: " + ownerType + ", "; 
+      
+      if ( ownerType.equals("gncCustomer") ) { // ::MAGIC
+        GnucashCustomer cust = file.getCustomerByID(getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue());
+        result += cust.getCustomerNumber() + " ";
+        result += "(" + cust.getName() + ")";
+      }
+      else if ( ownerType.equals("gncVendor") ) { // ::MAGIC
+        // ::TODO
+        result += "(NOT IMPLEMENTED YET)";
+      }
+      
+      result += "]";
+      
+      return result;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -475,18 +495,16 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		buffer.append(getId());
 		buffer.append(" invoice-number: ");
 		buffer.append(getInvoiceNumber());
-		buffer.append(" description: ");
-		buffer.append(getDescription());
-		buffer.append(" #splits: ");
+		buffer.append(" description: '");
+		buffer.append(getDescription() + "'");
+		buffer.append(" #entries: ");
 		buffer.append(entries.size());
 		buffer.append(" dateOpened: ");
 		try {
-			buffer.append(DateFormat.getDateTimeInstance().format(getDateOpened()));
+		  buffer.append(getDateOpened().format(DATE_OPENED_FORMAT));
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			buffer.append("ERROR '" + e.getMessage() + "'");
-
+          buffer.append(getDateOpened().toString());
 		}
 		buffer.append("]");
 		return buffer.toString();
