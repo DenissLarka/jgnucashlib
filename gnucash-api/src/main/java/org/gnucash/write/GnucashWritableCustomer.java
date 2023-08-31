@@ -52,7 +52,7 @@ public interface GnucashWritableCustomer extends GnucashCustomer, GnucashWritabl
 
 
 	/**
-	 * @see {@link GnucashCustomer#getCustomerNumber()}
+	 * @see {@link GnucashCustomer#getNumber()}
 	 * @param number the user-assigned number of this customer (may contain non-digits)
 	 */
 	void setCustomerNumber(String number);

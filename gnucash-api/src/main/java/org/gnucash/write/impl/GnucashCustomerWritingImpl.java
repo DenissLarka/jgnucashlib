@@ -194,7 +194,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 	 * @see GnucashWritableCustomer#setCustomerNumber(java.lang.String)
 	 */
 	public void setCustomerNumber(final String number) {
-		Object old = getCustomerNumber();
+		Object old = getNumber();
 		getJwsdpPeer().setCustId(number);
 		getGnucashFile().setModified(true);
 

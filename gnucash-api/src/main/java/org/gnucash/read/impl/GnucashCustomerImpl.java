@@ -53,14 +53,14 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @return the jobs that have this customer associated with them.
 	 * @see GnucashCustomer#getJobs()
 	 */
-	public java.util.Collection<GnucashJob> getJobs() {
+	public java.util.Collection<GnucashCustomerJob> getJobs() {
 
-		List<GnucashJob> retval = new LinkedList<GnucashJob>();
+		List<GnucashCustomerJob> retval = new LinkedList<GnucashCustomerJob>();
 
 		for (GnucashJob job : getGnucashFile().getJobs()) {
 		  if ( job instanceof GnucashCustomerJob ) {
             if ( ((GnucashCustomerJob) job).getCustomerId().equals(getId()) ) {
-              retval.add(job);
+              retval.add((GnucashCustomerJob) job);
             }
 		  }		    
 		}
@@ -185,7 +185,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getCustomerNumber() {
+	public String getNumber() {
 		return jwsdpPeer.getCustId();
 	}
 

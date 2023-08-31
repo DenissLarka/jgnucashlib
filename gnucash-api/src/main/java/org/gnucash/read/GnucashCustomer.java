@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Collection;
 
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.spec.GnucashCustomerJob;
 
 //TODO: model taxes and implement getTaxTable
 
@@ -158,13 +159,13 @@ public interface GnucashCustomer extends GnucashObject {
     /**
      * @return the UNMODIFIABLE collection of jobs that have this customer associated with them.
      */
-    Collection<GnucashJob> getJobs();
+    Collection<GnucashCustomerJob> getJobs();
 
     /**
      *
      * @return the user-assigned number of this customer (may contain non-digits)
      */
-    String getCustomerNumber();
+    String getNumber();
 
     /**
      *

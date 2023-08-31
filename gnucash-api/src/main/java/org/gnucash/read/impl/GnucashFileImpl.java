@@ -60,6 +60,10 @@ import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.GnucashVendorTerms;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
+import org.gnucash.read.spec.GnucashCustomerJob;
+import org.gnucash.read.spec.GnucashVendorInvoice;
+import org.gnucash.read.spec.GnucashVendorJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -154,47 +158,48 @@ public class GnucashFileImpl implements GnucashFile {
 
     // ----------------------------
 
-    /**
-     * Filles lazy in getTaxTables() .
-     *
-     * @see #getTaxTables()
-     */
-    protected Map<String, GnucashVendorTerms> vendorTermsByID = null;
-
-    /**
-     * @param id id of a vendor terms item
-     * @return the identified vendor terms item or null
-     */
-    public VendorTerms getVendorTermsByID(final String id) {
-        if (vendorTermsByID == null) {
-            getVendorTerms();
-        }
-        return vendorTermsByID.get(id);
-    }
-
-    /**
-     * @return all TaxTables defined in the book
-     * @link GnucashTaxTable
-     */
-    @SuppressWarnings("unchecked")
-    public Collection<VendorTerms> getVendorTerms() {
-        if (vendorTermsByID == null) {
-
-          vendorTermsByID = new HashMap<String, GnucashVendorTerms>();
-
-            List bookElements = this.getRootElement().getGncBook().getBookElements();
-            for (Object bookElement : bookElements) {
-                if (!(bookElement instanceof GncV2.GncBook.GncGncVendor.VendorTerms)) {
-                    continue;
-                }
-                GncV2.GncBook.GncGncVendor.VendorTerms jwsdpPeer = (GncV2.GncBook.GncGncVendor.VendorTerms) bookElement;
-                GnucashVendorTermsImpl gnucashVendorTerms = new GnucashVendorTermsImpl(jwsdpPeer, this);
-                vendorTermsByID.put(gnucashVendorTerms.getId(), gnucashVendorTerms);
-            }
-        }
-
-        return vendorTermsByID.values();
-    }
+//    /**
+//     * Filles lazy in getVendorTerms() .
+//     *
+//     * @see #getVendorTerms()
+//     */
+//    protected Map<String, GnucashVendorTerms> vendorTermsByID = null;
+//
+//    /**
+//     * @param id id of a vendor terms item
+//     * @return the identified vendor terms item or null
+//     */
+//    public GnucashVendorTerms getVendorTermsByID(final String id) {
+//        if (vendorTermsByVendID == null) {
+//            getVendorTerms();
+//        }
+//        
+//        return vendorTermsByVendID.get(id);
+//    }
+//
+//    /**
+//     * @return all TaxTables defined in the book
+//     * @link GnucashTaxTable
+//     */
+//    @SuppressWarnings("unchecked")
+//    public Collection<GnucashVendorTerms> getVendorTerms() {
+//        if (vendorTermsByVendID == null) {
+//
+//          vendorTermsByVendID = new HashMap<String, GnucashVendorTerms>();
+//
+//            List bookElements = this.getRootElement().getGncBook().getBookElements();
+//            for (Object bookElement : bookElements) {
+//                if (!(bookElement instanceof GncV2.GncBook.GncGncVendor.VendorTerms)) {
+//                    continue;
+//                }
+//                GncV2.GncBook.GncGncVendor.VendorTerms jwsdpPeer = (GncV2.GncBook.GncGncVendor.VendorTerms) bookElement;
+//                GnucashVendorTermsImpl gnucashVendorTerms = new GnucashVendorTermsImpl(jwsdpPeer, this);
+//                vendorTermsByVendID.put(gnucashVendorTerms.get, gnucashVendorTerms);
+//            }
+//        }
+//
+//        return vendorTermsByVendID.values();
+//    }
 
     // ---------------------------------------------------------------
 
@@ -229,12 +234,12 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param id if null, gives all account that have no parent
 	 * @return the sorted collection of children of that account
 	 */
-	public Collection getAccountsByParentID(final String id) {
+	public Collection<GnucashAccount> getAccountsByParentID(final String id) {
 		if (accountid2account == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		SortedSet retval = new TreeSet();
+		SortedSet<GnucashAccount> retval = new TreeSet<GnucashAccount>();
 
 		for (Object element : accountid2account.values()) {
 			GnucashAccount account = (GnucashAccount) element;
@@ -242,11 +247,11 @@ public class GnucashFileImpl implements GnucashFile {
 			String parent = account.getParentAccountId();
 			if (parent == null) {
 				if (id == null) {
-					retval.add(account);
+					retval.add((GnucashAccount) account);
 				}
 			} else {
 				if (parent.equals(id)) {
-					retval.add(account);
+					retval.add((GnucashAccount) account);
 				}
 			}
 		}
@@ -271,6 +276,7 @@ public class GnucashFileImpl implements GnucashFile {
 				return account;
 			}
 		}
+		
 		return null;
 	}
 
@@ -303,6 +309,7 @@ public class GnucashFileImpl implements GnucashFile {
 				return account;
 			}
 		}
+		
 		return null;
 	}
 
@@ -322,6 +329,7 @@ public class GnucashFileImpl implements GnucashFile {
 		if (retval == null) {
 			retval = getAccountByName(name);
 		}
+		
 		return retval;
 	}
 
@@ -342,6 +350,7 @@ public class GnucashFileImpl implements GnucashFile {
 		if (retval == null) {
 			retval = getAccountByNameEx(name);
 		}
+		
 		return retval;
 	}
 
@@ -376,21 +385,37 @@ public class GnucashFileImpl implements GnucashFile {
 				retval.add(invoice);
 			}
 		}
+		
 		return retval;
 	}
 
 	/**
 	 * @see GnucashFile#getUnpayedInvoicesForCustomer(GnucashCustomer)
 	 */
-	public Collection<GnucashInvoice> getUnpayedInvoicesForCustomer(final GnucashCustomer customer) {
-		Collection<GnucashInvoice> retval = new LinkedList<GnucashInvoice>();
+	public Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer(final GnucashCustomer customer) {
+		Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
 		for (GnucashInvoice invoice : getUnpayedInvoices()) {
 			if (invoice.getJob().getOwnerId().equals(customer.getId())) {
-				retval.add(invoice);
+				retval.add((GnucashCustomerInvoice) invoice);
 			}
 		}
+		
 		return retval;
 	}
+
+    /**
+     * @see GnucashFile#getUnpayedInvoicesForVendor(GnucashVendor)
+     */
+    public Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor(final GnucashVendor vendor) {
+        Collection<GnucashVendorInvoice> retval = new LinkedList<GnucashVendorInvoice>();
+        for (GnucashInvoice invoice : getUnpayedInvoices()) {
+            if (invoice.getJob().getOwnerId().equals(vendor.getId())) {
+                retval.add((GnucashVendorInvoice) invoice);
+            }
+        }
+        
+        return retval;
+    }
 
 	/**
 	 * @see GnucashFile#getPayedInvoices()
@@ -402,6 +427,7 @@ public class GnucashFileImpl implements GnucashFile {
 				retval.add(invoice);
 			}
 		}
+		
 		return retval;
 	}
 
@@ -467,12 +493,12 @@ public class GnucashFileImpl implements GnucashFile {
 	protected Map<String, GnucashCustomer> customerid2customer;
 
     /**
-     * All customers indexed by their unique id-String.
+     * All vendors indexed by their unique id-String.
      *
      * @see GnucashVendor
      * @see GnucashVendorImpl
      */
-    protected Map<String, GnucashVendor> customerid2vendor;
+    protected Map<String, GnucashVendor> vendorid2vendor;
 
 	/**
 	 * Helper to implement the {@link GnucashObject}-interface
@@ -508,127 +534,23 @@ public class GnucashFileImpl implements GnucashFile {
 		myGnucashObject = new GnucashObjectImpl(pRootElement.getGncBook().getBookSlots(), this);
 
 		// fill maps
-		accountid2account = new HashMap<>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
-			Object bookElement = iter.next();
-			if (!(bookElement instanceof GncAccount)) {
-				continue;
-			}
-			GncAccount jwsdpAccount = (GncAccount) bookElement;
-			try {
-				GnucashAccount account = createAccount(jwsdpAccount);
-				accountid2account.put(account.getId(), account);
-			}
-			catch (RuntimeException e) {
-				LOGGER.error("[RuntimeException] Problem in "
-								+ getClass().getName()
-								+ "ignoring illegal Account-Entry with id="
-								+ jwsdpAccount.getActId().getValue(),
-						e);
-			}
+		initAccountMap(pRootElement);
 
-		}
-
-		invoiceid2invoice = new HashMap<>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements()
-				.iterator(); iter.hasNext(); ) {
-			Object bookElement = iter.next();
-			if (!(bookElement instanceof GncV2.GncBook.GncGncInvoice)) {
-				continue;
-			}
-			GncV2.GncBook.GncGncInvoice jwsdpInvoice = (GncV2.GncBook.GncGncInvoice) bookElement;
-			GnucashInvoice invoice = createInvoice(jwsdpInvoice);
-			invoiceid2invoice.put(invoice.getId(), invoice);
-		}
-		// invoiceEntries reer to invoices, therefore they must be loaded after
+		initInvoiceMap(pRootElement);
+		
+		// invoiceEntries refer to invoices, therefore they must be loaded after
 		// them
-		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
-			Object bookElement = iter.next();
-			if (!(bookElement instanceof GncV2.GncBook.GncGncEntry)) {
-				continue;
-			}
-			GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry = (GncV2.GncBook.GncGncEntry) bookElement;
-			try {
-				createInvoiceEntry(jwsdpInvoiceEntry);
-			}
-			catch (RuntimeException e) {
-				LOGGER.error("[RuntimeException] Problem in "
-						+ getClass().getName()
-						+ "ignoring illegal Invoice-Entry with id="
-						+ jwsdpInvoiceEntry.getEntryGuid().getValue(), e);
-			}
-		}
+		initInvoiceEntriesMap(pRootElement);
 
 		// transactions refer to invoices, therefore they must be loaded after
 		// them
-		transactionid2transaction = new HashMap<>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
-			Object bookElement = iter.next();
-			if (!(bookElement instanceof GncTransaction)) {
-				continue;
-			}
-			GncTransaction jwsdpTransaction = (GncTransaction) bookElement;
+		initTransactionMap(pRootElement);
 
-			try {
-				GnucashTransactionImpl account = createTransaction(jwsdpTransaction);
-				transactionid2transaction.put(account.getId(), account);
-				for (GnucashTransactionSplit split : account.getSplits()) {
-					/*String accountID = */
-					split.getAccountID();
-				}
-			}
-			catch (RuntimeException e) {
-				LOGGER.error("[RuntimeException] Problem in "
-								+ getClass().getName()
-								+ "ignoring illegal Transaction-Entry with id="
-								+ jwsdpTransaction.getTrnId().getValue(),
-						e);
-			}
+		initCustomerMap(pRootElement);
 
-		}
+        initVendorMap(pRootElement);
 
-		customerid2customer = new HashMap<>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
-			Object bookElement = iter.next();
-			if (!(bookElement instanceof GncV2.GncBook.GncGncCustomer)) {
-				continue;
-			}
-			GncV2.GncBook.GncGncCustomer jwsdpCustomer = (GncV2.GncBook.GncGncCustomer) bookElement;
-
-			GnucashCustomerImpl customer = createCustomer(jwsdpCustomer);
-			customerid2customer.put(customer.getId(), customer);
-
-		}
-
-        customerid2vendor = new HashMap<>();
-        for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
-            Object bookElement = iter.next();
-            if (!(bookElement instanceof GncV2.GncBook.GncGncVendor)) {
-                continue;
-            }
-            GncV2.GncBook.GncGncVendor jwsdpVendor = (GncV2.GncBook.GncGncVendor) bookElement;
-
-            GnucashVendorImpl vendor = createVendor(jwsdpVendor);
-            customerid2vendor.put(vendor.getId(), vendor);
-
-        }
-
-		jobid2job = new HashMap<String, GnucashJob>();
-		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
-			Object bookElement = iter.next();
-			if (!(bookElement instanceof GncV2.GncBook.GncGncJob)) {
-				continue;
-			}
-			GncV2.GncBook.GncGncJob jwsdpjob = (GncV2.GncBook.GncGncJob) bookElement;
-
-			GnucashCustomerJobImpl job = createJob(jwsdpjob);
-			String jobID = job.getId();
-			if (jobID == null) {
-				LOGGER.error("File contains a job w/o an ID. indexing it with the ID ''");
-				jobID = "";
-			}
-			jobid2job.put(job.getId(), job);
-		}
+		initJobMap(pRootElement);
 
 		// check for unknown book-elements
 		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
@@ -657,23 +579,26 @@ public class GnucashFileImpl implements GnucashFile {
 			if (bookElement instanceof GncV2.GncBook.GncGncCustomer) {
 				continue;
 			}
+            if (bookElement instanceof GncV2.GncBook.GncGncVendor) {
+              continue;
+            }
 			if (bookElement instanceof GncV2.GncBook.GncCommodity) {
 				continue;
 			}
 			if (bookElement instanceof GncV2.GncBook.GncPricedb) {
 				continue;
 			}
-			if (bookElement instanceof GncV2.GncBook.GncGncTaxTable) {
-				continue;
-			}
+            if (bookElement instanceof GncV2.GncBook.GncGncTaxTable) {
+              continue;
+            }
+            if (bookElement instanceof GncV2.GncBook.GncGncVendor.VendorTerms) {
+              continue;
+            }
 			if (bookElement instanceof GncBudget) {
 				continue;
 			}
 			if (bookElement instanceof GncV2.GncBook.GncGncBillTerm) {
 				continue;
-			}
-			if (bookElement instanceof GncV2.GncBook.GncGncVendor) {
-				continue; //TODO: create a Java-Class for vendors like we have for customers
 			}
 			if (bookElement instanceof GncV2.GncBook.GncGncEmployee) {
 				continue; //TODO: create a Java-Class for employees like we have for customers
@@ -682,7 +607,189 @@ public class GnucashFileImpl implements GnucashFile {
 		}
 	}
 
-	/**
+  private void initAccountMap(final GncV2 pRootElement)
+  {
+    accountid2account = new HashMap<>();
+    
+    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      Object bookElement = iter.next();
+      if (!(bookElement instanceof GncAccount)) {
+        continue;
+      }
+      GncAccount jwsdpAccount = (GncAccount) bookElement;
+      
+      try {
+        GnucashAccount account = createAccount(jwsdpAccount);
+        accountid2account.put(account.getId(), account);
+      }
+      catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in "
+            + getClass().getName()
+            + "ignoring illegal Account-Entry with id="
+            + jwsdpAccount.getActId().getValue(),
+            e);
+      }
+    }
+  }
+
+  private void initInvoiceMap(final GncV2 pRootElement)
+  {
+    invoiceid2invoice = new HashMap<>();
+    
+    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      Object bookElement = iter.next();
+      if (!(bookElement instanceof GncV2.GncBook.GncGncInvoice)) {
+        continue;
+      }
+      GncV2.GncBook.GncGncInvoice jwsdpInvoice = (GncV2.GncBook.GncGncInvoice) bookElement;
+      
+      try {
+        GnucashInvoice invoice = createInvoice(jwsdpInvoice);
+        invoiceid2invoice.put(invoice.getId(), invoice);
+      }
+      catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in "
+            + getClass().getName()
+            + "ignoring illegal Invoice-Entry with id="
+            + jwsdpInvoice.getInvoiceId(),
+            e);
+      }
+    }
+  }
+
+  private void initInvoiceEntriesMap(final GncV2 pRootElement)
+  {
+    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      Object bookElement = iter.next();
+      if (!(bookElement instanceof GncV2.GncBook.GncGncEntry)) {
+        continue;
+      }
+      GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry = (GncV2.GncBook.GncGncEntry) bookElement;
+      
+      try {
+        createInvoiceEntry(jwsdpInvoiceEntry);
+      }
+      catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in "
+            + getClass().getName()
+            + "ignoring illegal Invoice-Entry-Entry with id="
+            + jwsdpInvoiceEntry.getEntryGuid().getValue(), e);
+      }
+    }
+  }
+
+  private void initTransactionMap(final GncV2 pRootElement)
+  {
+    transactionid2transaction = new HashMap<>();
+    
+    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      Object bookElement = iter.next();
+      if (!(bookElement instanceof GncTransaction)) {
+        continue;
+      }
+      GncTransaction jwsdpTransaction = (GncTransaction) bookElement;
+
+      try {
+        GnucashTransactionImpl account = createTransaction(jwsdpTransaction);
+        transactionid2transaction.put(account.getId(), account);
+        for (GnucashTransactionSplit split : account.getSplits()) {
+          /*String accountID = */
+          split.getAccountID();
+        }
+      }
+      catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in "
+            + getClass().getName()
+            + "ignoring illegal Transaction-Entry with id="
+            + jwsdpTransaction.getTrnId().getValue(),
+            e);
+      }
+    }
+  }
+
+  private void initCustomerMap(final GncV2 pRootElement)
+  {
+    customerid2customer = new HashMap<>();
+    
+    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      Object bookElement = iter.next();
+      if (!(bookElement instanceof GncV2.GncBook.GncGncCustomer)) {
+        continue;
+      }
+      GncV2.GncBook.GncGncCustomer jwsdpCustomer = (GncV2.GncBook.GncGncCustomer) bookElement;
+      
+      try {
+        GnucashCustomerImpl customer = createCustomer(jwsdpCustomer);
+        customerid2customer.put(customer.getId(), customer);
+      }
+      catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in "
+            + getClass().getName()
+            + "ignoring illegal Customer-Entry with id="
+            + jwsdpCustomer.getCustId(),
+            e);
+      }
+    }
+  }
+
+  private void initVendorMap(final GncV2 pRootElement)
+  {
+    vendorid2vendor = new HashMap<>();
+    
+    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      Object bookElement = iter.next();
+      if (!(bookElement instanceof GncV2.GncBook.GncGncVendor)) {
+        continue;
+      }
+      GncV2.GncBook.GncGncVendor jwsdpVendor = (GncV2.GncBook.GncGncVendor) bookElement;
+
+      try {
+        GnucashVendorImpl vendor = createVendor(jwsdpVendor);
+        vendorid2vendor.put(vendor.getId(), vendor);
+      }
+      catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in "
+            + getClass().getName()
+            + "ignoring illegal Vendor-Entry with id="
+            + jwsdpVendor.getVendorId(),
+            e);
+      }
+    }
+  }
+	
+  private void initJobMap(final GncV2 pRootElement)
+  {
+    jobid2job = new HashMap<String, GnucashJob>();
+    
+    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      Object bookElement = iter.next();
+      if (!(bookElement instanceof GncV2.GncBook.GncGncJob)) {
+        continue;
+      }
+      GncV2.GncBook.GncGncJob jwsdpJob = (GncV2.GncBook.GncGncJob) bookElement;
+      
+      try {
+        GnucashCustomerJobImpl job = createJob(jwsdpJob);
+        String jobID = job.getId();
+        if (jobID == null) {
+          LOGGER.error("File contains a job w/o an ID. indexing it with the ID ''");
+          jobID = "";
+        }
+        jobid2job.put(job.getId(), job);
+      }
+      catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in "
+            + getClass().getName()
+            + "ignoring illegal Job-Entry with id="
+            + jwsdpJob.getJobId(),
+            e);
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------
+
+  /**
 	 * Use a heuristic to determine the  defaultcurrency-id.
 	 * If we cannot find one, we default to EUR.<br/>
 	 * Comodity-stace is fixed as "ISO4217" .
@@ -1261,7 +1368,7 @@ public class GnucashFileImpl implements GnucashFile {
 		GnucashCustomer retval = customerid2customer.get(id);
 		if (retval == null) {
 			LOGGER.warn("No Customer with id '" + id + "'. We know "
-					+ customerid2customer.size() + " accounts.");
+					+ customerid2customer.size() + " customers.");
 		}
 		return retval;
 	}
@@ -1298,10 +1405,10 @@ public class GnucashFileImpl implements GnucashFile {
         throw new IllegalStateException("no root-element loaded");
       }
 
-      GnucashVendor retval = customerid2vendor.get(id);
+      GnucashVendor retval = vendorid2vendor.get(id);
       if (retval == null) {
         LOGGER.warn("No Vendor with id '" + id + "'. We know "
-                + customerid2vendor.size() + " accounts.");
+                + vendorid2vendor.size() + " vendors.");
       }
       return retval;
 	}
@@ -1323,7 +1430,7 @@ public class GnucashFileImpl implements GnucashFile {
 	@Override
 	public Collection<GnucashVendor> getVendors()
 	{
-      return customerid2vendor.values();
+      return vendorid2vendor.values();
 	}
 
     // ---------------------------------------------------------------
@@ -1332,22 +1439,41 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param customer the customer to look for.
 	 * @return all jobs that have this customer, never null
 	 */
-	public Collection getJobsByCustomer(final GnucashCustomer customer) {
+	public Collection<GnucashCustomerJob> getJobsByCustomer(final GnucashCustomer customer) {
 		if (jobid2job == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		Collection retval = new LinkedList();
+		Collection<GnucashCustomerJob> retval = new LinkedList<GnucashCustomerJob>();
 
 		for (Object element : jobid2job.values()) {
 			GnucashJob job = (GnucashJob) element;
 			if (job.getOwnerId().equals(customer.getId())) {
-				retval.add(job);
+			  retval.add((GnucashCustomerJob) job);
 			}
-
 		}
 		return retval;
 	}
+
+    /**
+     * @param vendor the customer to look for.
+     * @return all jobs that have this customer, never null
+     */
+    public Collection<GnucashVendorJob> getJobsByVendor(final GnucashVendor vendor) {
+        if (jobid2job == null) {
+            throw new IllegalStateException("no root-element loaded");
+        }
+
+        Collection<GnucashVendorJob> retval = new LinkedList<GnucashVendorJob>();
+
+        for (Object element : jobid2job.values()) {
+            GnucashJob job = (GnucashJob) element;
+            if (job.getOwnerId().equals(vendor.getId())) {
+              retval.add((GnucashVendorJob) job);
+            }
+        }
+        return retval;
+    }
 
 	/**
 	 * @see GnucashFile#getJobByID(java.lang.String)
@@ -1362,8 +1488,8 @@ public class GnucashFileImpl implements GnucashFile {
 			LOGGER.warn("No Job with id '"
 					+ id
 					+ "'. We know "
-					+ customerid2customer.size()
-					+ " accounts.");
+					+ jobid2job.size()
+					+ " jobs.");
 		}
 
 		return retval;
@@ -1387,11 +1513,10 @@ public class GnucashFileImpl implements GnucashFile {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		GnucashTransaction retval = transactionid2transaction
-				.get(id);
+		GnucashTransaction retval = transactionid2transaction.get(id);
 		if (retval == null) {
 			LOGGER.warn("No Transaction with id '" + id + "'. We know "
-					+ customerid2customer.size() + " accounts.");
+					+ transactionid2transaction.size() + " transactions.");
 		}
 		return retval;
 	}

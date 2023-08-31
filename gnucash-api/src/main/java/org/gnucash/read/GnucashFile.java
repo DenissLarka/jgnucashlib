@@ -14,8 +14,9 @@ import java.io.File;
 import java.util.Collection;
 
 import org.gnucash.currency.ComplexCurrencyTable;
-import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
+import org.gnucash.read.spec.GnucashVendorInvoice;
 
 /**
  * created: 13.05.2005<br/>
@@ -65,17 +66,9 @@ public interface GnucashFile extends GnucashObject {
 
     // ----------------------------
 
-    /**
-     * @param id id of a taxtable
-     * @return the identified taxtable or null
-     */
-    VendorTerms getVendorTermsByID(String id);
-
-    /**
-     * @return all TaxTables defined in the book
-     * @link GnucashTaxTable
-     */
-    Collection<VendorTerms> getVendorTerms();
+//    GnucashVendorTerms getVendorTermsByID(String id);
+//
+//    Collection<GnucashVendorTerms> getVendorTerms();
 
     // ---------------------------------------------------------------
 
@@ -187,7 +180,18 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer(GnucashCustomer)
 	 */
-	Collection<GnucashInvoice> getUnpayedInvoicesForCustomer(GnucashCustomer customer);
+	Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer(GnucashCustomer customer);
+
+    /**
+     * @param vendor the vendor to look for (not null)
+     * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given vendor
+     * Do not modify the returned collection!
+     * @see #getPayedInvoices()
+     * @see #getInvoices()
+     * @see #getInvoiceByID(String)
+     * @see #getUnpayedInvoicesForVendor(GnucashVendor)
+     */
+    Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor(GnucashVendor vendor);
 
 	/**
 	 * warning: this function has to traverse all
