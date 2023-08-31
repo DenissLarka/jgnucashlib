@@ -137,7 +137,7 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getUnpayedInvoices()
 	 * @see #getPayedInvoices()
 	 * @see #getInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer(GnucashCustomer)
+	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	GnucashInvoice getInvoiceByID(String id);
 
@@ -147,7 +147,7 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getUnpayedInvoices()
 	 * @see #getPayedInvoices()
 	 * @see #getInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer(GnucashCustomer)
+	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	Collection<GnucashInvoice> getInvoices();
 
@@ -157,7 +157,7 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getUnpayedInvoices()
 	 * @see #getInvoices()
 	 * @see #getInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer(GnucashCustomer)
+	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	Collection<GnucashInvoice> getPayedInvoices();
 
@@ -167,9 +167,20 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getPayedInvoices()
 	 * @see #getInvoices()
 	 * @see #getInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer(GnucashCustomer)
+	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	Collection<GnucashInvoice> getUnpayedInvoices();
+
+    /**
+     * @param customer the customer to look for (not null)
+     * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given customer
+     * Do not modify the returned collection!
+     * @see #getPayedInvoices()
+     * @see #getInvoices()
+     * @see #getInvoiceByID(String)
+     * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
+     */
+    Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(GnucashCustomer customer);
 
 	/**
 	 * @param customer the customer to look for (not null)
@@ -178,9 +189,9 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getPayedInvoices()
 	 * @see #getInvoices()
 	 * @see #getInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer(GnucashCustomer)
+	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer(GnucashCustomer customer);
+	Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer customer);
 
     /**
      * @param vendor the vendor to look for (not null)
@@ -189,9 +200,20 @@ public interface GnucashFile extends GnucashObject {
      * @see #getPayedInvoices()
      * @see #getInvoices()
      * @see #getInvoiceByID(String)
-     * @see #getUnpayedInvoicesForVendor(GnucashVendor)
+     * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor(GnucashVendor vendor);
+    Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor_direct(GnucashVendor vendor);
+
+    /**
+     * @param vendor the vendor to look for (not null)
+     * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given vendor
+     * Do not modify the returned collection!
+     * @see #getPayedInvoices()
+     * @see #getInvoices()
+     * @see #getInvoiceByID(String)
+     * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
+     */
+    Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor_viaJob(GnucashVendor vendor);
 
 	/**
 	 * warning: this function has to traverse all

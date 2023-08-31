@@ -4,9 +4,12 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.impl.GnucashJobImpl;
+import org.gnucash.read.spec.GnucashCustomerJob;
 
 
-public class GnucashCustomerJobImpl extends GnucashJobImpl {
+public class GnucashCustomerJobImpl extends GnucashJobImpl
+                                    implements GnucashCustomerJob
+{
     /**
      * @param peer the JWSDP-object we are facading.
      * @see #jwsdpPeer

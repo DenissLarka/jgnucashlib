@@ -21,10 +21,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashInvoice;
 import org.gnucash.read.GnucashInvoiceEntry;
@@ -40,6 +40,13 @@ import org.gnucash.read.GnucashTransactionSplit;
  */
 public class GnucashInvoiceImpl implements GnucashInvoice {
 
+  /**
+   * Format of the JWSDP-field openedDate.
+   */
+  protected static final DateFormat OPENEDDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+  
+  // -----------------------------------------------------------------
+
 	/**
 	 * @return getAmmountWithoutTaxes().isMoreThen(getAmmountPayedWithoutTaxes())
 	 *
@@ -48,11 +55,6 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	public boolean isNotFullyPayed() {
 		return getAmmountWithTaxes().isMoreThen(getAmmountPayedWithTaxes());
 	}
-
-	/**
-	 * Format of the JWSDP-field openedDate.
-	 */
-	protected static final DateFormat OPENEDDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * The transactions that are paying for this invoice.
@@ -273,6 +275,15 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	public String getDescription() {
 		return getJwsdpPeer().getInvoiceNotes();
 	}
+	
+	// ----------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    public GncGncInvoice getPeer() {
+        return jwsdpPeer;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -280,6 +291,8 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	public GnucashFile getFile() {
 		return file;
 	}
+
+    // ----------------------------
 
 	/**
 	 * The entries of this invoice.
@@ -310,7 +323,8 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 *
 	 * @see GnucashInvoice#getDateOpened()
 	 */
-	protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
+    protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
+    protected static final DateTimeFormatter DATE_OPENED_FORMAT_PRINT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	/**
 	 * @see GnucashInvoice#getDateOpened()
@@ -414,9 +428,22 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		return getJwsdpPeer().getInvoiceBillingId();
 	}
 
-    public String getOwnerId() {
+    public String getOwnerId(ReadVariant readVar) {
+      if ( readVar == ReadVariant.DIRECT )
+        return getOwnerId_direct();
+      else if ( readVar == ReadVariant.VIA_JOB )
+        return getOwnerId_viaJob();
+      
+      return null; // Compiler happy
+    }
+
+    protected String getOwnerId_direct() {
       assert getJwsdpPeer().getInvoiceOwner().getOwnerId().getType().equals("guid");
-      return getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue();
+        return getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue();
+    }
+
+    protected String getOwnerId_viaJob() {
+        return getJob().getOwnerId();
     }
 
     public InvoiceOwner getOwner() {
@@ -475,6 +502,8 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		buffer.append("[GnucashInvoiceImpl:");
 		buffer.append(" id: ");
 		buffer.append(getId());
+        buffer.append(" owner-id (dir.): ");
+        buffer.append(getOwnerId(ReadVariant.DIRECT));
 		buffer.append(" invoice-number: ");
 		buffer.append(getInvoiceNumber());
 		buffer.append(" description: '");
@@ -483,10 +512,10 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		buffer.append(entries.size());
 		buffer.append(" dateOpened: ");
 		try {
-		  buffer.append(getDateOpened().format(DATE_OPENED_FORMAT));
+		  buffer.append(getDateOpened().toLocalDate().format(DATE_OPENED_FORMAT_PRINT));
 		}
 		catch (Exception e) {
-          buffer.append(getDateOpened().toString());
+          buffer.append(getDateOpened().toLocalDate().toString());
 		}
 		buffer.append("]");
 		return buffer.toString();

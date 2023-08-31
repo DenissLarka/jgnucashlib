@@ -13,6 +13,7 @@ package org.gnucash.read;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
+import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 
@@ -29,6 +30,15 @@ import org.gnucash.numbers.FixedPointNumber;
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashInvoice extends Comparable<GnucashInvoice> {
+  
+  // ::MAGIC
+  final static String TYPE_CUSTOMER = "gncCustomer";
+  final static String TYPE_VENDOR   = "gncVendor";
+
+  public enum ReadVariant {
+    DIRECT,
+    VIA_JOB
+  }
 
 	/**
 	 *
@@ -41,12 +51,18 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	 *         (may contain multiple lines and non-ascii-characters)
 	 */
 	String getDescription();
+	
+	// ----------------------------
+
+    GncGncInvoice getPeer();
 
 	/**
 	 * The gnucash-file is the top-level class to contain everything.
 	 * @return the file we are associated with
 	 */
 	GnucashFile getFile();
+
+    // ----------------------------
 
 	/**
 	 *
@@ -91,7 +107,7 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
     *
     * @return Invoice' owner ID 
     */
-    String getOwnerId();
+	String getOwnerId(ReadVariant readvar);
 
     /**
     *

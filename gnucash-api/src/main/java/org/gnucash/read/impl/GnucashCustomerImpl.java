@@ -1,6 +1,7 @@
 package org.gnucash.read.impl;
 
 import java.text.NumberFormat;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -17,11 +18,18 @@ import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
 
 public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCustomer {
+  
+  private static GnucashInvoice.ReadVariant readVar = GnucashInvoice.ReadVariant.DIRECT;
 
 	/**
 	 * the JWSDP-object we are facading.
 	 */
 	private final GncV2.GncBook.GncGncCustomer jwsdpPeer;
+
+    /**
+     * The file we belong to.
+     */
+    private final GnucashFile file;
 
 	/**
 	 * @param peer    the JWSDP-object we are facading.
@@ -33,6 +41,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 			peer.setCustSlots(getSlots());
 		}
 		jwsdpPeer = peer;
+        file = gncFile;
 	}
 
 	/**
@@ -88,10 +97,10 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 *
 	 * @return the current number of unpayed invoices
 	 */
-	public int getOpenInvoices() {
-		int count = 0;
-		for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashCustomerInvoice ) {
+	public int getNofOpenInvoices() {
+	    int count = 0;
+        for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
+          if ( invoice instanceof GnucashCustomerInvoice ) {
             if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
               continue;
             }
@@ -99,10 +108,10 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
             if (invoice.isNotFullyPayed()) {
               count++;
             }
-		  }
-		}
-		return count;
-	}
+          }
+        }
+        return count;
+    }
 
 	/**
 	 * @return the sum of payments for invoices to this client
@@ -363,4 +372,28 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 
 		return currencyFormat;
 	}
+	
+  // ------------------------------
+
+  @Override
+  public Collection<GnucashCustomerInvoice> getUnpayedInvoices(GnucashInvoice.ReadVariant readVar)
+  {
+    if ( readVar == GnucashInvoice.ReadVariant.DIRECT )
+      return getUnpayedInvoices_direct();
+    else if ( readVar == GnucashInvoice.ReadVariant.VIA_JOB )
+      return getUnpayedInvoices_viaJob();
+    
+    return null; // Compiler happy
+  }
+	
+  private Collection<GnucashCustomerInvoice> getUnpayedInvoices_direct()
+  {
+    return file.getUnpayedInvoicesForCustomer_direct(this);
+  }
+  
+  private Collection<GnucashCustomerInvoice> getUnpayedInvoices_viaJob()
+  {
+    return file.getUnpayedInvoicesForCustomer_viaJob(this);
+  }
+    
 }

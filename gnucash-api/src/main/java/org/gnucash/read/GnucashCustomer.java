@@ -17,6 +17,8 @@ import java.util.Locale;
 import java.util.Collection;
 
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashInvoice.ReadVariant;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
 
 //TODO: model taxes and implement getTaxTable
@@ -48,7 +50,7 @@ public interface GnucashCustomer extends GnucashObject {
      * Date is not checked so invoiced that have entered payments in the future are considered payed.
      * @return the current number of unpayed invoices
      */
-    int getOpenInvoices();
+    int getNofOpenInvoices();
 
     /**
      * @return the sum of payments for invoices to this client
@@ -194,6 +196,9 @@ public interface GnucashCustomer extends GnucashObject {
      * @return the shipping-address including the name
      */
     GnucashCustomer.Address getShippingAddress();
+    
+    // ----------------------------
 
-
+    Collection<GnucashCustomerInvoice> getUnpayedInvoices(ReadVariant readVar);
+    
 }
