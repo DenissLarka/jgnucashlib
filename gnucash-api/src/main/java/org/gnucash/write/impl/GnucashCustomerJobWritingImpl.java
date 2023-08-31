@@ -27,8 +27,8 @@ import org.gnucash.generated.OwnerId;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashJob;
-import org.gnucash.read.impl.GnucashJobImpl;
-import org.gnucash.write.GnucashWritableJob;
+import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
+import org.gnucash.write.GnucashWritableCustomerJob;
 
 /**
  * created: 11.06.2006<br/>
@@ -44,10 +44,10 @@ import org.gnucash.write.GnucashWritableJob;
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 
-public class GnucashJobWritingImpl extends GnucashJobImpl implements GnucashWritableJob {
+public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl implements GnucashWritableCustomerJob {
 
 	/**
-	 * @see GnucashWritableJob#remove()
+	 * @see GnucashWritableCustomerJob#remove()
 	 */
 	public void remove() {
 		if (!getInvoices().isEmpty()) {
@@ -62,7 +62,7 @@ public class GnucashJobWritingImpl extends GnucashJobImpl implements GnucashWrit
 	 * @param jwsdpPeer the XML(jaxb)-object we are fronting.
 	 * @param file      the file we belong to
 	 */
-	public GnucashJobWritingImpl(
+	public GnucashCustomerJobWritingImpl(
 			final GncV2.GncBook.GncGncJob jwsdpPeer,
 			final GnucashFile file) {
 		super(jwsdpPeer, file);
@@ -72,7 +72,7 @@ public class GnucashJobWritingImpl extends GnucashJobImpl implements GnucashWrit
 	 * @param owner the customer the job is from
 	 * @param file  the file to add the jhe to
 	 */
-	public GnucashJobWritingImpl(
+	public GnucashCustomerJobWritingImpl(
 			final GnucashFileWritingImpl file,
 			final String id,
 			final GnucashCustomer owner) {
@@ -147,7 +147,7 @@ public class GnucashJobWritingImpl extends GnucashJobImpl implements GnucashWrit
 	}
 
 	/**
-	 * @see GnucashWritableJob#setCustomerType(java.lang.String)
+	 * @see GnucashWritableCustomerJob#setCustomerType(java.lang.String)
 	 */
 	public void setCustomerType(final String customerType) {
 		if (customerType == null) {
@@ -168,7 +168,7 @@ public class GnucashJobWritingImpl extends GnucashJobImpl implements GnucashWrit
 	}
 
 	/**
-	 * @see GnucashWritableJob#setCustomer(GnucashCustomer)
+	 * @see GnucashWritableCustomerJob#setCustomer(GnucashCustomer)
 	 */
 	public void setCustomer(final GnucashCustomer customer) {
 		if (!getInvoices().isEmpty()) {
@@ -195,7 +195,7 @@ public class GnucashJobWritingImpl extends GnucashJobImpl implements GnucashWrit
 
 
 	/**
-	 * @see GnucashWritableJob#setJobNumber(java.lang.String)
+	 * @see GnucashWritableCustomerJob#setJobNumber(java.lang.String)
 	 */
 	public void setJobNumber(final String jobId) {
 		if (jobId == null || jobId.trim().length() == 0) {
@@ -224,7 +224,7 @@ public class GnucashJobWritingImpl extends GnucashJobImpl implements GnucashWrit
 	}
 
 	/**
-	 * @see GnucashWritableJob#setName(java.lang.String)
+	 * @see GnucashWritableCustomerJob#setName(java.lang.String)
 	 */
 	public void setName(final String jobName) {
 		if (jobName == null || jobName.trim().length() == 0) {

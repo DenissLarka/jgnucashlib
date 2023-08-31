@@ -138,18 +138,18 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	 * @param jobID the id of the job to fetch
 	 * @return A changable version of the job or null of not found.
 	 */
-	GnucashWritableJob getJobByID(String jobID);
+	GnucashWritableCustomerJob getJobByID(String jobID);
 
 	/**
 	 * @param jnr the job-number to look for.
 	 * @return the (first) jobs that have this number or null if not found
 	 */
-	GnucashWritableJob getJobByNumber(final String jnr);
+	GnucashWritableCustomerJob getJobByNumber(final String jnr);
 
 	/**
 	 * @return all jobs as writable versions.
 	 */
-	Collection<GnucashWritableJob> getWritableJobs();
+	Collection<GnucashWritableCustomerJob> getWritableJobs();
 
 	/**
 	 * Add a new currency.<br/>
@@ -194,12 +194,12 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	/**
 	 * @return a new job with no values that is already added to this file
 	 */
-	GnucashWritableJob createWritableJob(final GnucashCustomer customer);
+	GnucashWritableCustomerJob createWritableJob(final GnucashCustomer customer);
 
 	/**
 	 * @return a new job with no values that is already added to this file
 	 */
-	GnucashWritableJob createWritableJob(final String id, final GnucashCustomer customer);
+	GnucashWritableCustomerJob createWritableJob(final String id, final GnucashCustomer customer);
 
 
 	/**

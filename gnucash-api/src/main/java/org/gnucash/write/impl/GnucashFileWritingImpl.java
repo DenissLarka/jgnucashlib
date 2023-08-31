@@ -55,14 +55,14 @@ import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.impl.GnucashJobImpl;
 import org.gnucash.read.impl.GnucashTaxTableImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
+import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.write.GnucashWritableAccount;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableInvoice;
-import org.gnucash.write.GnucashWritableJob;
+import org.gnucash.write.GnucashWritableCustomerJob;
 import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.slf4j.Logger;
@@ -547,8 +547,8 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 * @see GnucashFileImpl#createJob(GncV2.GncBook.GncGncJob)
 	 */
 	@Override
-	protected GnucashJobImpl createJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
-		GnucashJobImpl job = new GnucashJobWritingImpl(jwsdpjob, this);
+	protected GnucashCustomerJobImpl createJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
+		GnucashCustomerJobImpl job = new GnucashCustomerJobWritingImpl(jwsdpjob, this);
 		return job;
 	}
 
@@ -1052,22 +1052,22 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 * @see GnucashWritableFile#getJobByID(String)
 	 */
 	@Override
-	public GnucashWritableJob getJobByID(final String jobID) {
-		return (GnucashWritableJob) super.getJobByID(jobID);
+	public GnucashWritableCustomerJob getJobByID(final String jobID) {
+		return (GnucashWritableCustomerJob) super.getJobByID(jobID);
 	}
 
 	/**
 	 * @see GnucashWritableFile#getWritableJobs()
 	 */
-	public Collection<GnucashWritableJob> getWritableJobs() {
+	public Collection<GnucashWritableCustomerJob> getWritableJobs() {
 
 		Collection<GnucashJob> jobs = getJobs();
 		if (jobs == null) {
 			throw new IllegalStateException("getJobs() returned null");
 		}
-		Collection<GnucashWritableJob> retval = new ArrayList<GnucashWritableJob>(jobs.size());
+		Collection<GnucashWritableCustomerJob> retval = new ArrayList<GnucashWritableCustomerJob>(jobs.size());
 		for (GnucashJob job : jobs) {
-			retval.add((GnucashWritableJob) job);
+			retval.add((GnucashWritableCustomerJob) job);
 		}
 		return retval;
 	}
@@ -1302,7 +1302,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @see GnucashWritableFile#createWritableJob(GnucashCustomer)
 	 */
-	public GnucashWritableJob createWritableJob(final GnucashCustomer customer) {
+	public GnucashWritableCustomerJob createWritableJob(final GnucashCustomer customer) {
 		if (customer == null) {
 			throw new IllegalArgumentException("null customer given");
 		}
@@ -1312,11 +1312,11 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @see GnucashWritableFile#createWritableJob(String, GnucashCustomer)
 	 */
-	public GnucashWritableJob createWritableJob(final String id, final GnucashCustomer customer) {
+	public GnucashWritableCustomerJob createWritableJob(final String id, final GnucashCustomer customer) {
 		if (customer == null) {
 			throw new IllegalArgumentException("null customer given");
 		}
-		GnucashJobWritingImpl w = new GnucashJobWritingImpl(this, id, customer);
+		GnucashCustomerJobWritingImpl w = new GnucashCustomerJobWritingImpl(this, id, customer);
 		super.jobid2job.put(w.getId(), w);
 		return w;
 	}
@@ -1324,9 +1324,9 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @param impl what to remove
 	 */
-	public void removeJob(final GnucashWritableJob impl) {
+	public void removeJob(final GnucashWritableCustomerJob impl) {
 		jobid2job.remove(impl.getId());
-		getRootElement().getGncBook().getBookElements().remove(((GnucashJobWritingImpl) impl).getJwsdpPeer());
+		getRootElement().getGncBook().getBookElements().remove(((GnucashCustomerJobWritingImpl) impl).getJwsdpPeer());
 		setModified(true);
 	}
 
@@ -1385,13 +1385,13 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 * @param jnr the job-number to look for.
 	 * @return the (first) jobs that have this number or null if not found
 	 */
-	public GnucashWritableJob getJobByNumber(final String jnr) {
+	public GnucashWritableCustomerJob getJobByNumber(final String jnr) {
 		if (jobid2job == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
 		for (GnucashJob gnucashJob : jobid2job.values()) {
-			GnucashWritableJob job = (GnucashWritableJob) gnucashJob;
+			GnucashWritableCustomerJob job = (GnucashWritableCustomerJob) gnucashJob;
 			if (job.getJobNumber().equals(jnr)) {
 				return job;
 			}

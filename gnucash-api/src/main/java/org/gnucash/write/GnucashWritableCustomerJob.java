@@ -18,10 +18,11 @@
  */
 package org.gnucash.write;
 
+import java.beans.PropertyChangeListener;
+
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashJob;
-
-import java.beans.PropertyChangeListener;
+import org.gnucash.read.spec.GnucashCustomerJob;
 
 /**
  * created: 11.06.2005 <br/>
@@ -29,12 +30,12 @@ import java.beans.PropertyChangeListener;
  * Supports propertyChangeListeners for all properties that have a setter.
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public interface GnucashWritableJob extends GnucashJob {
+public interface GnucashWritableCustomerJob extends GnucashCustomerJob {
 
 	/**
 	 * Not used.
 	 * @param a not used.
-	 * @see GnucashJob#CUSTOMETYPE_CUSTOMER
+	 * @see GnucashJob#JOB_TYPE
 	 */
 	void setCustomerType(String a);
 
