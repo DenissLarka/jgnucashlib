@@ -209,7 +209,7 @@ public interface GnucashAccount extends Comparable {
 	 * @return all splits
 	 * @link GnucashTransaction
 	 */
-	List getTransactions();
+	List<GnucashTransaction> getTransactions();
 
 	/**
 	 * @param split split to add to this transaction

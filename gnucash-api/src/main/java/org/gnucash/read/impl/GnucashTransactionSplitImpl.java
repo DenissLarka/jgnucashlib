@@ -58,11 +58,11 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 							+ getAccountID()
 							+ "' for Transactions-Split with id '"
 							+ getId()
-							+ "' descibed '"
+							+ "' description '"
 							+ getDescription()
 							+ "' in transaction with id '"
 							+ getTransaction().getId()
-							+ "' described '"
+							+ "' description '"
 							+ getTransaction().getDescription()
 							+ "'");
 		} else {
@@ -314,11 +314,11 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 		buffer.append(getAccountID());
 		buffer.append(" account: ");
 		GnucashAccount account = getAccount();
-		buffer.append(account == null ? "null" : account.getName());
-		buffer.append(" description: ");
-		buffer.append(getDescription());
-		buffer.append(" transaction-description: ");
-		buffer.append(getTransaction().getDescription());
+		buffer.append(account == null ? "null" : "'" + account.getName() + "'");
+		buffer.append(" description: '");
+		buffer.append(getDescription() + "'");
+		buffer.append(" transaction-description: '");
+		buffer.append(getTransaction().getDescription() + "'");
 		buffer.append(" value X quantity: ");
 		buffer.append(getValue()).append(" X ").append(getQuantity());
 		buffer.append("]");

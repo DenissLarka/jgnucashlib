@@ -12,7 +12,6 @@ package org.gnucash.read.impl;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -208,7 +207,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 								+ invoiceID
 								+ "' for transaction '"
 								+ getId()
-								+ "' described '"
+								+ "' description '"
 								+ getDescription()
 								+ "'");
 			} else {
@@ -460,17 +459,17 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 		buffer.append("[GnucashTransactionImpl:");
 		buffer.append(" id: ");
 		buffer.append(getId());
-		buffer.append(" description: ");
-		buffer.append(getDescription());
-		buffer.append(" #splits: ");
-		buffer.append(mySplits.size());
+        buffer.append(" description: '");
+        buffer.append(getDescription() + "'");
+        buffer.append(" amount: ");
+        buffer.append(getFirstSplit().getValueFormatet());
+        buffer.append(" #splits: ");
+        buffer.append(mySplits.size());
 		buffer.append(" dateEntered: ");
 		try {
-			buffer.append(DateFormat.getDateTimeInstance().format(getDateEntered()));
+          buffer.append(getDateEntered().format(DATE_ENTERED_FORMAT));
 		} catch (Exception e) {
-			e.printStackTrace();
-			buffer.append("ERROR '" + e.getMessage() + "'");
-
+		  buffer.append(getDateEntered().toString());
 		}
 		buffer.append("]");
 		return buffer.toString();

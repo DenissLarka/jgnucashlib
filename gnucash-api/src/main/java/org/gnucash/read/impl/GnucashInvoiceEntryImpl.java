@@ -40,7 +40,7 @@ public class GnucashInvoiceEntryImpl extends GnucashObjectImpl implements Gnucas
 	/**
 	 * Format of the JWSDP-Field for the entry-date.
 	 */
-	protected static final DateFormat ENTRYDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	protected static final DateFormat ENTRYDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * the JWSDP-object we are facading.
@@ -386,8 +386,8 @@ public class GnucashInvoiceEntryImpl extends GnucashObjectImpl implements Gnucas
 		//      buffer.append(" invoice: ");
 		//      GnucashInvoice invoice = getInvoice();
 		//      buffer.append(invoice==null?"null":invoice.getName());
-		buffer.append(" description: ");
-		buffer.append(getDescription());
+		buffer.append(" description: '");
+		buffer.append(getDescription() + "'");
 		buffer.append(" action: ");
 		buffer.append(getAction());
 		buffer.append(" value X quantity: ");

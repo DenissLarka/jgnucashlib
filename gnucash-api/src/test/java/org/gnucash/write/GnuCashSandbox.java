@@ -1,17 +1,16 @@
-import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.GnucashTransactionSplit;
-import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.write.GnucashWritableTransaction;
-import org.gnucash.write.GnucashWritableTransactionSplit;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
+package org.gnucash.write;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+
+import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
+import org.gnucash.write.impl.GnucashFileWritingImpl;
 
 /**
  * Created by Deniss Larka
@@ -51,7 +50,10 @@ public class GnuCashSandbox {
 				System.out.println("\t"+split.getQuantity());
 			}
 		}
-
+		
+		// Caution: output file will always be in uncompressed XML format,
+		// regardless of whether the input file was compressed or not. 
+		gnucashFile.writeFile(new File("/tmp/aaa/test_out.gnucash"));
 	}
 }
 
