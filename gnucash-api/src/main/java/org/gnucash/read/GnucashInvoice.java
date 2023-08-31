@@ -13,6 +13,7 @@ package org.gnucash.read;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
+import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
@@ -88,10 +89,16 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 
     /**
     *
-    * @return Invoice' owner (i.e., either a supplier or oneself) 
+    * @return Invoice' owner ID 
     */
-    String getOwner();
+    String getOwnerId();
 
+    /**
+    *
+    * @return Invoice' owner structure 
+    */
+    InvoiceOwner getOwner();
+    
 	/**
 	 * Note that a job may lead to multiple o no invoices.
 	 * (e.g. a monthly payment for a long lasting contract.)
@@ -280,11 +287,6 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	 * @return (getAmmountWithoutTaxes().isMoreThen(getAmmountPayedWithoutTaxes()))
 	 */
 	boolean isNotFullyPayed();
-
-	/**
-	 * @return getJob().getCustomer()
-	 */
-	GnucashCustomer getCustomer();
 
 	/**
 	 * Look for an entry by it's id.

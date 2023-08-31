@@ -44,6 +44,7 @@ import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -56,6 +57,9 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTaxTable;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
+import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.GnucashVendorTerms;
+import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -103,6 +107,8 @@ public class GnucashFileImpl implements GnucashFile {
 
 		return Collections.unmodifiableCollection(new TreeSet<>(accountid2account.values()));
 	}
+	
+	// ---------------------------------------------------------------
 
 	/**
 	 * Filles lazy in getTaxTables() .
@@ -145,6 +151,52 @@ public class GnucashFileImpl implements GnucashFile {
 
 		return taxTablesById.values();
 	}
+
+    // ----------------------------
+
+    /**
+     * Filles lazy in getTaxTables() .
+     *
+     * @see #getTaxTables()
+     */
+    protected Map<String, GnucashVendorTerms> vendorTermsByID = null;
+
+    /**
+     * @param id id of a vendor terms item
+     * @return the identified vendor terms item or null
+     */
+    public VendorTerms getVendorTermsByID(final String id) {
+        if (vendorTermsByID == null) {
+            getVendorTerms();
+        }
+        return vendorTermsByID.get(id);
+    }
+
+    /**
+     * @return all TaxTables defined in the book
+     * @link GnucashTaxTable
+     */
+    @SuppressWarnings("unchecked")
+    public Collection<VendorTerms> getVendorTerms() {
+        if (vendorTermsByID == null) {
+
+          vendorTermsByID = new HashMap<String, GnucashVendorTerms>();
+
+            List bookElements = this.getRootElement().getGncBook().getBookElements();
+            for (Object bookElement : bookElements) {
+                if (!(bookElement instanceof GncV2.GncBook.GncGncVendor.VendorTerms)) {
+                    continue;
+                }
+                GncV2.GncBook.GncGncVendor.VendorTerms jwsdpPeer = (GncV2.GncBook.GncGncVendor.VendorTerms) bookElement;
+                GnucashVendorTermsImpl gnucashVendorTerms = new GnucashVendorTermsImpl(jwsdpPeer, this);
+                vendorTermsByID.put(gnucashVendorTerms.getId(), gnucashVendorTerms);
+            }
+        }
+
+        return vendorTermsByID.values();
+    }
+
+    // ---------------------------------------------------------------
 
 	/**
 	 * @return a read-only collection of all accounts that have no parent (the
@@ -333,7 +385,7 @@ public class GnucashFileImpl implements GnucashFile {
 	public Collection<GnucashInvoice> getUnpayedInvoicesForCustomer(final GnucashCustomer customer) {
 		Collection<GnucashInvoice> retval = new LinkedList<GnucashInvoice>();
 		for (GnucashInvoice invoice : getUnpayedInvoices()) {
-			if (invoice.getJob().getCustomerId().equals(customer.getId())) {
+			if (invoice.getJob().getOwnerId().equals(customer.getId())) {
 				retval.add(invoice);
 			}
 		}
@@ -402,7 +454,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 * All jobs indexed by their unique id-String.
 	 *
 	 * @see GnucashJob
-	 * @see GnucashJobImpl
+	 * @see GnucashCustomerJobImpl
 	 */
 	protected Map<String, GnucashJob> jobid2job;
 
@@ -413,6 +465,14 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashCustomerImpl
 	 */
 	protected Map<String, GnucashCustomer> customerid2customer;
+
+    /**
+     * All customers indexed by their unique id-String.
+     *
+     * @see GnucashVendor
+     * @see GnucashVendorImpl
+     */
+    protected Map<String, GnucashVendor> customerid2vendor;
 
 	/**
 	 * Helper to implement the {@link GnucashObject}-interface
@@ -540,6 +600,19 @@ public class GnucashFileImpl implements GnucashFile {
 
 		}
 
+        customerid2vendor = new HashMap<>();
+        for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+            Object bookElement = iter.next();
+            if (!(bookElement instanceof GncV2.GncBook.GncGncVendor)) {
+                continue;
+            }
+            GncV2.GncBook.GncGncVendor jwsdpVendor = (GncV2.GncBook.GncGncVendor) bookElement;
+
+            GnucashVendorImpl vendor = createVendor(jwsdpVendor);
+            customerid2vendor.put(vendor.getId(), vendor);
+
+        }
+
 		jobid2job = new HashMap<String, GnucashJob>();
 		for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
 			Object bookElement = iter.next();
@@ -548,7 +621,7 @@ public class GnucashFileImpl implements GnucashFile {
 			}
 			GncV2.GncBook.GncGncJob jwsdpjob = (GncV2.GncBook.GncGncJob) bookElement;
 
-			GnucashJobImpl job = createJob(jwsdpjob);
+			GnucashCustomerJobImpl job = createJob(jwsdpjob);
 			String jobID = job.getId();
 			if (jobID == null) {
 				LOGGER.error("File contains a job w/o an ID. indexing it with the ID ''");
@@ -968,20 +1041,29 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param jwsdpjob the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashJob to wrap the given jaxb-object.
 	 */
-	protected GnucashJobImpl createJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
+	protected GnucashCustomerJobImpl createJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
 
-		GnucashJobImpl job = new GnucashJobImpl(jwsdpjob, this);
+		GnucashCustomerJobImpl job = new GnucashCustomerJobImpl(jwsdpjob, this);
 		return job;
 	}
 
 	/**
 	 * @param jwsdpCustomer the JWSDP-peer (parsed xml-element) to fill our object with
-	 * @return the new GnucashCustomer to wrap the given jaxb-object.
+	 * @return the new GnucashCustomer to wrap the given JAXB object.
 	 */
 	protected GnucashCustomerImpl createCustomer(final GncV2.GncBook.GncGncCustomer jwsdpCustomer) {
 		GnucashCustomerImpl customer = new GnucashCustomerImpl(jwsdpCustomer, this);
 		return customer;
 	}
+
+    /**
+     * @param jwsdpVendor the JWSDP-peer (parsed xml-element) to fill our object with
+     * @return the new GnucashVendor to wrap the given JAXB object.
+     */
+    protected GnucashVendorImpl createVendor(final GncV2.GncBook.GncGncVendor jwsdpVendor) {
+        GnucashVendorImpl vendor = new GnucashVendorImpl(jwsdpVendor, this);
+        return vendor;
+    }
 
 	/**
 	 * @param jwsdpTransaction the JWSDP-peer (parsed xml-element) to fill our object with
@@ -1165,6 +1247,8 @@ public class GnucashFileImpl implements GnucashFile {
 		}
 		return retval;
 	}
+	
+	// ---------------------------------------------------------------
 
 	/**
 	 * @see GnucashFile#getCustomerByID(java.lang.String)
@@ -1205,7 +1289,45 @@ public class GnucashFileImpl implements GnucashFile {
 	public Collection<GnucashCustomer> getCustomers() {
 		return customerid2customer.values();
 	}
+	
+	// ---------------------------------------------------------------
+	
+	@Override
+	public GnucashVendor getVendorByID(String id) {
+      if (accountid2account == null) {
+        throw new IllegalStateException("no root-element loaded");
+      }
 
+      GnucashVendor retval = customerid2vendor.get(id);
+      if (retval == null) {
+        LOGGER.warn("No Vendor with id '" + id + "'. We know "
+                + customerid2vendor.size() + " accounts.");
+      }
+      return retval;
+	}
+
+	@Override
+	public GnucashVendor getVendorByName(String name) {
+      if (accountid2account == null) {
+        throw new IllegalStateException("no root-element loaded");
+      }
+
+      for (GnucashVendor vendor : getVendors()) {
+        if (vendor.getName().equals(name)) {
+            return vendor;
+        }
+      }
+      return null;
+	}
+
+	@Override
+	public Collection<GnucashVendor> getVendors()
+	{
+      return customerid2vendor.values();
+	}
+
+    // ---------------------------------------------------------------
+    
 	/**
 	 * @param customer the customer to look for.
 	 * @return all jobs that have this customer, never null
@@ -1219,7 +1341,7 @@ public class GnucashFileImpl implements GnucashFile {
 
 		for (Object element : jobid2job.values()) {
 			GnucashJob job = (GnucashJob) element;
-			if (job.getCustomerId().equals(customer.getId())) {
+			if (job.getOwnerId().equals(customer.getId())) {
 				retval.add(job);
 			}
 
@@ -1604,5 +1726,4 @@ public class GnucashFileImpl implements GnucashFile {
 	public Collection<String> getUserDefinedAttributeKeys() {
 		return myGnucashObject.getUserDefinedAttributeKeys();
 	}
-
 }

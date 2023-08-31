@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
@@ -38,13 +39,6 @@ import org.gnucash.read.GnucashTransactionSplit;
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashInvoiceImpl implements GnucashInvoice {
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public GnucashCustomer getCustomer() {
-		return getJob().getCustomer();
-	}
 
 	/**
 	 * @return getAmmountWithoutTaxes().isMoreThen(getAmmountPayedWithoutTaxes())
@@ -240,7 +234,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	/**
 	 * The file we belong to.
 	 */
-	private final GnucashFile file;
+	protected final GnucashFile file;
 
 	/**
 	 * @param peer the JWSDP-object we are facading.
@@ -420,25 +414,13 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		return getJwsdpPeer().getInvoiceBillingId();
 	}
 
-    public String getOwner() {
-      String result = "[InvoiceOwner: ";
-      result += "id: " + getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue()+ ", "; 
-      String ownerType = getJwsdpPeer().getInvoiceOwner().getOwnerType();
-      result += "type: " + ownerType + ", "; 
-      
-      if ( ownerType.equals("gncCustomer") ) { // ::MAGIC
-        GnucashCustomer cust = file.getCustomerByID(getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue());
-        result += cust.getCustomerNumber() + " ";
-        result += "(" + cust.getName() + ")";
-      }
-      else if ( ownerType.equals("gncVendor") ) { // ::MAGIC
-        // ::TODO
-        result += "(NOT IMPLEMENTED YET)";
-      }
-      
-      result += "]";
-      
-      return result;
+    public String getOwnerId() {
+      assert getJwsdpPeer().getInvoiceOwner().getOwnerId().getType().equals("guid");
+      return getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue();
+    }
+
+    public InvoiceOwner getOwner() {
+      return getJwsdpPeer().getInvoiceOwner();
     }
 
 	/**

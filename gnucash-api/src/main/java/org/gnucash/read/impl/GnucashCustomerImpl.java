@@ -1,13 +1,3 @@
-/**
- * GnucashCustomerImpl.java
- * License: GPLv3 or later
- * Created on 14.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 14.05.2005 - initial version
- * ...
- */
 package org.gnucash.read.impl;
 
 import java.text.NumberFormat;
@@ -23,14 +13,9 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashInvoice;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
+import org.gnucash.read.spec.GnucashCustomerJob;
 
-/**
- * created: 14.05.2005 <br/>
- * JWSDP-implementation of the
- * {@link GnucashCustomer}.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
- */
 public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCustomer {
 
 	/**
@@ -73,9 +58,11 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		List<GnucashJob> retval = new LinkedList<GnucashJob>();
 
 		for (GnucashJob job : getGnucashFile().getJobs()) {
-			if (job.getCustomerId().equals(getId())) {
-				retval.add(job);
-			}
+		  if ( job instanceof GnucashCustomerJob ) {
+            if ( ((GnucashCustomerJob) job).getCustomerId().equals(getId()) ) {
+              retval.add(job);
+            }
+		  }		    
 		}
 
 		return retval;
@@ -104,14 +91,15 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	public int getOpenInvoices() {
 		int count = 0;
 		for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
-			if (invoice.getCustomer() != this) {
-				continue;
-			}
+		  if ( invoice instanceof GnucashCustomerInvoice ) {
+            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
+              continue;
+            }
 
-			if (invoice.isNotFullyPayed()) {
-				count++;
-			}
-
+            if (invoice.isNotFullyPayed()) {
+              count++;
+            }
+		  }
 		}
 		return count;
 	}
@@ -123,10 +111,12 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		FixedPointNumber retval = new FixedPointNumber();
 
 		for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
-			if (invoice.getCustomer() != this) {
-				continue;
-			}
-			retval.add(invoice.getAmmountWithoutTaxes());
+		  if ( invoice instanceof GnucashCustomerInvoice ) {
+            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
+              continue;
+            }
+            retval.add(invoice.getAmmountWithoutTaxes());
+		  }
 		}
 
 		return retval;
@@ -165,10 +155,12 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		FixedPointNumber retval = new FixedPointNumber();
 
 		for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
-			if (invoice.getCustomer() != this) {
-				continue;
-			}
-			retval.add(invoice.getAmmountUnPayed());
+		  if ( invoice instanceof GnucashCustomerInvoice ) {
+            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
+              continue;
+            }
+            retval.add(invoice.getAmmountUnPayed());
+		  }
 		}
 
 		return retval;

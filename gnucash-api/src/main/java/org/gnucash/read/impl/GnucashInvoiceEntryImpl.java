@@ -101,8 +101,8 @@ public class GnucashInvoiceEntryImpl extends GnucashObjectImpl implements Gnucas
 	public String getInvoiceID() {
 		if (jwsdpPeer.getEntryInvoice() == null && jwsdpPeer.getEntryBill() == null) {
 			LOG.error("file contains an invoice-entry with GUID="
-					+ getId() + " without an invoice-element(customer) AND "
-					+ "without a bill-element(supplier)");
+					+ getId() + " without an invoice-element (customer) AND "
+					+ "without a bill-element (vendor)");
 		}
 		if (jwsdpPeer.getEntryInvoice() == null) {
 			return null;
@@ -210,8 +210,8 @@ public class GnucashInvoiceEntryImpl extends GnucashObjectImpl implements Gnucas
 			System.err.println("Invoice with id '"
 					+ getId()
 					+ "' is taxable but has an unknown taxtable! "
-					+ "Assuming 16%");
-			return new FixedPointNumber("1600000/10000000");
+					+ "Assuming 19%");
+			return new FixedPointNumber("1900000/10000000");
 		}
 
 		GnucashTaxTable.TaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();

@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Collection;
 
 import org.gnucash.currency.ComplexCurrencyTable;
+import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
@@ -47,6 +48,8 @@ public interface GnucashFile extends GnucashObject {
 	 * @return the default-currencyID to use.
 	 */
 	String getDefaultCurrencyID();
+	
+	// ---------------------------------------------------------------
 
 	/**
 	 * @param id id of a taxtable
@@ -59,6 +62,22 @@ public interface GnucashFile extends GnucashObject {
 	 * @link GnucashTaxTable
 	 */
 	Collection<GnucashTaxTable> getTaxTables();
+
+    // ----------------------------
+
+    /**
+     * @param id id of a taxtable
+     * @return the identified taxtable or null
+     */
+    VendorTerms getVendorTermsByID(String id);
+
+    /**
+     * @return all TaxTables defined in the book
+     * @link GnucashTaxTable
+     */
+    Collection<VendorTerms> getVendorTerms();
+
+    // ---------------------------------------------------------------
 
 	/**
 	 * @param pCmdtySpace the namespace for pCmdtyId
@@ -221,6 +240,8 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getAccountByName(String)
 	 */
 	GnucashAccount getAccountByIDorNameEx(String id, String name);
+	
+	// ----------------------------
 
 	/**
 	 * @param id the unique id of the customer to look for
@@ -245,5 +266,31 @@ public interface GnucashFile extends GnucashObject {
 	 * Do not modify the returned collection!
 	 */
 	Collection<GnucashCustomer> getCustomers();
+
+    // ----------------------------
+
+    /**
+     * @param id the unique id of the vendor to look for
+     * @return the vendor or null if it's not found
+     */
+    GnucashVendor getVendorByID(String id);
+
+    /**
+     * warning: this function has to traverse all
+     * vendors. If it much faster to try
+     * getVendorByID first and only call this method
+     * if the returned account does not have the right name.
+     *
+     * @param name the name to look for
+     * @return null if not found
+     * @see #getVendorByID(String)
+     */
+    GnucashVendor getVendorByName(String name);
+
+    /**
+     * @return a (possibly read-only) collection of all vendors
+     * Do not modify the returned collection!
+     */
+    Collection<GnucashVendor> getVendors();
 
 }

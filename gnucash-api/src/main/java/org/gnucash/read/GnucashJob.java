@@ -26,6 +26,11 @@ import java.util.Collection;
  */
 
 public interface GnucashJob {
+  
+  // ::MAGIC
+  final static String TYPE_CUSTOMER = "gncCustomer";
+  final static String TYPE_VENDOR   = "gncVendor";
+
 	/**
 	 * The gnucash-file is the top-level class to contain everything.
 	 * @return the file we are associated with
@@ -43,30 +48,6 @@ public interface GnucashJob {
 	Collection getInvoices();
 
 	/**
-	 * @see #getCustomerType()
-	 */
-	String CUSTOMETYPE_CUSTOMER = "gncCustomer";
-
-	/**
-	 * Not used.
-	 * @return CUSTOMETYPE_CUSTOMER
-	 */
-	String getCustomerType();
-
-	/**
-	 *
-	 * @return the customer this job is from.
-	 */
-	GnucashCustomer getCustomer();
-
-	/**
-	 *
-	 * @return the id of the customer this job is from.
-	 * @see #getCustomer()
-	 */
-	String getCustomerId();
-
-	/**
 	 * @return true if the job is still active
 	 */
 	boolean isJobActive();
@@ -82,4 +63,19 @@ public interface GnucashJob {
 	 * @return the name the user gave to this job.
 	 */
 	String getName();
+	
+	// ----------------------------
+	
+	   /**
+     * Not used.
+     * @return CUSTOMETYPE_CUSTOMER
+     */
+    String getOwnerType();
+
+    /**
+     *
+     * @return the id of the customer this job is from.
+     * @see #getCustomer()
+     */
+    String getOwnerId();
 }
