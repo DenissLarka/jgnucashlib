@@ -5,18 +5,17 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 
 import org.gnucash.Const;
-import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashInvoice;
+import org.gnucash.read.GnucashTransaction;
 import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashCustomer
+public class TestGnucashTransaction
 {
-  private static GnucashFile     gcshFile = null;
-  private static GnucashCustomer cust = null;
+  private static GnucashFile        gcshFile = null;
+  private static GnucashTransaction trx = null;
   
   public static void main(String[] args) throws Exception
   {
@@ -25,7 +24,7 @@ public class TestGnucashCustomer
 
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashCustomer.class);  
+    return new JUnit4TestAdapter(TestGnucashTransaction.class);  
   }
   
   @Before
@@ -61,18 +60,16 @@ public class TestGnucashCustomer
   @Test
   public void test01() throws Exception
   {
-    cust = gcshFile.getCustomerByID("5d1dd9afa7554553988669830cc1f696");
-    assertEquals("5d1dd9afa7554553988669830cc1f696", cust.getId());
-    assertEquals("000001", cust.getNumber());
-    assertEquals("Blödfug und Quatsch", cust.getName());
-  }
-
-  @Test
-  public void test02() throws Exception
-  {
-    cust = gcshFile.getCustomerByID("5d1dd9afa7554553988669830cc1f696");
-    assertEquals(1, cust.getUnpayedInvoices(GnucashInvoice.ReadVariant.DIRECT).size());
-    assertEquals("[GnucashCustomerInvoiceImpl: id: d9967c10fdf1465e9394a3e4b1e7bd79 customer-id (dir.): 5d1dd9afa7554553988669830cc1f696 invoice-number: null description: 'null' #entries: 0 dateOpened: 2023-07-29]", 
-                 cust.getUnpayedInvoices(GnucashInvoice.ReadVariant.DIRECT).toArray()[0].toString());
+    trx = gcshFile.getTransactionByID("32b216aa73a44137aa5b041ab8739058");
+    assertEquals("32b216aa73a44137aa5b041ab8739058", trx.getId());
+    // assertEquals(0.00, trx.getBalance());
+    assertEquals("Dividenderl", trx.getDescription());
+    assertEquals("2023-08-06T10:59Z", trx.getDatePosted().toString());
+    assertEquals("2023-08-06T08:21:44Z", trx.getDateEntered().toString());
+        
+    assertEquals(3, trx.getSplitsCount());
+    assertEquals("7abf90fe15124254ac3eb7ec33f798e7", trx.getSplits().get(0).getId());
+    assertEquals("ea08a144322146cea38b39d134ca6fc1", trx.getSplits().get(1).getId());
+    assertEquals("5c5fa881869843d090a932f8e6b15af2", trx.getSplits().get(2).getId());
   }
 }
