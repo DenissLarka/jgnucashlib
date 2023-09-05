@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -93,6 +94,32 @@ public class GnucashFileImpl implements GnucashFile {
 	 * my CurrencyTable.
 	 */
 	private final ComplexCurrencyTable currencyTable = new ComplexCurrencyTable();
+
+    // ---------------------------------------------------------------
+
+    /**
+     * @param pFile the file to load and initialize from
+     * @throws IOException on low level reading-errors (FileNotFoundException if not
+     *                     found)
+     * @see #loadFile(File)
+     */
+    public GnucashFileImpl(final File pFile) throws IOException {
+        super();
+        loadFile(pFile);
+    }
+
+    /**
+     * @param pFile the file to load and initialize from
+     * @throws IOException on low level reading-errors (FileNotFoundException if not
+     *                     found)
+     * @see #loadFile(File)
+     */
+    public GnucashFileImpl(final InputStream is) throws IOException {
+        super();
+        loadInputStream(is);
+    }
+
+    // ---------------------------------------------------------------
 
 	/**
 	 * @return Returns the currencyTable.
@@ -1240,17 +1267,6 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
 	/**
-	 * @param pFile the file to load and initialize from
-	 * @throws IOException on low level reading-errors (FileNotFoundException if not
-	 *                     found)
-	 * @see #loadFile(File)
-	 */
-	public GnucashFileImpl(final File pFile) throws IOException {
-		super();
-		loadFile(pFile);
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -1311,7 +1327,19 @@ public class GnucashFileImpl implements GnucashFile {
 			}
 		}
 
-		NamespaceRemovererReader reader = new NamespaceRemovererReader(new InputStreamReader(in, "utf-8"));
+		loadInputStream(in);
+
+		long end = System.currentTimeMillis();
+        LOGGER.info("GnucashFileImpl.loadFile took " + (end - start) + " ms (total) ");
+
+	}
+
+  private void loadInputStream(InputStream in)
+      throws UnsupportedEncodingException, IOException
+  {
+    long start = System.currentTimeMillis();
+
+    NamespaceRemovererReader reader = new NamespaceRemovererReader(new InputStreamReader(in, "utf-8"));
 		try {
 
 			JAXBContext myContext = getJAXBContext();
@@ -1321,7 +1349,7 @@ public class GnucashFileImpl implements GnucashFile {
 			long start2 = System.currentTimeMillis();
 			setRootElement(o);
 			long end = System.currentTimeMillis();
-			LOGGER.info("GnucashFileImpl.loadFile took "
+			LOGGER.info("GnucashFileImpl.loadFileInputStream took "
 					+ (end - start) + " ms (total) "
 					+ (start2 - start) + " ms (jaxb-loading)"
 					+ (end - start2) + " ms (building facades)"
@@ -1335,8 +1363,7 @@ public class GnucashFileImpl implements GnucashFile {
 		finally {
 			reader.close();
 		}
-
-	}
+  }
 
 	/**
 	 * @see #getObjectFactory()
@@ -1365,7 +1392,7 @@ public class GnucashFileImpl implements GnucashFile {
 	protected JAXBContext getJAXBContext() {
 		if (myJAXBContext == null) {
 			try {
-				myJAXBContext = JAXBContext.newInstance("org.gnucash.generated", this.getClass().getClassLoader());
+			  myJAXBContext = JAXBContext.newInstance("org.gnucash.generated", this.getClass().getClassLoader());
 			}
 			catch (JAXBException e) {
 				LOGGER.error(e.getMessage(), e);
