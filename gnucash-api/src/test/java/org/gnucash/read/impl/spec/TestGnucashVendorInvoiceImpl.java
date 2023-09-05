@@ -1,22 +1,25 @@
-package org.gnucash.read.impl;
+package org.gnucash.read.impl.spec;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 
 import org.gnucash.Const;
-import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.impl.GnucashFileImpl;
+import org.gnucash.read.spec.GnucashVendorInvoice;
 import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashAccount
+public class TestGnucashVendorInvoiceImpl
 {
   private static GnucashFile    gcshFile = null;
-  private static GnucashAccount acct = null;
+  private static GnucashVendorInvoice invc = null;
   
+  private static final double VALUE_DIFF_TOLERANCE = 0.001; // ::MAGIC
+
   public static void main(String[] args) throws Exception
   {
     junit.textui.TestRunner.run(suite());
@@ -24,7 +27,7 @@ public class TestGnucashAccount
 
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashAccount.class);  
+    return new JUnit4TestAdapter(TestGnucashVendorInvoiceImpl.class);  
   }
   
   @Before
@@ -60,21 +63,16 @@ public class TestGnucashAccount
   @Test
   public void test01() throws Exception
   {
-    acct = gcshFile.getAccountByID("bbf77a599bd24a3dbfec3dd1d0bb9f5c");
-    assertEquals("bbf77a599bd24a3dbfec3dd1d0bb9f5c", acct.getId());
-    assertEquals("BANK", acct.getType());
-    assertEquals("Giro RaiBa", acct.getName());
-    assertEquals("Root Account::Aktiva::Sichteinlagen::KK::Giro RaiBa", acct.getQualifiedName());
-    assertEquals("Girokonto", acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
-    
-    assertEquals("fdffaa52f5b04754901dfb1cf9221494", acct.getParentAccountId());
+    invc = new GnucashVendorInvoiceImpl( gcshFile.getInvoiceByID("4eb0dc387c3f4daba57b11b2a657d8a4") );
+    assertEquals(true, invc instanceof GnucashVendorInvoiceImpl);
+    assertEquals("4eb0dc387c3f4daba57b11b2a657d8a4", invc.getId());
+    assertEquals("gncVendor", invc.getOwnerType());
+    // ::TODO
+    // assertEquals("xxx", invc.getInvoiceNumber());
+    assertEquals("Sie wissen schon: Gefälligkeiten, ne?", invc.getDescription());
 
-    assertEquals(1127.00, acct.getBalance().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(1127.00, acct.getBalanceRecursive().doubleValue(), Const.DIFF_TOLERANCE);
-
-    assertEquals(2, acct.getTransactions().size());
-    assertEquals("568864bfb0954897ab8578db4d27372f", acct.getTransactions().get(0).getId());
-    assertEquals("18a45dfc8a6868c470438e27d6fe10b2", acct.getTransactions().get(1).getId());
+    // ::TODO
+    // assertEquals("xxx", invc.getDateOpened().toString());
+    assertEquals("2023-08-31T10:59Z", invc.getDatePosted().toString());
   }
 }

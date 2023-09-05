@@ -1,21 +1,22 @@
-package org.gnucash.read.impl;
+package org.gnucash.read.impl.spec;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 
 import org.gnucash.Const;
-import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.impl.GnucashFileImpl;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashAccount
+public class TestGnucashCustomerInvoiceImpl
 {
   private static GnucashFile    gcshFile = null;
-  private static GnucashAccount acct = null;
+  private static GnucashCustomerInvoice invc = null;
   
   public static void main(String[] args) throws Exception
   {
@@ -24,7 +25,7 @@ public class TestGnucashAccount
 
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashAccount.class);  
+    return new JUnit4TestAdapter(TestGnucashCustomerInvoiceImpl.class);  
   }
   
   @Before
@@ -60,21 +61,19 @@ public class TestGnucashAccount
   @Test
   public void test01() throws Exception
   {
-    acct = gcshFile.getAccountByID("bbf77a599bd24a3dbfec3dd1d0bb9f5c");
-    assertEquals("bbf77a599bd24a3dbfec3dd1d0bb9f5c", acct.getId());
-    assertEquals("BANK", acct.getType());
-    assertEquals("Giro RaiBa", acct.getName());
-    assertEquals("Root Account::Aktiva::Sichteinlagen::KK::Giro RaiBa", acct.getQualifiedName());
-    assertEquals("Girokonto", acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
-    
-    assertEquals("fdffaa52f5b04754901dfb1cf9221494", acct.getParentAccountId());
+    invc = new GnucashCustomerInvoiceImpl( gcshFile.getInvoiceByID("d9967c10fdf1465e9394a3e4b1e7bd79") );
+    assertEquals(true, invc instanceof GnucashCustomerInvoiceImpl);
+    assertEquals("d9967c10fdf1465e9394a3e4b1e7bd79", invc.getId());
+    assertEquals("gncCustomer", invc.getOwnerType());
+    // ::TODO
+    // assertEquals("xxx", invc.getInvoiceNumber());
+    assertEquals(null, invc.getDescription());
 
-    assertEquals(1127.00, acct.getBalance().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(1127.00, acct.getBalanceRecursive().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals("2023-07-29T10:59Z", invc.getDateOpened().toString());
+    assertEquals("2023-07-29T10:59Z", invc.getDatePosted().toString());
 
-    assertEquals(2, acct.getTransactions().size());
-    assertEquals("568864bfb0954897ab8578db4d27372f", acct.getTransactions().get(0).getId());
-    assertEquals("18a45dfc8a6868c470438e27d6fe10b2", acct.getTransactions().get(1).getId());
+    // ::TODO
+    // assertEquals(1327.60, invc.getAmmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(1327.60, invc.getAmmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
   }
 }
