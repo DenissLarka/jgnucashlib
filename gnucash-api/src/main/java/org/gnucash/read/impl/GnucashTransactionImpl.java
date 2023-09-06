@@ -30,7 +30,7 @@ import org.gnucash.generated.SlotsType;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashInvoice;
+import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 
@@ -76,7 +76,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 		jwsdpPeer = peer;
 		file = gncFile;
 
-		for (GnucashInvoice invoice : getInvoices()) {
+		for (GnucashCustVendInvoice invoice : getInvoices()) {
 			invoice.addTransaction(this);
 		}
 
@@ -194,13 +194,13 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	/**
 	 * @return the invoices this transaction belongs to (not payments but the transaction belonging to handing out the invoice)
 	 */
-	public Collection<GnucashInvoice> getInvoices() {
+	public Collection<GnucashCustVendInvoice> getInvoices() {
 		Collection<String> invoiceIDs = getInvoiceIDs();
-		List<GnucashInvoice> retval = new ArrayList<GnucashInvoice>(invoiceIDs.size());
+		List<GnucashCustVendInvoice> retval = new ArrayList<GnucashCustVendInvoice>(invoiceIDs.size());
 
 		for (String invoiceID : invoiceIDs) {
 
-			GnucashInvoice invoice = file.getInvoiceByID(invoiceID);
+			GnucashCustVendInvoice invoice = file.getCustVendInvoiceByID(invoiceID);
 			if (invoice == null) {
 				System.err.println(
 						"No invoice with id='"

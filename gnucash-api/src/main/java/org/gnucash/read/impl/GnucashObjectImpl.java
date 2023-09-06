@@ -38,6 +38,22 @@ import org.gnucash.read.GnucashObject;
  */
 public class GnucashObjectImpl implements GnucashObject {
 
+  /**
+   * @param slots  ${@link #mySlots}
+   * @param myFile The file we belong to
+   */
+  public GnucashObjectImpl(final SlotsType slots, final GnucashFile myFile) {
+      super();
+      
+      this.myFile = myFile;
+      setSlots(slots);
+//      System.err.println("Slots:");
+//      for ( Slot slot : getSlots().getSlot() )
+//        System.err.println(" - " + slot);
+  }
+  
+  // -----------------------------------------------------------------
+
 	/**
 	 * the user-defined values.
 	 */
@@ -227,16 +243,6 @@ public class GnucashObjectImpl implements GnucashObject {
 		if (propertyChangeFirer != null) {
 			propertyChangeFirer.firePropertyChange("slots", old, slots);
 		}
-	}
-
-	/**
-	 * @param slots  ${@link #mySlots}
-	 * @param myFile The file we belong to
-	 */
-	public GnucashObjectImpl(final SlotsType slots, final GnucashFile myFile) {
-		super();
-		this.myFile = myFile;
-		setSlots(slots);
 	}
 
 	/**

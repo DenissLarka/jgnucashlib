@@ -18,7 +18,7 @@ import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashInvoice;
+import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 
@@ -71,7 +71,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 
 		String lot = getLotID();
 		if (lot != null) {
-			for (GnucashInvoice invoice : getTransaction().getGnucashFile().getInvoices()) {
+			for (GnucashCustVendInvoice invoice : getTransaction().getGnucashFile().getInvoices()) {
 				String lotID = invoice.getLotID();
 				if (lotID != null && lotID.equals(lot)) {
 					// if action=="Rechnung" this is a split of the post-transaction,

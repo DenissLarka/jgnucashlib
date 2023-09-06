@@ -50,8 +50,8 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashInvoice;
-import org.gnucash.read.GnucashInvoiceEntry;
+import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashCustVendInvoiceEntry;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTaxTable;
@@ -60,12 +60,12 @@ import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
-import org.gnucash.read.impl.spec.GnucashVendorInvoiceImpl;
-import org.gnucash.read.impl.spec.WrongInvoiceTypeException;
+import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
-import org.gnucash.read.spec.GnucashVendorInvoice;
+import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -135,11 +135,11 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @return a read-only collection of all accounts
 	 */
 	public Collection<GnucashAccount> getAccounts() {
-		if (accountid2account == null) {
+		if (accountID2account == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		return Collections.unmodifiableCollection(new TreeSet<>(accountid2account.values()));
+		return Collections.unmodifiableCollection(new TreeSet<>(accountID2account.values()));
 	}
 	
 	// ---------------------------------------------------------------
@@ -265,13 +265,13 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @return the sorted collection of children of that account
 	 */
 	public Collection<GnucashAccount> getAccountsByParentID(final String id) {
-		if (accountid2account == null) {
+		if (accountID2account == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
 		SortedSet<GnucashAccount> retval = new TreeSet<GnucashAccount>();
 
-		for (Object element : accountid2account.values()) {
+		for (Object element : accountID2account.values()) {
 			GnucashAccount account = (GnucashAccount) element;
 
 			String parent = account.getParentAccountId();
@@ -294,11 +294,11 @@ public class GnucashFileImpl implements GnucashFile {
 	 */
 	public GnucashAccount getAccountByName(final String name) {
 
-		if (accountid2account == null) {
+		if (accountID2account == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		for (GnucashAccount account : accountid2account.values()) {
+		for (GnucashAccount account : accountID2account.values()) {
 			if (account.getName().equals(name)) {
 				return account;
 			}
@@ -323,7 +323,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 */
 	public GnucashAccount getAccountByNameEx(final String nameRegEx) {
 
-		if (accountid2account == null) {
+		if (accountID2account == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
@@ -333,7 +333,7 @@ public class GnucashFileImpl implements GnucashFile {
 		}
 		Pattern pattern = Pattern.compile(nameRegEx);
 
-		for (GnucashAccount account : accountid2account.values()) {
+		for (GnucashAccount account : accountID2account.values()) {
 			Matcher matcher = pattern.matcher(account.getName());
 			if (matcher.matches()) {
 				return account;
@@ -385,21 +385,21 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
 	/**
-	 * @see GnucashFile#getInvoiceByID(java.lang.String)
+	 * @see GnucashFile#getCustVendInvoiceByID(java.lang.String)
 	 */
-	public GnucashInvoice getInvoiceByID(final String id) {
-		return invoiceid2invoice.get(id);
+	public GnucashCustVendInvoice getCustVendInvoiceByID(final String id) {
+		return invoiceID2invoice.get(id);
 	}
 
 	/**
 	 * @see GnucashFile#getInvoices()
 	 */
 	@SuppressWarnings("unchecked")
-	public Collection<GnucashInvoice> getInvoices() {
+	public Collection<GnucashCustVendInvoice> getInvoices() {
 
-		Collection<GnucashInvoice> c = invoiceid2invoice.values();
+		Collection<GnucashCustVendInvoice> c = invoiceID2invoice.values();
 
-		ArrayList<GnucashInvoice> retval = new ArrayList<GnucashInvoice>(c);
+		ArrayList<GnucashCustVendInvoice> retval = new ArrayList<GnucashCustVendInvoice>(c);
 		Collections.sort(retval);
 
 		return retval;
@@ -408,9 +408,9 @@ public class GnucashFileImpl implements GnucashFile {
 	/**
 	 * @see GnucashFile#getUnpayedInvoices()
 	 */
-	public Collection<GnucashInvoice> getUnpayedInvoices() {
-		Collection<GnucashInvoice> retval = new LinkedList<GnucashInvoice>();
-		for (GnucashInvoice invoice : getInvoices()) {
+	public Collection<GnucashCustVendInvoice> getUnpayedInvoices() {
+		Collection<GnucashCustVendInvoice> retval = new LinkedList<GnucashCustVendInvoice>();
+		for (GnucashCustVendInvoice invoice : getInvoices()) {
 			if (invoice.getAmmountUnPayed().isPositive()) {
 				retval.add(invoice);
 			}
@@ -424,8 +424,8 @@ public class GnucashFileImpl implements GnucashFile {
      */
     public Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(final GnucashCustomer customer) {
         Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
-        for (GnucashInvoice invoice : getUnpayedInvoices()) {
-            if (invoice.getOwnerId(GnucashInvoice.ReadVariant.DIRECT).equals(customer.getId())) {
+        for (GnucashCustVendInvoice invoice : getUnpayedInvoices()) {
+            if (invoice.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(customer.getId())) {
                 try {
                   retval.add(new GnucashCustomerInvoiceImpl(invoice));
                 }
@@ -445,7 +445,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 */
 	public Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(final GnucashCustomer customer) {
 		Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
-        for (GnucashInvoice invoice : getUnpayedInvoices())
+        for (GnucashCustVendInvoice invoice : getUnpayedInvoices())
         {
           if (invoice.getJob().getOwnerId().equals(customer.getId())) {
             try {
@@ -465,12 +465,12 @@ public class GnucashFileImpl implements GnucashFile {
     /**
      * @see GnucashFile#getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    public Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor_direct(final GnucashVendor vendor) {
-        Collection<GnucashVendorInvoice> retval = new LinkedList<GnucashVendorInvoice>();
-        for (GnucashInvoice invoice : getUnpayedInvoices()) {
-            if (invoice.getOwnerId(GnucashInvoice.ReadVariant.DIRECT).equals(vendor.getId())) {
+    public Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_direct(final GnucashVendor vendor) {
+        Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
+        for (GnucashCustVendInvoice invoice : getUnpayedInvoices()) {
+            if (invoice.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(vendor.getId())) {
                 try {
-                  retval.add(new GnucashVendorInvoiceImpl(invoice));
+                  retval.add(new GnucashVendorBillImpl(invoice));
                 }
                 catch (WrongInvoiceTypeException e) {
                   // This really should not happen, one can almost
@@ -486,12 +486,12 @@ public class GnucashFileImpl implements GnucashFile {
     /**
      * @see GnucashFile#getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    public Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor_viaJob(final GnucashVendor vendor) {
-        Collection<GnucashVendorInvoice> retval = new LinkedList<GnucashVendorInvoice>();
-        for (GnucashInvoice invoice : getUnpayedInvoices()) {
+    public Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_viaJob(final GnucashVendor vendor) {
+        Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
+        for (GnucashCustVendInvoice invoice : getUnpayedInvoices()) {
             if (invoice.getJob().getOwnerId().equals(vendor.getId())) {
                 try {
-                  retval.add(new GnucashVendorInvoiceImpl(invoice));
+                  retval.add(new GnucashVendorBillImpl(invoice));
                 }
                 catch (WrongInvoiceTypeException e) {
                   // This really should not happen, one can almost
@@ -507,9 +507,9 @@ public class GnucashFileImpl implements GnucashFile {
 	/**
 	 * @see GnucashFile#getPayedInvoices()
 	 */
-	public Collection<GnucashInvoice> getPayedInvoices() {
-		Collection<GnucashInvoice> retval = new LinkedList<GnucashInvoice>();
-		for (GnucashInvoice invoice : getInvoices()) {
+	public Collection<GnucashCustVendInvoice> getPayedInvoices() {
+		Collection<GnucashCustVendInvoice> retval = new LinkedList<GnucashCustVendInvoice>();
+		for (GnucashCustVendInvoice invoice : getInvoices()) {
 			if (!invoice.getAmmountUnPayed().isPositive()) {
 				retval.add(invoice);
 			}
@@ -517,6 +517,27 @@ public class GnucashFileImpl implements GnucashFile {
 		
 		return retval;
 	}
+
+    /**
+     * @see GnucashFile#getCustVendInvoiceByID(java.lang.String)
+     */
+    public GnucashCustVendInvoiceEntry getInvoiceEntryByID(final String id) {
+        return invoiceEntryID2invoiceEntry.get(id);
+    }
+
+    /**
+     * @see GnucashFile#getInvoices()
+     */
+    @SuppressWarnings("unchecked")
+    public Collection<GnucashCustVendInvoiceEntry> getInvoiceEntries() {
+
+        Collection<GnucashCustVendInvoiceEntry> c = invoiceEntryID2invoiceEntry.values();
+
+        ArrayList<GnucashCustVendInvoiceEntry> retval = new ArrayList<GnucashCustVendInvoiceEntry>(c);
+        Collections.sort(retval);
+
+        return retval;
+    }
 
 	/**
 	 * @see #getGnucashFile()
@@ -545,7 +566,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashAccount
 	 * @see GnucashAccountImpl
 	 */
-	protected Map<String, GnucashAccount> accountid2account;
+	protected Map<String, GnucashAccount> accountID2account;
 
 	/**
 	 * All transactions indexed by their unique id-String.
@@ -553,15 +574,23 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashTransaction
 	 * @see GnucashTransactionImpl
 	 */
-	protected Map<String, GnucashTransaction> transactionid2transaction;
+	protected Map<String, GnucashTransaction> transactionID2transaction;
 
 	/**
-	 * All invoices indexed by their unique id-String.
+	 * All customer/vendor invoices indexed by their unique id-String.
 	 *
-	 * @see GnucashInvoice
-	 * @see GnucashInvoiceImpl
+	 * @see GnucashCustVendInvoice
+	 * @see GnucashCustVendInvoiceImpl
 	 */
-	protected Map<String, GnucashInvoice> invoiceid2invoice;
+	protected Map<String, GnucashCustVendInvoice> invoiceID2invoice;
+
+    /**
+     * All customer/vendor invoice entries indexed by their unique id-String.
+     *
+     * @see GnucashCustVendInvoiceEnctry
+     * @see GnucashCustVendInvoiceEntryImpl
+     */
+    protected Map<String, GnucashCustVendInvoiceEntry> invoiceEntryID2invoiceEntry;
 
 	/**
 	 * All jobs indexed by their unique id-String.
@@ -577,7 +606,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashCustomer
 	 * @see GnucashCustomerImpl
 	 */
-	protected Map<String, GnucashCustomer> customerid2customer;
+	protected Map<String, GnucashCustomer> customerID2customer;
 
     /**
      * All vendors indexed by their unique id-String.
@@ -585,7 +614,7 @@ public class GnucashFileImpl implements GnucashFile {
      * @see GnucashVendor
      * @see GnucashVendorImpl
      */
-    protected Map<String, GnucashVendor> vendorid2vendor;
+    protected Map<String, GnucashVendor> vendorID2vendor;
 
 	/**
 	 * Helper to implement the {@link GnucashObject}-interface
@@ -627,7 +656,7 @@ public class GnucashFileImpl implements GnucashFile {
 		
 		// invoiceEntries refer to invoices, therefore they must be loaded after
 		// them
-		initInvoiceEntriesMap(pRootElement);
+		initInvoiceEntryMap(pRootElement);
 
 		// transactions refer to invoices, therefore they must be loaded after
 		// them
@@ -696,7 +725,7 @@ public class GnucashFileImpl implements GnucashFile {
 
   private void initAccountMap(final GncV2 pRootElement)
   {
-    accountid2account = new HashMap<>();
+    accountID2account = new HashMap<>();
     
     for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
@@ -707,12 +736,12 @@ public class GnucashFileImpl implements GnucashFile {
       
       try {
         GnucashAccount account = createAccount(jwsdpAccount);
-        accountid2account.put(account.getId(), account);
+        accountID2account.put(account.getId(), account);
       }
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName()
-            + "ignoring illegal Account-Entry with id="
+            + " ignoring illegal Account-Entry with id="
             + jwsdpAccount.getActId().getValue(),
             e);
       }
@@ -721,7 +750,7 @@ public class GnucashFileImpl implements GnucashFile {
 
   private void initInvoiceMap(final GncV2 pRootElement)
   {
-    invoiceid2invoice = new HashMap<>();
+    invoiceID2invoice = new HashMap<>();
     
     for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
@@ -731,43 +760,46 @@ public class GnucashFileImpl implements GnucashFile {
       GncV2.GncBook.GncGncInvoice jwsdpInvoice = (GncV2.GncBook.GncGncInvoice) bookElement;
       
       try {
-        GnucashInvoice invoice = createInvoice(jwsdpInvoice);
-        invoiceid2invoice.put(invoice.getId(), invoice);
+        GnucashCustVendInvoice invoice = createCustVendInvoice(jwsdpInvoice);
+        invoiceID2invoice.put(invoice.getId(), invoice);
       }
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName()
-            + "ignoring illegal Invoice-Entry with id="
+            + " ignoring illegal Customer/Vendor-Invoice-Entry with id="
             + jwsdpInvoice.getInvoiceId(),
             e);
       }
     }
   }
 
-  private void initInvoiceEntriesMap(final GncV2 pRootElement)
+  private void initInvoiceEntryMap(final GncV2 pRootElement)
   {
+    invoiceEntryID2invoiceEntry = new HashMap<>();
+    
     for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
       if (!(bookElement instanceof GncV2.GncBook.GncGncEntry)) {
         continue;
       }
-      GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry = (GncV2.GncBook.GncGncEntry) bookElement;
+      GncV2.GncBook.GncGncEntry jwsdpInvcEntr = (GncV2.GncBook.GncGncEntry) bookElement;
       
       try {
-        createInvoiceEntry(jwsdpInvoiceEntry);
+        GnucashCustVendInvoiceEntry invcEntr = createCustVendInvoiceEntry(jwsdpInvcEntr);
+        invoiceEntryID2invoiceEntry.put(invcEntr.getId(), invcEntr);
       }
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName()
-            + "ignoring illegal Invoice-Entry-Entry with id="
-            + jwsdpInvoiceEntry.getEntryGuid().getValue(), e);
+            + " ignoring illegal Customer/Vendor-Invoice-Entry-Entry with id="
+            + jwsdpInvcEntr.getEntryGuid().getValue(), e);
       }
     }
   }
 
   private void initTransactionMap(final GncV2 pRootElement)
   {
-    transactionid2transaction = new HashMap<>();
+    transactionID2transaction = new HashMap<>();
     
     for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
@@ -778,7 +810,7 @@ public class GnucashFileImpl implements GnucashFile {
 
       try {
         GnucashTransactionImpl account = createTransaction(jwsdpTransaction);
-        transactionid2transaction.put(account.getId(), account);
+        transactionID2transaction.put(account.getId(), account);
         for (GnucashTransactionSplit split : account.getSplits()) {
           /*String accountID = */
           split.getAccountID();
@@ -787,7 +819,7 @@ public class GnucashFileImpl implements GnucashFile {
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName()
-            + "ignoring illegal Transaction-Entry with id="
+            + " ignoring illegal Transaction-Entry with id="
             + jwsdpTransaction.getTrnId().getValue(),
             e);
       }
@@ -796,7 +828,7 @@ public class GnucashFileImpl implements GnucashFile {
 
   private void initCustomerMap(final GncV2 pRootElement)
   {
-    customerid2customer = new HashMap<>();
+    customerID2customer = new HashMap<>();
     
     for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
@@ -807,12 +839,12 @@ public class GnucashFileImpl implements GnucashFile {
       
       try {
         GnucashCustomerImpl cust = createCustomer(jwsdpCust);
-        customerid2customer.put(cust.getId(), cust);
+        customerID2customer.put(cust.getId(), cust);
       }
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName()
-            + "ignoring illegal Customer-Entry with id="
+            + " ignoring illegal Customer-Entry with id="
             + jwsdpCust.getCustId(),
             e);
       }
@@ -821,7 +853,7 @@ public class GnucashFileImpl implements GnucashFile {
 
   private void initVendorMap(final GncV2 pRootElement)
   {
-    vendorid2vendor = new HashMap<>();
+    vendorID2vendor = new HashMap<>();
     
     for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
@@ -832,12 +864,12 @@ public class GnucashFileImpl implements GnucashFile {
 
       try {
         GnucashVendorImpl vend = createVendor(jwsdpVend);
-        vendorid2vendor.put(vend.getId(), vend);
+        vendorID2vendor.put(vend.getId(), vend);
       }
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName()
-            + "ignoring illegal Vendor-Entry with id="
+            + " ignoring illegal Vendor-Entry with id="
             + jwsdpVend.getVendorId(),
             e);
       }
@@ -856,10 +888,10 @@ public class GnucashFileImpl implements GnucashFile {
       GncV2.GncBook.GncGncJob jwsdpJob = (GncV2.GncBook.GncGncJob) bookElement;
       
       try {
-        GnucashCustomerJobImpl job = createJob(jwsdpJob);
+        GnucashJobImpl job = createCustVendJob(jwsdpJob);
         String jobID = job.getId();
         if (jobID == null) {
-          LOGGER.error("File contains a job w/o an ID. indexing it with the ID ''");
+          LOGGER.error("File contains a customer/vendor job w/o an ID. indexing it with the ID ''");
           jobID = "";
         }
         jobid2job.put(job.getId(), job);
@@ -867,7 +899,7 @@ public class GnucashFileImpl implements GnucashFile {
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName()
-            + "ignoring illegal Job-Entry with id="
+            + " ignoring illegal Customer/Vendor-Job-Entry with id="
             + jwsdpJob.getJobId(),
             e);
       }
@@ -981,7 +1013,7 @@ public class GnucashFileImpl implements GnucashFile {
 	/**
 	 * @see {@link #getLatestPrice(String, String)}
 	 */
-	protected static final DateFormat PRICEQUOTEDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+	protected static final DateFormat PRICE_QUOTE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
 	/**
 	 * @param pCmdtySpace the namespace for pCmdtyId
@@ -1113,7 +1145,7 @@ public class GnucashFileImpl implements GnucashFile {
 						}
 					}
 
-					Date date = PRICEQUOTEDATEFORMAT.parse(
+					Date date = PRICE_QUOTE_DATE_FORMAT.parse(
 							priceQuote.getPriceTime().getTsDate());
 
 					if (latestDate == null || latestDate.before(date)) {
@@ -1202,6 +1234,8 @@ public class GnucashFileImpl implements GnucashFile {
 		return factor.multiply(latestQuote);
 	}
 
+    // ----------------------------
+
 	/**
 	 * @param jwsdpAccount the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashAccount to wrap the given jaxb-object.
@@ -1215,9 +1249,9 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param jwsdpInvoice the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashInvoice to wrap the given jaxb-object.
 	 */
-	protected GnucashInvoice createInvoice(
+	protected GnucashCustVendInvoice createCustVendInvoice(
 			final GncV2.GncBook.GncGncInvoice jwsdpInvoice) {
-		GnucashInvoice invoice = new GnucashInvoiceImpl(jwsdpInvoice, this);
+		GnucashCustVendInvoice invoice = new GnucashCustVendInvoiceImpl(jwsdpInvoice, this);
 		return invoice;
 	}
 
@@ -1225,9 +1259,9 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param jwsdpInvoiceEntry the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashInvoiceEntry to wrap the given jaxb-object.
 	 */
-	protected GnucashInvoiceEntry createInvoiceEntry(
+	protected GnucashCustVendInvoiceEntry createCustVendInvoiceEntry(
 			final GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry) {
-		GnucashInvoiceEntry entry = new GnucashInvoiceEntryImpl(jwsdpInvoiceEntry, this);
+		GnucashCustVendInvoiceEntry entry = new GnucashCustVendInvoiceEntryImpl(jwsdpInvoiceEntry, this);
 		return entry;
 	}
 
@@ -1235,9 +1269,9 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param jwsdpjob the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashJob to wrap the given jaxb-object.
 	 */
-	protected GnucashCustomerJobImpl createJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
+	protected GnucashJobImpl createCustVendJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
 
-		GnucashCustomerJobImpl job = new GnucashCustomerJobImpl(jwsdpjob, this);
+		GnucashJobImpl job = new GnucashJobImpl(jwsdpjob, this);
 		return job;
 	}
 
@@ -1267,6 +1301,8 @@ public class GnucashFileImpl implements GnucashFile {
 		GnucashTransactionImpl account = new GnucashTransactionImpl(jwsdpTransaction, this);
 		return account;
 	}
+	
+	// ----------------------------
 
 	/**
 	 * {@inheritDoc}
@@ -1430,14 +1466,14 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashFile#getAccountByID(java.lang.String)
 	 */
 	public GnucashAccount getAccountByID(final String id) {
-		if (accountid2account == null) {
+		if (accountID2account == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		GnucashAccount retval = accountid2account.get(id);
+		GnucashAccount retval = accountID2account.get(id);
 		if (retval == null) {
 			System.err.println("No Account with id '" + id + "'. We know "
-					+ accountid2account.size() + " accounts.");
+					+ accountID2account.size() + " accounts.");
 		}
 		return retval;
 	}
@@ -1448,14 +1484,14 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashFile#getCustomerByID(java.lang.String)
 	 */
 	public GnucashCustomer getCustomerByID(final String id) {
-		if (accountid2account == null) {
+		if (customerID2customer == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		GnucashCustomer retval = customerid2customer.get(id);
+		GnucashCustomer retval = customerID2customer.get(id);
 		if (retval == null) {
 			LOGGER.warn("No Customer with id '" + id + "'. We know "
-					+ customerid2customer.size() + " customers.");
+					+ customerID2customer.size() + " customers.");
 		}
 		return retval;
 	}
@@ -1465,7 +1501,7 @@ public class GnucashFileImpl implements GnucashFile {
 	 */
 	public GnucashCustomer getCustomerByName(final String name) {
 
-		if (accountid2account == null) {
+		if (customerID2customer == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
@@ -1481,28 +1517,28 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashFile#getCustomers()
 	 */
 	public Collection<GnucashCustomer> getCustomers() {
-		return customerid2customer.values();
+		return customerID2customer.values();
 	}
 	
 	// ---------------------------------------------------------------
 	
 	@Override
 	public GnucashVendor getVendorByID(String id) {
-      if (accountid2account == null) {
+      if (vendorID2vendor == null) {
         throw new IllegalStateException("no root-element loaded");
       }
 
-      GnucashVendor retval = vendorid2vendor.get(id);
+      GnucashVendor retval = vendorID2vendor.get(id);
       if (retval == null) {
         LOGGER.warn("No Vendor with id '" + id + "'. We know "
-                + vendorid2vendor.size() + " vendors.");
+                + vendorID2vendor.size() + " vendors.");
       }
       return retval;
 	}
 
 	@Override
 	public GnucashVendor getVendorByName(String name) {
-      if (accountid2account == null) {
+      if (vendorID2vendor == null) {
         throw new IllegalStateException("no root-element loaded");
       }
 
@@ -1517,7 +1553,7 @@ public class GnucashFileImpl implements GnucashFile {
 	@Override
 	public Collection<GnucashVendor> getVendors()
 	{
-      return vendorid2vendor.values();
+      return vendorID2vendor.values();
 	}
 
     // ---------------------------------------------------------------
@@ -1596,14 +1632,14 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashFile#getTransactionByID(java.lang.String)
 	 */
 	public GnucashTransaction getTransactionByID(final String id) {
-		if (transactionid2transaction == null) {
+		if (transactionID2transaction == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		GnucashTransaction retval = transactionid2transaction.get(id);
+		GnucashTransaction retval = transactionID2transaction.get(id);
 		if (retval == null) {
 			LOGGER.warn("No Transaction with id '" + id + "'. We know "
-					+ transactionid2transaction.size() + " transactions.");
+					+ transactionID2transaction.size() + " transactions.");
 		}
 		return retval;
 	}
@@ -1612,10 +1648,10 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashFile#getTransactions()
 	 */
 	public Collection<? extends GnucashTransaction> getTransactions() {
-		if (transactionid2transaction == null) {
+		if (transactionID2transaction == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
-		return Collections.unmodifiableCollection(transactionid2transaction.values());
+		return Collections.unmodifiableCollection(transactionID2transaction.values());
 	}
 
 	/**
@@ -1955,7 +1991,7 @@ public class GnucashFileImpl implements GnucashFile {
     {
       int highest = -1;
       
-      for ( GnucashCustomer cust : customerid2customer.values() )
+      for ( GnucashCustomer cust : customerID2customer.values() )
       {
         try {
           int newNum = Integer.parseInt(cust.getNumber());
@@ -1986,7 +2022,7 @@ public class GnucashFileImpl implements GnucashFile {
     {
       int highest = -1;
       
-      for ( GnucashVendor vend : vendorid2vendor.values() )
+      for ( GnucashVendor vend : vendorID2vendor.values() )
       {
         try {
           int newNum = Integer.parseInt(vend.getNumber());

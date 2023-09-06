@@ -22,12 +22,11 @@ import java.util.List;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
-import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashInvoice;
-import org.gnucash.read.GnucashInvoiceEntry;
+import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashCustVendInvoiceEntry;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
@@ -38,19 +37,41 @@ import org.gnucash.read.GnucashTransactionSplit;
  * Implementation of GnucashInvoice that uses JWSDP.
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public class GnucashInvoiceImpl implements GnucashInvoice {
+public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
+
+  protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
+  protected static final DateFormat        DATE_OPENED_FORMAT_1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");  
+  protected static final DateTimeFormatter DATE_OPENED_FORMAT_PRINT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private static final DateFormat DATE_POSTED_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
   /**
-   * Format of the JWSDP-field openedDate.
+   * @see GnucashCustVendInvoice#getDateOpened()
    */
-  protected static final DateFormat OPENEDDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+  protected ZonedDateTime dateOpened;
   
+  // -----------------------------------------------------------------
+
+  /**
+   * @param peer the JWSDP-object we are facading.
+   * @see #jwsdpPeer
+   * @param gncFile the file to register under
+   */
+  public GnucashCustVendInvoiceImpl(
+          final GncV2.GncBook.GncGncInvoice peer,
+          final GnucashFile gncFile) {
+      super();
+      
+      jwsdpPeer = peer;
+      file = gncFile;
+
+  }
+
   // -----------------------------------------------------------------
 
 	/**
 	 * @return getAmmountWithoutTaxes().isMoreThen(getAmmountPayedWithoutTaxes())
 	 *
-	 * @see GnucashInvoice#isNotFullyPayed()
+	 * @see GnucashCustVendInvoice#isNotFullyPayed()
 	 */
 	public boolean isNotFullyPayed() {
 		return getAmmountWithTaxes().isMoreThen(getAmmountPayedWithTaxes());
@@ -108,16 +129,18 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	public FixedPointNumber getAmmountPayedWithTaxes() {
 
 		FixedPointNumber takenFromReceivableAccount = new FixedPointNumber();
-		for (GnucashTransaction transaction : getPayingTransactions()) {
+		for (GnucashTransaction trx : getPayingTransactions()) {
 
-			for (GnucashTransactionSplit split : transaction.getSplits()) {
+			for (GnucashTransactionSplit split : trx.getSplits()) {
 
-				if (split.getAccount().getType().equals(GnucashAccount.ACCOUNTTYPE_RECEIVABLE)
-						&&
-						!split.getValue().isPositive()
-						) {
-					takenFromReceivableAccount.subtract(split.getValue());
+				if ( split.getAccount().getType().equals(GnucashAccount.ACCOUNTTYPE_PAYABLE) &&
+					 split.getValue().isPositive() ) {
+					takenFromReceivableAccount.add(split.getValue());
 				}
+				else if ( split.getAccount().getType().equals(GnucashAccount.ACCOUNTTYPE_RECEIVABLE) &&
+                          ! split.getValue().isPositive() ) {
+                   takenFromReceivableAccount.subtract(split.getValue());
+               }
 			}
 
 		}
@@ -146,8 +169,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 
 		FixedPointNumber retval = new FixedPointNumber();
 
-		for (Object element : getEntries()) {
-			GnucashInvoiceEntry entry = (GnucashInvoiceEntry) element;
+		for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
 			retval.add(entry.getSumExclTaxes());
 		}
 
@@ -162,9 +184,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		List<TaxedSum> taxedSums = new LinkedList<TaxedSum>();
 
 		invoiceentries:
-		for (GnucashInvoiceEntry element : getEntries()) {
-			GnucashInvoiceEntry entry = (GnucashInvoiceEntry) element;
-
+		for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
 			FixedPointNumber taxpercent = entry.getApplicableTaxPercend();
 
 			for (TaxedSum taxedSum2 : taxedSums) {
@@ -199,8 +219,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		//      multiply the sums with the tax% to be calculatng
 		//      correctly
 
-		for (Object element : getEntries()) {
-			GnucashInvoiceEntry entry = (GnucashInvoiceEntry) element;
+		for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
 			retval.add(entry.getSumInclTaxes());
 		}
 
@@ -225,7 +244,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 * {@inheritDoc}
 	 */
 	public String getJobType() {
-		return getJwsdpPeer().getInvoiceOwner().getOwnerType();
+		return getJob().getOwnerType();
 	}
 
 	/**
@@ -239,25 +258,18 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	protected final GnucashFile file;
 
 	/**
-	 * @param peer the JWSDP-object we are facading.
-	 * @see #jwsdpPeer
-	 * @param gncFile the file to register under
-	 */
-	public GnucashInvoiceImpl(
-			final GncV2.GncBook.GncGncInvoice peer,
-			final GnucashFile gncFile) {
-		super();
-		jwsdpPeer = peer;
-		file = gncFile;
-
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public String getId() {
 		return getJwsdpPeer().getInvoiceGuid().getValue();
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getType() {
+        return getJwsdpPeer().getInvoiceOwner().getOwnerType();
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -297,39 +309,36 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	/**
 	 * The entries of this invoice.
 	 */
-	protected Collection<GnucashInvoiceEntry> entries = new HashSet<GnucashInvoiceEntry>();
+	protected Collection<GnucashCustVendInvoiceEntry> entries = new HashSet<GnucashCustVendInvoiceEntry>();
+
+    /**
+     * {@inheritDoc}
+     */
+    public GnucashCustVendInvoiceEntry getCustVendInvcEntryById(final String id) {
+        for (GnucashCustVendInvoiceEntry element : getCustVendInvcEntries()) {
+            if (element.getId().equals(id)) {
+                return element;
+            }
+
+        }
+        return null;
+    }
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<GnucashInvoiceEntry> getEntries() {
+	public Collection<GnucashCustVendInvoiceEntry> getCustVendInvcEntries() {
 	    return entries;
-	 }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public GnucashInvoiceEntry getEntryById(final String id) {
-		for (GnucashInvoiceEntry element : getEntries()) {
-			if (element.getId().equals(id)) {
-				return element;
-			}
-
-		}
-		return null;
 	}
 
-	/**
-	 *
-	 * @see GnucashInvoice#getDateOpened()
-	 */
-    protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
-    protected static final DateTimeFormatter DATE_OPENED_FORMAT_PRINT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-	/**
-	 * @see GnucashInvoice#getDateOpened()
-	 */
-	protected ZonedDateTime dateOpened;
+    /**
+     * {@inheritDoc}
+     */
+    public void addCustVendInvcEntry(final GnucashCustVendInvoiceEntry entry) {
+        if (!entries.contains(entry)) {
+            entries.add(entry);
+        }
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -388,13 +397,7 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	}
 
 	/**
-	 *
-	 * @see GnucashInvoice#getDatePosted()
-	 */
-	private static final DateFormat DATEPOSTEDFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-
-	/**
-	 * @see GnucashInvoice#getDatePosted()
+	 * @see GnucashCustVendInvoice#getDatePosted()
 	 */
 	protected ZonedDateTime datePosted;
 
@@ -424,8 +427,8 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getInvoiceNumber() {
-		return getJwsdpPeer().getInvoiceBillingId();
+	public String getNumber() {
+		return getJwsdpPeer().getInvoiceId();
 	}
 
     public String getOwnerId(ReadVariant readVar) {
@@ -446,18 +449,13 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
         return getJob().getOwnerId();
     }
 
-    public InvoiceOwner getOwner() {
-      return getJwsdpPeer().getInvoiceOwner();
+    public String getOwnerType() {
+      return getJwsdpPeer().getInvoiceOwner().getOwnerType();
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void addEntry(final GnucashInvoiceEntry entry) {
-		if (!entries.contains(entry)) {
-			entries.add(entry);
-		}
-	}
+//    public InvoiceOwner getOwner() {
+//      return getJwsdpPeer().getInvoiceOwner();
+//    }
 
 	/**
 	 * sorts primarily on the date the transaction happened
@@ -467,9 +465,9 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	 * @param o invoice to compare with
 	 * @return -1 0 or 1
 	 */
-	public int compareTo(final GnucashInvoice o) {
+	public int compareTo(final GnucashCustVendInvoice o) {
 
-		GnucashInvoice other = o;
+		GnucashCustVendInvoice other = o;
 
 		try {
 			int compare = other.getDatePosted().compareTo(getDatePosted());
@@ -499,18 +497,20 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("[GnucashInvoiceImpl:");
-		buffer.append(" id: ");
-		buffer.append(getId());
+		buffer.append("[GnucashCustVendInvoiceImpl:");
+        buffer.append(" id: ");
+        buffer.append(getId());
         buffer.append(" owner-id (dir.): ");
         buffer.append(getOwnerId(ReadVariant.DIRECT));
-		buffer.append(" invoice-number: ");
-		buffer.append(getInvoiceNumber());
+        buffer.append(" owner-type: ");
+        buffer.append(getOwnerType());
+		buffer.append(" cust/vend-invoice-number: '");
+		buffer.append(getNumber() + "'");
 		buffer.append(" description: '");
 		buffer.append(getDescription() + "'");
 		buffer.append(" #entries: ");
 		buffer.append(entries.size());
-		buffer.append(" dateOpened: ");
+		buffer.append(" date-opened: ");
 		try {
 		  buffer.append(getDateOpened().toLocalDate().format(DATE_OPENED_FORMAT_PRINT));
 		}
@@ -520,6 +520,8 @@ public class GnucashInvoiceImpl implements GnucashInvoice {
 		buffer.append("]");
 		return buffer.toString();
 	}
+	
+	// ---------------------------------------------------------------
 
 	/**
 	 * The currencyFormat to use for default-formating.<br/>

@@ -7,22 +7,22 @@ import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashJob;
-import org.gnucash.read.GnucashTaxTable;
-import org.gnucash.read.spec.GnucashCustomerInvoice;
-import org.gnucash.read.spec.GnucashCustomerJob;
+import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.spec.GnucashVendorBill;
+import org.gnucash.read.spec.GnucashVendorJob;
 
-public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCustomer {
+public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendor {
 
 	/**
 	 * the JWSDP-object we are facading.
 	 */
-	private final GncV2.GncBook.GncGncCustomer jwsdpPeer;
+	private final GncV2.GncBook.GncGncVendor jwsdpPeer;
 
     /**
      * The file we belong to.
@@ -33,19 +33,16 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @param peer    the JWSDP-object we are facading.
 	 * @param gncFile the file to register under
 	 */
-	protected GnucashCustomerImpl(final GncV2.GncBook.GncGncCustomer peer, final GnucashFile gncFile) {
-		super((peer.getCustSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getCustSlots(), gncFile);
-		if (peer.getCustSlots() == null) {
-			peer.setCustSlots(getSlots());
-		}
+	protected GnucashVendorImpl(final GncV2.GncBook.GncGncVendor peer, final GnucashFile gncFile) {
+		super(new ObjectFactory().createSlotsType(), gncFile);
 		jwsdpPeer = peer;
-        file = gncFile;
+		file = gncFile;
 	}
 
 	/**
 	 * @return the JWSDP-object we are wrapping.
 	 */
-	public GncV2.GncBook.GncGncCustomer getJwsdpPeer() {
+	public GncV2.GncBook.GncGncVendor getJwsdpPeer() {
 		return jwsdpPeer;
 	}
 
@@ -53,40 +50,26 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * {@inheritDoc}
 	 */
 	public String getId() {
-		return jwsdpPeer.getCustGuid().getValue();
+		return jwsdpPeer.getVendorGuid().getValue();
 	}
 
 	/**
-	 * @return the jobs that have this customer associated with them.
-	 * @see GnucashCustomer#getJobs()
+	 * @return the jobs that have this vendor associated with them.
+	 * @see GnucashVendor#getJobs()
 	 */
-	public java.util.Collection<GnucashCustomerJob> getJobs() {
+	public java.util.Collection<GnucashVendorJob> getJobs() {
 
-		List<GnucashCustomerJob> retval = new LinkedList<GnucashCustomerJob>();
+		List<GnucashVendorJob> retval = new LinkedList<GnucashVendorJob>();
 
 		for (GnucashJob job : getGnucashFile().getJobs()) {
-		  if ( job instanceof GnucashCustomerJob ) {
-            if ( ((GnucashCustomerJob) job).getCustomerId().equals(getId()) ) {
-              retval.add((GnucashCustomerJob) job);
+		  if ( job instanceof GnucashVendorJob ) {
+            if ( ((GnucashVendorJob) job).getVendorId().equals(getId())) {
+              retval.add((GnucashVendorJob) job);
             }
-		  }		    
+		  }
 		}
 
 		return retval;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDiscount() {
-		return jwsdpPeer.getCustDiscount();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getNotes() {
-		return jwsdpPeer.getCustNotes();
 	}
 
 	/**
@@ -96,20 +79,20 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @return the current number of unpayed invoices
 	 */
 	public int getNofOpenInvoices() {
-	    int count = 0;
-        for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-          if ( invoice instanceof GnucashCustomerInvoice ) {
-            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
+		int count = 0;
+		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
+		  if ( invoice instanceof GnucashVendorBill ) {
+            if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
               continue;
             }
 
             if (invoice.isNotFullyPayed()) {
               count++;
             }
-          }
-        }
-        return count;
-    }
+		  }
+		}
+		return count;
+	}
 
 	/**
 	 * @return the sum of payments for invoices to this client
@@ -118,8 +101,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		FixedPointNumber retval = new FixedPointNumber();
 
 		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashCustomerInvoice ) {
-            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
+		  if ( invoice instanceof GnucashVendorBill ) {
+            if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
               continue;
             }
             retval.add(invoice.getAmmountWithoutTaxes());
@@ -162,8 +145,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		FixedPointNumber retval = new FixedPointNumber();
 
 		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashCustomerInvoice ) {
-            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
+		  if ( invoice instanceof GnucashVendorBill ) {
+            if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
               continue;
             }
             retval.add(invoice.getAmmountUnPayed());
@@ -193,60 +176,30 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * {@inheritDoc}
 	 */
 	public String getNumber() {
-		return jwsdpPeer.getCustId();
+		return jwsdpPeer.getVendorId();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getCustomerTaxTableID() {
-		GncV2.GncBook.GncGncCustomer.CustTaxtable custTaxtable = jwsdpPeer.getCustTaxtable();
-		if (custTaxtable == null) {
-			return null;
-		}
-		return custTaxtable.getValue();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public GnucashTaxTable getCustomerTaxTable() {
-		String id = getCustomerTaxTableID();
-		if (id == null) {
-			return null;
-		}
-		return getGnucashFile().getTaxTableByID(id);
+	public VendorTerms getVendorTerms() {
+		return jwsdpPeer.getVendorTerms();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getName() {
-		return jwsdpPeer.getCustName();
+		return jwsdpPeer.getVendorName();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashCustomer.Address getAddress() {
-		return new AddressImpl(jwsdpPeer.getCustAddr());
+	public GnucashVendor.Address getAddress() {
+		return new AddressImpl(jwsdpPeer.getVendorAddr());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public GnucashCustomer.Address getShippingAddress() {
-		return new AddressImpl(jwsdpPeer.getCustShipaddr());
-	}
-
-	/**
-	 * (c) 2005 by Wolschon Softwaredesign und Beratung.<br/>
-	 * Project: gnucashReader<br/>
-	 * GnucashCustomerImpl.java<br/>
-	 *
-	 * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
-	 * @see Address
-	 */
 	public static class AddressImpl implements Address {
 
 		/**
@@ -270,7 +223,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		}
 
 		/**
-		 * @see GnucashCustomer.Address#getAddressName()
+		 * @see GnucashVendor.Address#getAddressName()
 		 */
 		public String getAddressName() {
 			if (jwsdpPeer.getAddrName() == null) {
@@ -280,7 +233,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		}
 
 		/**
-		 * @see GnucashCustomer.Address#getAddressLine1()
+		 * @see GnucashVendor.Address#getAddressLine1()
 		 */
 		public String getAddressLine1() {
 			if (jwsdpPeer.getAddrAddr1() == null) {
@@ -290,7 +243,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		}
 
 		/**
-		 * @see GnucashCustomer.Address#getAddressLine2()
+		 * @see GnucashVendor.Address#getAddressLine2()
 		 */
 		public String getAddressLine2() {
 			if (jwsdpPeer.getAddrAddr2() == null) {
@@ -374,21 +327,14 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
   // ------------------------------
 
   @Override
-  public Collection<GnucashCustomerInvoice> getUnpayedInvoices(GnucashCustVendInvoice.ReadVariant readVar)
+  public Collection<GnucashVendorBill> getUnpayedInvoices(GnucashCustVendInvoice.ReadVariant readVar)
   {
     if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
-      return file.getUnpayedInvoicesForCustomer_direct(this);
+      return file.getUnpayedInvoicesForVendor_direct(this);
     else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
-      return file.getUnpayedInvoicesForCustomer_viaJob(this);
+      return file.getUnpayedInvoicesForVendor_viaJob(this);
     
     return null; // Compiler happy
-  }
-
-  // ----------------------------
-  
-  public static int getHighestNumber(GnucashCustomer cust)
-  {
-    return cust.getGnucashFile().getHighestCustomerNumber();
   }
 
 }
