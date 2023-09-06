@@ -7,7 +7,7 @@ import java.io.InputStream;
 import org.gnucash.Const;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.spec.GnucashVendorInvoice;
+import org.gnucash.read.spec.GnucashVendorBill;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import junit.framework.JUnit4TestAdapter;
 public class TestGnucashVendorInvoiceImpl
 {
   private static GnucashFile    gcshFile = null;
-  private static GnucashVendorInvoice invc = null;
+  private static GnucashVendorBill invc = null;
   
   private static final double VALUE_DIFF_TOLERANCE = 0.001; // ::MAGIC
 
@@ -63,8 +63,8 @@ public class TestGnucashVendorInvoiceImpl
   @Test
   public void test01() throws Exception
   {
-    invc = new GnucashVendorInvoiceImpl( gcshFile.getInvoiceByID("4eb0dc387c3f4daba57b11b2a657d8a4") );
-    assertEquals(true, invc instanceof GnucashVendorInvoiceImpl);
+    invc = new GnucashVendorBillImpl( gcshFile.getCustVendInvoiceByID("4eb0dc387c3f4daba57b11b2a657d8a4") );
+    assertEquals(true, invc instanceof GnucashVendorBillImpl);
     assertEquals("4eb0dc387c3f4daba57b11b2a657d8a4", invc.getId());
     assertEquals("gncVendor", invc.getOwnerType());
     // ::TODO

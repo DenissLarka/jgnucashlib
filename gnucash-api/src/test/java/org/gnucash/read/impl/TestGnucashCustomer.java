@@ -7,7 +7,7 @@ import java.io.InputStream;
 import org.gnucash.Const;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashInvoice;
+import org.gnucash.read.GnucashCustVendInvoice;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,8 +71,8 @@ public class TestGnucashCustomer
   public void test02() throws Exception
   {
     cust = gcshFile.getCustomerByID("5d1dd9afa7554553988669830cc1f696");
-    assertEquals(1, cust.getUnpayedInvoices(GnucashInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, cust.getUnpayedInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
     assertEquals("[GnucashCustomerInvoiceImpl: id: d9967c10fdf1465e9394a3e4b1e7bd79 customer-id (dir.): 5d1dd9afa7554553988669830cc1f696 invoice-number: null description: 'null' #entries: 0 dateOpened: 2023-07-29]", 
-                 cust.getUnpayedInvoices(GnucashInvoice.ReadVariant.DIRECT).toArray()[0].toString());
+                 cust.getUnpayedInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0].toString());
   }
 }

@@ -61,7 +61,7 @@ public class TestGnucashCustomerInvoiceImpl
   @Test
   public void test01() throws Exception
   {
-    invc = new GnucashCustomerInvoiceImpl( gcshFile.getInvoiceByID("d9967c10fdf1465e9394a3e4b1e7bd79") );
+    invc = new GnucashCustomerInvoiceImpl( gcshFile.getCustVendInvoiceByID("d9967c10fdf1465e9394a3e4b1e7bd79") );
     assertEquals(true, invc instanceof GnucashCustomerInvoiceImpl);
     assertEquals("d9967c10fdf1465e9394a3e4b1e7bd79", invc.getId());
     assertEquals("gncCustomer", invc.getOwnerType());
