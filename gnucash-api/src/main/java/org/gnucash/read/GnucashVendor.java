@@ -1,50 +1,21 @@
-/**
- * GnucashCutomer.java
- * License: GPLv3 or later
- * Created on 14.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  14.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read;
 
-import java.util.Locale;
 import java.util.Collection;
+import java.util.Locale;
 
+import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustVendInvoice.ReadVariant;
-import org.gnucash.read.spec.GnucashCustomerInvoice;
-import org.gnucash.read.spec.GnucashCustomerJob;
+import org.gnucash.read.spec.GnucashVendorBill;
+import org.gnucash.read.spec.GnucashVendorJob;
 
-//TODO: model taxes and implement getTaxTable
-
-/**
- * created: 14.05.2005 <br/>
- * A customer that can issue jobs, get invoices sent to
- * him/her/it and pay them.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
- * @see GnucashJob
- * @see GnucashCustVendInvoice
- */
-public interface GnucashCustomer extends GnucashObject {
+public interface GnucashVendor extends GnucashObject {
 
     /**
-     * The id of the prefered taxtable to use with this customer (may be null).
-     * @see {@link #getCustomerTaxTable()}
+     * The prefered taxtable to use with this vendor (may be null).
+     * @see {@link #getVendorTaxTableID()}
      */
-    String getCustomerTaxTableID();
-
-    /**
-     * The prefered taxtable to use with this customer (may be null).
-     * @see {@link #getCustomerTaxTableID()}
-     */
-    GnucashTaxTable getCustomerTaxTable();
+    VendorTerms getVendorTerms();
 
     /**
      * Date is not checked so invoiced that have entered payments in the future are considered payed.
@@ -88,15 +59,6 @@ public interface GnucashCustomer extends GnucashObject {
     String getOutstandingValueFormatet(Locale l);
 
 
-    /**
-     *
-     * (c) 2005 by Wolschon Softwaredesign und Beratung.<br/>
-     * Project: gnucashReader<br/>
-     * GnucashCustomer.java<br/>
-     * created: 05.08.2005 19:29:24 <br/>
-     * Defines what an address of a customer consists of.
-     * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
-     */
     interface Address {
 
         /**
@@ -159,58 +121,41 @@ public interface GnucashCustomer extends GnucashObject {
     String getId();
 
     /**
-     * @return the UNMODIFIABLE collection of jobs that have this customer associated with them.
+     * @return the UNMODIFIABLE collection of jobs that have this vendor associated with them.
      */
-    Collection<GnucashCustomerJob> getJobs();
+    Collection<GnucashVendorJob> getJobs();
 
     /**
      *
-     * @return the user-assigned number of this customer (may contain non-digits)
+     * @return the user-assigned number of this vendor (may contain non-digits)
      */
     String getNumber();
 
     /**
      *
-     * @return unused at the moment
-     */
-    String getDiscount();
-
-    /**
-     * @return user-defined notes about the customer (may be null)
-     */
-    String getNotes();
-
-
-    /**
-     *
-     * @return the name of the customer
+     * @return the name of the vendor
      */
     String getName();
 
     /**
      * @return the address including the name
      */
-    GnucashCustomer.Address getAddress();
+    GnucashVendor.Address getAddress();
 
-    /**
-     * @return the shipping-address including the name
-     */
-    GnucashCustomer.Address getShippingAddress();
-    
     // ----------------------------
 
-    Collection<GnucashCustomerInvoice> getUnpayedInvoices(ReadVariant readVar);
+    Collection<GnucashVendorBill> getUnpayedInvoices(ReadVariant readVar);
     
     // ----------------------------
     
-    public static int getHighestNumber(GnucashCustomer cust)
+    public static int getHighestNumber(GnucashVendor vend)
     {
-      return cust.getGnucashFile().getHighestCustomerNumber();
+      return vend.getGnucashFile().getHighestVendorNumber();
     }
 
-    public static String getNewNumber(GnucashCustomer cust)
+    public static String getNewNumber(GnucashVendor vend)
     {
-      return cust.getGnucashFile().getNewCustomerNumber();
+      return vend.getGnucashFile().getNewVendorNumber();
     }
 
 }

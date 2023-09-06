@@ -16,7 +16,7 @@ import java.util.Collection;
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
-import org.gnucash.read.spec.GnucashVendorInvoice;
+import org.gnucash.read.spec.GnucashVendorBill;
 
 /**
  * created: 13.05.2005<br/>
@@ -136,40 +136,40 @@ public interface GnucashFile extends GnucashObject {
 	 * @return the invoice or null if it's not found
 	 * @see #getUnpayedInvoices()
 	 * @see #getPayedInvoices()
-	 * @see #getInvoiceByID(String)
+	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	GnucashInvoice getInvoiceByID(String id);
+	GnucashCustVendInvoice getCustVendInvoiceByID(String id);
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices
 	 * Do not modify the returned collection!
 	 * @see #getUnpayedInvoices()
 	 * @see #getPayedInvoices()
-	 * @see #getInvoiceByID(String)
+	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashInvoice> getInvoices();
+	Collection<GnucashCustVendInvoice> getInvoices();
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices that are fully payed
 	 * Do not modify the returned collection!
 	 * @see #getUnpayedInvoices()
 	 * @see #getInvoices()
-	 * @see #getInvoiceByID(String)
+	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashInvoice> getPayedInvoices();
+	Collection<GnucashCustVendInvoice> getPayedInvoices();
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices that are not fully payed
 	 * Do not modify the returned collection!
 	 * @see #getPayedInvoices()
 	 * @see #getInvoices()
-	 * @see #getInvoiceByID(String)
+	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashInvoice> getUnpayedInvoices();
+	Collection<GnucashCustVendInvoice> getUnpayedInvoices();
 
     /**
      * @param customer the customer to look for (not null)
@@ -177,7 +177,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @see #getPayedInvoices()
      * @see #getInvoices()
-     * @see #getInvoiceByID(String)
+     * @see #getCustVendInvoiceByID(String)
      * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
      */
     Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(GnucashCustomer customer);
@@ -188,7 +188,7 @@ public interface GnucashFile extends GnucashObject {
 	 * Do not modify the returned collection!
 	 * @see #getPayedInvoices()
 	 * @see #getInvoices()
-	 * @see #getInvoiceByID(String)
+	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer customer);
@@ -199,10 +199,10 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @see #getPayedInvoices()
      * @see #getInvoices()
-     * @see #getInvoiceByID(String)
+     * @see #getCustVendInvoiceByID(String)
      * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor_direct(GnucashVendor vendor);
+    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_direct(GnucashVendor vendor);
 
     /**
      * @param vendor the vendor to look for (not null)
@@ -210,10 +210,10 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @see #getPayedInvoices()
      * @see #getInvoices()
-     * @see #getInvoiceByID(String)
+     * @see #getCustVendInvoiceByID(String)
      * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorInvoice> getUnpayedInvoicesForVendor_viaJob(GnucashVendor vendor);
+    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_viaJob(GnucashVendor vendor);
 
 	/**
 	 * warning: this function has to traverse all

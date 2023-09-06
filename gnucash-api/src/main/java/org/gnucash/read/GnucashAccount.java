@@ -83,21 +83,28 @@ public interface GnucashAccount extends Comparable {
 	 * @return all child-accounts
 	 */
 	Collection<GnucashAccount> getChildren();
+	
+	// ----------------------------
 
 	/**
-	 * e.g. "Umsatzsteuer 16%"
+	 * e.g. "Umsatzsteuer 19%"
 	 */
 	String ACCOUNTTYPE_LIABILITY = "LIABILITY";
 
 	/**
-	 * e.g. "Umsatzerl&ouml;e 16% USt"
+	 * e.g. "Umsatzerloese 19% USt"
 	 */
 	String ACCOUNTTYPE_BANK = "BANK";
 
 	/**
-	 * e.g. "Umsatzerl�se 16% USt"
+	 * e.g. "Umsatzerloese 16% USt"
 	 */
 	String ACCOUNTTYPE_INCOME = "INCOME";
+
+    /**
+     * e.g. "Verbindlichkeiten ggueber Lieferanten"
+     */
+    String ACCOUNTTYPE_PAYABLE = "PAYABLE";
 
 	/**
 	 * e.g. "Forderungen aus Lieferungen und Leistungen"
@@ -138,12 +145,15 @@ public interface GnucashAccount extends Comparable {
 	 */
 	String ACCOUNTTYPE_MUTUAL = "MUTUAL";
 
+    // ----------------------------
+
 	/**
 	 * @return the type-string for this account.
 	 * @see #ACCOUNTTYPE_ASSET
 	 * @see #ACCOUNTTYPE_INCOME
 	 * @see #ACCOUNTTYPE_LIABILITY
-	 * @see #ACCOUNTTYPE_RECEIVABLE
+     * @see #ACCOUNTTYPE_PAYABLE
+     * @see #ACCOUNTTYPE_RECEIVABLE
 	 * there are other types too
 	 */
 	String getType();

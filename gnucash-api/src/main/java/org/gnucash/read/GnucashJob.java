@@ -20,7 +20,7 @@ import java.util.Collection;
  * A job needs to be done. Once it or a part of it<br>
  * is done an invoice can be created and later be payed by the customer<br>
  * of this job.
- * @see GnucashInvoice
+ * @see GnucashCustVendInvoice
  * @see GnucashCustomer
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */

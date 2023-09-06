@@ -10,6 +10,7 @@
  */
 package org.gnucash.read;
 
+import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
@@ -20,30 +21,36 @@ import org.gnucash.numbers.FixedPointNumber;
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  *
  */
-public interface GnucashInvoiceEntry extends Comparable<GnucashInvoiceEntry> {
+public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendInvoiceEntry> {
 
 	/**
 	 * @return the unique-id to identify this object with across name- and hirarchy-changes
 	 */
 	String getId();
+	
+    /**
+     * @return the type of the customer/vendor invoice entry, 
+     * i.e. the owner type of the entry's invoice
+     */
+	String getType();
 
 	/**
 	 *
 	 * @return the unique-id of the invoice we belong to to
-	 * @see GnucashInvoice#getId()
+	 * @see GnucashCustVendInvoice#getId()
 	 */
-	String getInvoiceID();
+	String getCustVendInvoiceID();
 
 	/**
 	 * @return the invoice this entry belongs to
 	 */
-	GnucashInvoice getInvoice();
+	GnucashCustVendInvoice getCustVendInvoice();
 
 	/**
 	 * @return the price of a single of the ${@link #getQuantity()} items of
 	 * type ${@link #getAction()}.
 	 */
-	FixedPointNumber getPrice();
+	FixedPointNumber getInvcPrice();
 
 	/**
 	 * @return the price of a single of the ${@link #getQuantity()} items of
@@ -71,19 +78,19 @@ public interface GnucashInvoiceEntry extends Comparable<GnucashInvoiceEntry> {
 	String getAction();
 
 	/**
-	 * @return the number of items of price ${@link #getPrice()} and type ${@link #getAction()}.
+	 * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
 	 */
 	FixedPointNumber getQuantity();
 
 	/**
-	 * @return the number of items of price ${@link #getPrice()} and type ${@link #getAction()}.
+	 * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
 	 * @deprecated use ${@link #getQuantityFormated()}
 	 */
 	@Deprecated
 	String getQuantityFormatet();
 
 	/**
-	 * @return the number of items of price ${@link #getPrice()} and type ${@link #getAction()}.
+	 * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
 	 */
 	String getQuantityFormated();
 
@@ -146,4 +153,8 @@ public interface GnucashInvoiceEntry extends Comparable<GnucashInvoiceEntry> {
 	 * @return count*single-unit-price excluding taxes.
 	 */
 	String getSumExclTaxesFormatet();
+	
+	// ----------------------------
+
+	GncV2.GncBook.GncGncEntry getJwsdpPeer();
 }

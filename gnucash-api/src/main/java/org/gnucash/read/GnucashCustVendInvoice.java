@@ -14,7 +14,6 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
-import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
@@ -29,7 +28,7 @@ import org.gnucash.numbers.FixedPointNumber;
  * @see GnucashCustomer
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public interface GnucashInvoice extends Comparable<GnucashInvoice> {
+public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoice> {
   
   // ::MAGIC
   final static String TYPE_CUSTOMER = "gncCustomer";
@@ -39,12 +38,16 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
     DIRECT,
     VIA_JOB
   }
+  
+  // -----------------------------------------------------------------
 
 	/**
 	 *
 	 * @return the unique-id to identify this object with across name- and hirarchy-changes
 	 */
 	String getId();
+	
+	String getType();
 
 	/**
 	 * @return the user-defined description for this object
@@ -63,13 +66,6 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	GnucashFile getFile();
 
     // ----------------------------
-
-	/**
-	 *
-	 * @return the content of the invoice
-	 * @see ${@link GnucashInvoiceEntry}
-	 */
-	Collection<GnucashInvoiceEntry> getEntries();
 
 	/**
 	 * @return the date when this transaction was added to or modified in the books.
@@ -101,7 +97,7 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	 *
 	 * @return the user-defines number of this invoice (may contain non-digits)
 	 */
-	String getInvoiceNumber();
+	String getNumber();
 
     /**
     *
@@ -109,11 +105,13 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
     */
 	String getOwnerId(ReadVariant readvar);
 
-    /**
-    *
-    * @return Invoice' owner structure 
-    */
-    InvoiceOwner getOwner();
+//    /**
+//    *
+//    * @return Invoice' owner structure 
+//    */
+//    InvoiceOwner getOwner();
+    
+    String getOwnerType();
     
 	/**
 	 * Note that a job may lead to multiple o no invoices.
@@ -268,6 +266,8 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	 */
 	String getAccountIDToTransferMoneyTo();
 
+    // ---------------------------------------------------------------
+
 	/**
 	 * @return the transaction that transferes the money from the customer to
 	 *         the account for money you are to get and the one you owe the
@@ -292,24 +292,34 @@ public interface GnucashInvoice extends Comparable<GnucashInvoice> {
 	 * @param trans a transaction that is the transaction due to handing out this invoice
 	 */
 	void addTransaction(GnucashTransaction trans);
+	
+	// ---------------------------------------------------------------
+
+    /**
+     * Look for an entry by it's id.
+     * @param id the id to look for
+     * @return the Entry found or null
+     */
+    GnucashCustVendInvoiceEntry getCustVendInvcEntryById(String id);
+
+    /**
+     *
+     * @return the content of the invoice
+     * @see ${@link GnucashCustVendInvoiceEntry}
+    */
+	Collection<GnucashCustVendInvoiceEntry> getCustVendInvcEntries();
 
 	/**
 	 * This method is used internally during the loading of a file.
 	 * @param entry the entry to ad during loading.
 	 */
-	void addEntry(GnucashInvoiceEntry entry);
+	void addCustVendInvcEntry(GnucashCustVendInvoiceEntry entry);
+
+    // ---------------------------------------------------------------
 
 	/**
 	 * @return (getAmmountWithoutTaxes().isMoreThen(getAmmountPayedWithoutTaxes()))
 	 */
 	boolean isNotFullyPayed();
 
-	/**
-	 * Look for an entry by it's id.
-	 * @param id the id to look for
-	 * @return the Entry found or null
-	 */
-	GnucashInvoiceEntry getEntryById(String id);
-
 }
-
