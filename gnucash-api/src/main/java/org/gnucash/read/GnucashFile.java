@@ -17,6 +17,7 @@ import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
  * created: 13.05.2005<br/>
@@ -154,66 +155,72 @@ public interface GnucashFile extends GnucashObject {
 	/**
 	 * @return a (possibly read-only) collection of all invoices that are fully payed
 	 * Do not modify the returned collection!
+	 * @throws WrongInvoiceTypeException 
 	 * @see #getUnpayedInvoices()
 	 * @see #getInvoices()
 	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustVendInvoice> getPayedInvoices();
+	Collection<GnucashCustVendInvoice> getPayedInvoices() throws WrongInvoiceTypeException;
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices that are not fully payed
 	 * Do not modify the returned collection!
+	 * @throws WrongInvoiceTypeException 
 	 * @see #getPayedInvoices()
 	 * @see #getInvoices()
 	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustVendInvoice> getUnpayedInvoices();
+	Collection<GnucashCustVendInvoice> getUnpayedInvoices() throws WrongInvoiceTypeException;
 
     /**
      * @param customer the customer to look for (not null)
      * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given customer
      * Do not modify the returned collection!
+     * @throws WrongInvoiceTypeException 
      * @see #getPayedInvoices()
      * @see #getInvoices()
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
      */
-    Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(GnucashCustomer customer);
+    Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(GnucashCustomer customer) throws WrongInvoiceTypeException;
 
 	/**
 	 * @param customer the customer to look for (not null)
 	 * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given customer
 	 * Do not modify the returned collection!
+	 * @throws WrongInvoiceTypeException 
 	 * @see #getPayedInvoices()
 	 * @see #getInvoices()
 	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer customer);
+	Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer customer) throws WrongInvoiceTypeException;
 
     /**
      * @param vendor the vendor to look for (not null)
      * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given vendor
      * Do not modify the returned collection!
+     * @throws WrongInvoiceTypeException 
      * @see #getPayedInvoices()
      * @see #getInvoices()
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_direct(GnucashVendor vendor);
+    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_direct(GnucashVendor vendor) throws WrongInvoiceTypeException;
 
     /**
      * @param vendor the vendor to look for (not null)
      * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given vendor
      * Do not modify the returned collection!
+     * @throws WrongInvoiceTypeException 
      * @see #getPayedInvoices()
      * @see #getInvoices()
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_viaJob(GnucashVendor vendor);
+    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_viaJob(GnucashVendor vendor) throws WrongInvoiceTypeException;
 
 	/**
 	 * warning: this function has to traverse all

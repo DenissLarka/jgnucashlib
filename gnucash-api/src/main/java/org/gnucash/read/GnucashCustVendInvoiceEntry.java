@@ -12,6 +12,7 @@ package org.gnucash.read;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
  * created: 05.05.2005 <br/>
@@ -46,17 +47,33 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 	 */
 	GnucashCustVendInvoice getCustVendInvoice();
 
-	/**
-	 * @return the price of a single of the ${@link #getQuantity()} items of
-	 * type ${@link #getAction()}.
-	 */
-	FixedPointNumber getInvcPrice();
+    // ---------------------------------------------------------------
 
 	/**
-	 * @return the price of a single of the ${@link #getQuantity()} items of
-	 * type ${@link #getAction()}.
+	 * @return For a customer invoice, return the price of one single of the 
+	 * ${@link #getQuantity()} items of type ${@link #getAction()}.
 	 */
-	String getPriceFormatet();
+	FixedPointNumber getInvcPrice() throws WrongInvoiceTypeException;
+
+    /**
+     * @return For a vendor bill, return the price of one single of the 
+     * ${@link #getQuantity()} items of type ${@link #getAction()}.
+     */
+    FixedPointNumber getBillPrice() throws WrongInvoiceTypeException;
+    
+    // ----------------------------
+
+    /**
+     * @return As ${@link #getInvcPrice()}, but formatted.
+     */
+    String getInvcPriceFormatet()throws WrongInvoiceTypeException;
+
+    /**
+     * @return As ${@link #getBillPrice()}, but formatted.
+     */
+    String getBillPriceFormatet()throws WrongInvoiceTypeException;
+    
+    // ---------------------------------------------------------------
 
 	/**
 	 * Possible value for {@link #getAction()}.
@@ -103,7 +120,7 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 	 *
 	 * @return true if any sales-tax applies at all to this item.
 	 */
-	boolean isTaxable();
+	boolean isInvcTaxable();
 
 	/**
 	 *
@@ -115,46 +132,81 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 	 * @return never null, "0%" if no taxtable is there
 	 */
 	String getApplicableTaxPercendFormatet();
-
-	/**
-	 * This is the sum as enteres by the user.
-	 * The user can decide to include or exclude taxes.
-	 * @return count*single-unit-price excluding or including taxes.
-	 * @see #getSumExclTaxes()
-	 * @see #getSumInclTaxes()
-	 */
-	FixedPointNumber getSum();
-
-	/**
-	 * This is the sum as enteres by the user.
-	 * The user can decide to include or exclude taxes.
-	 * @return count*single-unit-price excluding or including taxes.
-	 * @see #getSumExclTaxes()
-	 * @see #getSumInclTaxes()
-	 */
-	String getSumFormatet();
-
-	/**
-	 * @return count*single-unit-price including taxes.
-	 */
-	FixedPointNumber getSumInclTaxes();
-
-	/**
-	 * @return count*single-unit-price including taxes.
-	 */
-	String getSumInclTaxesFormatet();
-
-	/**
-	 * @return count*single-unit-price excluding taxes.
-	 */
-	FixedPointNumber getSumExclTaxes();
-
-	/**
-	 * @return count*single-unit-price excluding taxes.
-	 */
-	String getSumExclTaxesFormatet();
 	
-	// ----------------------------
+	// ---------------------------------------------------------------
+
+	/**
+	 * This is the customer invoice sum as entered by the user.
+	 * The user can decide to include or exclude taxes.
+	 * @return count*single-unit-price excluding or including taxes.
+	 * @throws WrongInvoiceTypeException 
+	 * @see #getInvcSumExclTaxes()
+	 * @see #getInvcSumInclTaxes()
+	 */
+	FixedPointNumber getInvcSum() throws WrongInvoiceTypeException;
+
+	/**
+	 * @return count*single-unit-price including taxes.
+	 * @throws WrongInvoiceTypeException 
+	 */
+	FixedPointNumber getInvcSumInclTaxes() throws WrongInvoiceTypeException;
+
+	/**
+	 * @return count*single-unit-price excluding taxes.
+	 * @throws WrongInvoiceTypeException 
+	 */
+	FixedPointNumber getInvcSumExclTaxes() throws WrongInvoiceTypeException;
+	
+    // ----------------------------
+
+    /**
+     * As ${@link #getInvcSum()}. but formatted.
+     * @return count*single-unit-price excluding or including taxes.
+     * @throws WrongInvoiceTypeException 
+     * @see #getInvcSumExclTaxes()
+     * @see #getInvcSumInclTaxes()
+     */
+    String getInvcSumFormatet() throws WrongInvoiceTypeException;
+
+    /**
+     * As ${@link #getInvcSumInclTaxes()}. but formatted.
+     * @return count*single-unit-price including taxes.
+     * @throws WrongInvoiceTypeException 
+     */
+    String getInvcSumInclTaxesFormatet() throws WrongInvoiceTypeException;
+
+	/**
+     * As ${@link #getInvcSumExclTaxes()}. but formatted.
+	 * @return count*single-unit-price excluding taxes.
+	 * @throws WrongInvoiceTypeException 
+	 */
+	String getInvcSumExclTaxesFormatet() throws WrongInvoiceTypeException;
+	
+    // ----------------------------
+
+    /**
+     * This is the vendor bill sum as entered by the user.
+     * The user can decide to include or exclude taxes.
+     * @return count*single-unit-price excluding or including taxes.
+     * @throws WrongInvoiceTypeException 
+     * @see #getInvcSumExclTaxes()
+     * @see #getInvcSumInclTaxes()
+     */
+    FixedPointNumber getBillSum() throws WrongInvoiceTypeException;
+
+    /**
+     * @return count*single-unit-price including taxes.
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getBillSumInclTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return count*single-unit-price excluding taxes.
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getBillSumExclTaxes() throws WrongInvoiceTypeException;
+    
+    // ---------------------------------------------------------------
 
 	GncV2.GncBook.GncGncEntry getJwsdpPeer();
 }

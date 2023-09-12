@@ -23,6 +23,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashCustVendInvoiceEntry;
 import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -241,7 +242,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	 */
 	public FixedPointNumber getApplicableTaxPercend() {
 
-		if (!isTaxable()) {
+		if (!isInvcTaxable()) {
 			return new FixedPointNumber();
 		}
 
@@ -280,74 +281,174 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 		return ((FixedPointNumber) val.clone()).divideBy(new FixedPointNumber("100"));
 
 	}
+	
+	// ---------------------------------------------------------------
 
 	/**
 	 * @see GnucashCustVendInvoiceEntry#getInvcPrice()
 	 */
-	public FixedPointNumber getInvcPrice() {
+	public FixedPointNumber getInvcPrice() throws WrongInvoiceTypeException {
 		return new FixedPointNumber(jwsdpPeer.getEntryIPrice());
 	}
 
     /**
      * @see GnucashCustVendInvoiceEntry#getInvcPrice()
      */
-    public FixedPointNumber getBillPrice() {
+    public FixedPointNumber getBillPrice() throws WrongInvoiceTypeException {
         return new FixedPointNumber(jwsdpPeer.getEntryBPrice());
     }
+    
+    // ----------------------------
 
 	/**
 	 * @return the price of a single of the ${@link #getQuantity()} items of
 	 * type ${@link #getAction()}.
 	 */
-	public String getPriceFormatet() {
+	public String getInvcPriceFormatet() throws WrongInvoiceTypeException {
 		return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcPrice());
 	}
+	
+    /**
+     * @return the price of a single of the ${@link #getQuantity()} items of
+     * type ${@link #getAction()}.
+     */
+    public String getBillPriceFormatet() throws WrongInvoiceTypeException {
+        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillPrice());
+    }
+
+    // ---------------------------------------------------------------
 
 	/**
-	 * @see GnucashCustVendInvoiceEntry#getSum()
+	 * @see GnucashCustVendInvoiceEntry#getInvcSum()
 	 */
-	public FixedPointNumber getSum() {
+	public FixedPointNumber getInvcSum() throws WrongInvoiceTypeException {
 		return getInvcPrice().multiply(getQuantity());
 	}
+	
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashCustVendInvoiceEntry#getInvcSumInclTaxes()
+     */
+    public FixedPointNumber getInvcSumInclTaxes() throws WrongInvoiceTypeException {
+        if (jwsdpPeer.getEntryITaxincluded() == 1) {
+            return getInvcSum();
+        }
+
+        return getInvcSum().multiply(getApplicableTaxPercend().add(1));
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashCustVendInvoiceEntry#getInvcSumExclTaxes()
+     */
+    public FixedPointNumber getInvcSumExclTaxes() throws WrongInvoiceTypeException {
+
+        //      System.err.println("debug: GnucashInvoiceEntryImpl.getSumExclTaxes():"
+        //      taxIncluded="+jwsdpPeer.getEntryITaxincluded()+" getSum()="+getSum()+" getApplicableTaxPercend()="+getApplicableTaxPercend());
+
+        if (jwsdpPeer.getEntryITaxincluded() == 0) {
+            return getInvcSum();
+        }
+
+        return getInvcSum().divideBy(getApplicableTaxPercend().add(1));
+    }
+
+	// ----------------------------
+
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashCustVendInvoiceEntry#getInvcSum()
+     */
+    public String getInvcSumFormatet() throws WrongInvoiceTypeException {
+        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcSum());
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @throws WrongInvoiceTypeException 
+     */
+    public String getInvcSumInclTaxesFormatet() throws WrongInvoiceTypeException {
+        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcSumInclTaxes());
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws WrongInvoiceTypeException 
+     */
+    public String getInvcSumExclTaxesFormatet() throws WrongInvoiceTypeException {
+        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcSumExclTaxes());
+    }
+    
+    // ----------------------------
+
+    /**
+     * @see GnucashCustVendInvoiceEntry#getInvcSum()
+     */
+    public FixedPointNumber getBillSum() throws WrongInvoiceTypeException {
+        return getBillPrice().multiply(getQuantity());
+    }
+    
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashCustVendInvoiceEntry#getInvcSumInclTaxes()
+     */
+    public FixedPointNumber getBillSumInclTaxes() throws WrongInvoiceTypeException {
+        if (jwsdpPeer.getEntryBTaxincluded() == 1) {
+            return getBillSum();
+        }
+
+        return getBillSum().multiply(getApplicableTaxPercend().add(1));
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashCustVendInvoiceEntry#getInvcSumExclTaxes()
+     */
+    public FixedPointNumber getBillSumExclTaxes() throws WrongInvoiceTypeException {
+
+        //      System.err.println("debug: GnucashInvoiceEntryImpl.getSumExclTaxes():"
+        //      taxIncluded="+jwsdpPeer.getEntryITaxincluded()+" getSum()="+getSum()+" getApplicableTaxPercend()="+getApplicableTaxPercend());
+
+        if (jwsdpPeer.getEntryBTaxincluded() == 0) {
+            return getBillSum();
+        }
+
+        return getBillSum().divideBy(getApplicableTaxPercend().add(1));
+    }
+
+    // ----------------------------
+
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashCustVendInvoiceEntry#getInvcSum()
+     */
+    public String getBillSumFormatet() throws WrongInvoiceTypeException {
+        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillSum());
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @throws WrongInvoiceTypeException 
+     */
+    public String getBillSumInclTaxesFormatet() throws WrongInvoiceTypeException {
+        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillSumInclTaxes());
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws WrongInvoiceTypeException 
+     */
+    public String getBillSumExclTaxesFormatet() throws WrongInvoiceTypeException {
+        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillSumExclTaxes());
+    }
+    
+    // ---------------------------------------------------------------
 
 	/**
-	 * @see GnucashCustVendInvoiceEntry#getSum()
+	 * @see GnucashCustVendInvoiceEntry#isInvcTaxable()
 	 */
-	public String getSumFormatet() {
-		return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getSum());
-	}
-
-	/**
-	 * @see GnucashCustVendInvoiceEntry#isTaxable()
-	 */
-	public boolean isTaxable() {
+	public boolean isInvcTaxable() {
 		return (jwsdpPeer.getEntryITaxable() == 1);
-	}
-
-	/**
-	 * @see GnucashCustVendInvoiceEntry#getSumInclTaxes()
-	 */
-	public FixedPointNumber getSumInclTaxes() {
-		if (jwsdpPeer.getEntryITaxincluded() == 1) {
-			return getSum();
-		}
-
-		return getSum().multiply(getApplicableTaxPercend().add(1));
-	}
-
-	/**
-	 * @see GnucashCustVendInvoiceEntry#getSumExclTaxes()
-	 */
-	public FixedPointNumber getSumExclTaxes() {
-
-		//      System.err.println("debug: GnucashInvoiceEntryImpl.getSumExclTaxes():"
-		//      taxIncluded="+jwsdpPeer.getEntryITaxincluded()+" getSum()="+getSum()+" getApplicableTaxPercend()="+getApplicableTaxPercend());
-
-		if (jwsdpPeer.getEntryITaxincluded() == 0) {
-			return getSum();
-		}
-
-		return getSum().divideBy(getApplicableTaxPercend().add(1));
 	}
 
 	/**
@@ -394,88 +495,6 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public int compareTo(final GnucashCustVendInvoiceEntry o) {
-		try {
-			GnucashCustVendInvoiceEntry otherSplit = o;
-			GnucashCustVendInvoice otherTrans = otherSplit.getCustVendInvoice();
-			if (otherTrans != null && getCustVendInvoice() != null) {
-				int c = otherTrans.compareTo(getCustVendInvoice());
-				if (c != 0) {
-					return c;
-				}
-			}
-
-			int c = otherSplit.getId().compareTo(getId());
-			if (c != 0) {
-				return c;
-			}
-
-			if (o != this) {
-				LOG.error("doublicate invoice-entry-id!! "
-						+ otherSplit.getId()
-						+ " and "
-						+ getId());
-			}
-
-			return 0;
-
-		}
-		catch (Exception e) {
-			LOG.error("error comparing", e);
-			return 0;
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("[GnucashCustVendInvoiceEntryImpl:");
-		buffer.append(" id: ");
-		buffer.append(getId());
-        buffer.append(" type: ");
-        buffer.append(getType());
-		buffer.append(" cust/vend-invoice-id: ");
-		buffer.append(getCustVendInvoiceID());
-//		//      buffer.append(" cust/vend-invoice: ");
-//		//      GnucashCustVendInvoice invc = getCustVendInvoice();
-//		//      buffer.append(invoice==null?"null":invc.getName());
-		buffer.append(" description: '");
-		buffer.append(getDescription() + "'");
-		buffer.append(" action: '");
-		buffer.append(getAction() + "'");
-        buffer.append(" price: ");
-        if ( getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
-          buffer.append(getInvcPrice());
-        else if ( getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
-          buffer.append(getBillPrice());
-        else
-          buffer.append("ERROR");
-        buffer.append(" quantity: ");
-        buffer.append(getQuantity());
-		buffer.append("]");
-		return buffer.toString();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getSumInclTaxesFormatet() {
-		return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getSumInclTaxes());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getSumExclTaxesFormatet() {
-		return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getSumExclTaxes());
-	}
-
-	/**
 	 * The numberFormat to use for non-currency-numbers  for default-formating.<br/>
 	 * Please access only using {@link #getNumberFormat()}.
 	 *
@@ -513,13 +532,101 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 		return percentFormat;
 	}
 	
-	// ----------------------------
+	// ---------------------------------------------------------------
 	
     /**
      * @return The JWSDP-Object we are wrapping.
      */
     public GncV2.GncBook.GncGncEntry getJwsdpPeer() {
         return jwsdpPeer;
+    }
+
+    // ---------------------------------------------------------------
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(final GnucashCustVendInvoiceEntry o) {
+        try {
+            GnucashCustVendInvoiceEntry otherSplit = o;
+            GnucashCustVendInvoice otherTrans = otherSplit.getCustVendInvoice();
+            if (otherTrans != null && getCustVendInvoice() != null) {
+                int c = otherTrans.compareTo(getCustVendInvoice());
+                if (c != 0) {
+                    return c;
+                }
+            }
+
+            int c = otherSplit.getId().compareTo(getId());
+            if (c != 0) {
+                return c;
+            }
+
+            if (o != this) {
+                LOG.error("doublicate invoice-entry-id!! "
+                        + otherSplit.getId()
+                        + " and "
+                        + getId());
+            }
+
+            return 0;
+
+        }
+        catch (Exception e) {
+            LOG.error("error comparing", e);
+            return 0;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[GnucashCustVendInvoiceEntryImpl:");
+        buffer.append(" id: ");
+        buffer.append(getId());
+        buffer.append(" type: ");
+        buffer.append(getType());
+        buffer.append(" cust/vend-invoice-id: ");
+        buffer.append(getCustVendInvoiceID());
+//      //      buffer.append(" cust/vend-invoice: ");
+//      //      GnucashCustVendInvoice invc = getCustVendInvoice();
+//      //      buffer.append(invoice==null?"null":invc.getName());
+        buffer.append(" description: '");
+        buffer.append(getDescription() + "'");
+        buffer.append(" action: '");
+        buffer.append(getAction() + "'");
+        buffer.append(" price: ");
+        if ( getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+        {
+          try
+          {
+            buffer.append(getInvcPrice());
+          }
+          catch (WrongInvoiceTypeException e)
+          {
+            buffer.append("ERROR");
+          }
+        }
+        else if ( getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+        {
+          try
+          {
+            buffer.append(getBillPrice());
+          }
+          catch (WrongInvoiceTypeException e)
+          {
+            buffer.append("ERROR");
+          }
+        }
+        else
+          buffer.append("ERROR");
+        buffer.append(" quantity: ");
+        buffer.append(getQuantity());
+        buffer.append("]");
+        return buffer.toString();
     }
 
 }

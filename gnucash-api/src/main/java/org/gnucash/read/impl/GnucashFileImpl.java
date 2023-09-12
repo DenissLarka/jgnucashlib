@@ -406,12 +406,13 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
 	/**
+	 * @throws WrongInvoiceTypeException 
 	 * @see GnucashFile#getUnpayedInvoices()
 	 */
-	public Collection<GnucashCustVendInvoice> getUnpayedInvoices() {
+	public Collection<GnucashCustVendInvoice> getUnpayedInvoices() throws WrongInvoiceTypeException {
 		Collection<GnucashCustVendInvoice> retval = new LinkedList<GnucashCustVendInvoice>();
 		for (GnucashCustVendInvoice invoice : getInvoices()) {
-			if (invoice.getAmmountUnPayed().isPositive()) {
+			if (invoice.getInvcAmmountUnPayedWithTaxes().isPositive()) {
 				retval.add(invoice);
 			}
 		}
@@ -420,9 +421,10 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
     /**
+     * @throws WrongInvoiceTypeException 
      * @see GnucashFile#getUnpayedInvoicesForCustomer_direct(GnucashCustomer)
      */
-    public Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(final GnucashCustomer customer) {
+    public Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(final GnucashCustomer customer) throws WrongInvoiceTypeException {
         Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
         for (GnucashCustVendInvoice invoice : getUnpayedInvoices()) {
             if (invoice.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(customer.getId())) {
@@ -441,9 +443,10 @@ public class GnucashFileImpl implements GnucashFile {
     }
 
 	/**
+	 * @throws WrongInvoiceTypeException 
 	 * @see GnucashFile#getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	public Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(final GnucashCustomer customer) {
+	public Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(final GnucashCustomer customer) throws WrongInvoiceTypeException {
 		Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
         for (GnucashCustVendInvoice invoice : getUnpayedInvoices())
         {
@@ -463,9 +466,10 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
     /**
+     * @throws WrongInvoiceTypeException 
      * @see GnucashFile#getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    public Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_direct(final GnucashVendor vendor) {
+    public Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_direct(final GnucashVendor vendor) throws WrongInvoiceTypeException {
         Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
         for (GnucashCustVendInvoice invoice : getUnpayedInvoices()) {
             if (invoice.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(vendor.getId())) {
@@ -484,9 +488,10 @@ public class GnucashFileImpl implements GnucashFile {
     }
 
     /**
+     * @throws WrongInvoiceTypeException 
      * @see GnucashFile#getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
      */
-    public Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_viaJob(final GnucashVendor vendor) {
+    public Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_viaJob(final GnucashVendor vendor) throws WrongInvoiceTypeException {
         Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
         for (GnucashCustVendInvoice invoice : getUnpayedInvoices()) {
             if (invoice.getJob().getOwnerId().equals(vendor.getId())) {
@@ -505,12 +510,13 @@ public class GnucashFileImpl implements GnucashFile {
     }
 
 	/**
+	 * @throws WrongInvoiceTypeException 
 	 * @see GnucashFile#getPayedInvoices()
 	 */
-	public Collection<GnucashCustVendInvoice> getPayedInvoices() {
+	public Collection<GnucashCustVendInvoice> getPayedInvoices() throws WrongInvoiceTypeException {
 		Collection<GnucashCustVendInvoice> retval = new LinkedList<GnucashCustVendInvoice>();
 		for (GnucashCustVendInvoice invoice : getInvoices()) {
-			if (!invoice.getAmmountUnPayed().isPositive()) {
+			if (!invoice.getInvcAmmountUnPayedWithTaxes().isPositive()) {
 				retval.add(invoice);
 			}
 		}

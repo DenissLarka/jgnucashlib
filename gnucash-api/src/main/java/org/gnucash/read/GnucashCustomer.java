@@ -20,6 +20,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustVendInvoice.ReadVariant;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 //TODO: model taxes and implement getTaxTable
 
@@ -49,43 +50,50 @@ public interface GnucashCustomer extends GnucashObject {
     /**
      * Date is not checked so invoiced that have entered payments in the future are considered payed.
      * @return the current number of unpayed invoices
+     * @throws WrongInvoiceTypeException 
      */
-    int getNofOpenInvoices();
+    int getNofOpenInvoices() throws WrongInvoiceTypeException;
 
     /**
      * @return the sum of payments for invoices to this client
+     * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getIncomeGenerated();
+    FixedPointNumber getIncomeGenerated() throws WrongInvoiceTypeException;
 
     /**
+     * @throws WrongInvoiceTypeException 
      * @see #getIncomeGenerated()
      * formatet acording to the current locale's currency-format
      */
-    String getIncomeGeneratedFormatet();
+    String getIncomeGeneratedFormatet() throws WrongInvoiceTypeException;
 
     /**
+     * @throws WrongInvoiceTypeException 
      * @see #getIncomeGenerated()
      * formatet acording to the given locale's currency-format
      */
-    String getIncomeGeneratedFormatet(Locale l);
+    String getIncomeGeneratedFormatet(Locale l) throws WrongInvoiceTypeException;
 
     /**
      * @return the sum of left to pay unpayed invoiced
+     * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getOutstandingValue();
+    FixedPointNumber getOutstandingValue() throws WrongInvoiceTypeException;
 
     /**
+     * @throws WrongInvoiceTypeException 
      * @see #getOutstandingValue()
      * formatet acording to the current locale's currency-format
      */
-    String getOutstandingValueFormatet();
+    String getOutstandingValueFormatet() throws WrongInvoiceTypeException;
 
     /**
      *
+     * @throws WrongInvoiceTypeException 
      * @see #getOutstandingValue()
      * formatet acording to the given locale's currency-format
      */
-    String getOutstandingValueFormatet(Locale l);
+    String getOutstandingValueFormatet(Locale l) throws WrongInvoiceTypeException;
 
 
     /**
@@ -199,7 +207,7 @@ public interface GnucashCustomer extends GnucashObject {
     
     // ----------------------------
 
-    Collection<GnucashCustomerInvoice> getUnpayedInvoices(ReadVariant readVar);
+    Collection<GnucashCustomerInvoice> getUnpayedInvoices(ReadVariant readVar) throws WrongInvoiceTypeException;
     
     // ----------------------------
     

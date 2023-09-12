@@ -1,9 +1,11 @@
 package org.gnucash.read.impl.spec;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashCustVendInvoiceEntry;
 import org.gnucash.read.impl.GnucashCustVendInvoiceEntryImpl;
+import org.gnucash.read.impl.GnucashCustVendInvoiceImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
@@ -65,6 +67,18 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashCustVendInvoiceEntry
 
   // ---------------------------------------------------------------
 
+  @Override
+  public FixedPointNumber getBillPrice() throws WrongInvoiceTypeException {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getBillPriceFormatet() throws WrongInvoiceTypeException {
+    throw new WrongInvoiceTypeException();
+  }
+
+  // ---------------------------------------------------------------
+
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     buffer.append("[GnucashCustomerInvoiceEntryImpl:");
@@ -80,7 +94,14 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashCustVendInvoiceEntry
     buffer.append(" action: '");
     buffer.append(getAction() + "'");
     buffer.append(" price: ");
-    buffer.append(getInvcPrice());
+    try
+    {
+      buffer.append(getInvcPrice());
+    }
+    catch (WrongInvoiceTypeException e)
+    {
+      buffer.append("ERROR");
+    }
     buffer.append(" quantity: ");
     buffer.append(getQuantity());
     buffer.append("]");

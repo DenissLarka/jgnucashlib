@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
  * created: 26.05.2005 <br>
@@ -130,43 +131,136 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	 * @return the job this invoice is for
 	 */
 	GnucashJob getJob();
+	
+	// ---------------------------------------------------------------
 
 	/**
 	 * @return what the customer must still pay (incl. taxes)
+	 * @throws WrongInvoiceTypeException 
 	 */
-	FixedPointNumber getAmmountUnPayed();
-
-	/**
-	 * Formating uses the default-locale's currency-format.
-	 * @return what the customer must still pay (incl. taxes)
-	 */
-	String getAmmountUnPayedFormatet();
+	FixedPointNumber getInvcAmmountUnPayedWithTaxes() throws WrongInvoiceTypeException;
 
 	/**
 	 * @return what the customer has already pay (incl. taxes)
 	 */
-	FixedPointNumber getAmmountPayedWithTaxes();
+	FixedPointNumber getInvcAmmountPayedWithTaxes();
 
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getInvcAmmountPayedWithoutTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer needs to pay in total (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getInvcAmmountWithTaxes() throws WrongInvoiceTypeException;
+    
 	/**
 	 * @return what the customer needs to pay in total (excl. taxes)
+	 * @throws WrongInvoiceTypeException 
 	 */
-	FixedPointNumber getAmmountWithoutTaxes();
+	FixedPointNumber getInvcAmmountWithoutTaxes() throws WrongInvoiceTypeException;
 
-	/**
-	 * @return what the customer needs to pay in total (excl. taxes)
-	 */
-	String getAmmountWithoutTaxesFormatet();
+    // ----------------------------
 
-	/**
-	 * @return what the customer needs to pay in total (incl. taxes)
-	 */
-	FixedPointNumber getAmmountWithTaxes();
+    /**
+     * Formating uses the default-locale's currency-format.
+     * @return what the customer must still pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getInvcAmmountUnPayedWithTaxesFormatet() throws WrongInvoiceTypeException;
 
-	/**
-	 * Formating uses the default-locale's currency-format.
-	 * @return what the customer needs to pay in total (incl. taxes)
-	 */
-	String getAmmountWithTaxesFormatet();
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     */
+    String getInvcAmmountPayedWithTaxesFormatet();
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getInvcAmmountPayedWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+
+    /**
+     * Formating uses the default-locale's currency-format.
+     * @return what the customer needs to pay in total (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getInvcAmmountWithTaxesFormatet() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer needs to pay in total (excl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getInvcAmmountWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+
+    // ---------------------------------------------------------------
+
+    /**
+     * @return what the customer must still pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getBillAmmountUnPayedWithTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     */
+    FixedPointNumber getBillAmmountPayedWithTaxes();
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getBillAmmountPayedWithoutTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer needs to pay in total (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getBillAmmountWithTaxes() throws WrongInvoiceTypeException;
+    
+    /**
+     * @return what the customer needs to pay in total (excl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getBillAmmountWithoutTaxes() throws WrongInvoiceTypeException;
+
+    // ----------------------------
+
+    /**
+     * Formating uses the default-locale's currency-format.
+     * @return what the customer must still pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getBillAmmountUnPayedWithTaxesFormatet() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     */
+    String getBillAmmountPayedWithTaxesFormatet();
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getBillAmmountPayedWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+
+    /**
+     * Formating uses the default-locale's currency-format.
+     * @return what the customer needs to pay in total (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getBillAmmountWithTaxesFormatet() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer needs to pay in total (excl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getBillAmmountWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+
+    // ---------------------------------------------------------------
 
 	/**
 	 *
@@ -257,9 +351,10 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	/**
 	 *
 	 * @return how much sales-taxes are to pay.
+	 * @throws WrongInvoiceTypeException 
 	 * @see TaxedSum
 	 */
-	TaxedSum[] getTaxes();
+	TaxedSum[] getInvcTaxes() throws WrongInvoiceTypeException;
 
 	/**
 	 * @return the id of the {@link GnucashAccount} the payment is made to.
@@ -319,7 +414,8 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 
 	/**
 	 * @return (getAmmountWithoutTaxes().isMoreThen(getAmmountPayedWithoutTaxes()))
+	 * @throws WrongInvoiceTypeException 
 	 */
-	boolean isNotFullyPayed();
+	boolean isNotFullyPayed() throws WrongInvoiceTypeException;
 
 }

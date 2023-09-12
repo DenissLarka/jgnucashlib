@@ -80,7 +80,14 @@ public class GnucashVendorBillEntryImpl extends GnucashCustVendInvoiceEntryImpl
     buffer.append(" action: '");
     buffer.append(getAction() + "'");
     buffer.append(" price: ");
-    buffer.append(getBillPrice());
+    try
+    {
+      buffer.append(getBillPrice());
+    }
+    catch (WrongInvoiceTypeException e)
+    {
+      buffer.append("ERROR");
+    }
     buffer.append(" quantity: ");
     buffer.append(getQuantity());
     buffer.append("]");
