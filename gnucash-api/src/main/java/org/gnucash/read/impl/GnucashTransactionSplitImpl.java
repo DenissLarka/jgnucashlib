@@ -186,16 +186,16 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	}
 
 	/**
-	 * @see GnucashTransactionSplit#getValueFormatet()
+	 * @see GnucashTransactionSplit#getValueFormatted()
 	 */
-	public String getValueFormatet() {
+	public String getValueFormatted() {
 		return getValueCurrencyFormat().format(getValue());
 	}
 
 	/**
-	 * @see GnucashTransactionSplit#getValueFormatet(java.util.Locale)
+	 * @see GnucashTransactionSplit#getValueFormatted(java.util.Locale)
 	 */
-	public String getValueFormatet(final Locale locale) {
+	public String getValueFormatted(final Locale locale) {
 
 		NumberFormat cf = NumberFormat.getInstance(locale);
 		if (getTransaction().getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
@@ -208,17 +208,17 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	}
 
 	/**
-	 * @see GnucashTransactionSplit#getValueFormatetForHTML()
+	 * @see GnucashTransactionSplit#getValueFormattedForHTML()
 	 */
-	public String getValueFormatetForHTML() {
-		return getValueFormatet().replaceFirst("�", "&euro;");
+	public String getValueFormattedForHTML() {
+		return getValueFormatted().replaceFirst("�", "&euro;");
 	}
 
 	/**
-	 * @see GnucashTransactionSplit#getValueFormatetForHTML(java.util.Locale)
+	 * @see GnucashTransactionSplit#getValueFormattedForHTML(java.util.Locale)
 	 */
-	public String getValueFormatetForHTML(final Locale locale) {
-		return getValueFormatet(locale).replaceFirst("�", "&euro;");
+	public String getValueFormattedForHTML(final Locale locale) {
+		return getValueFormatted(locale).replaceFirst("�", "&euro;");
 	}
 
 	/**
@@ -229,17 +229,17 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	}
 
 	/**
-	 * @see GnucashTransactionSplit#getAccountBalanceFormatet()
+	 * @see GnucashTransactionSplit#getAccountBalanceFormatted()
 	 */
-	public String getAccountBalanceFormatet() {
+	public String getAccountBalanceFormatted() {
 		return ((GnucashAccountImpl) getAccount()).getCurrencyFormat()
 				.format(getAccountBalance());
 	}
 
 	/**
-	 * @see GnucashTransactionSplit#getAccountBalanceFormatet(java.util.Locale)
+	 * @see GnucashTransactionSplit#getAccountBalanceFormatted(java.util.Locale)
 	 */
-	public String getAccountBalanceFormatet(final Locale locale) {
+	public String getAccountBalanceFormatted(final Locale locale) {
 		return getAccount().getBalanceFormated(locale);
 	}
 
@@ -253,7 +253,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	/**
 	 * The value is in the currency of the account!
 	 */
-	public String getQuantityFormatet() {
+	public String getQuantityFormatted() {
 		return getQuantityCurrencyFormat().format(getQuantity());
 	}
 
@@ -263,7 +263,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	 * @param locale the locale to format to
 	 * @return the formated number
 	 */
-	public String getQuantityFormatet(final Locale locale) {
+	public String getQuantityFormatted(final Locale locale) {
 		if (getTransaction().getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
 			return NumberFormat.getNumberInstance(locale).format(getQuantity());
 		}
@@ -276,15 +276,15 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	/**
 	 * The value is in the currency of the account!
 	 */
-	public String getQuantityFormatetForHTML() {
-		return getQuantityFormatet().replaceFirst("�", "&euro;");
+	public String getQuantityFormattedForHTML() {
+		return getQuantityFormatted().replaceFirst("�", "&euro;");
 	}
 
 	/**
 	 * The value is in the currency of the account!
 	 */
-	public String getQuantityFormatetForHTML(final Locale locale) {
-		return getQuantityFormatet(locale).replaceFirst("�", "&euro;");
+	public String getQuantityFormattedForHTML(final Locale locale) {
+		return getQuantityFormatted(locale).replaceFirst("�", "&euro;");
 	}
 
 	/**

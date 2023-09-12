@@ -39,6 +39,24 @@ import org.gnucash.read.GnucashObject;
 public class GnucashObjectImpl implements GnucashObject {
 
   /**
+   * the user-defined values.
+   */
+  private SlotsType mySlots;
+
+  /**
+   * The file we belong to.
+   */
+  private final GnucashFile myFile;
+
+  // -----------------------------------------------------------------
+
+  public GnucashObjectImpl(final GnucashFile myFile) {
+    super();
+    
+    this.myFile = myFile;
+  }
+
+  /**
    * @param slots  ${@link #mySlots}
    * @param myFile The file we belong to
    */
@@ -53,17 +71,64 @@ public class GnucashObjectImpl implements GnucashObject {
   }
   
   // -----------------------------------------------------------------
+  
+  /**
+   * @return Returns the slots.
+   * @link #mySlots
+   */
+  public SlotsType getSlots() {
+      return mySlots;
+  }
 
-	/**
-	 * the user-defined values.
-	 */
-	private SlotsType mySlots;
+  /**
+   * @param slots The slots to set.
+   * @link #mySlots
+   */
+  @SuppressWarnings("unchecked")
+  public void setSlots(final SlotsType slots) {
+      if (slots == null) {
+          throw new IllegalArgumentException("null 'slots' given!");
+      }
 
-	/**
-	 * The file we belong to.
-	 */
-	private final GnucashFile myFile;
+      Object old = mySlots;
+      if (old == slots) {
+          return; // nothing has changed
+      }
+      mySlots = slots;
 
+      // we have an xsd-problem saving empty slots so we add a dummy-value
+      if (slots.getSlot().isEmpty()) {
+          ObjectFactory objectFactory = new ObjectFactory();
+          Slot slot = objectFactory.createSlot();
+          slot.setSlotKey("dummy");
+          SlotValue value = objectFactory.createSlotValue();
+          value.setType("string");
+          value.getContent().add("dummy");
+          slot.setSlotValue(value);
+          slots.getSlot().add(slot);
+      }
+
+      // <<insert code to react further to this change here
+      PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
+      if (propertyChangeFirer != null) {
+          propertyChangeFirer.firePropertyChange("slots", old, slots);
+      }
+  }
+
+  /**
+   * @return Returns the file.
+   * @link #myFile
+   */
+  public GnucashFile getGnucashFile() {
+      return myFile;
+  }
+
+//  public void setGnucashFile(GnucashFile gcshFile) {
+//    this.myFile = gcshFile;
+//  }
+
+  // -----------------------------------------------------------------
+  
 	/**
 	 * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.
 	 */
@@ -200,57 +265,6 @@ public class GnucashObjectImpl implements GnucashObject {
 	@Override
 	public String toString() {
 		return "GnucashObjectImpl@" + hashCode();
-	}
-
-	/**
-	 * @return Returns the slots.
-	 * @link #mySlots
-	 */
-	public SlotsType getSlots() {
-		return mySlots;
-	}
-
-	/**
-	 * @param slots The slots to set.
-	 * @link #mySlots
-	 */
-	@SuppressWarnings("unchecked")
-	public void setSlots(final SlotsType slots) {
-		if (slots == null) {
-			throw new IllegalArgumentException("null 'slots' given!");
-		}
-
-		Object old = mySlots;
-		if (old == slots) {
-			return; // nothing has changed
-		}
-		mySlots = slots;
-
-		// we have an xsd-problem saving empty slots so we add a dummy-value
-		if (slots.getSlot().isEmpty()) {
-			ObjectFactory objectFactory = new ObjectFactory();
-			Slot slot = objectFactory.createSlot();
-			slot.setSlotKey("dummy");
-			SlotValue value = objectFactory.createSlotValue();
-			value.setType("string");
-			value.getContent().add("dummy");
-			slot.setSlotValue(value);
-			slots.getSlot().add(slot);
-		}
-
-		// <<insert code to react further to this change here
-		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
-		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("slots", old, slots);
-		}
-	}
-
-	/**
-	 * @return Returns the file.
-	 * @link #myFile
-	 */
-	public GnucashFile getGnucashFile() {
-		return myFile;
 	}
 
 }

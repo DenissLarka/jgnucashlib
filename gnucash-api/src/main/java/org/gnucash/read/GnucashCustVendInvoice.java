@@ -58,7 +58,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	
 	// ----------------------------
 
-    GncGncInvoice getPeer();
+    GncGncInvoice getJwsdpPeer();
 
 	/**
 	 * The gnucash-file is the top-level class to contain everything.
@@ -76,7 +76,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	/**
 	 * @return the date when this transaction was added to or modified in the books.
 	 */
-	String getDateOpenedFormatet();
+	String getDateOpenedFormatted();
 
 	/**
 	 * @return the date when this transaction hapened.
@@ -86,7 +86,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	/**
 	 * @return the date when this transaction hapened.
 	 */
-	String getDatePostedFormatet();
+	String getDatePostedFormatted();
 
 	/**
 	 * @return the lot-id that identifies transactions to belong to
@@ -138,30 +138,31 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	 * @return what the customer must still pay (incl. taxes)
 	 * @throws WrongInvoiceTypeException 
 	 */
-	FixedPointNumber getInvcAmmountUnPayedWithTaxes() throws WrongInvoiceTypeException;
+	FixedPointNumber getInvcAmountUnpaidWithTaxes() throws WrongInvoiceTypeException;
 
 	/**
 	 * @return what the customer has already pay (incl. taxes)
+	 * @throws WrongInvoiceTypeException 
 	 */
-	FixedPointNumber getInvcAmmountPayedWithTaxes();
+	FixedPointNumber getInvcAmountPaidWithTaxes() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer has already pay (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getInvcAmmountPayedWithoutTaxes() throws WrongInvoiceTypeException;
+    FixedPointNumber getInvcAmountPaidWithoutTaxes() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer needs to pay in total (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getInvcAmmountWithTaxes() throws WrongInvoiceTypeException;
+    FixedPointNumber getInvcAmountWithTaxes() throws WrongInvoiceTypeException;
     
 	/**
 	 * @return what the customer needs to pay in total (excl. taxes)
 	 * @throws WrongInvoiceTypeException 
 	 */
-	FixedPointNumber getInvcAmmountWithoutTaxes() throws WrongInvoiceTypeException;
+	FixedPointNumber getInvcAmountWithoutTaxes() throws WrongInvoiceTypeException;
 
     // ----------------------------
 
@@ -170,31 +171,32 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
      * @return what the customer must still pay (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getInvcAmmountUnPayedWithTaxesFormatet() throws WrongInvoiceTypeException;
-
-    /**
-     * @return what the customer has already pay (incl. taxes)
-     */
-    String getInvcAmmountPayedWithTaxesFormatet();
+    String getInvcAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer has already pay (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getInvcAmmountPayedWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+    String getInvcAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getInvcAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException;
 
     /**
      * Formating uses the default-locale's currency-format.
      * @return what the customer needs to pay in total (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getInvcAmmountWithTaxesFormatet() throws WrongInvoiceTypeException;
+    String getInvcAmountWithTaxesFormatted() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer needs to pay in total (excl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getInvcAmmountWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+    String getInvcAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
 
     // ---------------------------------------------------------------
 
@@ -202,30 +204,31 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
      * @return what the customer must still pay (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getBillAmmountUnPayedWithTaxes() throws WrongInvoiceTypeException;
-
-    /**
-     * @return what the customer has already pay (incl. taxes)
-     */
-    FixedPointNumber getBillAmmountPayedWithTaxes();
+    FixedPointNumber getBillAmountUnpaidWithTaxes() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer has already pay (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getBillAmmountPayedWithoutTaxes() throws WrongInvoiceTypeException;
+    FixedPointNumber getBillAmountPaidWithTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getBillAmountPaidWithoutTaxes() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer needs to pay in total (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getBillAmmountWithTaxes() throws WrongInvoiceTypeException;
+    FixedPointNumber getBillAmountWithTaxes() throws WrongInvoiceTypeException;
     
     /**
      * @return what the customer needs to pay in total (excl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getBillAmmountWithoutTaxes() throws WrongInvoiceTypeException;
+    FixedPointNumber getBillAmountWithoutTaxes() throws WrongInvoiceTypeException;
 
     // ----------------------------
 
@@ -234,31 +237,32 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
      * @return what the customer must still pay (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getBillAmmountUnPayedWithTaxesFormatet() throws WrongInvoiceTypeException;
-
-    /**
-     * @return what the customer has already pay (incl. taxes)
-     */
-    String getBillAmmountPayedWithTaxesFormatet();
+    String getBillAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer has already pay (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getBillAmmountPayedWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+    String getBillAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException 
+     */
+    String getBillAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException;
 
     /**
      * Formating uses the default-locale's currency-format.
      * @return what the customer needs to pay in total (incl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getBillAmmountWithTaxesFormatet() throws WrongInvoiceTypeException;
+    String getBillAmountWithTaxesFormatted() throws WrongInvoiceTypeException;
 
     /**
      * @return what the customer needs to pay in total (excl. taxes)
      * @throws WrongInvoiceTypeException 
      */
-    String getBillAmmountWithoutTaxesFormatet() throws WrongInvoiceTypeException;
+    String getBillAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
 
     // ---------------------------------------------------------------
 
@@ -280,7 +284,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	class TaxedSum {
 		/**
 		 * @param pTaxpercent how much tax it is
-		 * @param pTaxsum the sum of payed taxes
+		 * @param pTaxsum the sum of Paid taxes
 		 */
 		public TaxedSum(final FixedPointNumber pTaxpercent,
 				final FixedPointNumber pTaxsum) {
@@ -296,7 +300,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 		private FixedPointNumber myTaxpercent;
 
 		/**
-		 * The sum of payed taxes.
+		 * The sum of Paid taxes.
 		 */
 		private FixedPointNumber taxsum;
 
@@ -333,7 +337,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 
 		/**
 		 *
-		 * @return The sum of payed taxes.
+		 * @return The sum of Paid taxes.
 		 */
 		public FixedPointNumber getTaxsum() {
 			return taxsum;
@@ -341,7 +345,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 
 		/**
 		 *
-		 * @param pTaxsum The sum of payed taxes.
+		 * @param pTaxsum The sum of Paid taxes.
 		 */
 		public void setTaxsum(final FixedPointNumber pTaxsum) {
 			taxsum = pTaxsum;
@@ -372,13 +376,13 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 
 	/**
 	 *
-	 * @return the transactions the customer payed this invoice vis.
+	 * @return the transactions the customer Paid this invoice vis.
 	 */
 	Collection<? extends GnucashTransaction> getPayingTransactions();
 
 	/**
 	 *
-	 * @param trans a transaction the customer payed a part of this invoice vis.
+	 * @param trans a transaction the customer Paid a part of this invoice vis.
 	 */
 	void addPayingTransaction(GnucashTransactionSplit trans);
 
@@ -413,9 +417,9 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
     // ---------------------------------------------------------------
 
 	/**
-	 * @return (getAmmountWithoutTaxes().isMoreThen(getAmmountPayedWithoutTaxes()))
+	 * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
 	 * @throws WrongInvoiceTypeException 
 	 */
-	boolean isNotFullyPayed() throws WrongInvoiceTypeException;
+	boolean isNotFullyPaid() throws WrongInvoiceTypeException;
 
 }

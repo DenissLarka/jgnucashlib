@@ -126,18 +126,18 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	/**
 	 * The result is in the currency of the transaction.
 	 *
-	 * @see GnucashTransaction#getBalanceFormatet()
+	 * @see GnucashTransaction#getBalanceFormatted()
 	 */
-	public String getBalanceFormatet() {
+	public String getBalanceFormatted() {
 		return getCurrencyFormat().format(getBalance());
 	}
 
 	/**
 	 * The result is in the currency of the transaction.
 	 *
-	 * @see GnucashTransaction#getBalanceFormatet(java.util.Locale)
+	 * @see GnucashTransaction#getBalanceFormatted(java.util.Locale)
 	 */
-	public String getBalanceFormatet(final Locale loc) {
+	public String getBalanceFormatted(final Locale loc) {
 
 		NumberFormat cf = NumberFormat.getInstance(loc);
 		if (getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
@@ -162,18 +162,18 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	/**
 	 * The result is in the currency of the transaction.
 	 *
-	 * @see GnucashTransaction#getNegatedBalanceFormatet()
+	 * @see GnucashTransaction#getNegatedBalanceFormatted()
 	 */
-	public String getNegatedBalanceFormatet() throws NumberFormatException {
+	public String getNegatedBalanceFormatted() throws NumberFormatException {
 		return getCurrencyFormat().format(getNegatedBalance());
 	}
 
 	/**
 	 * The result is in the currency of the transaction.
 	 *
-	 * @see GnucashTransaction#getNegatedBalanceFormatet(java.util.Locale)
+	 * @see GnucashTransaction#getNegatedBalanceFormatted(java.util.Locale)
 	 */
-	public String getNegatedBalanceFormatet(final Locale loc) throws NumberFormatException {
+	public String getNegatedBalanceFormatted(final Locale loc) throws NumberFormatException {
 		NumberFormat cf = NumberFormat.getInstance(loc);
 		if (getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
 			cf.setCurrency(Currency.getInstance(getCurrencyID()));
@@ -462,7 +462,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
         buffer.append(" description: '");
         buffer.append(getDescription() + "'");
         buffer.append(" amount: ");
-        buffer.append(getFirstSplit().getValueFormatet());
+        buffer.append(getFirstSplit().getValueFormatted());
         buffer.append(" #splits: ");
         buffer.append(mySplits.size());
 		buffer.append(" dateEntered: ");

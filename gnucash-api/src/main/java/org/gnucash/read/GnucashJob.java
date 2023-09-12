@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * created: 14.05.2005 <br>
  * A job needs to be done. Once it or a part of it<br>
- * is done an invoice can be created and later be payed by the customer<br>
+ * is done an invoice can be created and later be Paid by the customer<br>
  * of this job.
  * @see GnucashCustVendInvoice
  * @see GnucashCustomer

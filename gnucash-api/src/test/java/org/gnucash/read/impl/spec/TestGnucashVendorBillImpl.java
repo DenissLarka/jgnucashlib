@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashVendorInvoiceImpl
+public class TestGnucashVendorBillImpl
 {
   private static GnucashFile    gcshFile = null;
   private static GnucashVendorBill invc = null;
@@ -27,7 +27,7 @@ public class TestGnucashVendorInvoiceImpl
 
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashVendorInvoiceImpl.class);  
+    return new JUnit4TestAdapter(TestGnucashVendorBillImpl.class);  
   }
   
   @Before

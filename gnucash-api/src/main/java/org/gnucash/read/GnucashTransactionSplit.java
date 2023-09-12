@@ -66,24 +66,24 @@ public interface GnucashTransactionSplit extends Comparable {
      * The value is in the currency of the transaction!
      * @return the value-transfer this represents
      */
-    String getValueFormatet();
+    String getValueFormatted();
     /**
      * The value is in the currency of the transaction!
      * @param locale the locale to use
      * @return the value-transfer this represents
      */
-    String getValueFormatet(Locale locale);
+    String getValueFormatted(Locale locale);
     /**
      * The value is in the currency of the transaction!
      * @return the value-transfer this represents
      */
-    String getValueFormatetForHTML();
+    String getValueFormattedForHTML();
     /**
      * The value is in the currency of the transaction!
      * @param locale the locale to use
      * @return the value-transfer this represents
      */
-    String getValueFormatetForHTML(Locale locale);
+    String getValueFormattedForHTML(Locale locale);
 
     /**
      * @return the balance of the account (in the account's currency)
@@ -95,12 +95,12 @@ public interface GnucashTransactionSplit extends Comparable {
      * @return the balance of the account (in the account's currency)
      *         up to this split.
      */
-    String getAccountBalanceFormatet();
+    String getAccountBalanceFormatted();
 
     /**
      * @see GnucashAccount#getBalanceFormated()
      */
-    String getAccountBalanceFormatet(Locale locale);
+    String getAccountBalanceFormatted(Locale locale);
 
     /**
      * The quantity is in the currency of the account!
@@ -112,27 +112,27 @@ public interface GnucashTransactionSplit extends Comparable {
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
      */
-    String getQuantityFormatet();
+    String getQuantityFormatted();
 
     /**
      * The quantity is in the currency of the account!
      * @param locale the locale to use
      * @return the number of items added to the account
      */
-    String getQuantityFormatet(Locale locale);
+    String getQuantityFormatted(Locale locale);
 
     /**
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
      */
-    String getQuantityFormatetForHTML();
+    String getQuantityFormattedForHTML();
 
     /**
      * The quantity is in the currency of the account!
      * @param locale the locale to use
      * @return the number of items added to the account
      */
-    String getQuantityFormatetForHTML(Locale locale);
+    String getQuantityFormattedForHTML(Locale locale);
 
     /**
      * @return the user-defined description for this object

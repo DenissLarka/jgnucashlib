@@ -14,27 +14,41 @@ public class GnucashVendorBillEntryImpl extends GnucashCustVendInvoiceEntryImpl
 {
   public GnucashVendorBillEntryImpl(
           final GnucashVendorBill invoice,
-          final GncV2.GncBook.GncGncEntry peer) {
-      super(invoice, peer);
+          final GncV2.GncBook.GncGncEntry peer) 
+  {
+    super(invoice, peer, true);
   }
 
   public GnucashVendorBillEntryImpl(
           final GnucashCustVendInvoice invoice,
-          final GncV2.GncBook.GncGncEntry peer) throws WrongInvoiceTypeException {
-      super(invoice, peer);
-
-      if ( ! invoice.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
-        throw new WrongInvoiceTypeException();
-  }
-
-  public GnucashVendorBillEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) {
-      super(peer, gncFile);
-  }
-
-  public GnucashVendorBillEntryImpl(
-      final GnucashCustVendInvoiceEntry entry)
+          final GncV2.GncBook.GncGncEntry peer) throws WrongInvoiceTypeException 
   {
-    super(entry.getCustVendInvoice(), entry.getJwsdpPeer());
+    super(invoice, peer, true);
+
+    // No, we cannot check that first, because the super() method
+    // always has to be called first.
+    if ( ! invoice.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+      throw new WrongInvoiceTypeException();
+  }
+
+  public GnucashVendorBillEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) 
+  {
+    super(peer, gncFile);
+  }
+
+  public GnucashVendorBillEntryImpl(final GnucashCustVendInvoiceEntry entry) throws WrongInvoiceTypeException
+  {
+    super(entry.getCustVendInvoice(), entry.getJwsdpPeer(), false);
+
+    // No, we cannot check that first, because the super() method
+    // always has to be called first.
+    if ( ! entry.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+      throw new WrongInvoiceTypeException();
+  }
+
+  public GnucashVendorBillEntryImpl(final GnucashVendorBillEntry entry)
+  {
+    super(entry.getCustVendInvoice(), entry.getJwsdpPeer(), false);
   }
 
   // ---------------------------------------------------------------

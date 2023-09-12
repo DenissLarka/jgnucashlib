@@ -75,9 +75,9 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 
 	/**
 	 * date is not checked so invoiced that have entered payments in
-	 * the future are considered payed.
+	 * the future are considered Paid.
 	 *
-	 * @return the current number of unpayed invoices
+	 * @return the current number of Unpaid invoices
 	 * @throws WrongInvoiceTypeException 
 	 */
 	public int getNofOpenInvoices() throws WrongInvoiceTypeException {
@@ -88,7 +88,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
               continue;
             }
 
-            if (invoice.isNotFullyPayed()) {
+            if (invoice.isNotFullyPaid()) {
               count++;
             }
 		  }
@@ -108,7 +108,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
             if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
               continue;
             }
-            retval.add(invoice.getInvcAmmountWithoutTaxes());
+            retval.add(invoice.getInvcAmountWithoutTaxes());
 		  }
 		}
 
@@ -128,7 +128,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getIncomeGenerated()
 	 */
-	public String getIncomeGeneratedFormatet() throws WrongInvoiceTypeException {
+	public String getIncomeGeneratedFormatted() throws WrongInvoiceTypeException {
 		return getCurrencyFormat().format(getIncomeGenerated());
 
 	}
@@ -139,12 +139,12 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getIncomeGenerated()
 	 */
-	public String getIncomeGeneratedFormatet(final Locale l) throws WrongInvoiceTypeException {
+	public String getIncomeGeneratedFormatted(final Locale l) throws WrongInvoiceTypeException {
 		return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated());
 	}
 
 	/**
-	 * @return the sum of left to pay unpayed invoiced
+	 * @return the sum of left to pay Unpaid invoiced
 	 * @throws WrongInvoiceTypeException 
 	 */
 	public FixedPointNumber getOutstandingValue() throws WrongInvoiceTypeException {
@@ -155,7 +155,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
             if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
               continue;
             }
-            retval.add(invoice.getInvcAmmountUnPayedWithTaxes());
+            retval.add(invoice.getInvcAmountUnpaidWithTaxes());
 		  }
 		}
 
@@ -163,20 +163,20 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	}
 
 	/**
-	 * @return formatet acording to the current locale's currency-format
+	 * @return Formatted acording to the current locale's currency-format
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getOutstandingValue()
 	 */
-	public String getOutstandingValueFormatet() throws WrongInvoiceTypeException {
+	public String getOutstandingValueFormatted() throws WrongInvoiceTypeException {
 		return getCurrencyFormat().format(getOutstandingValue());
 	}
 
 	/**
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getOutstandingValue()
-	 * formatet acording to the given locale's currency-format
+	 * Formatted acording to the given locale's currency-format
 	 */
-	public String getOutstandingValueFormatet(final Locale l) throws WrongInvoiceTypeException {
+	public String getOutstandingValueFormatted(final Locale l) throws WrongInvoiceTypeException {
 		return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue());
 	}
 
@@ -335,12 +335,12 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
   // ------------------------------
 
   @Override
-  public Collection<GnucashVendorBill> getUnpayedInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashVendorBill> getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
   {
     if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
-      return file.getUnpayedInvoicesForVendor_direct(this);
+      return file.getUnpaidInvoicesForVendor_direct(this);
     else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
-      return file.getUnpayedInvoicesForVendor_viaJob(this);
+      return file.getUnpaidInvoicesForVendor_viaJob(this);
     
     return null; // Compiler happy
   }

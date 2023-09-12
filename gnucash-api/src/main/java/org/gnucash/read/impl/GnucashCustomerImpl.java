@@ -92,9 +92,9 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 
 	/**
 	 * date is not checked so invoiced that have entered payments in
-	 * the future are considered payed.
+	 * the future are considered Paid.
 	 *
-	 * @return the current number of unpayed invoices
+	 * @return the current number of Unpaid invoices
 	 * @throws WrongInvoiceTypeException 
 	 */
 	public int getNofOpenInvoices() throws WrongInvoiceTypeException {
@@ -105,7 +105,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
               continue;
             }
 
-            if (invoice.isNotFullyPayed()) {
+            if (invoice.isNotFullyPaid()) {
               count++;
             }
           }
@@ -125,7 +125,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
             if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
               continue;
             }
-            retval.add(invoice.getInvcAmmountWithoutTaxes());
+            retval.add(invoice.getInvcAmountWithoutTaxes());
 		  }
 		}
 
@@ -145,7 +145,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getIncomeGenerated()
 	 */
-	public String getIncomeGeneratedFormatet() throws WrongInvoiceTypeException {
+	public String getIncomeGeneratedFormatted() throws WrongInvoiceTypeException {
 		return getCurrencyFormat().format(getIncomeGenerated());
 
 	}
@@ -156,12 +156,12 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getIncomeGenerated()
 	 */
-	public String getIncomeGeneratedFormatet(final Locale l) throws WrongInvoiceTypeException {
+	public String getIncomeGeneratedFormatted(final Locale l) throws WrongInvoiceTypeException {
 		return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated());
 	}
 
 	/**
-	 * @return the sum of left to pay unpayed invoiced
+	 * @return the sum of left to pay Unpaid invoiced
 	 * @throws WrongInvoiceTypeException 
 	 */
 	public FixedPointNumber getOutstandingValue() throws WrongInvoiceTypeException {
@@ -172,7 +172,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
             if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
               continue;
             }
-            retval.add(invoice.getInvcAmmountUnPayedWithTaxes());
+            retval.add(invoice.getInvcAmountUnpaidWithTaxes());
 		  }
 		}
 
@@ -180,20 +180,20 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	}
 
 	/**
-	 * @return formatet acording to the current locale's currency-format
+	 * @return Formatted acording to the current locale's currency-format
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getOutstandingValue()
 	 */
-	public String getOutstandingValueFormatet() throws WrongInvoiceTypeException {
+	public String getOutstandingValueFormatted() throws WrongInvoiceTypeException {
 		return getCurrencyFormat().format(getOutstandingValue());
 	}
 
 	/**
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getOutstandingValue()
-	 * formatet acording to the given locale's currency-format
+	 * Formatted acording to the given locale's currency-format
 	 */
-	public String getOutstandingValueFormatet(final Locale l) throws WrongInvoiceTypeException {
+	public String getOutstandingValueFormatted(final Locale l) throws WrongInvoiceTypeException {
 		return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue());
 	}
 
@@ -382,12 +382,12 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
   // ------------------------------
 
   @Override
-  public Collection<GnucashCustomerInvoice> getUnpayedInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashCustomerInvoice> getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
   {
     if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
-      return file.getUnpayedInvoicesForCustomer_direct(this);
+      return file.getUnpaidInvoicesForCustomer_direct(this);
     else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
-      return file.getUnpayedInvoicesForCustomer_viaJob(this);
+      return file.getUnpaidInvoicesForCustomer_viaJob(this);
     
     return null; // Compiler happy
   }

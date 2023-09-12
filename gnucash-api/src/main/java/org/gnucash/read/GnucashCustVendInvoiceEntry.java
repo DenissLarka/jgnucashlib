@@ -66,12 +66,12 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
     /**
      * @return As ${@link #getInvcPrice()}, but formatted.
      */
-    String getInvcPriceFormatet()throws WrongInvoiceTypeException;
+    String getInvcPriceFormatted()throws WrongInvoiceTypeException;
 
     /**
      * @return As ${@link #getBillPrice()}, but formatted.
      */
-    String getBillPriceFormatet()throws WrongInvoiceTypeException;
+    String getBillPriceFormatted()throws WrongInvoiceTypeException;
     
     // ---------------------------------------------------------------
 
@@ -104,7 +104,7 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 	 * @deprecated use ${@link #getQuantityFormated()}
 	 */
 	@Deprecated
-	String getQuantityFormatet();
+	String getQuantityFormatted();
 
 	/**
 	 * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
@@ -126,12 +126,12 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 	 *
 	 * @return e.g. "0.16" for "16%"
 	 */
-	FixedPointNumber getApplicableTaxPercend();
+	FixedPointNumber getApplicableTaxPercent();
 
 	/**
 	 * @return never null, "0%" if no taxtable is there
 	 */
-	String getApplicableTaxPercendFormatet();
+	String getApplicableTaxPercendFormatted();
 	
 	// ---------------------------------------------------------------
 
@@ -166,21 +166,21 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
      * @see #getInvcSumExclTaxes()
      * @see #getInvcSumInclTaxes()
      */
-    String getInvcSumFormatet() throws WrongInvoiceTypeException;
+    String getInvcSumFormatted() throws WrongInvoiceTypeException;
 
     /**
      * As ${@link #getInvcSumInclTaxes()}. but formatted.
      * @return count*single-unit-price including taxes.
      * @throws WrongInvoiceTypeException 
      */
-    String getInvcSumInclTaxesFormatet() throws WrongInvoiceTypeException;
+    String getInvcSumInclTaxesFormatted() throws WrongInvoiceTypeException;
 
 	/**
      * As ${@link #getInvcSumExclTaxes()}. but formatted.
 	 * @return count*single-unit-price excluding taxes.
 	 * @throws WrongInvoiceTypeException 
 	 */
-	String getInvcSumExclTaxesFormatet() throws WrongInvoiceTypeException;
+	String getInvcSumExclTaxesFormatted() throws WrongInvoiceTypeException;
 	
     // ----------------------------
 

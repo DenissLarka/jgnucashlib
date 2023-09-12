@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 
 import org.gnucash.Const;
+import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
@@ -16,7 +17,8 @@ import junit.framework.JUnit4TestAdapter;
 public class TestGnucashCustomerInvoiceImpl
 {
   private static GnucashFile    gcshFile = null;
-  private static GnucashCustomerInvoice invc = null;
+  private static GnucashCustVendInvoice invcGen = null;
+  private static GnucashCustomerInvoice invcSpec = null;
   
   public static void main(String[] args) throws Exception
   {
@@ -61,19 +63,27 @@ public class TestGnucashCustomerInvoiceImpl
   @Test
   public void test01() throws Exception
   {
-    invc = new GnucashCustomerInvoiceImpl( gcshFile.getCustVendInvoiceByID("d9967c10fdf1465e9394a3e4b1e7bd79") );
-    assertEquals(true, invc instanceof GnucashCustomerInvoiceImpl);
-    assertEquals("d9967c10fdf1465e9394a3e4b1e7bd79", invc.getId());
-    assertEquals("gncCustomer", invc.getOwnerType());
+    invcGen = gcshFile.getCustVendInvoiceByID("d9967c10fdf1465e9394a3e4b1e7bd79");
+    invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+    assertEquals(true, invcSpec instanceof GnucashCustomerInvoiceImpl);
+    assertEquals("d9967c10fdf1465e9394a3e4b1e7bd79", invcSpec.getId());
+    assertEquals("gncCustomer", invcSpec.getOwnerType());
     // ::TODO
     // assertEquals("xxx", invc.getInvoiceNumber());
-    assertEquals(null, invc.getDescription());
+    assertEquals(null, invcSpec.getDescription());
 
-    assertEquals("2023-07-29T10:59Z", invc.getDateOpened().toString());
-    assertEquals("2023-07-29T10:59Z", invc.getDatePosted().toString());
+    assertEquals("2023-07-29T10:59Z", invcSpec.getDateOpened().toString());
+    assertEquals("2023-07-29T10:59Z", invcSpec.getDatePosted().toString());
 
     // ::TODO
-    // assertEquals(1327.60, invc.getAmmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(1327.60, invc.getAmmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(2, invcGen.getCustVendInvcEntries().size());
+    assertEquals(2, invcSpec.getCustVendInvcEntries().size());
+    assertEquals(2, invcSpec.getEntries().size());
+
+    // ::TODO
+    // assertEquals(1327.60, invc.getAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(1327.60, invcGen.getInvcAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(1327.60, invcSpec.getInvcAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(1327.60, invcSpec.getAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
   }
 }

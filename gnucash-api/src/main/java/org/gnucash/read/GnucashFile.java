@@ -135,92 +135,92 @@ public interface GnucashFile extends GnucashObject {
 	/**
 	 * @param id the unique id of the invoice to look for
 	 * @return the invoice or null if it's not found
-	 * @see #getUnpayedInvoices()
-	 * @see #getPayedInvoices()
+	 * @see #getUnpaidInvoices()
+	 * @see #getPaidInvoices()
 	 * @see #getCustVendInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
+	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	GnucashCustVendInvoice getCustVendInvoiceByID(String id);
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices
 	 * Do not modify the returned collection!
-	 * @see #getUnpayedInvoices()
-	 * @see #getPayedInvoices()
+	 * @see #getUnpaidInvoices()
+	 * @see #getPaidInvoices()
 	 * @see #getCustVendInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
+	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	Collection<GnucashCustVendInvoice> getInvoices();
 
 	/**
-	 * @return a (possibly read-only) collection of all invoices that are fully payed
+	 * @return a (possibly read-only) collection of all invoices that are fully Paid
 	 * Do not modify the returned collection!
 	 * @throws WrongInvoiceTypeException 
-	 * @see #getUnpayedInvoices()
+	 * @see #getUnpaidInvoices()
 	 * @see #getInvoices()
 	 * @see #getCustVendInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
+	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustVendInvoice> getPayedInvoices() throws WrongInvoiceTypeException;
+	Collection<GnucashCustVendInvoice> getPaidInvoices() throws WrongInvoiceTypeException;
 
 	/**
-	 * @return a (possibly read-only) collection of all invoices that are not fully payed
+	 * @return a (possibly read-only) collection of all invoices that are not fully Paid
 	 * Do not modify the returned collection!
 	 * @throws WrongInvoiceTypeException 
-	 * @see #getPayedInvoices()
+	 * @see #getPaidInvoices()
 	 * @see #getInvoices()
 	 * @see #getCustVendInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
+	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustVendInvoice> getUnpayedInvoices() throws WrongInvoiceTypeException;
+	Collection<GnucashCustVendInvoice> getUnpaidInvoices() throws WrongInvoiceTypeException;
 
     /**
      * @param customer the customer to look for (not null)
-     * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given customer
+     * @return a (possibly read-only) collection of all invoices that are not fully Paid and are from the given customer
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
-     * @see #getPayedInvoices()
+     * @see #getPaidInvoices()
      * @see #getInvoices()
      * @see #getCustVendInvoiceByID(String)
-     * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
+     * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
-    Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_direct(GnucashCustomer customer) throws WrongInvoiceTypeException;
+    Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_direct(GnucashCustomer customer) throws WrongInvoiceTypeException;
 
 	/**
 	 * @param customer the customer to look for (not null)
-	 * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given customer
+	 * @return a (possibly read-only) collection of all invoices that are not fully Paid and are from the given customer
 	 * Do not modify the returned collection!
 	 * @throws WrongInvoiceTypeException 
-	 * @see #getPayedInvoices()
+	 * @see #getPaidInvoices()
 	 * @see #getInvoices()
 	 * @see #getCustVendInvoiceByID(String)
-	 * @see #getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer)
+	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustomerInvoice> getUnpayedInvoicesForCustomer_viaJob(GnucashCustomer customer) throws WrongInvoiceTypeException;
+	Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer customer) throws WrongInvoiceTypeException;
 
     /**
      * @param vendor the vendor to look for (not null)
-     * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given vendor
+     * @return a (possibly read-only) collection of all invoices that are not fully Paid and are from the given vendor
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
-     * @see #getPayedInvoices()
+     * @see #getPaidInvoices()
      * @see #getInvoices()
      * @see #getCustVendInvoiceByID(String)
-     * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
+     * @see #getUnpaidInvoicesForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_direct(GnucashVendor vendor) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getUnpaidInvoicesForVendor_direct(GnucashVendor vendor) throws WrongInvoiceTypeException;
 
     /**
      * @param vendor the vendor to look for (not null)
-     * @return a (possibly read-only) collection of all invoices that are not fully payed and are from the given vendor
+     * @return a (possibly read-only) collection of all invoices that are not fully Paid and are from the given vendor
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
-     * @see #getPayedInvoices()
+     * @see #getPaidInvoices()
      * @see #getInvoices()
      * @see #getCustVendInvoiceByID(String)
-     * @see #getUnpayedInvoicesForVendor_viaJob(GnucashVendor)
+     * @see #getUnpaidInvoicesForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getUnpayedInvoicesForVendor_viaJob(GnucashVendor vendor) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getUnpaidInvoicesForVendor_viaJob(GnucashVendor vendor) throws WrongInvoiceTypeException;
 
 	/**
 	 * warning: this function has to traverse all

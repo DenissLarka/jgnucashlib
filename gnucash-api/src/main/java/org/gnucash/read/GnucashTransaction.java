@@ -134,12 +134,12 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getBalance()
      */
-    String getBalanceFormatet();
+    String getBalanceFormatted();
     /**
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getBalance()
      */
-    String getBalanceFormatet(Locale loc);
+    String getBalanceFormatted(Locale loc);
 
     /**
      * The result is in the currency of the transaction.<br/>
@@ -152,12 +152,12 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getNegatedBalance()
      */
-    String getNegatedBalanceFormatet();
+    String getNegatedBalanceFormatted();
     /**
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getNegatedBalance()
      */
-    String getNegatedBalanceFormatet(Locale loc);
+    String getNegatedBalanceFormatted(Locale loc);
 
     /**
      * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.

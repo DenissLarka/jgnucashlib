@@ -79,7 +79,7 @@
       </slot>
       <slot>
         <slot:key>gncCustomer</slot:key>
-        <slot:value type="integer">1</slot:value>
+        <slot:value type="integer">3</slot:value>
       </slot>
       <slot>
         <slot:key>gncEmployee</slot:key>
@@ -103,7 +103,7 @@
       </slot>
       <slot>
         <slot:key>gncVendor</slot:key>
-        <slot:value type="integer">1</slot:value>
+        <slot:value type="integer">3</slot:value>
       </slot>
     </slot:value>
   </slot>
@@ -214,15 +214,15 @@
   </slot>
 </book:slots>
 <gnc:count-data cd:type="commodity">3</gnc:count-data>
-<gnc:count-data cd:type="account">82</gnc:count-data>
+<gnc:count-data cd:type="account">89</gnc:count-data>
 <gnc:count-data cd:type="transaction">5</gnc:count-data>
 <gnc:count-data cd:type="price">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncBillTerm">1</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncCustomer">1</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncEntry">6</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncCustomer">3</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncEntry">5</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncInvoice">3</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncTaxTable">1</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncVendor">1</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncVendor">3</gnc:count-data>
 <gnc:commodity version="2.0.0">
   <cmdty:space>CURRENCY</cmdty:space>
   <cmdty:id>EUR</cmdty:id>
@@ -408,23 +408,6 @@
   <act:parent type="guid">3b0e56552514420da0e2cec300f64ce6</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
-  <act:name>WP</act:name>
-  <act:id type="guid">6561f1e4cbe947c59dd7634574ae4997</act:id>
-  <act:type>ASSET</act:type>
-  <act:commodity>
-    <cmdty:space>CURRENCY</cmdty:space>
-    <cmdty:id>EUR</cmdty:id>
-  </act:commodity>
-  <act:commodity-scu>100</act:commodity-scu>
-  <act:slots>
-    <slot>
-      <slot:key>dummy</slot:key>
-      <slot:value type="string">dummy</slot:value>
-    </slot>
-  </act:slots>
-  <act:parent type="guid">7ee6fe4de6db46fd957f3513c9c6f983</act:parent>
-</gnc:account>
-<gnc:account version="2.0.0">
   <act:name>Depot RaiBa</act:name>
   <act:id type="guid">cc2c4709633943c39293bfd73de88c9b</act:id>
   <act:type>ASSET</act:type>
@@ -433,14 +416,14 @@
     <cmdty:id>EUR</cmdty:id>
   </act:commodity>
   <act:commodity-scu>100</act:commodity-scu>
-  <act:description>Aktiendepot</act:description>
+  <act:description>Aktiendepot 1</act:description>
   <act:slots>
     <slot>
       <slot:key>placeholder</slot:key>
       <slot:value type="string">true</slot:value>
     </slot>
   </act:slots>
-  <act:parent type="guid">6561f1e4cbe947c59dd7634574ae4997</act:parent>
+  <act:parent type="guid">7ee6fe4de6db46fd957f3513c9c6f983</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
   <act:name>DE0007100000 Mercedes-Benz</act:name>
@@ -479,38 +462,16 @@
   <act:parent type="guid">cc2c4709633943c39293bfd73de88c9b</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
-  <act:name>nicht-WP</act:name>
-  <act:id type="guid">0aa991dcea734202a461cea654ef5350</act:id>
+  <act:name>Depot SocGen</act:name>
+  <act:id type="guid">7b6e48d2a3f14aa5b0d81b3d3296ff8c</act:id>
   <act:type>ASSET</act:type>
   <act:commodity>
     <cmdty:space>CURRENCY</cmdty:space>
     <cmdty:id>EUR</cmdty:id>
   </act:commodity>
   <act:commodity-scu>100</act:commodity-scu>
-  <act:slots>
-    <slot>
-      <slot:key>dummy</slot:key>
-      <slot:value type="string">dummy</slot:value>
-    </slot>
-  </act:slots>
+  <act:description>Aktiendepot 2</act:description>
   <act:parent type="guid">7ee6fe4de6db46fd957f3513c9c6f983</act:parent>
-</gnc:account>
-<gnc:account version="2.0.0">
-  <act:name>Direkt-Beteiligungen</act:name>
-  <act:id type="guid">090e959a980f4b6992d905cd2faa3eb6</act:id>
-  <act:type>ASSET</act:type>
-  <act:commodity>
-    <cmdty:space>CURRENCY</cmdty:space>
-    <cmdty:id>EUR</cmdty:id>
-  </act:commodity>
-  <act:commodity-scu>100</act:commodity-scu>
-  <act:slots>
-    <slot>
-      <slot:key>dummy</slot:key>
-      <slot:value type="string">dummy</slot:value>
-    </slot>
-  </act:slots>
-  <act:parent type="guid">0aa991dcea734202a461cea654ef5350</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
   <act:name>Sichteinlagen</act:name>
@@ -556,13 +517,25 @@
     <cmdty:id>EUR</cmdty:id>
   </act:commodity>
   <act:commodity-scu>100</act:commodity-scu>
-  <act:description>Girokonto</act:description>
+  <act:description>Girokonto 1</act:description>
   <act:slots>
     <slot>
       <slot:key>dummy</slot:key>
       <slot:value type="string">dummy</slot:value>
     </slot>
   </act:slots>
+  <act:parent type="guid">fdffaa52f5b04754901dfb1cf9221494</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Giro SocGen</act:name>
+  <act:id type="guid">aa0f8f2a0e8b4b8cb940918710145088</act:id>
+  <act:type>ASSET</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:description>Girokonto 2</act:description>
   <act:parent type="guid">fdffaa52f5b04754901dfb1cf9221494</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
@@ -633,6 +606,50 @@
     </slot>
   </act:slots>
   <act:parent type="guid">3b0e56552514420da0e2cec300f64ce6</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Forderungen</act:name>
+  <act:id type="guid">74401ce4880c4f4487c4301027a71bde</act:id>
+  <act:type>ASSET</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">3b0e56552514420da0e2cec300f64ce6</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Kunde_1</act:name>
+  <act:id type="guid">7e223ee2260d4ba28e8e9e19ce291f43</act:id>
+  <act:type>RECEIVABLE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">74401ce4880c4f4487c4301027a71bde</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Kunde_2</act:name>
+  <act:id type="guid">293e37c21e6b4b46b486597c1cf99a86</act:id>
+  <act:type>RECEIVABLE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">74401ce4880c4f4487c4301027a71bde</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>sonstige</act:name>
+  <act:id type="guid">ee7561449e61448fb8fefdc27a35d559</act:id>
+  <act:type>RECEIVABLE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">74401ce4880c4f4487c4301027a71bde</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
   <act:name>Erträge</act:name>
@@ -1786,6 +1803,50 @@
   <act:parent type="guid">5008258df86243ee86d37dee64327c27</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
+  <act:name>Lieferanten</act:name>
+  <act:id type="guid">a6d76c8d72764905adecd78d955d25c0</act:id>
+  <act:type>LIABILITY</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">5008258df86243ee86d37dee64327c27</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Lieferant_1</act:name>
+  <act:id type="guid">68a4c19f9a8c48909fc69d0dc18c37a6</act:id>
+  <act:type>PAYABLE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">a6d76c8d72764905adecd78d955d25c0</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Lieferant_2</act:name>
+  <act:id type="guid">b0fb46481b8b427d9293a34c69095d44</act:id>
+  <act:type>PAYABLE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">a6d76c8d72764905adecd78d955d25c0</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>sonstige</act:name>
+  <act:id type="guid">55711b4e6f564709bf880f292448237a</act:id>
+  <act:type>PAYABLE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">a6d76c8d72764905adecd78d955d25c0</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
   <act:name>Anfangsbestand</act:name>
   <act:id type="guid">ebc834e7f20e4be38f445d655142d6b1</act:id>
   <act:type>EQUITY</act:type>
@@ -2042,8 +2103,24 @@
   </billterm:days>
 </gnc:GncBillTerm>
 <gnc:GncCustomer version="2.0.0">
+  <cust:guid type="guid">1d2081e8a10e4d5e9312d9fff17d470d</cust:guid>
+  <cust:name>N'importe Quoi S.A.</cust:name>
+  <cust:id>000003</cust:id>
+  <cust:addr version="2.0.0"/>
+  <cust:shipaddr version="2.0.0"/>
+  <cust:taxincluded>USEGLOBAL</cust:taxincluded>
+  <cust:active>1</cust:active>
+  <cust:discount>0/1</cust:discount>
+  <cust:credit>0/1</cust:credit>
+  <cust:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </cust:currency>
+  <cust:use-tt>0</cust:use-tt>
+</gnc:GncCustomer>
+<gnc:GncCustomer version="2.0.0">
   <cust:guid type="guid">5d1dd9afa7554553988669830cc1f696</cust:guid>
-  <cust:name>Blödfug und Quatsch</cust:name>
+  <cust:name>Unfug und Quatsch GmbH</cust:name>
   <cust:id>000001</cust:id>
   <cust:addr version="2.0.0">
     <addr:name>Herr SchwervonBegriff</addr:name>
@@ -2066,6 +2143,22 @@
       <slot:value type="string">dummy</slot:value>
     </slot>
   </cust:slots>
+</gnc:GncCustomer>
+<gnc:GncCustomer version="2.0.0">
+  <cust:guid type="guid">f44645d2397946bcac90dff68cc03b76</cust:guid>
+  <cust:name>Is That So Ltd.</cust:name>
+  <cust:id>000002</cust:id>
+  <cust:addr version="2.0.0"/>
+  <cust:shipaddr version="2.0.0"/>
+  <cust:taxincluded>USEGLOBAL</cust:taxincluded>
+  <cust:active>1</cust:active>
+  <cust:discount>0/1</cust:discount>
+  <cust:credit>0/1</cust:credit>
+  <cust:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </cust:currency>
+  <cust:use-tt>0</cust:use-tt>
 </gnc:GncCustomer>
 <gnc:GncEntry version="2.0.0">
   <entry:guid type="guid">0041b8d397f04ae4a2e9e3c7f991c4ec</entry:guid>
@@ -2233,13 +2326,39 @@
 </gnc:GncTaxTable>
 <gnc:GncVendor version="2.0.0">
   <vendor:guid type="guid">087e1a3d43fa4ef9a9bdd4b4797c4231</vendor:guid>
-  <vendor:name>Lieferfanto</vendor:name>
+  <vendor:name>Lieferfanto AG</vendor:name>
   <vendor:id>000001</vendor:id>
   <vendor:addr version="2.0.0">
     <addr:name>Über den Linden 81</addr:name>
     <addr:addr1>12345 Berlin</addr:addr1>
   </vendor:addr>
   <vendor:terms type="guid">599bfe3ab5b84a73bf3acabc5abd5bc7</vendor:terms>
+  <vendor:taxincluded>USEGLOBAL</vendor:taxincluded>
+  <vendor:active>1</vendor:active>
+  <vendor:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </vendor:currency>
+  <vendor:use-tt>0</vendor:use-tt>
+</gnc:GncVendor>
+<gnc:GncVendor version="2.0.0">
+  <vendor:guid type="guid">4f16fd55c0d64ebe82ffac0bb25fe8f5</vendor:guid>
+  <vendor:name>Super Suppliers Corp.</vendor:name>
+  <vendor:id>000002</vendor:id>
+  <vendor:addr version="2.0.0"/>
+  <vendor:taxincluded>USEGLOBAL</vendor:taxincluded>
+  <vendor:active>1</vendor:active>
+  <vendor:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </vendor:currency>
+  <vendor:use-tt>0</vendor:use-tt>
+</gnc:GncVendor>
+<gnc:GncVendor version="2.0.0">
+  <vendor:guid type="guid">bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7</vendor:guid>
+  <vendor:name>Achetez Chez Nous S.A.</vendor:name>
+  <vendor:id>000003</vendor:id>
+  <vendor:addr version="2.0.0"/>
   <vendor:taxincluded>USEGLOBAL</vendor:taxincluded>
   <vendor:active>1</vendor:active>
   <vendor:currency>

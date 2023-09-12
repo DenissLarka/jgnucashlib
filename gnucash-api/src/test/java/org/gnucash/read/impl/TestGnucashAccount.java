@@ -65,7 +65,7 @@ public class TestGnucashAccount
     assertEquals("BANK", acct.getType());
     assertEquals("Giro RaiBa", acct.getName());
     assertEquals("Root Account::Aktiva::Sichteinlagen::KK::Giro RaiBa", acct.getQualifiedName());
-    assertEquals("Girokonto", acct.getDescription());
+    assertEquals("Girokonto 1", acct.getDescription());
     assertEquals("EUR", acct.getCurrencyID());
     
     assertEquals("fdffaa52f5b04754901dfb1cf9221494", acct.getParentAccountId());

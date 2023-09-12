@@ -2,6 +2,7 @@ package org.gnucash.read.spec;
 
 import java.util.Collection;
 
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashVendor;
@@ -35,10 +36,34 @@ public interface GnucashVendorBill extends GnucashCustVendInvoice {
 	
 	// ---------------------------------------------------------------
 
-    GnucashVendorBillEntry getEntryById(String id);
+    GnucashVendorBillEntry getEntryById(String id) throws WrongInvoiceTypeException;
 
-    Collection<GnucashVendorBillEntry> getEntries();
+    Collection<GnucashVendorBillEntry> getEntries() throws WrongInvoiceTypeException;
 
     void addEntry(final GnucashVendorBillEntry entry);
+
+    // ---------------------------------------------------------------
+
+    public FixedPointNumber getAmountUnpaidWithTaxes() throws WrongInvoiceTypeException;
+
+    public FixedPointNumber getAmountPaidWithTaxes() throws WrongInvoiceTypeException;
+
+    public FixedPointNumber getAmountPaidWithoutTaxes() throws WrongInvoiceTypeException;
+
+    public FixedPointNumber getAmountWithTaxes() throws WrongInvoiceTypeException;
+    
+    public FixedPointNumber getAmountWithoutTaxes() throws WrongInvoiceTypeException;
+
+    // ----------------------------
+
+    public String getAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    public String getAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    public String getAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException;
+
+    public String getAmountWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    public String getAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
 
 }

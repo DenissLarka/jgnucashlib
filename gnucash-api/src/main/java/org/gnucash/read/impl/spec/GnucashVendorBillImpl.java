@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashCustVendInvoiceEntry;
@@ -17,19 +18,24 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
 public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
                                       implements GnucashVendorBill
 {
-  public GnucashVendorBillImpl(GncGncInvoice peer, GnucashFile gncFile)
+  public GnucashVendorBillImpl(final GncGncInvoice peer, final GnucashFile gncFile)
   {
     super(peer, gncFile);
   }
 
-  public GnucashVendorBillImpl(GnucashCustVendInvoice invc) throws WrongInvoiceTypeException
+  public GnucashVendorBillImpl(final GnucashCustVendInvoice invc) throws WrongInvoiceTypeException
   {
-    super(invc.getPeer(), invc.getFile());
+    super(invc.getJwsdpPeer(), invc.getFile());
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
     if (! invc.getOwnerType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
+    
+    for ( GnucashCustVendInvoiceEntry entry : invc.getCustVendInvcEntries() )
+    {
+      addEntry(new GnucashVendorBillEntryImpl(entry));
+    }
   }
   
   // -----------------------------------------------------------------
@@ -59,13 +65,13 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   // ---------------------------------------------------------------
 
   @Override
-  public GnucashVendorBillEntry getEntryById(String id)
+  public GnucashVendorBillEntry getEntryById(String id) throws WrongInvoiceTypeException
   {
     return new GnucashVendorBillEntryImpl(getCustVendInvcEntryById(id));
   }
 
   @Override
-  public Collection<GnucashVendorBillEntry> getEntries()
+  public Collection<GnucashVendorBillEntry> getEntries() throws WrongInvoiceTypeException
   {
     Collection<GnucashVendorBillEntry> castEntries = new HashSet<GnucashVendorBillEntry>();
     
@@ -89,6 +95,130 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   // -----------------------------------------------------------------
 
   @Override
+  public FixedPointNumber getAmountUnpaidWithTaxes() throws WrongInvoiceTypeException
+  {
+    return getBillAmountUnpaidWithTaxes();
+  }
+
+  @Override
+  public FixedPointNumber getAmountPaidWithTaxes() throws WrongInvoiceTypeException
+  {
+    return getBillAmountPaidWithTaxes();
+  }
+
+  @Override
+  public FixedPointNumber getAmountPaidWithoutTaxes() throws WrongInvoiceTypeException
+  {
+    return getBillAmountPaidWithoutTaxes();
+  }
+
+  @Override
+  public FixedPointNumber getAmountWithTaxes() throws WrongInvoiceTypeException
+  {
+    return getBillAmountWithTaxes();
+  }
+  
+  @Override
+  public FixedPointNumber getAmountWithoutTaxes() throws WrongInvoiceTypeException
+  {
+    return getBillAmountWithoutTaxes();
+  }
+
+  @Override
+  public String getAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    return getBillAmountUnpaidWithTaxesFormatted();
+  }
+
+  @Override
+  public String getAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    return getBillAmountPaidWithTaxesFormatted();
+  }
+
+  @Override
+  public String getAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    return getBillAmountPaidWithoutTaxesFormatted();
+  }
+
+  @Override
+  public String getAmountWithTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    return getBillAmountWithTaxesFormatted();
+  }
+
+  @Override
+  public String getAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    return getBillAmountWithoutTaxesFormatted();
+  }
+  
+  // ------------------------------
+
+  @Override
+  public FixedPointNumber getInvcAmountUnpaidWithTaxes() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public FixedPointNumber getInvcAmountPaidWithTaxes() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public FixedPointNumber getInvcAmountPaidWithoutTaxes() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public FixedPointNumber getInvcAmountWithTaxes() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+  
+  @Override
+  public FixedPointNumber getInvcAmountWithoutTaxes() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getInvcAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getInvcAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getInvcAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getInvcAmountWithTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getInvcAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+  
+  // -----------------------------------------------------------------
+
+  @Override
   public String toString() {
       StringBuffer buffer = new StringBuffer();
       buffer.append("[GnucashVendorBillImpl:");
@@ -101,7 +231,12 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
       buffer.append(" description: '");
       buffer.append(getDescription() + "'");
       buffer.append(" #entries: ");
-      buffer.append(entries.size());
+      try {
+        buffer.append(getEntries().size());
+      }
+      catch (WrongInvoiceTypeException e) {
+        buffer.append("ERROR");
+      }
       buffer.append(" date-opened: ");
       try {
         buffer.append(getDateOpened().toLocalDate().format(DATE_OPENED_FORMAT_PRINT));
