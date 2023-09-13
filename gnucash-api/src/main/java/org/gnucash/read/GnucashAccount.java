@@ -89,71 +89,71 @@ public interface GnucashAccount extends Comparable {
 	/**
 	 * e.g. "Umsatzsteuer 19%"
 	 */
-	String ACCOUNTTYPE_LIABILITY = "LIABILITY";
+	String TYPE_LIABILITY = "LIABILITY";
 
 	/**
 	 * e.g. "Umsatzerloese 19% USt"
 	 */
-	String ACCOUNTTYPE_BANK = "BANK";
+	String TYPE_BANK = "BANK";
 
 	/**
 	 * e.g. "Umsatzerloese 16% USt"
 	 */
-	String ACCOUNTTYPE_INCOME = "INCOME";
+	String TYPE_INCOME = "INCOME";
 
     /**
      * e.g. "Verbindlichkeiten ggueber Lieferanten"
      */
-    String ACCOUNTTYPE_PAYABLE = "PAYABLE";
+    String TYPE_PAYABLE = "PAYABLE";
 
 	/**
 	 * e.g. "Forderungen aus Lieferungen und Leistungen"
 	 */
-	String ACCOUNTTYPE_RECEIVABLE = "RECEIVABLE";
+	String TYPE_RECEIVABLE = "RECEIVABLE";
 
 	/**
 	 * e.g. "1. Forderungen aus Lieferungen und Leistungen"
 	 */
-	String ACCOUNTTYPE_ASSET = "ASSET";
+	String TYPE_ASSET = "ASSET";
 	/**
 	 * e.g. "private Ausgaben"
 	 */
-	String ACCOUNTTYPE_EXPENSE = "EXPENSE";
+	String TYPE_EXPENSE = "EXPENSE";
 
 	/**
 	 * e.g. "Visa"
 	 */
-	String ACCOUNTTYPE_CREDIT = "CREDIT";
+	String TYPE_CREDIT = "CREDIT";
 
 	/**
 	 * e.g. "Anfangsbestand"
 	 */
-	String ACCOUNTTYPE_EQUITY = "EQUITY";
+	String TYPE_EQUITY = "EQUITY";
 
 	/**
 	 * e.g. "stock"
 	 */
-	String ACCOUNTTYPE_CASH = "CASH";
+	String TYPE_CASH = "CASH";
 
 	/**
 	 * e.g. "Cash in Wallet"
 	 */
-	String ACCOUNTTYPE_STOCK = "STOCK";
+	String TYPE_STOCK = "STOCK";
 
 	/**
 	 * e.g. "Lesezeichen"
 	 */
-	String ACCOUNTTYPE_MUTUAL = "MUTUAL";
+	String TYPE_MUTUAL = "MUTUAL";
 
     // ----------------------------
 
 	/**
 	 * @return the type-string for this account.
-	 * @see #ACCOUNTTYPE_ASSET
-	 * @see #ACCOUNTTYPE_INCOME
-	 * @see #ACCOUNTTYPE_LIABILITY
-     * @see #ACCOUNTTYPE_PAYABLE
-     * @see #ACCOUNTTYPE_RECEIVABLE
+	 * @see #TYPE_ASSET
+	 * @see #TYPE_INCOME
+	 * @see #TYPE_LIABILITY
+     * @see #TYPE_PAYABLE
+     * @see #TYPE_RECEIVABLE
 	 * there are other types too
 	 */
 	String getType();

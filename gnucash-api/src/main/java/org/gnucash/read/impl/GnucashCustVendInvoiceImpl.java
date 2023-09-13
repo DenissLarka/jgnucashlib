@@ -149,7 +149,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 
 			for (GnucashTransactionSplit split : trx.getSplits()) {
 
-				if ( split.getAccount().getType().equals(GnucashAccount.ACCOUNTTYPE_RECEIVABLE) &&
+				if ( split.getAccount().getType().equals(GnucashAccount.TYPE_RECEIVABLE) &&
                      ! split.getValue().isPositive() ) {
 				  takenFromReceivableAccount.subtract(split.getValue());
                }
@@ -284,7 +284,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
             for (GnucashTransactionSplit split : trx.getSplits()) {
 
               System.err.println(" (" + split.getAccount().getType() + ")");
-                if ( split.getAccount().getType().equals(GnucashAccount.ACCOUNTTYPE_PAYABLE) &&
+                if ( split.getAccount().getType().equals(GnucashAccount.TYPE_PAYABLE) &&
                      split.getValue().isPositive() ) {
                   takenFromPayableAccount.add(split.getValue());
                 }
