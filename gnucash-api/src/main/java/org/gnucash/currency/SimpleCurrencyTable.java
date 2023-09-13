@@ -131,7 +131,7 @@ public class SimpleCurrencyTable implements Serializable {
 	/**
 	 * maps a currency-name in capital letters(e.g. "GBP")
 	 * to a factor {@link FixedPointNumber}
-	 * that is to be multiplied with an ammount of that currency
+	 * that is to be multiplied with an amount of that currency
 	 * to get the value in the base-currency.
 	 *
 	 * @see {@link #getConversionFactor(String)}
@@ -141,7 +141,7 @@ public class SimpleCurrencyTable implements Serializable {
 	/**
 	 * @param iso4217CurrencyCode a currency-name in capital letters(e.g. "GBP")
 	 * @return a factor {@link FixedPointNumber}
-	 * that is to be multiplied with an ammount of that currency
+	 * that is to be multiplied with an amount of that currency
 	 * to get the value in the base-currency.
 	 */
 	public FixedPointNumber getConversionFactor(final String iso4217CurrencyCode) {
@@ -158,7 +158,7 @@ public class SimpleCurrencyTable implements Serializable {
 	/**
 	 * @param iso4217CurrencyCode a currency-name in capital letters(e.g. "GBP")
 	 * @param factor              a factor {@link FixedPointNumber}
-	 *                            that is to be multiplied with an ammount of that currency
+	 *                            that is to be multiplied with an amount of that currency
 	 *                            to get the value in the base-currency.
 	 */
 	public void setConversionFactor(final String iso4217CurrencyCode,

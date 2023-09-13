@@ -481,16 +481,16 @@ public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 	 * @param other the value to compare to
 	 * @return true if and only if this>other
 	 */
-	public boolean isMoreThen(final FixedPointNumber other) {
+	public boolean isGreaterThan(final FixedPointNumber other) {
 
-		return isMoreThen(other.getBigDecimal());
+		return isGreaterThan(other.getBigDecimal());
 	}
 
 	/**
 	 * @param other the value to compare to
 	 * @return true if and only if this>other
 	 */
-	public boolean isMoreThen(final BigDecimal other) {
+	public boolean isGreaterThan(final BigDecimal other) {
 
 		return value.compareTo(other) > 0;
 	}
@@ -499,16 +499,16 @@ public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 	 * @param other the value to compare to
 	 * @return true if and only if this&lt;other
 	 */
-	public boolean isLessThen(final FixedPointNumber other) {
+	public boolean isLessThan(final FixedPointNumber other) {
 
-		return isLessThen(other.getBigDecimal());
+		return isLessThan(other.getBigDecimal());
 	}
 
 	/**
 	 * @param other the value to compare to
 	 * @return true if and only if this&lt;other
 	 */
-	public boolean isLessThen(final BigDecimal other) {
+	public boolean isLessThan(final BigDecimal other) {
 
 		return value.compareTo(other) < 0;
 	}

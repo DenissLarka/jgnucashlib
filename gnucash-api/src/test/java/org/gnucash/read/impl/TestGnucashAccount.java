@@ -70,12 +70,15 @@ public class TestGnucashAccount
     
     assertEquals("fdffaa52f5b04754901dfb1cf9221494", acct.getParentAccountId());
 
-    assertEquals(1127.00, acct.getBalance().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(1127.00, acct.getBalanceRecursive().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(3560.46, acct.getBalance().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(3560.46, acct.getBalanceRecursive().doubleValue(), Const.DIFF_TOLERANCE);
 
-    assertEquals(2, acct.getTransactions().size());
+    assertEquals(5, acct.getTransactions().size());
     assertEquals("568864bfb0954897ab8578db4d27372f", acct.getTransactions().get(0).getId());
-    assertEquals("18a45dfc8a6868c470438e27d6fe10b2", acct.getTransactions().get(1).getId());
+    assertEquals("29557cfdf4594eb68b1a1b710722f991", acct.getTransactions().get(1).getId());
+    assertEquals("67796d4f7c924c1da38f7813dbc3a99d", acct.getTransactions().get(2).getId());
+    assertEquals("18a45dfc8a6868c470438e27d6fe10b2", acct.getTransactions().get(3).getId());
+    assertEquals("ccff780b18294435bf03c6cb1ac325c1", acct.getTransactions().get(4).getId());
   }
 
   @Test
@@ -126,8 +129,8 @@ public class TestGnucashAccount
     acct = gcshFile.getAccountByID("68a4c19f9a8c48909fc69d0dc18c37a6");
     assertEquals("68a4c19f9a8c48909fc69d0dc18c37a6", acct.getId());
     assertEquals(GnucashAccount.TYPE_PAYABLE, acct.getType());
-    assertEquals("Lieferant_1", acct.getName());
-    assertEquals("Root Account::Fremdkapital::Lieferanten::Lieferant_1", acct.getQualifiedName());
+    assertEquals("Lieferfanto", acct.getName());
+    assertEquals("Root Account::Fremdkapital::Lieferanten::Lieferfanto", acct.getQualifiedName());
     assertEquals(null, acct.getDescription());
     assertEquals("EUR", acct.getCurrencyID());
     
@@ -149,21 +152,19 @@ public class TestGnucashAccount
     acct = gcshFile.getAccountByID("7e223ee2260d4ba28e8e9e19ce291f43");
     assertEquals("7e223ee2260d4ba28e8e9e19ce291f43", acct.getId());
     assertEquals(GnucashAccount.TYPE_RECEIVABLE, acct.getType());
-    assertEquals("Kunde_1", acct.getName());
-    assertEquals("Root Account::Aktiva::Forderungen::Kunde_1", acct.getQualifiedName());
+    assertEquals("Unfug_Quatsch", acct.getName());
+    assertEquals("Root Account::Aktiva::Forderungen::Unfug_Quatsch", acct.getQualifiedName());
     assertEquals(null, acct.getDescription());
     assertEquals("EUR", acct.getCurrencyID());
     
     assertEquals("74401ce4880c4f4487c4301027a71bde", acct.getParentAccountId());
 
-    // ::TODO
-    assertEquals(0.00, acct.getBalance().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(0.00, acct.getBalanceRecursive().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(-2527.60, acct.getBalance().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(-2527.60, acct.getBalanceRecursive().doubleValue(), Const.DIFF_TOLERANCE);
 
-    // ::TODO
-    assertEquals(0, acct.getTransactions().size());
-//  assertEquals("568864bfb0954897ab8578db4d27372f", acct.getTransactions().get(0).getId());
-//  assertEquals("18a45dfc8a6868c470438e27d6fe10b2", acct.getTransactions().get(1).getId());
+    assertEquals(2, acct.getTransactions().size());
+    assertEquals("29557cfdf4594eb68b1a1b710722f991", acct.getTransactions().get(0).getId());
+    assertEquals("67796d4f7c924c1da38f7813dbc3a99d", acct.getTransactions().get(1).getId());
   }
 
   @Test

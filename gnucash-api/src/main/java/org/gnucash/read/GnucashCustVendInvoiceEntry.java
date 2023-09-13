@@ -126,13 +126,24 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 	 *
 	 * @return e.g. "0.16" for "16%"
 	 */
-	FixedPointNumber getApplicableTaxPercent();
+	FixedPointNumber getInvcApplicableTaxPercent();
 
-	/**
-	 * @return never null, "0%" if no taxtable is there
-	 */
-	String getApplicableTaxPercendFormatted();
-	
+    /**
+    *
+    * @return e.g. "0.16" for "16%"
+    */
+     FixedPointNumber getBillApplicableTaxPercent();
+
+    /**
+     * @return never null, "0%" if no taxtable is there
+     */
+    String getInvcApplicableTaxPercentFormatted();
+     
+    /**
+     * @return never null, "0%" if no taxtable is there
+     */
+    String getBillApplicableTaxPercentFormatted();
+     
 	// ---------------------------------------------------------------
 
 	/**

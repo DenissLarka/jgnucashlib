@@ -16,7 +16,9 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryBTaxtable;
 import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryBill;
+import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryITaxtable;
 import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryInvoice;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
@@ -208,89 +210,137 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	 * The taxtable in the gnucash xml-file.
 	 * It defines what sales-tax-rates are known.
 	 */
-	private GnucashTaxTable myTaxtable;
+    private GnucashTaxTable myInvcTaxtable;
+    private GnucashTaxTable myBillTaxtable;
 
-	/**
-	 * @param aTaxtable the taxtable to set
-	 */
-	protected void setTaxtable(final GnucashTaxTable aTaxtable) {
-		myTaxtable = aTaxtable;
-	}
+    /**
+     * @param aTaxtable the taxtable to set
+     */
+    protected void setInvcTaxtable(final GnucashTaxTable aTaxtable) {
+        myInvcTaxtable = aTaxtable;
+    }
+
+    /**
+     * @param aTaxtable the taxtable to set
+     */
+    protected void setBillTaxtable(final GnucashTaxTable aTaxtable) {
+        myBillTaxtable = aTaxtable;
+    }
 
 	/**
 	 * @return The taxtable in the gnucash xml-file.
 	 * It defines what sales-tax-rates are known.
+	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashTaxTable getTaxTable() {
-		if (myTaxtable == null) {
-			String taxTableId = jwsdpPeer.getEntryITaxtable().getValue();
+	public GnucashTaxTable getInvcTaxTable() throws NoTaxTableFoundException {
+		if (myInvcTaxtable == null) {
+          EntryITaxtable taxTableEntry = jwsdpPeer.getEntryITaxtable();
+          if ( taxTableEntry == null ) {
+            throw new NoTaxTableFoundException();
+          }
+
+            String taxTableId = taxTableEntry.getValue();
 			if (taxTableId == null) {
-				System.err.println("Invoice with id '"
+				System.err.println("Customer invoice with id '"
 						+ getId()
 						+ "' is taxable but has empty id for the taxtable");
 				return null;
 			}
-			myTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
+			myInvcTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
 
-			if (myTaxtable == null) {
-				System.err.println("Invoice with id '"
+			if (myInvcTaxtable == null) {
+				System.err.println("Customer invoice with id '"
 						+ getId()
 						+ "' is taxable but has an unknown "
 						+ "taxtable-id '"
 						+ taxTableId
 						+ "'!");
 			}
-		}
+        } // myInvcTaxtable == null
 
-		return myTaxtable;
+		return myInvcTaxtable;
 	}
 
-	/**
-	 * @return never null, "0%" if no taxtable is there
-	 */
-	public String getApplicableTaxPercendFormatted() {
-		FixedPointNumber applicableTaxPercend = getApplicableTaxPercent();
-		if (applicableTaxPercend == null) {
-			return this.getPercentFormat().format(0);
-		}
-		return this.getPercentFormat().format(applicableTaxPercend);
-	}
+    /**
+     * @return The taxtable in the gnucash xml-file.
+     * It defines what sales-tax-rates are known.
+     * @throws NoTaxTableFoundException 
+     */
+    public GnucashTaxTable getBillTaxTable() throws NoTaxTableFoundException {
+        if (myBillTaxtable == null) {
+          EntryBTaxtable taxTableEntry = jwsdpPeer.getEntryBTaxtable();
+          if ( taxTableEntry == null ) {
+            throw new NoTaxTableFoundException();
+          }
+          
+            String taxTableId = taxTableEntry.getValue();
+            if (taxTableId == null) {
+                System.err.println("Vendor bill with id '"
+                        + getId()
+                        + "' is taxable but has empty id for the taxtable");
+                return null;
+            }
+            myBillTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
+
+            if (myBillTaxtable == null) {
+                System.err.println("Vendor bill with id '"
+                        + getId()
+                        + "' is taxable but has an unknown "
+                        + "taxtable-id '"
+                        + taxTableId
+                        + "'!");
+            }
+        } // myBillTaxtable == null
+
+        return myBillTaxtable;
+    }
 
 	/**
 	 * @return e.g. "0.16" for "16%"
 	 */
-	public FixedPointNumber getApplicableTaxPercent() {
+	public FixedPointNumber getInvcApplicableTaxPercent() {
 
-		if (!isInvcTaxable()) {
+		if ( ! isInvcTaxable() ) {
 			return new FixedPointNumber();
 		}
 
-		if (!jwsdpPeer.getEntryITaxtable().getType().equals("guid")) {
-			System.err.println("Customer/vendor invoice/bill with id '"
+        if ( jwsdpPeer.getEntryITaxtable() != null ) {
+          if ( ! jwsdpPeer.getEntryITaxtable().getType().equals("guid") ) {
+			System.err.println("Customer invoice with id '"
 					+ getId()
 					+ "' has i-taxtable with type='"
 					+ jwsdpPeer.getEntryITaxtable().getType()
 					+ "' != 'guid'");
-		}
+          }
+        }
 
-		GnucashTaxTable taxtable = getTaxTable();
+        GnucashTaxTable taxtable = null;
+        try {
+          taxtable = getInvcTaxTable();
+        } catch ( NoTaxTableFoundException exc ) {
+          System.err.println("Customer invoice with id '"
+              + getId()
+              + "' is taxable but JWSDP peer has no i-taxtable-entry! "
+              + "Assuming 19%");
+          return new FixedPointNumber("1900000/10000000");
+        }
 
 		if (taxtable == null) {
-			System.err.println("Customer/vendor invoice/bill with id '"
+			System.err.println("Customer invoice with id '"
 					+ getId()
-					+ "' is taxable but has an unknown taxtable! "
+					+ "' is taxable but has an unknown i-taxtable! "
 					+ "Assuming 19%");
 			return new FixedPointNumber("1900000/10000000");
 		}
 
 		GnucashTaxTable.TaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
 		if (!taxTableEntry.getType().equals(GnucashTaxTable.TaxTableEntry.TYPE_PERCENT)) {
-			System.err.println("Customer/vendor invoice/bill with id '"
+			System.err.println("Customer invoice with id '"
 					+ getId()
-					+ "' is taxable but has a taxtable "
+					+ "' is taxable but has a i-taxtable "
 					+ "that is not in percent but in '"
 					+ taxTableEntry.getType()
-					+ "' ! Assuming 19%");
+					+ "'! Assuming 19%");
 			return new FixedPointNumber("1900000/10000000");
 		}
 
@@ -301,6 +351,86 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
 	}
 	
+    /**
+     * @return e.g. "0.16" for "16%"
+     */
+    public FixedPointNumber getBillApplicableTaxPercent() {
+
+        if ( ! isBillTaxable() ) {
+            return new FixedPointNumber();
+        }
+
+        if ( jwsdpPeer.getEntryBTaxtable() != null ) {
+          if ( ! jwsdpPeer.getEntryBTaxtable().getType().equals("guid") ) {
+            System.err.println("Vendor bill with id '"
+                    + getId()
+                    + "' has b-taxtable with type='"
+                    + jwsdpPeer.getEntryBTaxtable().getType()
+                    + "' != 'guid'");
+          }
+        }
+
+        GnucashTaxTable taxtable = null;
+        try {
+          taxtable = getBillTaxTable();
+        } catch ( NoTaxTableFoundException exc ) {
+          System.err.println("Vendor bill with id '"
+              + getId()
+              + "' is taxable but JWSDP peer has no b-taxtable-entry! "
+              + "Assuming 19%");
+          return new FixedPointNumber("1900000/10000000");
+        }
+
+        if (taxtable == null) {
+            System.err.println("Vendor bill with id '"
+                    + getId()
+                    + "' is taxable but has an unknown b-taxtable! "
+                    + "Assuming 19%");
+            return new FixedPointNumber("1900000/10000000");
+        }
+
+        GnucashTaxTable.TaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
+        if (!taxTableEntry.getType().equals(GnucashTaxTable.TaxTableEntry.TYPE_PERCENT)) {
+            System.err.println("Vendor bill with id '"
+                    + getId()
+                    + "' is taxable but has a b-taxtable "
+                    + "that is not in percent but in '"
+                    + taxTableEntry.getType()
+                    + "'! Assuming 19%");
+            return new FixedPointNumber("1900000/10000000");
+        }
+
+        FixedPointNumber val = taxTableEntry.getAmount();
+
+        //      the file contains 16 for 16%, we need 0,16
+        return ((FixedPointNumber) val.clone()).divideBy(new FixedPointNumber("100"));
+
+    }
+    
+    // ----------------------------
+    
+    /**
+     * @return never null, "0%" if no taxtable is there
+     */
+    public String getInvcApplicableTaxPercentFormatted() {
+        FixedPointNumber applTaxPerc = getInvcApplicableTaxPercent();
+        if (applTaxPerc == null) {
+            return this.getPercentFormat().format(0);
+        }
+        return this.getPercentFormat().format(applTaxPerc);
+    }
+
+    /**
+     * @return never null, "0%" if no taxtable is there
+     */
+    public String getBillApplicableTaxPercentFormatted() {
+        FixedPointNumber applTaxPerc = getBillApplicableTaxPercent();
+        if (applTaxPerc == null) {
+            return this.getPercentFormat().format(0);
+        }
+        return this.getPercentFormat().format(applTaxPerc);
+    }
+
 	// ---------------------------------------------------------------
 
 	/**
@@ -353,7 +483,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
             return getInvcSum();
         }
 
-        return getInvcSum().multiply(getApplicableTaxPercent().add(1));
+        return getInvcSum().multiply(getInvcApplicableTaxPercent().add(1));
     }
 
     /**
@@ -363,13 +493,13 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
     public FixedPointNumber getInvcSumExclTaxes() throws WrongInvoiceTypeException {
 
         //      System.err.println("debug: GnucashInvoiceEntryImpl.getSumExclTaxes():"
-        //      taxIncluded="+jwsdpPeer.getEntryITaxincluded()+" getSum()="+getSum()+" getApplicableTaxPercend()="+getApplicableTaxPercend());
+        //      taxIncluded="+jwsdpPeer.getEntryITaxincluded()+" getSum()="+getSum()+" getApplicableTaxPercend()="+getApplicableTaxPercent());
 
         if (jwsdpPeer.getEntryITaxincluded() == 0) {
             return getInvcSum();
         }
 
-        return getInvcSum().divideBy(getApplicableTaxPercent().add(1));
+        return getInvcSum().divideBy(getInvcApplicableTaxPercent().add(1));
     }
 
 	// ----------------------------
@@ -416,7 +546,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
             return getBillSum();
         }
 
-        return getBillSum().multiply(getApplicableTaxPercent().add(1));
+        return getBillSum().multiply(getBillApplicableTaxPercent().add(1));
     }
 
     /**
@@ -426,13 +556,13 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
     public FixedPointNumber getBillSumExclTaxes() throws WrongInvoiceTypeException {
 
         //      System.err.println("debug: GnucashInvoiceEntryImpl.getSumExclTaxes():"
-        //      taxIncluded="+jwsdpPeer.getEntryITaxincluded()+" getSum()="+getSum()+" getApplicableTaxPercend()="+getApplicableTaxPercend());
+        //      taxIncluded="+jwsdpPeer.getEntryITaxincluded()+" getSum()="+getSum()+" getApplicableTaxPercend()="+getApplicableTaxPercent());
 
         if (jwsdpPeer.getEntryBTaxincluded() == 0) {
             return getBillSum();
         }
 
-        return getBillSum().divideBy(getApplicableTaxPercent().add(1));
+        return getBillSum().divideBy(getBillApplicableTaxPercent().add(1));
     }
 
     // ----------------------------
@@ -467,8 +597,15 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	 * @see GnucashCustVendInvoiceEntry#isInvcTaxable()
 	 */
 	public boolean isInvcTaxable() {
-		return (jwsdpPeer.getEntryITaxable() == 1);
+		return ( jwsdpPeer.getEntryITaxable() == 1 );
 	}
+
+    /**
+     * @see GnucashCustVendInvoiceEntry#isInvcTaxable()
+     */
+    public boolean isBillTaxable() {
+        return ( jwsdpPeer.getEntryBTaxable() == 1 );
+    }
 
 	/**
 	 * @see GnucashCustVendInvoiceEntry#getAction()

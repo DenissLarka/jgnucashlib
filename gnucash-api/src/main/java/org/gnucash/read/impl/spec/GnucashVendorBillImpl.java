@@ -155,6 +155,20 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   }
   
   // ------------------------------
+  
+  @Override
+  public boolean isFullyPaid() throws WrongInvoiceTypeException
+  {
+    return isBillFullyPaid();
+  }
+  
+  @Override
+  public boolean isNotFullyPaid() throws WrongInvoiceTypeException
+  {
+    return isNotBillFullyPaid();
+  }
+  
+  // ------------------------------
 
   @Override
   public FixedPointNumber getInvcAmountUnpaidWithTaxes() throws WrongInvoiceTypeException
@@ -212,6 +226,20 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
 
   @Override
   public String getInvcAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+  
+  // ------------------------------
+
+  @Override
+  public boolean isInvcFullyPaid() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public boolean isNotInvcFullyPaid() throws WrongInvoiceTypeException
   {
     throw new WrongInvoiceTypeException();
   }

@@ -14,6 +14,7 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -30,6 +31,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
      */
     private final GnucashFile file;
 
+    // ---------------------------------------------------------------
+
 	/**
 	 * @param peer    the JWSDP-object we are facading.
 	 * @param gncFile the file to register under
@@ -39,6 +42,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 		jwsdpPeer = peer;
 		file = gncFile;
 	}
+
+    // ---------------------------------------------------------------
 
 	/**
 	 * @return the JWSDP-object we are wrapping.
@@ -80,27 +85,15 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	 * @return the current number of Unpaid invoices
 	 * @throws WrongInvoiceTypeException 
 	 */
-	public int getNofOpenInvoices() throws WrongInvoiceTypeException {
-		int count = 0;
-		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashVendorBill ) {
-            if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
-              continue;
-            }
-
-            if (invoice.isNotFullyPaid()) {
-              count++;
-            }
-		  }
-		}
-		return count;
+	public int getNofOpenBills() throws WrongInvoiceTypeException {
+		return getGnucashFile().getUnpaidBillsForVendor_direct(this).size();
 	}
 
 	/**
 	 * @return the sum of payments for invoices to this client
 	 * @throws WrongInvoiceTypeException 
 	 */
-	public FixedPointNumber getIncomeGenerated() throws WrongInvoiceTypeException {
+	public FixedPointNumber getExpensesGenerated() throws WrongInvoiceTypeException {
 		FixedPointNumber retval = new FixedPointNumber();
 
 		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
@@ -126,10 +119,10 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	/**
 	 * @return formated acording to the current locale's currency-format
 	 * @throws WrongInvoiceTypeException 
-	 * @see #getIncomeGenerated()
+	 * @see #getExpensesGenerated()
 	 */
-	public String getIncomeGeneratedFormatted() throws WrongInvoiceTypeException {
-		return getCurrencyFormat().format(getIncomeGenerated());
+	public String getExpensesGeneratedFormatted() throws WrongInvoiceTypeException {
+		return getCurrencyFormat().format(getExpensesGenerated());
 
 	}
 
@@ -137,10 +130,10 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	 * @param l the locale to format for
 	 * @return formated acording to the given locale's currency-format
 	 * @throws WrongInvoiceTypeException 
-	 * @see #getIncomeGenerated()
+	 * @see #getExpensesGenerated()
 	 */
-	public String getIncomeGeneratedFormatted(final Locale l) throws WrongInvoiceTypeException {
-		return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated());
+	public String getExpensesGeneratedFormatted(final Locale l) throws WrongInvoiceTypeException {
+		return NumberFormat.getCurrencyInstance(l).format(getExpensesGenerated());
 	}
 
 	/**
@@ -335,12 +328,23 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
   // ------------------------------
 
   @Override
-  public Collection<GnucashVendorBill> getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashVendorBill> getPaidBills(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
   {
     if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
-      return file.getUnpaidInvoicesForVendor_direct(this);
+      return file.getPaidBillsForVendor_direct(this);
+    else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB ) 
+      return file.getPaidBillsForVendor_viaJob(this);
+
+    return null; // Compiler happy
+  }
+
+  @Override
+  public Collection<GnucashVendorBill> getUnpaidBills(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  {
+    if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
+      return file.getUnpaidBillsForVendor_direct(this);
     else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
-      return file.getUnpaidInvoicesForVendor_viaJob(this);
+      return file.getUnpaidBillsForVendor_viaJob(this);
     
     return null; // Compiler happy
   }

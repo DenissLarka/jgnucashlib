@@ -156,6 +156,20 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   }
   
   // ------------------------------
+  
+  @Override
+  public boolean isFullyPaid() throws WrongInvoiceTypeException
+  {
+    return isInvcFullyPaid();
+  }
+  
+  @Override
+  public boolean isNotFullyPaid() throws WrongInvoiceTypeException
+  {
+    return isNotInvcFullyPaid();
+  }
+  
+  // ------------------------------
 
   @Override
   public FixedPointNumber getBillAmountUnpaidWithTaxes() throws WrongInvoiceTypeException
@@ -217,6 +231,20 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
     throw new WrongInvoiceTypeException();
   }
   
+  // ------------------------------
+
+  @Override
+  public boolean isBillFullyPaid() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public boolean isNotBillFullyPaid() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+  
   // -----------------------------------------------------------------
 
   @Override
@@ -236,8 +264,7 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
         buffer.append(getEntries().size());
       }
       catch (WrongInvoiceTypeException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        buffer.append("ERROR");
       }
       buffer.append(" date-opened: ");
       try {

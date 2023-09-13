@@ -354,11 +354,19 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 
 	/**
 	 *
-	 * @return how much sales-taxes are to pay.
+	 * @return For a customer invoice: How much sales-taxes are to pay.
 	 * @throws WrongInvoiceTypeException 
 	 * @see TaxedSum
 	 */
 	TaxedSum[] getInvcTaxes() throws WrongInvoiceTypeException;
+
+    /**
+    *
+    * @return For a vendor bill: How much sales-taxes are to pay.
+    * @throws WrongInvoiceTypeException 
+    * @see TaxedSum
+    */
+	TaxedSum[] getBillTaxes() throws WrongInvoiceTypeException;
 
 	/**
 	 * @return the id of the {@link GnucashAccount} the payment is made to.
@@ -416,10 +424,28 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 
     // ---------------------------------------------------------------
 
+    /**
+     * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
+     * @throws WrongInvoiceTypeException 
+     */
+    boolean isInvcFullyPaid() throws WrongInvoiceTypeException;
+
 	/**
 	 * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
 	 * @throws WrongInvoiceTypeException 
 	 */
-	boolean isNotFullyPaid() throws WrongInvoiceTypeException;
+	boolean isNotInvcFullyPaid() throws WrongInvoiceTypeException;
+
+    /**
+     * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
+     * @throws WrongInvoiceTypeException 
+     */
+    boolean isBillFullyPaid() throws WrongInvoiceTypeException;
+
+    /**
+     * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
+     * @throws WrongInvoiceTypeException 
+     */
+    boolean isNotBillFullyPaid() throws WrongInvoiceTypeException;
 
 }

@@ -457,21 +457,35 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("[GnucashTransactionImpl:");
+		
 		buffer.append(" id: ");
 		buffer.append(getId());
+		
         buffer.append(" description: '");
         buffer.append(getDescription() + "'");
+        
         buffer.append(" amount: ");
         buffer.append(getFirstSplit().getValueFormatted());
+        
         buffer.append(" #splits: ");
-        buffer.append(mySplits.size());
-		buffer.append(" dateEntered: ");
+        buffer.append(getSplitsCount());
+        
+        buffer.append(" date-posted: ");
+        try {
+          buffer.append(getDatePosted().format(DATE_POSTED_FORMAT));
+        } catch (Exception e) {
+          buffer.append(getDatePosted().toString());
+        }
+
+        buffer.append(" date-entered: ");
 		try {
           buffer.append(getDateEntered().format(DATE_ENTERED_FORMAT));
 		} catch (Exception e) {
 		  buffer.append(getDateEntered().toString());
 		}
+		
 		buffer.append("]");
+		
 		return buffer.toString();
 	}
 

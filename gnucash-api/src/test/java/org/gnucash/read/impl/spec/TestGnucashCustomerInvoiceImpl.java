@@ -16,7 +16,7 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashCustomerInvoiceImpl
 {
-  private static GnucashFile    gcshFile = null;
+  private static GnucashFile            gcshFile = null;
   private static GnucashCustVendInvoice invcGen = null;
   private static GnucashCustomerInvoice invcSpec = null;
   
@@ -68,20 +68,36 @@ public class TestGnucashCustomerInvoiceImpl
     assertEquals(true, invcSpec instanceof GnucashCustomerInvoiceImpl);
     assertEquals("d9967c10fdf1465e9394a3e4b1e7bd79", invcSpec.getId());
     assertEquals("gncCustomer", invcSpec.getOwnerType());
-    // ::TODO
-    // assertEquals("xxx", invc.getInvoiceNumber());
-    assertEquals(null, invcSpec.getDescription());
+    assertEquals("R1730", invcSpec.getNumber());
+    assertEquals("Alles ohne Steuern / voll bezahlt", invcSpec.getDescription());
 
     assertEquals("2023-07-29T10:59Z", invcSpec.getDateOpened().toString());
     assertEquals("2023-07-29T10:59Z", invcSpec.getDatePosted().toString());
+  }
 
-    // ::TODO
+  @Test
+  public void test02() throws Exception
+  {
+    invcGen = gcshFile.getCustVendInvoiceByID("d9967c10fdf1465e9394a3e4b1e7bd79");
+    invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
     assertEquals(2, invcGen.getCustVendInvcEntries().size());
     assertEquals(2, invcSpec.getCustVendInvcEntries().size());
     assertEquals(2, invcSpec.getEntries().size());
 
-    // ::TODO
-    // assertEquals(1327.60, invc.getAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(1327.60, invcGen.getInvcAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(1327.60, invcSpec.getInvcAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(1327.60, invcSpec.getAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
     assertEquals(1327.60, invcGen.getInvcAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
     assertEquals(1327.60, invcSpec.getInvcAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
     assertEquals(1327.60, invcSpec.getAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);

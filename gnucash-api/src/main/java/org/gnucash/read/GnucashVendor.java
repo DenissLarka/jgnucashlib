@@ -23,27 +23,27 @@ public interface GnucashVendor extends GnucashObject {
      * @return the current number of Unpaid invoices
      * @throws WrongInvoiceTypeException 
      */
-    int getNofOpenInvoices() throws WrongInvoiceTypeException;
+    int getNofOpenBills() throws WrongInvoiceTypeException;
 
     /**
      * @return the sum of payments for invoices to this client
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getIncomeGenerated() throws WrongInvoiceTypeException;
+    FixedPointNumber getExpensesGenerated() throws WrongInvoiceTypeException;
 
     /**
      * @throws WrongInvoiceTypeException 
-     * @see #getIncomeGenerated()
+     * @see #getExpensesGenerated()
      * Formatted acording to the current locale's currency-format
      */
-    String getIncomeGeneratedFormatted() throws WrongInvoiceTypeException;
+    String getExpensesGeneratedFormatted() throws WrongInvoiceTypeException;
 
     /**
      * @throws WrongInvoiceTypeException 
-     * @see #getIncomeGenerated()
+     * @see #getExpensesGenerated()
      * Formatted acording to the given locale's currency-format
      */
-    String getIncomeGeneratedFormatted(Locale l) throws WrongInvoiceTypeException;
+    String getExpensesGeneratedFormatted(Locale l) throws WrongInvoiceTypeException;
 
     /**
      * @return the sum of left to pay Unpaid invoiced
@@ -152,7 +152,9 @@ public interface GnucashVendor extends GnucashObject {
 
     // ----------------------------
 
-    Collection<GnucashVendorBill> getUnpaidInvoices(ReadVariant readVar) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getPaidBills(ReadVariant readVar) throws WrongInvoiceTypeException;
+    
+    Collection<GnucashVendorBill> getUnpaidBills(ReadVariant readVar) throws WrongInvoiceTypeException;
     
     // ----------------------------
     

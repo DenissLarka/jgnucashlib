@@ -207,6 +207,8 @@ public interface GnucashCustomer extends GnucashObject {
     
     // ----------------------------
 
+    Collection<GnucashCustomerInvoice> getPaidInvoices(ReadVariant readVar) throws WrongInvoiceTypeException;
+    
     Collection<GnucashCustomerInvoice> getUnpaidInvoices(ReadVariant readVar) throws WrongInvoiceTypeException;
     
     // ----------------------------

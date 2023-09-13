@@ -12,7 +12,7 @@ import org.gnucash.read.GnucashJob;
  * so (s)he knows what to pay you. <br>
  * <br>
  * Note: The correct business term is "invoice" (as opposed to "bill"), 
- * as used in the GnuCash documentation, but on a technical level, both 
+ * as used in the GnuCash documentation. However, on a technical level, both 
  * customer invoices and vendor bills are referred to as "GncInvoice" objects.
  * <br>
  * Implementations of this interface are comparable and sorts primarily on the date the Invoice was
@@ -24,17 +24,16 @@ import org.gnucash.read.GnucashJob;
 public interface GnucashCustomerInvoice extends GnucashCustVendInvoice {
 
     /**
-    *
-    * @return Invoice' owner (i.e., either a customer or a vendor) 
-    */
+     * @return ID of customer this invoice has been sent to.
+     */
     String getCustomerId(GnucashCustVendInvoice.ReadVariant readVar);
 
-	/**
-	 * @return getJob().getCustomer()
-	 */
-	GnucashCustomer getCustomer();
+    /**
+     * @return Customer this invoice has been sent to.
+     */
+    GnucashCustomer getCustomer();
 	
-	// ---------------------------------------------------------------
+    // ---------------------------------------------------------------
 
     GnucashCustomerInvoiceEntry getEntryById(String id) throws WrongInvoiceTypeException;
 
@@ -53,7 +52,7 @@ public interface GnucashCustomerInvoice extends GnucashCustVendInvoice {
     public FixedPointNumber getAmountWithTaxes() throws WrongInvoiceTypeException;
     
     public FixedPointNumber getAmountWithoutTaxes() throws WrongInvoiceTypeException;
-    
+
     // ----------------------------
 
     public String getAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException;
@@ -65,5 +64,11 @@ public interface GnucashCustomerInvoice extends GnucashCustVendInvoice {
     public String getAmountWithTaxesFormatted() throws WrongInvoiceTypeException;
 
     public String getAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
+
+    // ---------------------------------------------------------------
+
+    public boolean isFullyPaid() throws WrongInvoiceTypeException;
+
+    public boolean isNotFullyPaid() throws WrongInvoiceTypeException;
 
 }

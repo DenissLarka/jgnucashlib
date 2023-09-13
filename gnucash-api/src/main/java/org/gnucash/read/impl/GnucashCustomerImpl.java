@@ -29,6 +29,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
      * The file we belong to.
      */
     private final GnucashFile file;
+    
+    // ---------------------------------------------------------------
 
 	/**
 	 * @param peer    the JWSDP-object we are facading.
@@ -42,6 +44,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		jwsdpPeer = peer;
         file = gncFile;
 	}
+
+    // ---------------------------------------------------------------
 
 	/**
 	 * @return the JWSDP-object we are wrapping.
@@ -98,19 +102,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @throws WrongInvoiceTypeException 
 	 */
 	public int getNofOpenInvoices() throws WrongInvoiceTypeException {
-	    int count = 0;
-        for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-          if ( invoice instanceof GnucashCustomerInvoice ) {
-            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
-              continue;
-            }
-
-            if (invoice.isNotFullyPaid()) {
-              count++;
-            }
-          }
-        }
-        return count;
+      return getGnucashFile().getUnpaidInvoicesForCustomer_direct(this).size();
     }
 
 	/**
@@ -379,7 +371,18 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		return currencyFormat;
 	}
 	
-  // ------------------------------
+  // -----------------------------------------------------------------
+
+  @Override
+  public Collection<GnucashCustomerInvoice> getPaidInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  {
+    if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
+      return file.getPaidInvoicesForCustomer_direct(this);
+    else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
+      return file.getPaidInvoicesForCustomer_viaJob(this);
+
+    return null; // Compiler happy
+  }
 
   @Override
   public Collection<GnucashCustomerInvoice> getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
