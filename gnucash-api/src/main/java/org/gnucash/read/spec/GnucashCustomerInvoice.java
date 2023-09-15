@@ -30,8 +30,9 @@ public interface GnucashCustomerInvoice extends GnucashCustVendInvoice {
 
     /**
      * @return Customer this invoice has been sent to.
+     * @throws WrongInvoiceTypeException 
      */
-    GnucashCustomer getCustomer();
+    GnucashCustomer getCustomer() throws WrongInvoiceTypeException;
 	
     // ---------------------------------------------------------------
 

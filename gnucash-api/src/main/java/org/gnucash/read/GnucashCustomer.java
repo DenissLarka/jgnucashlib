@@ -52,40 +52,40 @@ public interface GnucashCustomer extends GnucashObject {
      * @return the current number of Unpaid invoices
      * @throws WrongInvoiceTypeException 
      */
-    int getNofOpenInvoices() throws WrongInvoiceTypeException;
+    int getNofOpenInvoices();
 
     /**
      * @return the sum of payments for invoices to this client
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getIncomeGenerated() throws WrongInvoiceTypeException;
+    FixedPointNumber getIncomeGenerated();
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getIncomeGenerated()
      * Formatted acording to the current locale's currency-format
      */
-    String getIncomeGeneratedFormatted() throws WrongInvoiceTypeException;
+    String getIncomeGeneratedFormatted();
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getIncomeGenerated()
      * Formatted acording to the given locale's currency-format
      */
-    String getIncomeGeneratedFormatted(Locale l) throws WrongInvoiceTypeException;
+    String getIncomeGeneratedFormatted(Locale l);
 
     /**
      * @return the sum of left to pay Unpaid invoiced
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getOutstandingValue() throws WrongInvoiceTypeException;
+    FixedPointNumber getOutstandingValue();
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getOutstandingValue()
      * Formatted acording to the current locale's currency-format
      */
-    String getOutstandingValueFormatted() throws WrongInvoiceTypeException;
+    String getOutstandingValueFormatted();
 
     /**
      *
@@ -93,18 +93,9 @@ public interface GnucashCustomer extends GnucashObject {
      * @see #getOutstandingValue()
      * Formatted acording to the given locale's currency-format
      */
-    String getOutstandingValueFormatted(Locale l) throws WrongInvoiceTypeException;
+    String getOutstandingValueFormatted(Locale l);
 
-
-    /**
-     *
-     * (c) 2005 by Wolschon Softwaredesign und Beratung.<br/>
-     * Project: gnucashReader<br/>
-     * GnucashCustomer.java<br/>
-     * created: 05.08.2005 19:29:24 <br/>
-     * Defines what an address of a customer consists of.
-     * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
-     */
+    
     interface Address {
 
         /**

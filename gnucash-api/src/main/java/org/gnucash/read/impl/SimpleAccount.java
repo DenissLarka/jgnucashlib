@@ -42,9 +42,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class SimpleAccount implements GnucashAccount {
 
-	/**
-	 * Our logger for debug- and error-output.
-	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAccount.class);
 
 	/**
@@ -507,6 +504,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 			// the currency of the quantity is the one of the account
 			balance.add(split.getQuantity());
 		}
+		
 		return balance;
 	}
 
@@ -516,6 +514,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	public FixedPointNumber getBalance(final GnucashTransactionSplit lastIncludesSplit) {
 
 		FixedPointNumber balance = new FixedPointNumber();
+		
 		for (GnucashTransactionSplit split : getTransactionSplits()) {
 			balance.add(split.getQuantity());
 
@@ -524,6 +523,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 			}
 
 		}
+		
 		return balance;
 	}
 
@@ -541,6 +541,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 			}
 
 		}
+		
 		return null;
 	}
 
@@ -563,22 +564,20 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 *                            from being compared to this Object.
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	public int compareTo(final Object o) {
+	public int compareTo(final GnucashAccount otherAcc) {
 
-		int i = compareNamesTo(o);
+		int i = compareNamesTo(otherAcc);
 		if (i != 0) {
 			return i;
 		}
 
-		if (o instanceof GnucashAccount) {
-			GnucashAccount other = (GnucashAccount) o;
-			i = other.getId().compareTo(getId());
-			if (i != 0) {
-				return i;
-			}
+		GnucashAccount other = otherAcc;
+		i = other.getId().compareTo(getId());
+		if (i != 0) {
+		  return i;
 		}
 
-		return ("" + hashCode()).compareTo("" + o.hashCode());
+		return ("" + hashCode()).compareTo("" + otherAcc.hashCode());
 
 	}
 
@@ -627,17 +626,16 @@ public abstract class SimpleAccount implements GnucashAccount {
 		if (i0 == null && i1 != null) {
 			return 1;
 		}
-		if (i1 == null && i0 != null) {
+		else if (i1 == null && i0 != null) {
 			return -1;
 		}
-		if (i0 == null) {
+		else if (i0 == null) {
 			return me.compareTo(other);
 		}
-		if (i1 == null) {
+		else if (i1 == null) {
 			return me.compareTo(other);
 		}
-
-		if (i1.equals(i0)) {
+		else if (i1.equals(i0)) {
 			return me.compareTo(other);
 		}
 

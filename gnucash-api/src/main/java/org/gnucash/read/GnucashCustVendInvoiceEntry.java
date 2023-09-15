@@ -24,6 +24,14 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  */
 public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendInvoiceEntry> {
 
+  // ::MAGIC
+  // Possible values for {@link #getAction()}.
+  public final String ACTION_JOB      = "Auftrag";
+  public final String ACTION_MATERIAL = "Material";
+  public final String ACTION_HOURS    = "Stunden";
+  
+  // -----------------------------------------------------------------
+
 	/**
 	 * @return the unique-id to identify this object with across name- and hirarchy-changes
 	 */
@@ -74,19 +82,6 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
     String getBillPriceFormatted()throws WrongInvoiceTypeException;
     
     // ---------------------------------------------------------------
-
-	/**
-	 * Possible value for {@link #getAction()}.
-	 */
-	String ACTION_JOB = "Auftrag";
-	/**
-	 * Possible value for {@link #getAction()}.
-	 */
-	String ACTION_MATERIAL = "Material";
-	/**
-	 * Possible value for {@link #getAction()}.
-	 */
-	String ACTION_HOURS = "Stunden";
 
 	/**
 	 * The returned text is saved locale-specific. E.g. "Stunden" instead of "hours" for Germany.

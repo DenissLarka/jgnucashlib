@@ -1,6 +1,7 @@
 package org.gnucash.read.impl.spec;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashCustVendInvoiceEntry;
 import org.gnucash.read.impl.GnucashCustVendInvoiceEntryImpl;
@@ -8,10 +9,14 @@ import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorBillEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GnucashVendorBillEntryImpl extends GnucashCustVendInvoiceEntryImpl
                                         implements GnucashVendorBillEntry 
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorBillEntryImpl.class);
+
   public GnucashVendorBillEntryImpl(
           final GnucashVendorBill invoice,
           final GncV2.GncBook.GncGncEntry peer) 
@@ -75,6 +80,18 @@ public class GnucashVendorBillEntryImpl extends GnucashCustVendInvoiceEntryImpl
     }
     
     return new GnucashVendorBillImpl(myInvoice);
+  }
+
+  // ---------------------------------------------------------------
+
+  @Override
+  public FixedPointNumber getInvcPrice() throws WrongInvoiceTypeException {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getInvcPriceFormatted() throws WrongInvoiceTypeException {
+    throw new WrongInvoiceTypeException();
   }
 
   // ---------------------------------------------------------------

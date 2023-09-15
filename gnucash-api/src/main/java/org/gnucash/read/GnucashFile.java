@@ -161,7 +161,7 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustVendInvoice> getPaidInvoices() throws WrongInvoiceTypeException;
+	Collection<GnucashCustVendInvoice> getPaidInvoices();
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices that are not fully Paid
@@ -172,7 +172,7 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustVendInvoice> getUnpaidInvoices() throws WrongInvoiceTypeException;
+	Collection<GnucashCustVendInvoice> getUnpaidInvoices();
 	
 	// ----------------------------
 
@@ -187,7 +187,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
-    Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_direct(GnucashCustomer customer) throws WrongInvoiceTypeException;
+    Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_direct(GnucashCustomer customer);
 
     /**
      * @param customer the customer to look for (not null)
@@ -200,7 +200,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
-    Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_viaJob(GnucashCustomer customer) throws WrongInvoiceTypeException;
+    Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_viaJob(GnucashCustomer customer);
 
     /**
      * @param customer the customer to look for (not null)
@@ -213,7 +213,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
-    Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_direct(GnucashCustomer customer) throws WrongInvoiceTypeException;
+    Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_direct(GnucashCustomer customer);
 
 	/**
 	 * @param customer the customer to look for (not null)
@@ -226,7 +226,7 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getCustVendInvoiceByID(String)
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer customer) throws WrongInvoiceTypeException;
+	Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer customer);
 
     // ----------------------------
 
@@ -241,7 +241,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getPaidBillsForVendor_direct(GnucashVendor vendor) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getPaidBillsForVendor_direct(GnucashVendor vendor);
 
     /**
      * @param vendor the vendor to look for (not null)
@@ -254,7 +254,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getPaidBillsForVendor_viaJob(GnucashVendor vendor) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getPaidBillsForVendor_viaJob(GnucashVendor vendor);
 
     /**
      * @param vendor the vendor to look for (not null)
@@ -267,7 +267,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getUnpaidBillsForVendor_direct(GnucashVendor vendor) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getUnpaidBillsForVendor_direct(GnucashVendor vendor);
 
     /**
      * @param vendor the vendor to look for (not null)
@@ -280,7 +280,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getCustVendInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getUnpaidBillsForVendor_viaJob(GnucashVendor vendor) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getUnpaidBillsForVendor_viaJob(GnucashVendor vendor);
 
     // ---------------------------------------------------------------
     

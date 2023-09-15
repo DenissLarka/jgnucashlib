@@ -3,12 +3,20 @@ package org.gnucash.read.impl.spec;
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.TreeSet;
 
-import org.gnucash.Const;
+import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashCustVendInvoiceEntry;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashFileImpl;
+import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.GnucashVendorBill;
+import org.gnucash.read.spec.GnucashVendorBillEntry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,13 +28,17 @@ public class TestGnucashVendorBillImpl
   private static GnucashCustVendInvoice bllGen = null;
   private static GnucashVendorBill      bllSpec = null;
   
-  private static final double VALUE_DIFF_TOLERANCE = 0.001; // ::MAGIC
+  private static final String BLL_1_ID = "4eb0dc387c3f4daba57b11b2a657d8a4";
+  private static final String BLL_2_ID = "286fc2651a7848038a23bb7d065c8b67";
 
+  // -----------------------------------------------------------------
+  
   public static void main(String[] args) throws Exception
   {
     junit.textui.TestRunner.run(suite());
   }
 
+  @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
     return new JUnit4TestAdapter(TestGnucashVendorBillImpl.class);  
@@ -41,7 +53,7 @@ public class TestGnucashVendorBillImpl
     InputStream gcshFileStream = null;
     try 
     {
-      gcshFileStream = classLoader.getResourceAsStream(Const.GCSH_FILENAME);
+      gcshFileStream = classLoader.getResourceAsStream(ConstTest.GCSH_FILENAME);
     } 
     catch ( Exception exc ) 
     {
@@ -63,13 +75,13 @@ public class TestGnucashVendorBillImpl
   // -----------------------------------------------------------------
 
   @Test
-  public void test01() throws Exception
+  public void test01_1() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID("4eb0dc387c3f4daba57b11b2a657d8a4");
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
     
     assertEquals(true, bllSpec instanceof GnucashVendorBillImpl);
-    assertEquals("4eb0dc387c3f4daba57b11b2a657d8a4", bllSpec.getId());
+    assertEquals(BLL_1_ID, bllSpec.getId());
     assertEquals("gncVendor", bllSpec.getOwnerType());
     assertEquals("1730-383/2", bllSpec.getNumber());
     assertEquals("Sie wissen schon: Gefälligkeiten, ne?", bllSpec.getDescription());
@@ -80,9 +92,26 @@ public class TestGnucashVendorBillImpl
   }
 
   @Test
-  public void test02() throws Exception
+  public void test01_2() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID("4eb0dc387c3f4daba57b11b2a657d8a4");
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllSpec = new GnucashVendorBillImpl(bllGen);
+    
+    assertEquals(true, bllSpec instanceof GnucashVendorBillImpl);
+    assertEquals(BLL_2_ID, bllSpec.getId());
+    assertEquals("gncVendor", bllSpec.getOwnerType());
+    assertEquals("2740921", bllSpec.getNumber());
+    assertEquals("Dat isjamaol eine schöne jepflejgte Reschnung!", bllSpec.getDescription());
+
+    assertEquals("2023-08-30T10:59Z", bllSpec.getDateOpened().toString());
+    // ::TODO
+    assertEquals("2023-08-30T10:59Z", bllSpec.getDatePosted().toString());
+  }
+
+  @Test
+  public void test02_1() throws Exception
+  {
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
 
     // Note: That the following three return the same result
@@ -92,20 +121,137 @@ public class TestGnucashVendorBillImpl
     assertEquals(1, bllSpec.getCustVendInvcEntries().size());
     assertEquals(1, bllSpec.getEntries().size());
 
+    TreeSet entrList = new TreeSet(); // sort elements of HashSet
+    entrList.addAll(bllSpec.getEntries());
+    assertEquals("0041b8d397f04ae4a2e9e3c7f991c4ec", 
+                 ((GnucashVendorBillEntry) entrList.toArray()[0]).getId());
+  }
+
+  @Test
+  public void test02_2() throws Exception
+  {
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllSpec = new GnucashVendorBillImpl(bllGen);
+
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(41.40, bllGen.getBillAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(41.40, bllSpec.getBillAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(41.40, bllSpec.getAmountWithoutTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(2, bllGen.getCustVendInvcEntries().size());
+    assertEquals(2, bllSpec.getCustVendInvcEntries().size());
+    assertEquals(2, bllSpec.getEntries().size());
+
+    TreeSet entrList = new TreeSet(); // sort elements of HashSet
+    entrList.addAll(bllSpec.getEntries());
+    assertEquals("513589a11391496cbb8d025fc1e87eaa", 
+                 ((GnucashVendorBillEntry) entrList.toArray()[1]).getId());
+    assertEquals("dc3c53f07ff64199ad4ea38988b3f40a", 
+                 ((GnucashVendorBillEntry) entrList.toArray()[0]).getId());
+  }
+
+  @Test
+  public void test03_1() throws Exception
+  {
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
+    bllSpec = new GnucashVendorBillImpl(bllGen);
+
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(41.40, bllGen.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(41.40, bllSpec.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(41.40, bllSpec.getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
     // Note: due to (purposefully) incorrect booking, the gross amount
     // of this bill is *not* 49.27 EUR, but 41.40 EUR (its net amount).
-    assertEquals(41.40, bllGen.getBillAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(41.40, bllSpec.getBillAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
-    assertEquals(41.40, bllSpec.getAmountWithTaxes().doubleValue(), Const.DIFF_TOLERANCE);
+    assertEquals(41.40, bllGen.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(41.40, bllSpec.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(41.40, bllSpec.getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+  }
+
+  @Test
+  public void test03_2() throws Exception
+  {
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllSpec = new GnucashVendorBillImpl(bllGen);
+
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(79.11, bllGen.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(79.11, bllSpec.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(79.11, bllSpec.getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(94.14, bllGen.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(94.14, bllSpec.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(94.14, bllSpec.getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+  }
+
+  @Test
+  public void test04_1() throws Exception
+  {
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
+    bllSpec = new GnucashVendorBillImpl(bllGen);
+
+    // Note: That the following two return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+//    assertEquals("xxx", invcGen.getPostTransaction());
+//    assertEquals("xxx", invcSpec.getPostTransaction());
+    
+    // ::TODO
+    // Note: That the following two return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(0, bllSpec.getPayingTransactions().size());
+    assertEquals(0, bllSpec.getPayingTransactions().size());
+    
+//    LinkedList<GnucashTransaction> trxList = (LinkedList<GnucashTransaction>) bllSpec.getPayingTransactions();
+//    Collections.sort(trxList);
+//    assertEquals("xxx", 
+//                 ((GnucashTransaction) bllSpec.getPayingTransactions().toArray()[0]).getId());
+
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(false, bllGen.isBillFullyPaid());
+    assertEquals(false, bllSpec.isBillFullyPaid());
+    assertEquals(false, bllSpec.isFullyPaid());
+  }
+
+  @Test
+  public void test04_2() throws Exception
+  {
+    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllSpec = new GnucashVendorBillImpl(bllGen);
+
+    // Note: That the following two return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals("aa64d862bb5e4d749eb41f198b28d73d", bllGen.getPostTransaction().getId());
+    assertEquals("aa64d862bb5e4d749eb41f198b28d73d", bllSpec.getPostTransaction().getId());
+    
+    // Note: That the following two return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(1, bllGen.getPayingTransactions().size());
+    assertEquals(1, bllSpec.getPayingTransactions().size());
+    
+    LinkedList<GnucashTransaction> trxList = (LinkedList<GnucashTransaction>) bllSpec.getPayingTransactions();
+    Collections.sort(trxList);
+    assertEquals("ccff780b18294435bf03c6cb1ac325c1", 
+                 ((GnucashTransaction) trxList.toArray()[0]).getId());
+    
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(true, bllGen.isBillFullyPaid());
+    assertEquals(true, bllSpec.isBillFullyPaid());
+    assertEquals(true, bllSpec.isFullyPaid());
   }
 }

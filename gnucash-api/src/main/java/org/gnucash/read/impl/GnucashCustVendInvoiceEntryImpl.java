@@ -38,6 +38,34 @@ import org.slf4j.LoggerFactory;
 public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl 
                                              implements GnucashCustVendInvoiceEntry 
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustVendInvoiceEntryImpl.class);
+
+  /**
+      * The taxtable in the gnucash xml-file.
+      * It defines what sales-tax-rates are known.
+      */
+    private GnucashTaxTable myInvcTaxtable;
+    private GnucashTaxTable myBillTaxtable;
+  
+    // ----------------------------
+
+    /**
+     * The numberFormat to use for non-currency-numbers  for default-formating.<br/>
+     * Please access only using {@link #getNumberFormat()}.
+     *
+     * @see #getNumberFormat()
+     */
+    private NumberFormat numberFormat = null;
+
+    /**
+     * The numberFormat to use for percentFormat-numbers  for default-formating.<br/>
+     * Please access only using {@link #getPercentFormat()}.
+     *
+     * @see #getPercentFormat()
+     */
+    private NumberFormat percentFormat = null;
+
+    // -----------------------------------------------------------------
 
 	/**
 	 * Our logger for debug- and error-ourput.
@@ -206,12 +234,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 		return myInvoice;
 	}
 
-	/**
-	 * The taxtable in the gnucash xml-file.
-	 * It defines what sales-tax-rates are known.
-	 */
-    private GnucashTaxTable myInvcTaxtable;
-    private GnucashTaxTable myBillTaxtable;
+    // ---------------------------------------------------------------
 
     /**
      * @param aTaxtable the taxtable to set
@@ -294,6 +317,8 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
         return myBillTaxtable;
     }
+    
+    // ---------------------------------------------------------------
 
 	/**
 	 * @return e.g. "0.16" for "16%"
@@ -321,8 +346,8 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
           System.err.println("Customer invoice with id '"
               + getId()
               + "' is taxable but JWSDP peer has no i-taxtable-entry! "
-              + "Assuming 19%");
-          return new FixedPointNumber("1900000/10000000");
+              + "Assuming 0%");
+          return new FixedPointNumber("0");
         }
 
 		if (taxtable == null) {
@@ -377,8 +402,8 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
           System.err.println("Vendor bill with id '"
               + getId()
               + "' is taxable but JWSDP peer has no b-taxtable-entry! "
-              + "Assuming 19%");
-          return new FixedPointNumber("1900000/10000000");
+              + "Assuming 0%");
+          return new FixedPointNumber("0");
         }
 
         if (taxtable == null) {
@@ -651,14 +676,6 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	}
 
 	/**
-	 * The numberFormat to use for non-currency-numbers  for default-formating.<br/>
-	 * Please access only using {@link #getNumberFormat()}.
-	 *
-	 * @see #getNumberFormat()
-	 */
-	private NumberFormat numberFormat = null;
-
-	/**
 	 * @return the number-format to use for non-currency-numbers if no locale is given.
 	 */
 	protected NumberFormat getNumberFormat() {
@@ -668,14 +685,6 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
 		return numberFormat;
 	}
-
-	/**
-	 * The numberFormat to use for percentFormat-numbers  for default-formating.<br/>
-	 * Please access only using {@link #getPercentFormat()}.
-	 *
-	 * @see #getPercentFormat()
-	 */
-	private NumberFormat percentFormat = null;
 
 	/**
 	 * @return the number-format to use for percentage-numbers if no locale is given.
@@ -702,25 +711,24 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
     /**
      * {@inheritDoc}
      */
-    public int compareTo(final GnucashCustVendInvoiceEntry o) {
+    public int compareTo(final GnucashCustVendInvoiceEntry otherEntr) {
         try {
-            GnucashCustVendInvoiceEntry otherSplit = o;
-            GnucashCustVendInvoice otherTrans = otherSplit.getCustVendInvoice();
-            if (otherTrans != null && getCustVendInvoice() != null) {
-                int c = otherTrans.compareTo(getCustVendInvoice());
+            GnucashCustVendInvoice otherInvc = otherEntr.getCustVendInvoice();
+            if (otherInvc != null && getCustVendInvoice() != null) {
+                int c = otherInvc.compareTo(getCustVendInvoice());
                 if (c != 0) {
                     return c;
                 }
             }
 
-            int c = otherSplit.getId().compareTo(getId());
+            int c = otherEntr.getId().compareTo(getId());
             if (c != 0) {
                 return c;
             }
 
-            if (o != this) {
-                LOG.error("doublicate invoice-entry-id!! "
-                        + otherSplit.getId()
+            if (otherEntr != this) {
+                LOG.error("Duplicate invoice-entry-id!! "
+                        + otherEntr.getId()
                         + " and "
                         + getId());
             }

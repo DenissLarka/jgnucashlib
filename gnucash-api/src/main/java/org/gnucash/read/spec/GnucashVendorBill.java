@@ -30,8 +30,9 @@ public interface GnucashVendorBill extends GnucashCustVendInvoice {
 
     /**
      * @return Customer this invoice has been sent to.
+     * @throws WrongInvoiceTypeException 
      */
-    GnucashVendor getVendor();
+    GnucashVendor getVendor() throws WrongInvoiceTypeException;
 	
     // ---------------------------------------------------------------
 

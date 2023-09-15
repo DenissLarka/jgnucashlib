@@ -23,27 +23,27 @@ public interface GnucashVendor extends GnucashObject {
      * @return the current number of Unpaid invoices
      * @throws WrongInvoiceTypeException 
      */
-    int getNofOpenBills() throws WrongInvoiceTypeException;
+    int getNofOpenBills();
 
     /**
      * @return the sum of payments for invoices to this client
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getExpensesGenerated() throws WrongInvoiceTypeException;
+    FixedPointNumber getExpensesGenerated();
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getExpensesGenerated()
      * Formatted acording to the current locale's currency-format
      */
-    String getExpensesGeneratedFormatted() throws WrongInvoiceTypeException;
+    String getExpensesGeneratedFormatted();
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getExpensesGenerated()
      * Formatted acording to the given locale's currency-format
      */
-    String getExpensesGeneratedFormatted(Locale l) throws WrongInvoiceTypeException;
+    String getExpensesGeneratedFormatted(Locale l);
 
     /**
      * @return the sum of left to pay Unpaid invoiced

@@ -5,19 +5,25 @@ import java.util.HashSet;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustomer;
-import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashCustVendInvoiceEntry;
+import org.gnucash.read.GnucashCustomer;
+import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.GnucashCustVendInvoiceImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
                                         implements GnucashCustomerInvoice
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerInvoiceImpl.class);
+
   public GnucashCustomerInvoiceImpl(final GncGncInvoice peer, final GnucashFile gncFile)
   {
     super(peer, gncFile);
@@ -29,13 +35,34 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
-    if (! invc.getOwnerType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+    if ( ! invc.getOwnerType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
       throw new WrongInvoiceTypeException();
     
     for ( GnucashCustVendInvoiceEntry entry : invc.getCustVendInvcEntries() )
     {
       addEntry(new GnucashCustomerInvoiceEntryImpl(entry));
     }
+
+    for ( GnucashTransaction trx : invc.getPayingTransactions() )
+    {
+      for ( GnucashTransactionSplit splt : trx.getSplits() ) 
+      {
+        String lot = splt.getLotID();
+        if ( lot != null ) {
+            for ( GnucashCustVendInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
+                String lotID = invc1.getLotID();
+                if ( lotID != null &&
+                     lotID.equals(lot) ) {
+                    // Check if it's a payment transaction. 
+                    // If so, add it to the invoice's list of payment transactions.
+                    if ( splt.getSplitAction().equals(GnucashTransactionSplit.ACTION_PAYMENT) ) {
+                        addPayingTransaction(splt);
+                    }
+                } // if lotID
+            } // for invc
+        } // if lot
+      } // for splt
+    } // for trx
   }
   
   // -----------------------------------------------------------------
@@ -48,19 +75,23 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   }
 
   @Override
-  public GnucashCustomer getCustomer()
+  public GnucashCustomer getCustomer() throws WrongInvoiceTypeException
   {
-    return getCustomerDirectly();
+    return getCustomer_direct();
   }
 
-  public GnucashCustomer getCustomerViaJob() {
-    assert getJob().getOwnerType().equals(GnucashJob.TYPE_CUSTOMER);
-    return ((GnucashCustomerJobImpl) getJob()).getCustomer();
-  }
-
-  public GnucashCustomer getCustomerDirectly() {
-    assert getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER);
+  public GnucashCustomer getCustomer_direct() throws WrongInvoiceTypeException {
+    if ( ! getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+      throw new WrongInvoiceTypeException();
+    
     return file.getCustomerByID(getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue());
+  }
+
+  public GnucashCustomer getCustomer_viaJob() throws WrongInvoiceTypeException {
+    if ( ! getJob().getOwnerType().equals(GnucashJob.TYPE_CUSTOMER) )
+      throw new WrongInvoiceTypeException();
+    
+    return ((GnucashCustomerJobImpl) getJob()).getCustomer();
   }
 
   // ---------------------------------------------------------------
@@ -172,55 +203,55 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   // ------------------------------
 
   @Override
-  public FixedPointNumber getBillAmountUnpaidWithTaxes() throws WrongInvoiceTypeException
+  public FixedPointNumber getBillAmountUnpaidWithTaxes() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
 
   @Override
-  public FixedPointNumber getBillAmountPaidWithTaxes() throws WrongInvoiceTypeException
+  public FixedPointNumber getBillAmountPaidWithTaxes() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
 
   @Override
-  public FixedPointNumber getBillAmountPaidWithoutTaxes() throws WrongInvoiceTypeException
+  public FixedPointNumber getBillAmountPaidWithoutTaxes() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
 
   @Override
-  public FixedPointNumber getBillAmountWithTaxes() throws WrongInvoiceTypeException
+  public FixedPointNumber getBillAmountWithTaxes() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
   
   @Override
-  public FixedPointNumber getBillAmountWithoutTaxes() throws WrongInvoiceTypeException
+  public FixedPointNumber getBillAmountWithoutTaxes() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
 
   @Override
-  public String getBillAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException
+  public String getBillAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
 
   @Override
-  public String getBillAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException
+  public String getBillAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
 
   @Override
-  public String getBillAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException
+  public String getBillAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }
 
   @Override
-  public String getBillAmountWithTaxesFormatted() throws WrongInvoiceTypeException
+  public String getBillAmountWithTaxesFormatted() throws WrongInvoiceTypeException 
   {
     throw new WrongInvoiceTypeException();
   }

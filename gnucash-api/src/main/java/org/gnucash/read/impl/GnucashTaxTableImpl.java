@@ -19,6 +19,8 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashTaxTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
@@ -29,7 +31,9 @@ import org.gnucash.numbers.FixedPointNumber;
  */
 public class GnucashTaxTableImpl implements GnucashTaxTable {
 
-	/**
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashTaxTableImpl.class);
+
+    /**
 	 * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
 	 * Project: gnucashReader<br/>
 	 * GnucashTaxTableImpl.java<br/>

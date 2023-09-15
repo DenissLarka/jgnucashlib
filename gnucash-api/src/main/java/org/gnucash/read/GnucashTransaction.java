@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
@@ -30,6 +31,12 @@ import org.gnucash.numbers.FixedPointNumber;
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashTransaction extends Comparable<GnucashTransaction> {
+  
+  // ::MAGIC
+  public final String TYPE_INVOICE = "I";
+  public final String TYPE_PAYMENT = "P";
+  
+  // -----------------------------------------------------------------
 
     /**
      *
@@ -47,6 +54,10 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      * @return the transaction-number.
      */
     String getTransactionNumber();
+
+    // ----------------------------
+
+    GncTransaction getJwsdpPeer();
 
     /**
      * The gnucash-file is the top-level class to contain everything.

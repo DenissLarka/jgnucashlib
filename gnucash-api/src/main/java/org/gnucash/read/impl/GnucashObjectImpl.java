@@ -38,6 +38,8 @@ import org.gnucash.read.GnucashObject;
  */
 public class GnucashObjectImpl implements GnucashObject {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashObjectImpl.class);
+
   /**
    * the user-defined values.
    */
@@ -58,12 +60,13 @@ public class GnucashObjectImpl implements GnucashObject {
 
   /**
    * @param slots  ${@link #mySlots}
-   * @param myFile The file we belong to
+   * @param gcshFile The file we belong to
    */
-  public GnucashObjectImpl(final SlotsType slots, final GnucashFile myFile) {
+  @SuppressWarnings("exports")
+  public GnucashObjectImpl(final SlotsType slots, final GnucashFile gcshFile) {
       super();
       
-      this.myFile = myFile;
+      this.myFile = gcshFile;
       setSlots(slots);
 //      System.err.println("Slots:");
 //      for ( Slot slot : getSlots().getSlot() )
@@ -76,6 +79,7 @@ public class GnucashObjectImpl implements GnucashObject {
    * @return Returns the slots.
    * @link #mySlots
    */
+  @SuppressWarnings("exports")
   public SlotsType getSlots() {
       return mySlots;
   }
@@ -84,7 +88,7 @@ public class GnucashObjectImpl implements GnucashObject {
    * @param slots The slots to set.
    * @link #mySlots
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("exports")
   public void setSlots(final SlotsType slots) {
       if (slots == null) {
           throw new IllegalArgumentException("null 'slots' given!");
@@ -94,17 +98,21 @@ public class GnucashObjectImpl implements GnucashObject {
       if (old == slots) {
           return; // nothing has changed
       }
+      // ::TODO Check with equals as well
       mySlots = slots;
 
       // we have an xsd-problem saving empty slots so we add a dummy-value
       if (slots.getSlot().isEmpty()) {
           ObjectFactory objectFactory = new ObjectFactory();
-          Slot slot = objectFactory.createSlot();
-          slot.setSlotKey("dummy");
+          
           SlotValue value = objectFactory.createSlotValue();
           value.setType("string");
           value.getContent().add("dummy");
+          
+          Slot slot = objectFactory.createSlot();
+          slot.setSlotKey("dummy");          
           slot.setSlotValue(value);
+          
           slots.getSlot().add(slot);
       }
 
@@ -132,7 +140,6 @@ public class GnucashObjectImpl implements GnucashObject {
 	/**
 	 * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<String> getUserDefinedAttributeKeys() {
 		List<Slot> slots = getSlots().getSlot();
 		List<String> retval = new ArrayList<String>(slots.size());
@@ -148,7 +155,6 @@ public class GnucashObjectImpl implements GnucashObject {
 	 * @param name the name of the user-defined attribute
 	 * @return the value or null if not set
 	 */
-	@SuppressWarnings("unchecked")
 	public String getUserDefinedAttribute(final String name) {
 
 		List<Slot> slots = getSlots().getSlot();
@@ -173,11 +179,6 @@ public class GnucashObjectImpl implements GnucashObject {
 		return null;
 	}
 
-	/**
-	 * Automatically created logger for debug and error-output.
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashObjectImpl.class);
-
 	//  ------------------------ support for propertyChangeListeners ------------------
 
 	/**
@@ -201,6 +202,7 @@ public class GnucashObjectImpl implements GnucashObject {
 	 *
 	 * @param listener The PropertyChangeListener to be added
 	 */
+	@SuppressWarnings("exports")
 	public final void addPropertyChangeListener(
 			final PropertyChangeListener listener) {
 		if (myPropertyChange == null) {
@@ -217,7 +219,8 @@ public class GnucashObjectImpl implements GnucashObject {
 	 * @param propertyName The name of the property to listen on.
 	 * @param listener     The PropertyChangeListener to be added
 	 */
-	public final void addPropertyChangeListener(
+	@SuppressWarnings("exports")
+    public final void addPropertyChangeListener(
 			final String propertyName,
 			final PropertyChangeListener listener) {
 		if (myPropertyChange == null) {
@@ -232,6 +235,7 @@ public class GnucashObjectImpl implements GnucashObject {
 	 * @param propertyName The name of the property that was listened on.
 	 * @param listener     The PropertyChangeListener to be removed
 	 */
+	@SuppressWarnings("exports")
 	public final void removePropertyChangeListener(
 			final String propertyName,
 			final PropertyChangeListener listener) {
@@ -247,6 +251,7 @@ public class GnucashObjectImpl implements GnucashObject {
 	 *
 	 * @param listener The PropertyChangeListener to be removed
 	 */
+	@SuppressWarnings("exports")
 	public synchronized void removePropertyChangeListener(
 			final PropertyChangeListener listener) {
 		if (myPropertyChange != null) {

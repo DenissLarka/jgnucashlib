@@ -32,11 +32,10 @@ import org.gnucash.read.GnucashTransactionSplit;
  *
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount {
+public class GnucashAccountImpl extends SimpleAccount 
+                                implements GnucashAccount 
+{
 
-	/**
-	 * Our logger for debug- and error-ourput.
-	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashAccountImpl.class);
 
 	/**
@@ -46,15 +45,20 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 
 	/**
 	 * @param peer    the JWSDP-object we are facading.
-	 * @param gncfile the file to register under
+	 * @param gncFile the file to register under
 	 */
-	public GnucashAccountImpl(final GncAccount peer, final GnucashFile gncfile) {
-		super(gncfile);
-		jwsdpPeer = peer;
-		if (peer.getActSlots() == null) {
-			peer.setActSlots(new ObjectFactory().createSlotsType());
-		}
-		helper = new GnucashObjectImpl(peer.getActSlots(), gncfile);
+	public GnucashAccountImpl(final GncAccount peer, final GnucashFile gncFile) {
+		super(gncFile);
+		
+        if (peer.getActSlots() == null) {
+          peer.setActSlots(new ObjectFactory().createSlotsType());
+        }
+      
+        jwsdpPeer = peer;
+        // ::TODO
+        // file = gncfile; 
+		
+		helper = new GnucashObjectImpl(peer.getActSlots(), gncFile);
 	}
 
 	/**

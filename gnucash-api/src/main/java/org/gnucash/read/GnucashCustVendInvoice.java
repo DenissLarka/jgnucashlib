@@ -351,6 +351,8 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 			taxsum = pTaxsum;
 		}
 	}
+	
+	// ----------------------------
 
 	/**
 	 *
@@ -367,6 +369,8 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
     * @see TaxedSum
     */
 	TaxedSum[] getBillTaxes() throws WrongInvoiceTypeException;
+
+    // ---------------------------------------------------------------
 
 	/**
 	 * @return the id of the {@link GnucashAccount} the payment is made to.

@@ -3,9 +3,12 @@ package org.gnucash.read.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.LinkedList;
 
-import org.gnucash.Const;
+import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.spec.GnucashVendorBill;
@@ -19,11 +22,18 @@ public class TestGnucashVendor
   private static GnucashFile   gcshFile = null;
   private static GnucashVendor vend = null;
   
+  private static final String VEND_1_ID = "087e1a3d43fa4ef9a9bdd4b4797c4231";
+  private static final String VEND_2_ID = "4f16fd55c0d64ebe82ffac0bb25fe8f5";
+  private static final String VEND_3_ID = "bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7";
+
+  // -----------------------------------------------------------------
+  
   public static void main(String[] args) throws Exception
   {
     junit.textui.TestRunner.run(suite());
   }
 
+  @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
     return new JUnit4TestAdapter(TestGnucashVendor.class);  
@@ -38,7 +48,7 @@ public class TestGnucashVendor
     InputStream gcshFileStream = null;
     try 
     {
-      gcshFileStream = classLoader.getResourceAsStream(Const.GCSH_FILENAME);
+      gcshFileStream = classLoader.getResourceAsStream(ConstTest.GCSH_FILENAME);
     } 
     catch ( Exception exc ) 
     {
@@ -60,46 +70,72 @@ public class TestGnucashVendor
   // -----------------------------------------------------------------
 
   @Test
-  public void test01() throws Exception
+  public void test01_1() throws Exception
   {
-    vend = gcshFile.getVendorByID("087e1a3d43fa4ef9a9bdd4b4797c4231");
-    assertEquals("087e1a3d43fa4ef9a9bdd4b4797c4231", vend.getId());
+    vend = gcshFile.getVendorByID(VEND_1_ID);
+    
+    assertEquals(VEND_1_ID, vend.getId());
     assertEquals("000001", vend.getNumber());
     assertEquals("Lieferfanto AG", vend.getName());
+  }
 
-    vend = gcshFile.getVendorByID("4f16fd55c0d64ebe82ffac0bb25fe8f5");
-    assertEquals("4f16fd55c0d64ebe82ffac0bb25fe8f5", vend.getId());
+  @Test
+  public void test01_2() throws Exception
+  {
+    vend = gcshFile.getVendorByID(VEND_2_ID);
+    
+    assertEquals(VEND_2_ID, vend.getId());
     assertEquals("000002", vend.getNumber());
     assertEquals("Super Suppliers Corp.", vend.getName());
+  }
 
-    vend = gcshFile.getVendorByID("bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7");
-    assertEquals("bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7", vend.getId());
+  @Test
+  public void test01_3() throws Exception
+  {
+    vend = gcshFile.getVendorByID(VEND_3_ID);
+    
+    assertEquals(VEND_3_ID, vend.getId());
     assertEquals("000003", vend.getNumber());
     assertEquals("Achetez Chez Nous S.A.", vend.getName());
   }
 
+  @Test
+  public void test02_1() throws Exception
+  {
+    vend = gcshFile.getVendorByID(VEND_1_ID);
+    
+    assertEquals(1, vend.getNofOpenBills());
+    assertEquals(1, vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, vend.getPaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    
+    LinkedList<GnucashVendorBill> bllList = (LinkedList<GnucashVendorBill>) vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT);
+    Collections.sort(bllList);
+    assertEquals("4eb0dc387c3f4daba57b11b2a657d8a4", 
+                 ((GnucashVendorBill) bllList.toArray()[0]).getId() );
+
+    bllList = (LinkedList<GnucashVendorBill>) vend.getPaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT);
+    Collections.sort(bllList);
+    assertEquals("286fc2651a7848038a23bb7d065c8b67", 
+                 ((GnucashVendorBill) bllList.toArray()[0]).getId() );
+  }
 
   @Test
-  public void test02() throws Exception
+  public void test02_2() throws Exception
   {
-    vend = gcshFile.getVendorByID("087e1a3d43fa4ef9a9bdd4b4797c4231");
-//  assertEquals("xxx", 
-//  ((GnucashVendorBill) vend.getPaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[1]).getId() );
-    assertEquals(2, vend.getNofOpenBills());
-    assertEquals(2, vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
-    assertEquals("4eb0dc387c3f4daba57b11b2a657d8a4", 
-                 ((GnucashVendorBill) vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0]).getId() );
-    assertEquals("286fc2651a7848038a23bb7d065c8b67", 
-                 ((GnucashVendorBill) vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[1]).getId() );
-
-    vend = gcshFile.getVendorByID("4f16fd55c0d64ebe82ffac0bb25fe8f5");
+    vend = gcshFile.getVendorByID(VEND_2_ID);
+    
     assertEquals(0, vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
 //    assertEquals("[GnucashVendorBillImpl: id: 4eb0dc387c3f4daba57b11b2a657d8a4 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: '1730-383/2' description: 'Sie wissen schon: Gefälligkeiten, ne?' #entries: 1 date-opened: 2023-08-31]", 
 //                 vend.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0].toString());
 //    assertEquals("[GnucashVendorBillImpl: id: 286fc2651a7848038a23bb7d065c8b67 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: null description: 'Dat isjamaol eine schöne jepflejgte Reschnung!' #entries: 1 date-opened: 2023-08-30]", 
 //                 vend.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[1].toString());
-
-    vend = gcshFile.getVendorByID("bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7");
+  }
+  
+  @Test
+  public void test02_3() throws Exception
+  {
+    vend = gcshFile.getVendorByID(VEND_3_ID);
+    
     assertEquals(0, vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
 //    assertEquals("[GnucashVendorBillImpl: id: 4eb0dc387c3f4daba57b11b2a657d8a4 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: '1730-383/2' description: 'Sie wissen schon: Gefälligkeiten, ne?' #entries: 1 date-opened: 2023-08-31]", 
 //                 vend.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0].toString());

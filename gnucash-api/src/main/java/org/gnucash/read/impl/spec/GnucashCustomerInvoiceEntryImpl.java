@@ -9,10 +9,14 @@ import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GnucashCustomerInvoiceEntryImpl extends GnucashCustVendInvoiceEntryImpl
                                              implements GnucashCustomerInvoiceEntry 
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerInvoiceEntryImpl.class);
+
   public GnucashCustomerInvoiceEntryImpl(
           final GnucashCustomerInvoice invoice,
           final GncV2.GncBook.GncGncEntry peer) 

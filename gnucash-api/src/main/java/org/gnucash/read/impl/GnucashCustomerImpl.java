@@ -14,11 +14,17 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCustomer {
+public class GnucashCustomerImpl extends GnucashObjectImpl 
+                                 implements GnucashCustomer 
+{
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerImpl.class);
 
 	/**
 	 * the JWSDP-object we are facading.
@@ -29,7 +35,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
      * The file we belong to.
      */
     private final GnucashFile file;
-    
+
     // ---------------------------------------------------------------
 
 	/**
@@ -38,9 +44,11 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 */
 	protected GnucashCustomerImpl(final GncV2.GncBook.GncGncCustomer peer, final GnucashFile gncFile) {
 		super((peer.getCustSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getCustSlots(), gncFile);
+		
 		if (peer.getCustSlots() == null) {
 			peer.setCustSlots(getSlots());
 		}
+		
 		jwsdpPeer = peer;
         file = gncFile;
 	}
@@ -50,6 +58,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	/**
 	 * @return the JWSDP-object we are wrapping.
 	 */
+	@SuppressWarnings("exports")
 	public GncV2.GncBook.GncGncCustomer getJwsdpPeer() {
 		return jwsdpPeer;
 	}
@@ -99,27 +108,33 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * the future are considered Paid.
 	 *
 	 * @return the current number of Unpaid invoices
-	 * @throws WrongInvoiceTypeException 
 	 */
-	public int getNofOpenInvoices() throws WrongInvoiceTypeException {
-      return getGnucashFile().getUnpaidInvoicesForCustomer_direct(this).size();
-    }
+	public int getNofOpenInvoices() {
+		return getGnucashFile().getUnpaidInvoicesForCustomer_direct(this).size();
+	}
 
 	/**
-	 * @return the sum of payments for invoices to this client
-	 * @throws WrongInvoiceTypeException 
+	 * @return the net sum of payments for invoices to this client
 	 */
-	public FixedPointNumber getIncomeGenerated() throws WrongInvoiceTypeException {
+	public FixedPointNumber getIncomeGenerated() {
 		FixedPointNumber retval = new FixedPointNumber();
 
-		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashCustomerInvoice ) {
-            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
-              continue;
-            }
-            retval.add(invoice.getInvcAmountWithoutTaxes());
-		  }
+		try
+		{
+		  for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
+		    if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) ) {
+		      GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen); 
+		      GnucashCustomer cust = invcSpec.getCustomer(); 
+              if ( cust.getId().equals(this.getId()) ) {
+                retval.add(invcSpec.getAmountWithoutTaxes());
+              }
+            } // if invc type
+		  } // for
 		}
+        catch (WrongInvoiceTypeException e)
+        {
+          LOGGER.error("getIncomeGenerated: Serious error");
+        }
 
 		return retval;
 	}
@@ -137,7 +152,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getIncomeGenerated()
 	 */
-	public String getIncomeGeneratedFormatted() throws WrongInvoiceTypeException {
+	public String getIncomeGeneratedFormatted() {
 		return getCurrencyFormat().format(getIncomeGenerated());
 
 	}
@@ -145,10 +160,9 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	/**
 	 * @param l the locale to format for
 	 * @return formated acording to the given locale's currency-format
-	 * @throws WrongInvoiceTypeException 
 	 * @see #getIncomeGenerated()
 	 */
-	public String getIncomeGeneratedFormatted(final Locale l) throws WrongInvoiceTypeException {
+	public String getIncomeGeneratedFormatted(final Locale l) {
 		return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated());
 	}
 
@@ -156,27 +170,34 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @return the sum of left to pay Unpaid invoiced
 	 * @throws WrongInvoiceTypeException 
 	 */
-	public FixedPointNumber getOutstandingValue() throws WrongInvoiceTypeException {
+	public FixedPointNumber getOutstandingValue() {
 		FixedPointNumber retval = new FixedPointNumber();
 
-		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashCustomerInvoice ) {
-            if ( ((GnucashCustomerInvoice) invoice).getCustomer() != this ) {
-              continue;
-            }
-            retval.add(invoice.getInvcAmountUnpaidWithTaxes());
-		  }
-		}
+        try
+        {
+          for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
+            if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) ) {
+              GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen); 
+              GnucashCustomer cust = invcSpec.getCustomer(); 
+              if ( cust.getId().equals(this.getId()) ) {
+                retval.add(invcSpec.getAmountUnpaidWithTaxes());
+              }
+            } // if invc type
+          } // for
+        }
+        catch (WrongInvoiceTypeException e)
+        {
+          LOGGER.error("getOutstandingValue: Serious error");
+        }
 
 		return retval;
 	}
 
 	/**
 	 * @return Formatted acording to the current locale's currency-format
-	 * @throws WrongInvoiceTypeException 
 	 * @see #getOutstandingValue()
 	 */
-	public String getOutstandingValueFormatted() throws WrongInvoiceTypeException {
+	public String getOutstandingValueFormatted() {
 		return getCurrencyFormat().format(getOutstandingValue());
 	}
 
@@ -185,7 +206,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 	 * @see #getOutstandingValue()
 	 * Formatted acording to the given locale's currency-format
 	 */
-	public String getOutstandingValueFormatted(final Locale l) throws WrongInvoiceTypeException {
+	public String getOutstandingValueFormatted(final Locale l) {
 		return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue());
 	}
 
@@ -257,7 +278,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		/**
 		 * @param newPeer the JWSDP-object we are wrapping.
 		 */
-		public AddressImpl(final org.gnucash.generated.Address newPeer) {
+		@SuppressWarnings("exports")
+        public AddressImpl(final org.gnucash.generated.Address newPeer) {
 			super();
 			jwsdpPeer = newPeer;
 		}
@@ -265,6 +287,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
 		/**
 		 * @return The JWSDP-object we are wrapping.
 		 */
+		@SuppressWarnings("exports")
 		public org.gnucash.generated.Address getJwsdpPeer() {
 			return jwsdpPeer;
 		}
@@ -395,8 +418,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCus
     return null; // Compiler happy
   }
 
-  // ----------------------------
-  
+  // -----------------------------------------------------------------
+
   public static int getHighestNumber(GnucashCustomer cust)
   {
     return cust.getGnucashFile().getHighestCustomerNumber();

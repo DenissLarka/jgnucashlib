@@ -29,7 +29,16 @@ import org.gnucash.numbers.FixedPointNumber;
  * multiple such splits.
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public interface GnucashTransactionSplit extends Comparable {
+public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSplit> {
+
+  // ::MAGIC
+  public final String ACTION_INVOICE = "Rechnung";
+  public final String ACTION_BILL    = "Lieferantenrechnung";
+  public final String ACTION_PAYMENT = "Zahlung";
+  public final String ACTION_BUY     = "Kauf";
+  public final String ACTION_SELL    = "Verkauf";
+  
+  // -----------------------------------------------------------------
 
     /**
      *
@@ -140,10 +149,12 @@ public interface GnucashTransactionSplit extends Comparable {
      */
     String getDescription();
 
-    /**
+    public String getLotID();
+
+      /**
      * Get the type of association this split has with
      * an invoice's lot.
-     * @return null, "Zahlung" or "Rechnung"
+     * @return null, or one of the ACTION_xyz values defined
      */
     String getSplitAction();
 

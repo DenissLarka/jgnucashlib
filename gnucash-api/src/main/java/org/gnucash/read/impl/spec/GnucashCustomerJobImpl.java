@@ -5,11 +5,15 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.impl.GnucashJobImpl;
 import org.gnucash.read.spec.GnucashCustomerJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class GnucashCustomerJobImpl extends GnucashJobImpl
                                     implements GnucashCustomerJob
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerJobImpl.class);
+
     /**
      * @param peer the JWSDP-object we are facading.
      * @see #jwsdpPeer

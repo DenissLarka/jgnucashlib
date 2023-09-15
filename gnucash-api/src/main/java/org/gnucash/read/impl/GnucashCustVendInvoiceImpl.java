@@ -20,17 +20,20 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashCustVendInvoiceEntry;
+import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -40,16 +43,62 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  */
 public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustVendInvoiceImpl.class);
+
   protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
   protected static final DateFormat        DATE_OPENED_FORMAT_1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");  
   protected static final DateTimeFormatter DATE_OPENED_FORMAT_PRINT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private static final DateFormat DATE_POSTED_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+
+  // -----------------------------------------------------------------
+
+  /**
+   * the JWSDP-object we are facading.
+   */
+  protected GncV2.GncBook.GncGncInvoice jwsdpPeer;
+
+  /**
+   * The file we belong to.
+   */
+  protected final GnucashFile file;
+  
+  // ------------------------------
 
   /**
    * @see GnucashCustVendInvoice#getDateOpened()
    */
   protected ZonedDateTime dateOpened;
   
+  /**
+   * @see GnucashCustVendInvoice#getDatePosted()
+   */
+  protected ZonedDateTime datePosted;
+
+  /**
+   * The entries of this invoice.
+   */
+  protected Collection<GnucashCustVendInvoiceEntry> entries = new HashSet<GnucashCustVendInvoiceEntry>();
+
+  /**
+   * The transactions that are paying for this invoice.
+   */
+  private final Collection<GnucashTransaction> payingTransactions = new LinkedList<GnucashTransaction>();
+
+  // ------------------------------
+
+  /**
+   * @see #getDateOpenedFormatted()
+   * @see #getDatePostedFormatted()
+   */
+  private DateFormat dateFormat = null;
+
+  /**
+   * The currencyFormat to use for default-formating.<br/>
+   * Please access only using {@link #getCurrencyFormat()}.
+   * @see #getCurrencyFormat()
+   */
+  private NumberFormat currencyFormat = null;
+
   // -----------------------------------------------------------------
 
   /**
@@ -60,10 +109,10 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   public GnucashCustVendInvoiceImpl(
           final GncV2.GncBook.GncGncInvoice peer,
           final GnucashFile gncFile) {
-      super();
-      
-      jwsdpPeer = peer;
-      file = gncFile;
+    super();
+    
+    jwsdpPeer = peer;
+    file = gncFile;
 
   }
 
@@ -86,7 +135,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
    */
   public boolean isNotInvcFullyPaid() throws WrongInvoiceTypeException
   {
-    return getInvcAmountWithTaxes().isGreaterThan(getInvcAmountPaidWithTaxes());
+    return getInvcAmountWithTaxes().isGreaterThan(getInvcAmountPaidWithTaxes(), Const.DIFF_TOLERANCE);
   }
 
   /**
@@ -106,13 +155,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
    */
   public boolean isNotBillFullyPaid() throws WrongInvoiceTypeException
   {
-    return getBillAmountWithTaxes().isGreaterThan(getBillAmountPaidWithTaxes());
+    return getBillAmountWithTaxes().isGreaterThan(getBillAmountPaidWithTaxes(), Const.DIFF_TOLERANCE);
   }
-
-	/**
-	 * The transactions that are paying for this invoice.
-	 */
-	private final Collection<GnucashTransaction> payingTransactions = new LinkedList<GnucashTransaction>();
 
 	/**
 	 * {@inheritDoc}
@@ -163,9 +207,6 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
    */
   public FixedPointNumber getInvcAmountUnpaidWithTaxes() throws WrongInvoiceTypeException {
   
-  	// System.err.println("debug: GnucashInvoiceImpl.getAmountUnpaid(): "
-  	// + "getAmountWithoutTaxes()="+getAmountWithoutTaxes()+" getAmountPaidWithTaxes()="+getAmountPaidWithTaxes() );
-  
   	return ((FixedPointNumber) getInvcAmountWithTaxes().clone()).subtract(getInvcAmountPaidWithTaxes());
   }
 
@@ -185,14 +226,11 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 			} // split
 		} // trx
 
-		//        System.err.println("getInvcAmountPaidWithTaxes="+takenFromReceivableAccount.doubleValue());
-
 		return takenFromReceivableAccount;
 	}
 
 	@Override
-	public FixedPointNumber getInvcAmountPaidWithoutTaxes() throws WrongInvoiceTypeException
-	{
+	public FixedPointNumber getInvcAmountPaidWithoutTaxes() throws WrongInvoiceTypeException {
 	  FixedPointNumber retval = new FixedPointNumber();
 	  
 	  for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
@@ -256,8 +294,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
    * {@inheritDoc}
    * @throws WrongInvoiceTypeException 
    */
-  public String getInvcAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException
-  {
+  public String getInvcAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException {
     return this.getCurrencyFormat().format(this.getInvcAmountPaidWithTaxes());
   }
 
@@ -265,8 +302,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
    * {@inheritDoc}
    * @throws WrongInvoiceTypeException 
    */
-  public String getInvcAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException
-  {
+  public String getInvcAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException {
     return this.getCurrencyFormat().format(this.getInvcAmountPaidWithoutTaxes());
   }
 
@@ -321,8 +357,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
         return takenFromPayableAccount;
     }
 
-    public FixedPointNumber getBillAmountPaidWithoutTaxes() throws WrongInvoiceTypeException
-    {
+    public FixedPointNumber getBillAmountPaidWithoutTaxes() throws WrongInvoiceTypeException {
       FixedPointNumber retval = new FixedPointNumber();
       
       for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
@@ -386,8 +421,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
      * {@inheritDoc}
      * @throws WrongInvoiceTypeException 
      */
-    public String getBillAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException
-    {
+    public String getBillAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException {
       return this.getCurrencyFormat().format(this.getBillAmountPaidWithTaxes());
     }
 
@@ -395,8 +429,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
      * {@inheritDoc}
      * @throws WrongInvoiceTypeException 
      */
-    public String getBillAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException
-    {
+    public String getBillAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException {
       return this.getCurrencyFormat().format(this.getBillAmountPaidWithoutTaxes());
     }
 
@@ -507,16 +540,6 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	}
 
 	/**
-	 * the JWSDP-object we are facading.
-	 */
-	protected GncV2.GncBook.GncGncInvoice jwsdpPeer;
-
-	/**
-	 * The file we belong to.
-	 */
-	protected final GnucashFile file;
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public String getId() {
@@ -564,11 +587,6 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	}
 
     // ----------------------------
-
-	/**
-	 * The entries of this invoice.
-	 */
-	protected Collection<GnucashCustVendInvoiceEntry> entries = new HashSet<GnucashCustVendInvoiceEntry>();
 
     /**
      * {@inheritDoc}
@@ -625,12 +643,6 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	/**
 	 * @see #getDateOpenedFormatted()
 	 * @see #getDatePostedFormatted()
-	 */
-	private DateFormat dateFormat = null;
-
-	/**
-	 * @see #getDateOpenedFormatted()
-	 * @see #getDatePostedFormatted()
 	 * @return the Dateformat to use.
 	 */
 	protected DateFormat getDateFormat() {
@@ -654,11 +666,6 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	public String getDatePostedFormatted() {
 		return getDateFormat().format(getDatePosted());
 	}
-
-	/**
-	 * @see GnucashCustVendInvoice#getDatePosted()
-	 */
-	protected ZonedDateTime datePosted;
 
 	/**
 	 * {@inheritDoc}
@@ -724,17 +731,14 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	 * @param o invoice to compare with
 	 * @return -1 0 or 1
 	 */
-	public int compareTo(final GnucashCustVendInvoice o) {
-
-		GnucashCustVendInvoice other = o;
-
+	public int compareTo(final GnucashCustVendInvoice otherInvc) {
 		try {
-			int compare = other.getDatePosted().compareTo(getDatePosted());
+			int compare = otherInvc.getDatePosted().compareTo(getDatePosted());
 			if (compare != 0) {
 				return compare;
 			}
 
-			return other.getDateOpened().compareTo(getDateOpened());
+			return otherInvc.getDateOpened().compareTo(getDateOpened());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -773,13 +777,6 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	}
 	
 	// ---------------------------------------------------------------
-
-	/**
-	 * The currencyFormat to use for default-formating.<br/>
-	 * Please access only using {@link #getCurrencyFormat()}.
-	 * @see #getCurrencyFormat()
-	 */
-	private NumberFormat currencyFormat = null;
 
 	/**
 	 *

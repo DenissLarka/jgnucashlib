@@ -9,15 +9,21 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashCustVendInvoiceEntry;
 import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.GnucashCustVendInvoiceImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorBillEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
-                                      implements GnucashVendorBill
+                                   implements GnucashVendorBill
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorBillImpl.class);
+
   public GnucashVendorBillImpl(final GncGncInvoice peer, final GnucashFile gncFile)
   {
     super(peer, gncFile);
@@ -36,6 +42,27 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
     {
       addEntry(new GnucashVendorBillEntryImpl(entry));
     }
+
+    for ( GnucashTransaction trx : invc.getPayingTransactions() )
+    {
+      for ( GnucashTransactionSplit splt : trx.getSplits() ) 
+      {
+        String lot = splt.getLotID();
+        if ( lot != null ) {
+            for ( GnucashCustVendInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
+                String lotID = invc1.getLotID();
+                if ( lotID != null &&
+                     lotID.equals(lot) ) {
+                    // Check if it's a payment transaction. 
+                    // If so, add it to the invoice's list of payment transactions.
+                    if ( splt.getSplitAction().equals(GnucashTransactionSplit.ACTION_PAYMENT) ) {
+                        addPayingTransaction(splt);
+                    }
+                } // if lotID
+            } // for invc
+        } // if lot
+      } // for splt
+    } // for trx
   }
   
   // -----------------------------------------------------------------
@@ -48,18 +75,22 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   }
 
   @Override
-  public GnucashVendor getVendor() {
-    return getVendorDirectly();
+  public GnucashVendor getVendor() throws WrongInvoiceTypeException {
+    return getVendor_direct();
   }
 
-  public GnucashVendor getVendorViaJob() {
-    assert getJob().getOwnerType().equals(GnucashJob.TYPE_VENDOR);
-    return ((GnucashVendorJobImpl) getJob()).getVendor();
-  }
-
-  public GnucashVendor getVendorDirectly() {
-    assert getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashCustVendInvoice.TYPE_VENDOR);
+  public GnucashVendor getVendor_direct() throws WrongInvoiceTypeException {
+    if ( ! getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+      throw new WrongInvoiceTypeException();
+    
     return file.getVendorByID(getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue());
+  }
+
+  public GnucashVendor getVendor_viaJob() throws WrongInvoiceTypeException {
+    if ( ! getJob().getOwnerType().equals(GnucashJob.TYPE_VENDOR) )
+      throw new WrongInvoiceTypeException();
+    
+    return ((GnucashVendorJobImpl) getJob()).getVendor();
   }
 
   // ---------------------------------------------------------------
@@ -275,5 +306,5 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
       buffer.append("]");
       return buffer.toString();
   }
-  
+
 }

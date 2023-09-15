@@ -27,7 +27,7 @@ import java.util.*;
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  * @see #getParentAccount()
  */
-public interface GnucashAccount extends Comparable {
+public interface GnucashAccount extends Comparable<GnucashAccount> {
 
 	/**
 	 * @return the unique id for that account (not meaningfull to human users)

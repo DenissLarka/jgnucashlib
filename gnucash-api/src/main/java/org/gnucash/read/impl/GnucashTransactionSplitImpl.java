@@ -21,6 +21,8 @@ import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * created: 13.05.2005 <br/>
@@ -28,7 +30,10 @@ import org.gnucash.read.GnucashTransactionSplit;
  *
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements GnucashTransactionSplit {
+public class GnucashTransactionSplitImpl extends GnucashObjectImpl 
+                                         implements GnucashTransactionSplit 
+{
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashTransactionSplitImpl.class);
 
 	/**
 	 * the JWSDP-object we are facading.
@@ -39,20 +44,23 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	 * the transaction this split belongs to.
 	 */
 	private final GnucashTransaction myTransaction;
+	
+	// ---------------------------------------------------------------
 
 	/**
-	 * @param peer        the JWSDP-object we are facading.
-	 * @param transaction the transaction this split belongs to
+	 * @param peer the JWSDP-object we are facading.
+	 * @param trx the transaction this split belongs to
 	 * @see #jwsdpPeer
 	 * @see #myTransaction
 	 */
-	public GnucashTransactionSplitImpl(final GncTransaction.TrnSplits.TrnSplit peer, final GnucashTransaction transaction) {
-		super((peer.getSplitSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getSplitSlots(), transaction.getGnucashFile());
-		jwsdpPeer = peer;
-		myTransaction = transaction;
+	public GnucashTransactionSplitImpl(final GncTransaction.TrnSplits.TrnSplit peer, final GnucashTransaction trx) {
+		super((peer.getSplitSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getSplitSlots(), trx.getGnucashFile());
 
-		GnucashAccount account = getAccount();
-		if (account == null) {
+		jwsdpPeer = peer;
+		myTransaction = trx;
+
+		GnucashAccount acct = getAccount();
+		if ( acct == null ) {
 			System.err.println(
 					"No such Account id='"
 							+ getAccountID()
@@ -66,28 +74,29 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 							+ getTransaction().getDescription()
 							+ "'");
 		} else {
-			account.addTransactionSplit(this);
+			acct.addTransactionSplit(this);
 		}
 
 		String lot = getLotID();
-		if (lot != null) {
-			for (GnucashCustVendInvoice invoice : getTransaction().getGnucashFile().getInvoices()) {
-				String lotID = invoice.getLotID();
-				if (lotID != null && lotID.equals(lot)) {
-					// if action=="Rechnung" this is a split of the post-transaction,
-					// not a paying transaction
-					// if it's "Zahlung" it's a payment
-					if (getSplitAction().equals("Zahlung")) {
-						invoice.addPayingTransaction(this);
+		if ( lot != null ) {
+			for ( GnucashCustVendInvoice invc : getTransaction().getGnucashFile().getInvoices() ) {
+				String lotID = invc.getLotID();
+				if ( lotID != null &&
+                     lotID.equals(lot) ) {
+					// Check if it's a payment transaction. 
+				    // If so, add it to the invoice's list of payment transactions.
+                    if ( getSplitAction().equals(ACTION_PAYMENT) ) {
+						invc.addPayingTransaction(this);
 					}
 				}
-
 			}
 		}
 
 	}
 
-	/**
+    // ---------------------------------------------------------------
+
+  /**
 	 * @return the lot-id that identifies this transaction to belong to
 	 * an invoice with that lot-id.
 	 */
@@ -314,7 +323,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 		buffer.append(getAccountID());
 		buffer.append(" account: ");
 		GnucashAccount account = getAccount();
-		buffer.append(account == null ? "null" : "'" + account.getName() + "'");
+		buffer.append(account == null ? "null" : "'" + account.getQualifiedName() + "'");
 		buffer.append(" description: '");
 		buffer.append(getDescription() + "'");
 		buffer.append(" transaction-description: '");
@@ -326,28 +335,27 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
 	}
 
 	/**
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 * @see java.lang.Comparable#compareTo(GnucashTransactionSplit)
 	 */
-	public int compareTo(final Object o) {
+	public int compareTo(final GnucashTransactionSplit otherSplt) {
 		try {
-			GnucashTransactionSplit otherSplit = (GnucashTransactionSplit) o;
-			GnucashTransaction otherTrans = otherSplit.getTransaction();
+			GnucashTransaction otherTrans = otherSplt.getTransaction();
 			int c = otherTrans.compareTo(getTransaction());
 			if (c != 0) {
 				return c;
 			}
 
-			c = otherSplit.getId().compareTo(getId());
+			c = otherSplt.getId().compareTo(getId());
 			if (c != 0) {
 				return c;
 			}
 
-			if (o != this) {
-				System.err.println("doublicate transaction-split-id!! "
-						+ otherSplit.getId()
-						+ "[" + otherSplit.getClass().getName() + "] and "
+			if (otherSplt != this) {
+				System.err.println("Duplicate transaction-split-id!! "
+						+ otherSplt.getId()
+						+ "[" + otherSplt.getClass().getName() + "] and "
 						+ getId() + "[" + getClass().getName() + "]\n"
-						+ "split0=" + otherSplit.toString() + "\n"
+						+ "split0=" + otherSplt.toString() + "\n"
 						+ "split1=" + toString() + "\n");
 				IllegalStateException x = new IllegalStateException("DEBUG");
 				x.printStackTrace();

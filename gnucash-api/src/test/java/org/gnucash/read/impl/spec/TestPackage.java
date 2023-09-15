@@ -11,6 +11,7 @@ public class TestPackage extends TestCase
     junit.textui.TestRunner.run(suite());
   }
 
+  @SuppressWarnings("exports")
   public static Test suite() throws Exception
   {
     TestSuite suite = new TestSuite();

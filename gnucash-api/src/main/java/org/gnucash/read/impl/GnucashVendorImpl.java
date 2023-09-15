@@ -10,16 +10,22 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashJob;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendor {
+public class GnucashVendorImpl extends GnucashObjectImpl 
+                               implements GnucashVendor 
+{
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorImpl.class);
 
 	/**
 	 * the JWSDP-object we are facading.
@@ -39,6 +45,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	 */
 	protected GnucashVendorImpl(final GncV2.GncBook.GncGncVendor peer, final GnucashFile gncFile) {
 		super(new ObjectFactory().createSlotsType(), gncFile);
+		
 		jwsdpPeer = peer;
 		file = gncFile;
 	}
@@ -48,6 +55,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	/**
 	 * @return the JWSDP-object we are wrapping.
 	 */
+	@SuppressWarnings("exports")
 	public GncV2.GncBook.GncGncVendor getJwsdpPeer() {
 		return jwsdpPeer;
 	}
@@ -83,27 +91,33 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	 * the future are considered Paid.
 	 *
 	 * @return the current number of Unpaid invoices
-	 * @throws WrongInvoiceTypeException 
 	 */
-	public int getNofOpenBills() throws WrongInvoiceTypeException {
+	public int getNofOpenBills() {
 		return getGnucashFile().getUnpaidBillsForVendor_direct(this).size();
 	}
 
 	/**
-	 * @return the sum of payments for invoices to this client
-	 * @throws WrongInvoiceTypeException 
+	 * @return the net sum of payments for invoices to this client
 	 */
-	public FixedPointNumber getExpensesGenerated() throws WrongInvoiceTypeException {
+	public FixedPointNumber getExpensesGenerated() {
 		FixedPointNumber retval = new FixedPointNumber();
 
-		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashVendorBill ) {
-            if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
-              continue;
-            }
-            retval.add(invoice.getInvcAmountWithoutTaxes());
-		  }
+		try
+		{
+		  for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
+		    if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) ) {
+		      GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
+		      GnucashVendor vend = bllSpec.getVendor(); 
+              if ( vend.getId().equals(this.getId()) ) {
+                retval.add(bllSpec.getAmountWithoutTaxes());
+              }
+            } // if invc type
+		  } // for
 		}
+        catch (WrongInvoiceTypeException e)
+        {
+          LOGGER.error("getIncomeGenerated: Serious error");
+        }
 
 		return retval;
 	}
@@ -118,10 +132,9 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 
 	/**
 	 * @return formated acording to the current locale's currency-format
-	 * @throws WrongInvoiceTypeException 
 	 * @see #getExpensesGenerated()
 	 */
-	public String getExpensesGeneratedFormatted() throws WrongInvoiceTypeException {
+	public String getExpensesGeneratedFormatted() {
 		return getCurrencyFormat().format(getExpensesGenerated());
 
 	}
@@ -129,10 +142,9 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	/**
 	 * @param l the locale to format for
 	 * @return formated acording to the given locale's currency-format
-	 * @throws WrongInvoiceTypeException 
 	 * @see #getExpensesGenerated()
 	 */
-	public String getExpensesGeneratedFormatted(final Locale l) throws WrongInvoiceTypeException {
+	public String getExpensesGeneratedFormatted(final Locale l) {
 		return NumberFormat.getCurrencyInstance(l).format(getExpensesGenerated());
 	}
 
@@ -143,21 +155,28 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	public FixedPointNumber getOutstandingValue() throws WrongInvoiceTypeException {
 		FixedPointNumber retval = new FixedPointNumber();
 
-		for (GnucashCustVendInvoice invoice : getGnucashFile().getInvoices()) {
-		  if ( invoice instanceof GnucashVendorBill ) {
-            if ( ((GnucashVendorBill) invoice).getVendor() != this ) {
-              continue;
-            }
-            retval.add(invoice.getInvcAmountUnpaidWithTaxes());
-		  }
-		}
+        try
+        {
+          for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
+            if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) ) {
+              GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
+              GnucashVendor vend = bllSpec.getVendor(); 
+              if ( vend.getId().equals(this.getId()) ) {
+                retval.add(bllSpec.getAmountUnpaidWithTaxes());
+              }
+            } // if invc type
+          } // for
+        }
+        catch (WrongInvoiceTypeException e)
+        {
+          LOGGER.error("getOutstandingValue: Serious error");
+        }
 
 		return retval;
 	}
 
 	/**
 	 * @return Formatted acording to the current locale's currency-format
-	 * @throws WrongInvoiceTypeException 
 	 * @see #getOutstandingValue()
 	 */
 	public String getOutstandingValueFormatted() throws WrongInvoiceTypeException {
@@ -183,6 +202,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("exports")
 	public VendorTerms getVendorTerms() {
 		return jwsdpPeer.getVendorTerms();
 	}
@@ -211,7 +231,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 		/**
 		 * @param newPeer the JWSDP-object we are wrapping.
 		 */
-		public AddressImpl(final org.gnucash.generated.Address newPeer) {
+		@SuppressWarnings("exports")
+        public AddressImpl(final org.gnucash.generated.Address newPeer) {
 			super();
 			jwsdpPeer = newPeer;
 		}
@@ -219,6 +240,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 		/**
 		 * @return The JWSDP-object we are wrapping.
 		 */
+		@SuppressWarnings("exports")
 		public org.gnucash.generated.Address getJwsdpPeer() {
 			return jwsdpPeer;
 		}
@@ -325,7 +347,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
 		return currencyFormat;
 	}
 	
-  // ------------------------------
+  // -----------------------------------------------------------------
 
   @Override
   public Collection<GnucashVendorBill> getPaidBills(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
@@ -347,6 +369,13 @@ public class GnucashVendorImpl extends GnucashObjectImpl implements GnucashVendo
       return file.getUnpaidBillsForVendor_viaJob(this);
     
     return null; // Compiler happy
+  }
+
+  // -----------------------------------------------------------------
+
+  public static int getHighestNumber(GnucashVendor vend)
+  {
+    return vend.getGnucashFile().getHighestVendorNumber();
   }
 
 }

@@ -29,10 +29,12 @@ import org.gnucash.generated.SlotValue;
 import org.gnucash.generated.SlotsType;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * created: 13.05.2005 <br/>
@@ -40,17 +42,22 @@ import org.gnucash.read.GnucashTransactionSplit;
  *
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public class GnucashTransactionImpl extends GnucashObjectImpl implements GnucashTransaction {
+public class GnucashTransactionImpl extends GnucashObjectImpl 
+                                    implements GnucashTransaction 
+{
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashTransactionImpl.class);
 
 	/**
 	 * the JWSDP-object we are facading.
 	 */
-	private final GncTransaction jwsdpPeer;
+	private GncTransaction jwsdpPeer;
 
 	/**
 	 * The file we belong to.
 	 */
 	private final GnucashFile file;
+	
+	// ---------------------------------------------------------------
 
 	/**
 	 * Create a new Transaction, facading a JWSDP-transaction.
@@ -61,8 +68,9 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	 */
 	public GnucashTransactionImpl(final GncTransaction peer, final GnucashFile gncFile) {
 		super((peer.getTrnSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getTrnSlots(), gncFile);
+		
 		if (peer.getTrnSlots() == null) {
-			peer.setTrnSlots(getSlots());
+          peer.setTrnSlots(getSlots());
 		}
 
 		if (peer == null) {
@@ -76,11 +84,38 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 		jwsdpPeer = peer;
 		file = gncFile;
 
-		for (GnucashCustVendInvoice invoice : getInvoices()) {
-			invoice.addTransaction(this);
+		for (GnucashCustVendInvoice invc : getInvoices()) {
+			invc.addTransaction(this);
 		}
 
 	}
+
+	// Copy-constructor
+    public GnucashTransactionImpl(final GnucashTransaction trx) {
+      super((trx.getJwsdpPeer().getTrnSlots() == null) ? new ObjectFactory().createSlotsType() : trx.getJwsdpPeer().getTrnSlots(), trx.getGnucashFile());
+
+      if (trx.getJwsdpPeer().getTrnSlots() == null) {
+        trx.getJwsdpPeer().setTrnSlots(getSlots());
+      }
+
+      if (trx.getJwsdpPeer() == null) {
+          throw new IllegalArgumentException("Transaction not correctly initialized: null jwsdpPeer given");
+      }
+
+      if (trx.getGnucashFile() == null) {
+          throw new IllegalArgumentException("Transaction not correctly initialized: null file given");
+      }
+
+      jwsdpPeer = trx.getJwsdpPeer();
+      file = trx.getGnucashFile();
+
+      for (GnucashCustVendInvoice invc : getInvoices()) {
+          invc.addTransaction(this);
+      }
+
+    }
+    
+    // ---------------------------------------------------------------
 
 	/**
 	 * @see GnucashTransaction#isBalanced()
@@ -238,18 +273,24 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 				continue;
 			}
 
-			SlotValue slotvalue = slot.getSlotValue();
+			SlotValue slotVal = slot.getSlotValue();
 
-			Slot subslot = (Slot) slotvalue.getContent().get(0);
-			if (!subslot.getSlotKey().equals("invoice-guid")) {
+			ObjectFactory objectFactory = new ObjectFactory();
+	        Slot subSlot = objectFactory.createSlot();
+	        subSlot.setSlotKey(slot.getSlotKey());          
+            SlotValue subSlotVal = objectFactory.createSlotValue();
+            subSlotVal.setType("string");
+            subSlotVal.getContent().add(slotVal.getContent().get(0));
+            subSlot.setSlotValue(subSlotVal);
+			if (!subSlot.getSlotKey().equals("invoice-guid")) {
 				continue;
 			}
 
-			if (!subslot.getSlotValue().getType().equals("guid")) {
+			if (!subSlot.getSlotValue().getType().equals("guid")) {
 				continue;
 			}
 
-			retval.add((String) subslot.getSlotValue().getContent().get(0));
+			retval.add((String) subSlot.getSlotValue().getContent().get(0));
 
 		}
 
@@ -263,6 +304,16 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 		return jwsdpPeer.getTrnDescription();
 	}
 
+    // ----------------------------
+
+    /**
+     * @return the JWSDP-object we are facading.
+     */
+    @SuppressWarnings("exports")
+    public GncTransaction getJwsdpPeer() {
+        return jwsdpPeer;
+    }
+
 	/**
 	 * @see GnucashTransaction#getGnucashFile()
 	 */
@@ -270,6 +321,8 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	public GnucashFile getGnucashFile() {
 		return file;
 	}
+	
+	// ----------------------------
 
 	/**
 	 * @see #getSplits()
@@ -495,28 +548,18 @@ public class GnucashTransactionImpl extends GnucashObjectImpl implements Gnucash
 	 *
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	public int compareTo(final GnucashTransaction o) {
-
-		GnucashTransaction other = o;
-
+	public int compareTo(final GnucashTransaction otherTrx) {
 		try {
-			int compare = other.getDatePosted().compareTo(getDatePosted());
+			int compare = otherTrx.getDatePosted().compareTo(getDatePosted());
 			if (compare != 0) {
 				return compare;
 			}
 
-			return other.getDateEntered().compareTo(getDateEntered());
+			return otherTrx.getDateEntered().compareTo(getDateEntered());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
 		}
-	}
-
-	/**
-	 * @return the JWSDP-object we are facading.
-	 */
-	public GncTransaction getJwsdpPeer() {
-		return jwsdpPeer;
 	}
 
 	public String getTransactionNumber() {

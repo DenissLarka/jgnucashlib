@@ -8,9 +8,12 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GnucashJobImpl implements GnucashJob {
 
+  protected static final Logger LOGGER = LoggerFactory.getLogger(GnucashJobImpl.class);
 
     /**
      * the JWSDP-object we are facading.
@@ -31,6 +34,7 @@ public class GnucashJobImpl implements GnucashJob {
             final GncV2.GncBook.GncGncJob peer,
             final GnucashFile gncFile) {
         super();
+        
         jwsdpPeer = peer;
         file = gncFile;
     }
