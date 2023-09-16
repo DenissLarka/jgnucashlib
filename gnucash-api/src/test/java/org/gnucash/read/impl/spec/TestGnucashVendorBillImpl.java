@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 
 import org.gnucash.ConstTest;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashFileImpl;
@@ -25,7 +25,7 @@ import junit.framework.JUnit4TestAdapter;
 public class TestGnucashVendorBillImpl
 {
   private static GnucashFile            gcshFile = null;
-  private static GnucashCustVendInvoice bllGen = null;
+  private static GnucashGenerInvoice bllGen = null;
   private static GnucashVendorBill      bllSpec = null;
   
   private static final String BLL_1_ID = "4eb0dc387c3f4daba57b11b2a657d8a4";
@@ -77,7 +77,7 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test01_1() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_1_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
     
     assertEquals(true, bllSpec instanceof GnucashVendorBillImpl);
@@ -94,7 +94,7 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test01_2() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_2_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
     
     assertEquals(true, bllSpec instanceof GnucashVendorBillImpl);
@@ -111,14 +111,14 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test02_1() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_1_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
 
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(1, bllGen.getCustVendInvcEntries().size());
-    assertEquals(1, bllSpec.getCustVendInvcEntries().size());
+    assertEquals(1, bllGen.getGenerInvcEntries().size());
+    assertEquals(1, bllSpec.getGenerInvcEntries().size());
     assertEquals(1, bllSpec.getEntries().size());
 
     TreeSet entrList = new TreeSet(); // sort elements of HashSet
@@ -130,14 +130,14 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test02_2() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_2_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
 
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(2, bllGen.getCustVendInvcEntries().size());
-    assertEquals(2, bllSpec.getCustVendInvcEntries().size());
+    assertEquals(2, bllGen.getGenerInvcEntries().size());
+    assertEquals(2, bllSpec.getGenerInvcEntries().size());
     assertEquals(2, bllSpec.getEntries().size());
 
     TreeSet entrList = new TreeSet(); // sort elements of HashSet
@@ -151,7 +151,7 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test03_1() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_1_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
 
     // Note: That the following three return the same result
@@ -174,7 +174,7 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test03_2() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_2_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
 
     // Note: That the following three return the same result
@@ -195,7 +195,7 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test04_1() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_1_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_1_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
 
     // Note: That the following two return the same result
@@ -227,7 +227,7 @@ public class TestGnucashVendorBillImpl
   @Test
   public void test04_2() throws Exception
   {
-    bllGen = gcshFile.getCustVendInvoiceByID(BLL_2_ID);
+    bllGen = gcshFile.getGenerInvoiceByID(BLL_2_ID);
     bllSpec = new GnucashVendorBillImpl(bllGen);
 
     // Note: That the following two return the same result

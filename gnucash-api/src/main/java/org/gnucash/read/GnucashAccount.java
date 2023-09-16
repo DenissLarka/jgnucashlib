@@ -29,6 +29,46 @@ import java.util.*;
  */
 public interface GnucashAccount extends Comparable<GnucashAccount> {
 
+  // For the following types cf.: 
+  // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Account.h
+  //
+  // Examples (from German accounting):
+  // 
+  // - TYPE_BANK = "BANK"; Girokonto, Tagesgeldkonto
+  // - TYPE_CASH = "CASH"; Kasse
+  // - TYPE_CREDIT = "CREDIT"; "Kreditkarte"
+  // - TYPE_ASSET = "ASSET"; Vermögensgegenstaende, "1. Forderungen aus Lieferungen und Leistungen" 
+  // - TYPE_LIABILITY = "LIABILITY"; Verbindlichkeiten ggueber Lieferanten
+  // - TYPE_STOCK = "STOCK"; Aktie
+  // - TYPE_MUTUAL = "MUTUAL"; Investment-Fonds
+  // - TYPE_CURRENCY = "CURRENCY";
+  // - TYPE_INCOME = "INCOME"; "Umsatzerloese 16% USt"
+  // - TYPE_EXPENSE = "EXPENSE"; "private Ausgaben"
+  // - TYPE_EQUITY = "EQUITY"; "Anfangsbestand"
+  // - TYPE_RECEIVABLE = "RECEIVABLE"; "Forderungen aus Lieferungen und Leistungen"
+  // - TYPE_PAYABLE = "PAYABLE"; "Verbindlichkeiten ggueber Lieferant xyz"
+  // - TYPE_ROOT = "ROOT"; guess ;-)
+  // - TYPE_TRADING = "TRADING";
+  
+  // ::MAGIC
+  public static final String TYPE_BANK       = "BANK";
+  public static final String TYPE_CASH       = "CASH";
+  public static final String TYPE_CREDIT     = "CREDIT";
+  public static final String TYPE_ASSET      = "ASSET";
+  public static final String TYPE_LIABILITY  = "LIABILITY";
+  public static final String TYPE_STOCK      = "STOCK";
+  public static final String TYPE_MUTUAL     = "MUTUAL";
+  public static final String TYPE_CURRENCY   = "CURRENCY";
+  public static final String TYPE_INCOME     = "INCOME";
+  public static final String TYPE_EXPENSE    = "EXPENSE";
+  public static final String TYPE_EQUITY     = "EQUITY";
+  public static final String TYPE_RECEIVABLE = "RECEIVABLE";
+  public static final String TYPE_PAYABLE    = "PAYABLE";
+  public static final String TYPE_ROOT       = "ROOT";
+  public static final String TYPE_TRADING    = "TRADING";
+
+  // -----------------------------------------------------------------
+
 	/**
 	 * @return the unique id for that account (not meaningfull to human users)
 	 */
@@ -74,7 +114,7 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
 	 * @return all child-accounts
 	 * @see #getChildren()
 	 */
-	Collection getSubAccounts();
+	Collection<GnucashAccount> getSubAccounts();
 
 	/**
 	 * The returned collection is never null
@@ -84,67 +124,6 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
 	 */
 	Collection<GnucashAccount> getChildren();
 	
-	// ----------------------------
-
-	/**
-	 * e.g. "Umsatzsteuer 19%"
-	 */
-	String TYPE_LIABILITY = "LIABILITY";
-
-	/**
-	 * e.g. "Umsatzerloese 19% USt"
-	 */
-	String TYPE_BANK = "BANK";
-
-	/**
-	 * e.g. "Umsatzerloese 16% USt"
-	 */
-	String TYPE_INCOME = "INCOME";
-
-    /**
-     * e.g. "Verbindlichkeiten ggueber Lieferanten"
-     */
-    String TYPE_PAYABLE = "PAYABLE";
-
-	/**
-	 * e.g. "Forderungen aus Lieferungen und Leistungen"
-	 */
-	String TYPE_RECEIVABLE = "RECEIVABLE";
-
-	/**
-	 * e.g. "1. Forderungen aus Lieferungen und Leistungen"
-	 */
-	String TYPE_ASSET = "ASSET";
-	/**
-	 * e.g. "private Ausgaben"
-	 */
-	String TYPE_EXPENSE = "EXPENSE";
-
-	/**
-	 * e.g. "Visa"
-	 */
-	String TYPE_CREDIT = "CREDIT";
-
-	/**
-	 * e.g. "Anfangsbestand"
-	 */
-	String TYPE_EQUITY = "EQUITY";
-
-	/**
-	 * e.g. "stock"
-	 */
-	String TYPE_CASH = "CASH";
-
-	/**
-	 * e.g. "Cash in Wallet"
-	 */
-	String TYPE_STOCK = "STOCK";
-
-	/**
-	 * e.g. "Lesezeichen"
-	 */
-	String TYPE_MUTUAL = "MUTUAL";
-
     // ----------------------------
 
 	/**
@@ -271,33 +250,33 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
 	 * same as getBalanceRecursive(new Date()).
 	 * ignores transactions after the current date+time
 	 *
-	 * @return the balance including sub-accounts formated using the current locale
+	 * @return the balance including sub-accounts formatted using the current locale
 	 */
-	String getBalanceRecursiveFormated();
+	String getBalanceRecursiveFormatted();
 
 	/**
 	 * same as getBalance(new Date()).
 	 * ignores transactions after the current date+time
 	 *
-	 * @return the balance formated using the current locale
+	 * @return the balance formatted using the current locale
 	 */
-	String getBalanceFormated();
+	String getBalanceFormatted();
 
 	/**
 	 * same as getBalance(new Date()).
 	 * ignores transactions after the current date+time
 	 *
 	 * @param locale the locale to use (does not affect the currency)
-	 * @return the balance formated using the given locale
+	 * @return the balance formatted using the given locale
 	 */
-	String getBalanceFormated(Locale locale);
+	String getBalanceFormatted(Locale locale);
 
 	/**
 	 * Be aware that the result is in the currency of this
 	 * account!
 	 *
 	 * @param date if non-null transactions after this date are ignored in the calculation
-	 * @return the balance formated using the current locale
+	 * @return the balance formatted using the current locale
 	 */
 	FixedPointNumber getBalance(LocalDate date);
 
@@ -307,7 +286,7 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
 	 *
 	 * @param date  if non-null transactions after this date are ignored in the calculation
 	 * @param after splits that are after date are added here.
-	 * @return the balance formated using the current locale
+	 * @return the balance formatted using the current locale
 	 */
 	FixedPointNumber getBalance(final LocalDate date, final Collection<GnucashTransactionSplit> after);
 
@@ -333,7 +312,7 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
 	 * @param date if non-null transactions after this date are ignored in the calculation
 	 * @return the balance including all sub-accounts
 	 */
-	String getBalanceRecursiveFormated(LocalDate date);
+	String getBalanceRecursiveFormatted(LocalDate date);
 
 	/**
 	 * @param lastIncludesSplit last split to be included

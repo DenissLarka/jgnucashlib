@@ -14,22 +14,35 @@ package org.gnucash.read;
 
 import java.util.Collection;
 
+import org.gnucash.read.aux.GnucashOwner;
+
 
 /**
  * created: 14.05.2005 <br>
  * A job needs to be done. Once it or a part of it<br>
  * is done an invoice can be created and later be Paid by the customer<br>
  * of this job.
- * @see GnucashCustVendInvoice
+ * @see GnucashGenerInvoice
  * @see GnucashCustomer
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 
-public interface GnucashJob {
+public interface GnucashGenerJob {
   
-  // ::MAGIC
-  final static String TYPE_CUSTOMER = "gncCustomer";
-  final static String TYPE_VENDOR   = "gncVendor";
+  /**
+   * @deprecated Use {@link GnucashOwner#TYPE_CUSTOMER} instead
+   */
+  public static final String TYPE_CUSTOMER = GnucashOwner.TYPE_CUSTOMER;
+  /**
+   * @deprecated Use {@link GnucashOwner#TYPE_VENDOR} instead
+   */
+  public static final String TYPE_VENDOR   = GnucashOwner.TYPE_VENDOR;
+  /**
+   * @deprecated Use {@link GnucashOwner#TYPE_EMPLOYEE} instead
+   */
+  public static final String TYPE_EMPLOYEE = GnucashOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
+  
+  // -----------------------------------------------------------------
 
 	/**
 	 * The gnucash-file is the top-level class to contain everything.
@@ -45,7 +58,7 @@ public interface GnucashJob {
 	/**
 	 * @return all invoices that refer to this job.
 	 */
-	Collection getInvoices();
+	Collection<GnucashGenerInvoice> getInvoices();
 
 	/**
 	 * @return true if the job is still active

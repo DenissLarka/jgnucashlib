@@ -2,9 +2,9 @@ package org.gnucash.read.impl.spec;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
-import org.gnucash.read.impl.GnucashCustVendInvoiceEntryImpl;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
+import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
@@ -12,7 +12,7 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashCustomerInvoiceEntryImpl extends GnucashCustVendInvoiceEntryImpl
+public class GnucashCustomerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImpl
                                              implements GnucashCustomerInvoiceEntry 
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerInvoiceEntryImpl.class);
@@ -25,14 +25,14 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashCustVendInvoiceEntry
   }
 
   public GnucashCustomerInvoiceEntryImpl(
-          final GnucashCustVendInvoice invoice,
+          final GnucashGenerInvoice invoice,
           final GncV2.GncBook.GncGncEntry peer) throws WrongInvoiceTypeException 
   {
     super(invoice, peer, true);
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
-    if ( ! invoice.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+    if ( ! invoice.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
       throw new WrongInvoiceTypeException();
   }
 
@@ -41,34 +41,34 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashCustVendInvoiceEntry
     super(peer, gncFile);
   }
 
-  public GnucashCustomerInvoiceEntryImpl(final GnucashCustVendInvoiceEntry entry) throws WrongInvoiceTypeException
+  public GnucashCustomerInvoiceEntryImpl(final GnucashGenerInvoiceEntry entry) throws WrongInvoiceTypeException
   {
-    super(entry.getCustVendInvoice(), entry.getJwsdpPeer(), false);
+    super(entry.getGenerInvoice(), entry.getJwsdpPeer(), false);
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
-    if ( ! entry.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+    if ( ! entry.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
       throw new WrongInvoiceTypeException();
   }
 
   public GnucashCustomerInvoiceEntryImpl(final GnucashCustomerInvoiceEntry entry)
   {
-    super(entry.getCustVendInvoice(), entry.getJwsdpPeer(), false);
+    super(entry.getGenerInvoice(), entry.getJwsdpPeer(), false);
   }
 
   // ---------------------------------------------------------------
 
   public String getInvoiceID()
   {
-    return getCustVendInvoiceID();
+    return getGenerInvoiceID();
   }
   
   public GnucashCustomerInvoice getInvoice() throws WrongInvoiceTypeException
   {
     if ( myInvoice == null )
     {
-      myInvoice = getCustVendInvoice();
-      if ( ! myInvoice.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+      myInvoice = getGenerInvoice();
+      if ( ! myInvoice.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
         throw new WrongInvoiceTypeException();
         
       if ( myInvoice == null )

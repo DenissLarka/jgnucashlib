@@ -7,9 +7,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import org.gnucash.ConstTest;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.GnucashCustVendInvoice;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.junit.Before;
@@ -105,15 +104,15 @@ public class TestGnucashVendor
     vend = gcshFile.getVendorByID(VEND_1_ID);
     
     assertEquals(1, vend.getNofOpenBills());
-    assertEquals(1, vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
-    assertEquals(1, vend.getPaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, vend.getUnpaidBills(GnucashGenerInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, vend.getPaidBills(GnucashGenerInvoice.ReadVariant.DIRECT).size());
     
-    LinkedList<GnucashVendorBill> bllList = (LinkedList<GnucashVendorBill>) vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT);
+    LinkedList<GnucashVendorBill> bllList = (LinkedList<GnucashVendorBill>) vend.getUnpaidBills(GnucashGenerInvoice.ReadVariant.DIRECT);
     Collections.sort(bllList);
     assertEquals("4eb0dc387c3f4daba57b11b2a657d8a4", 
                  ((GnucashVendorBill) bllList.toArray()[0]).getId() );
 
-    bllList = (LinkedList<GnucashVendorBill>) vend.getPaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT);
+    bllList = (LinkedList<GnucashVendorBill>) vend.getPaidBills(GnucashGenerInvoice.ReadVariant.DIRECT);
     Collections.sort(bllList);
     assertEquals("286fc2651a7848038a23bb7d065c8b67", 
                  ((GnucashVendorBill) bllList.toArray()[0]).getId() );
@@ -124,11 +123,11 @@ public class TestGnucashVendor
   {
     vend = gcshFile.getVendorByID(VEND_2_ID);
     
-    assertEquals(0, vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(0, vend.getUnpaidBills(GnucashGenerInvoice.ReadVariant.DIRECT).size());
 //    assertEquals("[GnucashVendorBillImpl: id: 4eb0dc387c3f4daba57b11b2a657d8a4 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: '1730-383/2' description: 'Sie wissen schon: Gefälligkeiten, ne?' #entries: 1 date-opened: 2023-08-31]", 
-//                 vend.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0].toString());
+//                 vend.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0].toString());
 //    assertEquals("[GnucashVendorBillImpl: id: 286fc2651a7848038a23bb7d065c8b67 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: null description: 'Dat isjamaol eine schöne jepflejgte Reschnung!' #entries: 1 date-opened: 2023-08-30]", 
-//                 vend.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[1].toString());
+//                 vend.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[1].toString());
   }
   
   @Test
@@ -136,10 +135,10 @@ public class TestGnucashVendor
   {
     vend = gcshFile.getVendorByID(VEND_3_ID);
     
-    assertEquals(0, vend.getUnpaidBills(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(0, vend.getUnpaidBills(GnucashGenerInvoice.ReadVariant.DIRECT).size());
 //    assertEquals("[GnucashVendorBillImpl: id: 4eb0dc387c3f4daba57b11b2a657d8a4 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: '1730-383/2' description: 'Sie wissen schon: Gefälligkeiten, ne?' #entries: 1 date-opened: 2023-08-31]", 
-//                 vend.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0].toString());
+//                 vend.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0].toString());
 //    assertEquals("[GnucashVendorBillImpl: id: 286fc2651a7848038a23bb7d065c8b67 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: null description: 'Dat isjamaol eine schöne jepflejgte Reschnung!' #entries: 1 date-opened: 2023-08-30]", 
-//                 vend.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[1].toString());
+//                 vend.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[1].toString());
   }
 }

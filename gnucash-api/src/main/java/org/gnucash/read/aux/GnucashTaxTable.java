@@ -11,11 +11,14 @@
  * ...
  *
  */
-package org.gnucash.read;
+package org.gnucash.read.aux;
 
 import java.util.Collection;
 
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashCustomer;
+import org.gnucash.read.GnucashFile;
 
 
 

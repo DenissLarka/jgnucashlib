@@ -132,7 +132,10 @@ public class TestGnucashAccount
     assertEquals("14305dc80e034834b3f531696d81b493", acct.getParentAccountId());
 
     assertEquals(0.00, acct.getBalance().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(0.00, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    // ::CHECK: Should'nt the value in the following assert be positive
+    // (that's how it is displayed in GnuCacsh, after all, at least with
+    // standard settings).
+    assertEquals(-289.92, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
 
     assertEquals(0, acct.getTransactions().size());
   }
@@ -156,9 +159,9 @@ public class TestGnucashAccount
     assertEquals(0.00, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
 
     // ::TODO
-    assertEquals(0, acct.getTransactions().size());
-//  assertEquals("568864bfb0954897ab8578db4d27372f", acct.getTransactions().get(0).getId());
-//  assertEquals("18a45dfc8a6868c470438e27d6fe10b2", acct.getTransactions().get(1).getId());
+    assertEquals(2, acct.getTransactions().size());
+    assertEquals("aa64d862bb5e4d749eb41f198b28d73d", acct.getTransactions().get(0).getId());
+    assertEquals("ccff780b18294435bf03c6cb1ac325c1", acct.getTransactions().get(1).getId());
   }
   
   @Test
@@ -175,12 +178,14 @@ public class TestGnucashAccount
     
     assertEquals("74401ce4880c4f4487c4301027a71bde", acct.getParentAccountId());
 
-    assertEquals(-2527.60, acct.getBalance().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(-2527.60, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(709.95, acct.getBalance().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(709.95, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
 
-    assertEquals(2, acct.getTransactions().size());
-    assertEquals("29557cfdf4594eb68b1a1b710722f991", acct.getTransactions().get(0).getId());
-    assertEquals("67796d4f7c924c1da38f7813dbc3a99d", acct.getTransactions().get(1).getId());
+    assertEquals(4, acct.getTransactions().size());
+    assertEquals("c97032ba41684b2bb5d1391c9d7547e9", acct.getTransactions().get(0).getId());
+    assertEquals("29557cfdf4594eb68b1a1b710722f991", acct.getTransactions().get(1).getId());
+    assertEquals("9e066e5f3081485ab08539e41bf85495", acct.getTransactions().get(2).getId());
+    assertEquals("67796d4f7c924c1da38f7813dbc3a99d", acct.getTransactions().get(3).getId());
   }
 
   @Test

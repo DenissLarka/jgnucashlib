@@ -31,12 +31,47 @@ import org.gnucash.numbers.FixedPointNumber;
  */
 public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSplit> {
 
+  // For the following enumerations cf.:
+  // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Split.h
+  
+  // Note: The following should be chars, but the method where they are 
+  // used is generated and accepts a String.
   // ::MAGIC
-  public final String ACTION_INVOICE = "Rechnung";
-  public final String ACTION_BILL    = "Lieferantenrechnung";
-  public final String ACTION_PAYMENT = "Zahlung";
-  public final String ACTION_BUY     = "Kauf";
-  public final String ACTION_SELL    = "Verkauf";
+  public static final String CREC = "c"; // cleared
+  public static final String YREC = "y"; // reconciled  
+  public static final String FREC = "f"; // frozen into accounting period
+  public static final String NREC = "n"; // not reconciled or cleared
+  public static final String VREC = "v"; // void
+    
+  // ::TODO: Locale-specific, make generic
+  // ::MAGIC
+  public static final String ACTION_INVOICE = "Rechnung";
+  public static final String ACTION_BILL    = "Lieferantenrechnung";
+  public static final String ACTION_PAYMENT = "Zahlung";
+  public static final String ACTION_BUY     = "Kauf";
+  public static final String ACTION_SELL    = "Verkauf";
+  
+  // Not yet, for future releases:
+//  public static final String SPLIT_DATE_RECONCILED    = "date-reconciled";
+//  public static final String SPLIT_BALANCE            = "balance";
+//  public static final String SPLIT_CLEARED_BALANCE    = "cleared-balance";
+//  public static final String SPLIT_RECONCILED_BALANCE = "reconciled-balance";
+//  public static final String SPLIT_MEMO               = "memo";
+//  public static final String SPLIT_ACTION             = "action";
+//  public static final String SPLIT_RECONCILE          = "reconcile-flag";
+//  public static final String SPLIT_AMOUNT             = "amount";
+//  public static final String SPLIT_SHARE_PRICE        = "share-price";
+//  public static final String SPLIT_VALUE              = "value";
+//  public static final String SPLIT_TYPE               = "type";
+//  public static final String SPLIT_VOIDED_AMOUNT      = "voided-amount";
+//  public static final String SPLIT_VOIDED_VALUE       = "voided-value";
+//  public static final String SPLIT_LOT                = "lot";
+//  public static final String SPLIT_TRANS              = "trans";
+//  public static final String SPLIT_ACCOUNT            = "account";
+//  public static final String SPLIT_ACCOUNT_GUID       = "account-guid";
+//  public static final String SPLIT_ACCT_FULLNAME      = "acct-fullname";
+//  public static final String SPLIT_CORR_ACCT_NAME     = "corr-acct-fullname";
+//  public static final String SPLIT_CORR_ACCT_CODE     = "corr-acct-code";
   
   // -----------------------------------------------------------------
 
@@ -107,7 +142,7 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
     String getAccountBalanceFormatted();
 
     /**
-     * @see GnucashAccount#getBalanceFormated()
+     * @see GnucashAccount#getBalanceFormatted()
      */
     String getAccountBalanceFormatted(Locale locale);
 
@@ -156,7 +191,7 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
      * an invoice's lot.
      * @return null, or one of the ACTION_xyz values defined
      */
-    String getSplitAction();
+    String getAction();
 
     /**
      * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.

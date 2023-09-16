@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice.ReadVariant;
+import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -16,6 +16,7 @@ public interface GnucashVendor extends GnucashObject {
      * The prefered taxtable to use with this vendor (may be null).
      * @see {@link #getVendorTaxTableID()}
      */
+    @SuppressWarnings("exports")
     VendorTerms getVendorTerms();
 
     /**

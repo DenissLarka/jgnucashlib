@@ -1,8 +1,8 @@
 package org.gnucash.read.spec;
 
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
 
-public interface GnucashVendorBillEntry extends GnucashCustVendInvoiceEntry 
+public interface GnucashVendorBillEntry extends GnucashGenerInvoiceEntry 
 {
   String getBillID();
 

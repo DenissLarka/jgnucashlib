@@ -6,20 +6,20 @@ import java.util.HashSet;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.impl.GnucashCustVendInvoiceImpl;
+import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorBillEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
+public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
                                    implements GnucashVendorBill
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorBillImpl.class);
@@ -29,16 +29,16 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
     super(peer, gncFile);
   }
 
-  public GnucashVendorBillImpl(final GnucashCustVendInvoice invc) throws WrongInvoiceTypeException
+  public GnucashVendorBillImpl(final GnucashGenerInvoice invc) throws WrongInvoiceTypeException
   {
     super(invc.getJwsdpPeer(), invc.getFile());
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
-    if (! invc.getOwnerType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+    if (! invc.getOwnerType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
     
-    for ( GnucashCustVendInvoiceEntry entry : invc.getCustVendInvcEntries() )
+    for ( GnucashGenerInvoiceEntry entry : invc.getGenerInvcEntries() )
     {
       addEntry(new GnucashVendorBillEntryImpl(entry));
     }
@@ -49,13 +49,13 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
       {
         String lot = splt.getLotID();
         if ( lot != null ) {
-            for ( GnucashCustVendInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
+            for ( GnucashGenerInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
                 String lotID = invc1.getLotID();
                 if ( lotID != null &&
                      lotID.equals(lot) ) {
                     // Check if it's a payment transaction. 
                     // If so, add it to the invoice's list of payment transactions.
-                    if ( splt.getSplitAction().equals(GnucashTransactionSplit.ACTION_PAYMENT) ) {
+                    if ( splt.getAction().equals(GnucashTransactionSplit.ACTION_PAYMENT) ) {
                         addPayingTransaction(splt);
                     }
                 } // if lotID
@@ -70,7 +70,7 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   /**
    * {@inheritDoc}
    */
-  public String getVendorId(GnucashCustVendInvoice.ReadVariant readVar) {
+  public String getVendorId(GnucashGenerInvoice.ReadVariant readVar) {
     return getOwnerId(readVar);
   }
 
@@ -80,14 +80,14 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   }
 
   public GnucashVendor getVendor_direct() throws WrongInvoiceTypeException {
-    if ( ! getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+    if ( ! getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
     
     return file.getVendorByID(getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue());
   }
 
   public GnucashVendor getVendor_viaJob() throws WrongInvoiceTypeException {
-    if ( ! getJob().getOwnerType().equals(GnucashJob.TYPE_VENDOR) )
+    if ( ! getJob().getOwnerType().equals(GnucashGenerJob.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
     
     return ((GnucashVendorJobImpl) getJob()).getVendor();
@@ -98,7 +98,7 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   @Override
   public GnucashVendorBillEntry getEntryById(String id) throws WrongInvoiceTypeException
   {
-    return new GnucashVendorBillEntryImpl(getCustVendInvcEntryById(id));
+    return new GnucashVendorBillEntryImpl(getGenerInvcEntryById(id));
   }
 
   @Override
@@ -106,9 +106,9 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   {
     Collection<GnucashVendorBillEntry> castEntries = new HashSet<GnucashVendorBillEntry>();
     
-    for ( GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries() )
+    for ( GnucashGenerInvoiceEntry entry : getGenerInvcEntries() )
     {
-      if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+      if ( entry.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
       {
         castEntries.add(new GnucashVendorBillEntryImpl(entry));
       }
@@ -120,7 +120,7 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
   @Override
   public void addEntry(final GnucashVendorBillEntry entry)
   {
-    addCustVendInvcEntry(entry);
+    addGenerInvcEntry(entry);
   }
 
   // -----------------------------------------------------------------
@@ -284,7 +284,7 @@ public class GnucashVendorBillImpl extends GnucashCustVendInvoiceImpl
       buffer.append(" id: ");
       buffer.append(getId());
       buffer.append(" vendor-id (dir.): ");
-      buffer.append(getVendorId(GnucashCustVendInvoice.ReadVariant.DIRECT));
+      buffer.append(getVendorId(GnucashGenerInvoice.ReadVariant.DIRECT));
       buffer.append(" bill-number: '");
       buffer.append(getNumber() + "'");
       buffer.append(" description: '");

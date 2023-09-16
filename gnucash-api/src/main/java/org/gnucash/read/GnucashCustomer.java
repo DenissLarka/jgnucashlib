@@ -17,7 +17,8 @@ import java.util.Locale;
 import java.util.Collection;
 
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice.ReadVariant;
+import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
+import org.gnucash.read.aux.GnucashTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -30,8 +31,8 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  * him/her/it and pay them.
  *
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
- * @see GnucashJob
- * @see GnucashCustVendInvoice
+ * @see GnucashGenerJob
+ * @see GnucashGenerInvoice
  */
 public interface GnucashCustomer extends GnucashObject {
 

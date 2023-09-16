@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 
 import org.gnucash.ConstTest;
-import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashFileImpl;
@@ -23,7 +23,7 @@ import junit.framework.JUnit4TestAdapter;
 public class TestGnucashCustomerInvoiceImpl
 {
   private static GnucashFile            gcshFile = null;
-  private static GnucashCustVendInvoice invcGen = null;
+  private static GnucashGenerInvoice invcGen = null;
   private static GnucashCustomerInvoice invcSpec = null;
   
   private static final String INVC_1_ID = "d9967c10fdf1465e9394a3e4b1e7bd79";
@@ -74,7 +74,7 @@ public class TestGnucashCustomerInvoiceImpl
   @Test
   public void test01_1() throws Exception
   {
-    invcGen = gcshFile.getCustVendInvoiceByID(INVC_1_ID);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
     invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
     
     assertEquals(true, invcSpec instanceof GnucashCustomerInvoiceImpl);
@@ -90,14 +90,14 @@ public class TestGnucashCustomerInvoiceImpl
   @Test
   public void test02_1() throws Exception
   {
-    invcGen = gcshFile.getCustVendInvoiceByID(INVC_1_ID);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
     invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
 
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(2, invcGen.getCustVendInvcEntries().size());
-    assertEquals(2, invcSpec.getCustVendInvcEntries().size());
+    assertEquals(2, invcGen.getGenerInvcEntries().size());
+    assertEquals(2, invcSpec.getGenerInvcEntries().size());
     assertEquals(2, invcSpec.getEntries().size());
 
     TreeSet entrList = new TreeSet(); // sort elements of HashSet
@@ -111,7 +111,7 @@ public class TestGnucashCustomerInvoiceImpl
   @Test
   public void test03_1() throws Exception
   {
-    invcGen = gcshFile.getCustVendInvoiceByID(INVC_1_ID);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
     invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
 
     // Note: That the following three return the same result
@@ -132,7 +132,7 @@ public class TestGnucashCustomerInvoiceImpl
   @Test
   public void test04_1() throws Exception
   {
-    invcGen = gcshFile.getCustVendInvoiceByID(INVC_1_ID);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
     invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
 
     // Note: That the following two return the same result

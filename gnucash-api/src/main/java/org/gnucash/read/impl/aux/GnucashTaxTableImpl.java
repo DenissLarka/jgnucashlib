@@ -8,7 +8,7 @@
  * 14.05.2005 - initial version
  * ...
  */
-package org.gnucash.read.impl;
+package org.gnucash.read.impl.aux;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +18,7 @@ import org.gnucash.generated.GncV2;
 
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.aux.GnucashTaxTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.gnucash.numbers.FixedPointNumber;

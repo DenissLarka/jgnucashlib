@@ -29,7 +29,7 @@ import org.gnucash.generated.SlotValue;
 import org.gnucash.generated.SlotsType;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
@@ -84,7 +84,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 		jwsdpPeer = peer;
 		file = gncFile;
 
-		for (GnucashCustVendInvoice invc : getInvoices()) {
+		for (GnucashGenerInvoice invc : getInvoices()) {
 			invc.addTransaction(this);
 		}
 
@@ -109,7 +109,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
       jwsdpPeer = trx.getJwsdpPeer();
       file = trx.getGnucashFile();
 
-      for (GnucashCustVendInvoice invc : getInvoices()) {
+      for (GnucashGenerInvoice invc : getInvoices()) {
           invc.addTransaction(this);
       }
 
@@ -229,13 +229,13 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	/**
 	 * @return the invoices this transaction belongs to (not payments but the transaction belonging to handing out the invoice)
 	 */
-	public Collection<GnucashCustVendInvoice> getInvoices() {
+	public Collection<GnucashGenerInvoice> getInvoices() {
 		Collection<String> invoiceIDs = getInvoiceIDs();
-		List<GnucashCustVendInvoice> retval = new ArrayList<GnucashCustVendInvoice>(invoiceIDs.size());
+		List<GnucashGenerInvoice> retval = new ArrayList<GnucashGenerInvoice>(invoiceIDs.size());
 
 		for (String invoiceID : invoiceIDs) {
 
-			GnucashCustVendInvoice invoice = file.getCustVendInvoiceByID(invoiceID);
+			GnucashGenerInvoice invoice = file.getGenerInvoiceByID(invoiceID);
 			if (invoice == null) {
 				System.err.println(
 						"No invoice with id='"
@@ -508,38 +508,40 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	 */
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("[GnucashTransactionImpl:");
-		
-		buffer.append(" id: ");
-		buffer.append(getId());
-		
-        buffer.append(" description: '");
-        buffer.append(getDescription() + "'");
-        
-        buffer.append(" amount: ");
-        buffer.append(getFirstSplit().getValueFormatted());
-        
-        buffer.append(" #splits: ");
-        buffer.append(getSplitsCount());
-        
-        buffer.append(" date-posted: ");
-        try {
-          buffer.append(getDatePosted().format(DATE_POSTED_FORMAT));
-        } catch (Exception e) {
-          buffer.append(getDatePosted().toString());
-        }
+	    StringBuffer buffer = new StringBuffer();
+	    buffer.append("[GnucashTransactionImpl:");
 
-        buffer.append(" date-entered: ");
-		try {
-          buffer.append(getDateEntered().format(DATE_ENTERED_FORMAT));
-		} catch (Exception e) {
-		  buffer.append(getDateEntered().toString());
-		}
-		
-		buffer.append("]");
-		
-		return buffer.toString();
+	    buffer.append(" id: ");
+	    buffer.append(getId());
+
+	    // ::TODO: That only works in simple cases --
+	    // need a more generic approach
+	    buffer.append(" amount: ");
+	    buffer.append(getFirstSplit().getValueFormatted());
+
+	    buffer.append(" description: '");
+	    buffer.append(getDescription() + "'");
+
+	    buffer.append(" #splits: ");
+	    buffer.append(getSplitsCount());
+
+	    buffer.append(" date-posted: ");
+	    try {
+		buffer.append(getDatePosted().format(DATE_POSTED_FORMAT));
+	    } catch (Exception e) {
+		buffer.append(getDatePosted().toString());
+	    }
+
+	    buffer.append(" date-entered: ");
+	    try {
+		buffer.append(getDateEntered().format(DATE_ENTERED_FORMAT));
+	    } catch (Exception e) {
+		buffer.append(getDateEntered().toString());
+	    }
+
+	    buffer.append("]");
+
+	    return buffer.toString();
 	}
 
 	/**

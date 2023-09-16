@@ -9,11 +9,11 @@ import java.util.Locale;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashJob;
-import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.aux.GnucashTaxTable;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
@@ -78,7 +78,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 
 		List<GnucashCustomerJob> retval = new LinkedList<GnucashCustomerJob>();
 
-		for (GnucashJob job : getGnucashFile().getJobs()) {
+		for (GnucashGenerJob job : getGnucashFile().getJobs()) {
 		  if ( job instanceof GnucashCustomerJob ) {
             if ( ((GnucashCustomerJob) job).getCustomerId().equals(getId()) ) {
               retval.add((GnucashCustomerJob) job);
@@ -121,8 +121,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 
 		try
 		{
-		  for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
-		    if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) ) {
+		  for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
 		      GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen); 
 		      GnucashCustomer cust = invcSpec.getCustomer(); 
               if ( cust.getId().equals(this.getId()) ) {
@@ -148,7 +148,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 	private NumberFormat currencyFormat = null;
 
 	/**
-	 * @return formated acording to the current locale's currency-format
+	 * @return formatted acording to the current locale's currency-format
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getIncomeGenerated()
 	 */
@@ -159,7 +159,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 
 	/**
 	 * @param l the locale to format for
-	 * @return formated acording to the given locale's currency-format
+	 * @return formatted acording to the given locale's currency-format
 	 * @see #getIncomeGenerated()
 	 */
 	public String getIncomeGeneratedFormatted(final Locale l) {
@@ -175,8 +175,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 
         try
         {
-          for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
-            if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) ) {
+          for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+            if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
               GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen); 
               GnucashCustomer cust = invcSpec.getCustomer(); 
               if ( cust.getId().equals(this.getId()) ) {
@@ -397,22 +397,22 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
   // -----------------------------------------------------------------
 
   @Override
-  public Collection<GnucashCustomerInvoice> getPaidInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashCustomerInvoice> getPaidInvoices(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
   {
-    if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
+    if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
       return file.getPaidInvoicesForCustomer_direct(this);
-    else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
+    else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB )
       return file.getPaidInvoicesForCustomer_viaJob(this);
 
     return null; // Compiler happy
   }
 
   @Override
-  public Collection<GnucashCustomerInvoice> getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashCustomerInvoice> getUnpaidInvoices(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
   {
-    if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
+    if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
       return file.getUnpaidInvoicesForCustomer_direct(this);
-    else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
+    else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB )
       return file.getUnpaidInvoicesForCustomer_viaJob(this);
     
     return null; // Compiler happy

@@ -22,13 +22,45 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  *
  */
-public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendInvoiceEntry> {
+public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoiceEntry> {
 
+  // For the following enumerations cf.:
+  // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/gncEntry.h
+  
+  // ::TODO: Locale-specific, make generic
   // ::MAGIC
-  // Possible values for {@link #getAction()}.
-  public final String ACTION_JOB      = "Auftrag";
-  public final String ACTION_MATERIAL = "Material";
-  public final String ACTION_HOURS    = "Stunden";
+  public static final String ACTION_JOB      = "Auftrag";
+  public static final String ACTION_MATERIAL = "Material";
+  public static final String ACTION_HOURS    = "Stunden";
+  
+  // Not yet, for future releases:
+//  public static final String ENTRY_DATE          = "date";
+//  public static final String ENTRY_DATE_ENTERED  = "date-entered";
+//  public static final String ENTRY_DESC          = "desc";
+//  public static final String ENTRY_ACTION        = "action";
+//  public static final String ENTRY_NOTES         = "notes";
+//  public static final String ENTRY_QTY           = "qty";
+//
+//  public static final String ENTRY_IPRICE        = "iprice";
+//  public static final String ENTRY_IACCT         = "invoice-account";
+//  public static final String ENTRY_BACCT         = "bill-account";
+//  public static final String ENTRY_BPRICE        = "bprice";
+//  public static final String ENTRY_BILLABLE      = "billable?";
+//  public static final String ENTRY_BILLTO        = "bill-to";
+//
+//  public static final String ENTRY_ORDER         = "order";
+//  public static final String ENTRY_INVOICE       = "invoice";
+//  public static final String ENTRY_BILL          = "bill";
+//
+//  public static final String ENTRY_INV_DISC_TYPE = "discount-type";
+//  public static final String ENTRY_INV_DISC_HOW  = "discount-method";
+//
+//  public static final String ENTRY_INV_TAXABLE   = "invoice-taxable";
+//  public static final String ENTRY_BILL_TAXABLE  = "bill-taxable";
+//  public static final String ENTRY_INV_TAX_INC   = "invoice-tax-included";
+//  public static final String ENTRY_BILL_TAX_INC  = "bill-tax-included";
+//  public static final String ENTRY_INV_DISCOUNT  = "invoice-discount";
+//  public static final String ENTRY_BILL_PAY_TYPE = "bill-payment-type";
   
   // -----------------------------------------------------------------
 
@@ -46,14 +78,14 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 	/**
 	 *
 	 * @return the unique-id of the invoice we belong to to
-	 * @see GnucashCustVendInvoice#getId()
+	 * @see GnucashGenerInvoice#getId()
 	 */
-	String getCustVendInvoiceID();
+	String getGenerInvoiceID();
 
 	/**
 	 * @return the invoice this entry belongs to
 	 */
-	GnucashCustVendInvoice getCustVendInvoice();
+	GnucashGenerInvoice getGenerInvoice();
 
     // ---------------------------------------------------------------
 
@@ -96,15 +128,8 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
 
 	/**
 	 * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
-	 * @deprecated use ${@link #getQuantityFormated()}
 	 */
-	@Deprecated
 	String getQuantityFormatted();
-
-	/**
-	 * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
-	 */
-	String getQuantityFormated();
 
 	/**
 	 * @return the user-defined description for this object (may contain multiple lines and non-ascii-characters)
@@ -214,5 +239,6 @@ public interface GnucashCustVendInvoiceEntry extends Comparable<GnucashCustVendI
     
     // ---------------------------------------------------------------
 
-	GncV2.GncBook.GncGncEntry getJwsdpPeer();
+	@SuppressWarnings("exports")
+    GncV2.GncBook.GncGncEntry getJwsdpPeer();
 }

@@ -32,9 +32,14 @@ import org.gnucash.numbers.FixedPointNumber;
  */
 public interface GnucashTransaction extends Comparable<GnucashTransaction> {
   
+  // For the following types cf.:
+  // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Transaction.h
+  
   // ::MAGIC
-  public final String TYPE_INVOICE = "I";
-  public final String TYPE_PAYMENT = "P";
+  public static final char TXN_TYPE_NONE  = '\0';
+  public static final char TYPE_INVOICE   = 'I';
+  public static final char TYPE_PAYMENT   = 'P';
+  public static final char TXN_TYPE_LINK  = 'L';
   
   // -----------------------------------------------------------------
 
@@ -57,6 +62,7 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
 
     // ----------------------------
 
+    @SuppressWarnings("exports")
     GncTransaction getJwsdpPeer();
 
     /**

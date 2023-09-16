@@ -50,14 +50,15 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashObject;
-import org.gnucash.read.GnucashTaxTable;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.impl.aux.GnucashTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
@@ -382,9 +383,9 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
 	/**
-	 * @see GnucashFile#getCustVendInvoiceByID(java.lang.String)
+	 * @see GnucashFile#getGenerInvoiceByID(java.lang.String)
 	 */
-	public GnucashCustVendInvoice getCustVendInvoiceByID(final String id) {
+	public GnucashGenerInvoice getGenerInvoiceByID(final String id) {
 		return invoiceID2invoice.get(id);
 	}
 
@@ -392,11 +393,11 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashFile#getInvoices()
 	 */
 	@SuppressWarnings("unchecked")
-	public Collection<GnucashCustVendInvoice> getInvoices() {
+	public Collection<GnucashGenerInvoice> getInvoices() {
 
-		Collection<GnucashCustVendInvoice> c = invoiceID2invoice.values();
+		Collection<GnucashGenerInvoice> c = invoiceID2invoice.values();
 
-		ArrayList<GnucashCustVendInvoice> retval = new ArrayList<GnucashCustVendInvoice>(c);
+		ArrayList<GnucashGenerInvoice> retval = new ArrayList<GnucashGenerInvoice>(c);
 		Collections.sort(retval);
 
 		return retval;
@@ -406,14 +407,14 @@ public class GnucashFileImpl implements GnucashFile {
      * @throws WrongInvoiceTypeException 
      * @see GnucashFile#getPaidInvoices()
      */
-    public Collection<GnucashCustVendInvoice> getPaidInvoices() {
-        Collection<GnucashCustVendInvoice> retval = new LinkedList<GnucashCustVendInvoice>();
-        for (GnucashCustVendInvoice invc : getInvoices()) {
+    public Collection<GnucashGenerInvoice> getPaidInvoices() {
+        Collection<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
+        for (GnucashGenerInvoice invc : getInvoices()) {
           // ::TODO use methods is[Invc|Bill]FullyPaid
 //            if (!invoice.getInvcAmountUnpaidWithTaxes().isPositive()) {
 //                retval.add(invoice);
 //            }
-          if ( invc.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER)) {
+          if ( invc.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER)) {
             try
             {
               if ( invc.isInvcFullyPaid() ) {
@@ -426,7 +427,7 @@ public class GnucashFileImpl implements GnucashFile {
               LOGGER.error("getPaidInvoices: Serious error");
             }
           }
-          else if ( invc.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR)) {
+          else if ( invc.getType().equals(GnucashGenerInvoice.TYPE_VENDOR)) {
             try
             {
               if ( invc.isBillFullyPaid() ) {
@@ -448,14 +449,14 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @throws WrongInvoiceTypeException 
 	 * @see GnucashFile#getUnpaidInvoices()
 	 */
-	public Collection<GnucashCustVendInvoice> getUnpaidInvoices() {
-		Collection<GnucashCustVendInvoice> retval = new LinkedList<GnucashCustVendInvoice>();
-		for (GnucashCustVendInvoice invc : getInvoices()) {
+	public Collection<GnucashGenerInvoice> getUnpaidInvoices() {
+		Collection<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
+		for (GnucashGenerInvoice invc : getInvoices()) {
           // ::TODO use methods is[Invc|Bill]NotFullyPaid
 //			if (invoice.getInvcAmountUnpaidWithTaxes().isPositive()) {
 //				retval.add(invoice);
 //			}
-          if ( invc.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER)) {
+          if ( invc.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER)) {
             try
             {
               if ( invc.isNotInvcFullyPaid() ) {
@@ -468,7 +469,7 @@ public class GnucashFileImpl implements GnucashFile {
               LOGGER.error("getUnpaidInvoices: Serious error");
             }
           }
-          else if ( invc.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR)) {
+          else if ( invc.getType().equals(GnucashGenerInvoice.TYPE_VENDOR)) {
             try
             {
               if ( invc.isNotBillFullyPaid() ) {
@@ -495,8 +496,8 @@ public class GnucashFileImpl implements GnucashFile {
     public Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_direct(final GnucashCustomer cust) {
         Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
         
-        for (GnucashCustVendInvoice invc : getPaidInvoices()) {
-            if (invc.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(cust.getId())) {
+        for (GnucashGenerInvoice invc : getPaidInvoices()) {
+            if (invc.getOwnerId(GnucashGenerInvoice.ReadVariant.DIRECT).equals(cust.getId())) {
                 try {
                   retval.add(new GnucashCustomerInvoiceImpl(invc));
                 }
@@ -518,7 +519,7 @@ public class GnucashFileImpl implements GnucashFile {
     public Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_viaJob(final GnucashCustomer cust) {
         Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
         
-        for (GnucashCustVendInvoice invc : getPaidInvoices())
+        for (GnucashGenerInvoice invc : getPaidInvoices())
         {
           if (invc.getJob().getOwnerId().equals(cust.getId())) {
             try {
@@ -542,8 +543,8 @@ public class GnucashFileImpl implements GnucashFile {
     public Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_direct(final GnucashCustomer cust) {
         Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
         
-        for (GnucashCustVendInvoice invc : getUnpaidInvoices()) {
-            if (invc.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(cust.getId())) {
+        for (GnucashGenerInvoice invc : getUnpaidInvoices()) {
+            if (invc.getOwnerId(GnucashGenerInvoice.ReadVariant.DIRECT).equals(cust.getId())) {
                 try {
                   retval.add(new GnucashCustomerInvoiceImpl(invc));
                 }
@@ -565,7 +566,7 @@ public class GnucashFileImpl implements GnucashFile {
 	public Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_viaJob(final GnucashCustomer cust) {
 		Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
 		
-        for (GnucashCustVendInvoice invc : getUnpaidInvoices())
+        for (GnucashGenerInvoice invc : getUnpaidInvoices())
         {
           if (invc.getJob().getOwnerId().equals(cust.getId())) {
             try {
@@ -590,8 +591,8 @@ public class GnucashFileImpl implements GnucashFile {
     public Collection<GnucashVendorBill> getPaidBillsForVendor_direct(final GnucashVendor vend) {
         Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
         
-        for (GnucashCustVendInvoice invc : getPaidInvoices()) {
-            if (invc.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(vend.getId())) {
+        for (GnucashGenerInvoice invc : getPaidInvoices()) {
+            if (invc.getOwnerId(GnucashGenerInvoice.ReadVariant.DIRECT).equals(vend.getId())) {
                 try {
                   retval.add(new GnucashVendorBillImpl(invc));
                 }
@@ -612,7 +613,7 @@ public class GnucashFileImpl implements GnucashFile {
     public Collection<GnucashVendorBill> getPaidBillsForVendor_viaJob(final GnucashVendor vend) {
         Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
         
-        for (GnucashCustVendInvoice invc : getPaidInvoices()) {
+        for (GnucashGenerInvoice invc : getPaidInvoices()) {
             if (invc.getJob().getOwnerId().equals(vend.getId())) {
                 try {
                   retval.add(new GnucashVendorBillImpl(invc));
@@ -634,8 +635,8 @@ public class GnucashFileImpl implements GnucashFile {
     public Collection<GnucashVendorBill> getUnpaidBillsForVendor_direct(final GnucashVendor vend) {
         Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
         
-        for (GnucashCustVendInvoice invc : getUnpaidInvoices()) {
-            if (invc.getOwnerId(GnucashCustVendInvoice.ReadVariant.DIRECT).equals(vend.getId())) {
+        for (GnucashGenerInvoice invc : getUnpaidInvoices()) {
+            if (invc.getOwnerId(GnucashGenerInvoice.ReadVariant.DIRECT).equals(vend.getId())) {
                 try {
                   retval.add(new GnucashVendorBillImpl(invc));
                 }
@@ -656,7 +657,7 @@ public class GnucashFileImpl implements GnucashFile {
     public Collection<GnucashVendorBill> getUnpaidBillsForVendor_viaJob(final GnucashVendor vend) {
         Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
         
-        for (GnucashCustVendInvoice invc : getUnpaidInvoices()) {
+        for (GnucashGenerInvoice invc : getUnpaidInvoices()) {
             if (invc.getJob().getOwnerId().equals(vend.getId())) {
                 try {
                   retval.add(new GnucashVendorBillImpl(invc));
@@ -676,9 +677,9 @@ public class GnucashFileImpl implements GnucashFile {
 
 
     /**
-     * @see GnucashFile#getCustVendInvoiceByID(java.lang.String)
+     * @see GnucashFile#getGenerInvoiceByID(java.lang.String)
      */
-    public GnucashCustVendInvoiceEntry getInvoiceEntryByID(final String id) {
+    public GnucashGenerInvoiceEntry getInvoiceEntryByID(final String id) {
         return invoiceEntryID2invoiceEntry.get(id);
     }
 
@@ -686,11 +687,11 @@ public class GnucashFileImpl implements GnucashFile {
      * @see GnucashFile#getInvoices()
      */
     @SuppressWarnings("unchecked")
-    public Collection<GnucashCustVendInvoiceEntry> getInvoiceEntries() {
+    public Collection<GnucashGenerInvoiceEntry> getInvoiceEntries() {
 
-        Collection<GnucashCustVendInvoiceEntry> c = invoiceEntryID2invoiceEntry.values();
+        Collection<GnucashGenerInvoiceEntry> c = invoiceEntryID2invoiceEntry.values();
 
-        ArrayList<GnucashCustVendInvoiceEntry> retval = new ArrayList<GnucashCustVendInvoiceEntry>(c);
+        ArrayList<GnucashGenerInvoiceEntry> retval = new ArrayList<GnucashGenerInvoiceEntry>(c);
         Collections.sort(retval);
 
         return retval;
@@ -736,26 +737,26 @@ public class GnucashFileImpl implements GnucashFile {
 	/**
 	 * All customer/vendor invoices indexed by their unique id-String.
 	 *
-	 * @see GnucashCustVendInvoice
-	 * @see GnucashCustVendInvoiceImpl
+	 * @see GnucashGenerInvoice
+	 * @see GnucashGenerInvoiceImpl
 	 */
-	protected Map<String, GnucashCustVendInvoice> invoiceID2invoice;
+	protected Map<String, GnucashGenerInvoice> invoiceID2invoice;
 
     /**
      * All customer/vendor invoice entries indexed by their unique id-String.
      *
-     * @see GnucashCustVendInvoiceEnctry
-     * @see GnucashCustVendInvoiceEntryImpl
+     * @see GnucashGenerInvoiceEnctry
+     * @see GnucashGenerInvoiceEntryImpl
      */
-    protected Map<String, GnucashCustVendInvoiceEntry> invoiceEntryID2invoiceEntry;
+    protected Map<String, GnucashGenerInvoiceEntry> invoiceEntryID2invoiceEntry;
 
 	/**
 	 * All jobs indexed by their unique id-String.
 	 *
-	 * @see GnucashJob
+	 * @see GnucashGenerJob
 	 * @see GnucashCustomerJobImpl
 	 */
-	protected Map<String, GnucashJob> jobID2job;
+	protected Map<String, GnucashGenerJob> jobID2job;
 
 	/**
 	 * All customers indexed by their unique id-String.
@@ -919,7 +920,7 @@ public class GnucashFileImpl implements GnucashFile {
       GncV2.GncBook.GncGncInvoice jwsdpInvc = (GncV2.GncBook.GncGncInvoice) bookElement;
       
       try {
-        GnucashCustVendInvoice invc = createCustVendInvoice(jwsdpInvc);
+        GnucashGenerInvoice invc = createGenerInvoice(jwsdpInvc);
         invoiceID2invoice.put(invc.getId(), invc);
       }
       catch (RuntimeException e) {
@@ -946,7 +947,7 @@ public class GnucashFileImpl implements GnucashFile {
       GncV2.GncBook.GncGncEntry jwsdpInvcEntr = (GncV2.GncBook.GncGncEntry) bookElement;
       
       try {
-        GnucashCustVendInvoiceEntry invcEntr = createCustVendInvoiceEntry(jwsdpInvcEntr);
+        GnucashGenerInvoiceEntry invcEntr = createGenerInvoiceEntry(jwsdpInvcEntr);
         invoiceEntryID2invoiceEntry.put(invcEntr.getId(), invcEntr);
       }
       catch (RuntimeException e) {
@@ -1046,7 +1047,7 @@ public class GnucashFileImpl implements GnucashFile {
 	
   private void initJobMap(final GncV2 pRootElement)
   {
-    jobID2job = new HashMap<String, GnucashJob>();
+    jobID2job = new HashMap<String, GnucashGenerJob>();
     
     for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
@@ -1056,7 +1057,7 @@ public class GnucashFileImpl implements GnucashFile {
       GncV2.GncBook.GncGncJob jwsdpJob = (GncV2.GncBook.GncGncJob) bookElement;
       
       try {
-        GnucashJobImpl job = createCustVendJob(jwsdpJob);
+        GnucashGenerJobImpl job = createGenerJob(jwsdpJob);
         String jobID = job.getId();
         if (jobID == null) {
           LOGGER.error("File contains a customer/vendor job w/o an ID. indexing it with the ID ''");
@@ -1418,9 +1419,9 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param jwsdpInvc the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashInvoice to wrap the given jaxb-object.
 	 */
-	protected GnucashCustVendInvoice createCustVendInvoice(
+	protected GnucashGenerInvoice createGenerInvoice(
 			final GncV2.GncBook.GncGncInvoice jwsdpInvc) {
-		GnucashCustVendInvoice invc = new GnucashCustVendInvoiceImpl(jwsdpInvc, this);
+		GnucashGenerInvoice invc = new GnucashGenerInvoiceImpl(jwsdpInvc, this);
 		return invc;
 	}
 
@@ -1428,9 +1429,9 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param jwsdpInvcEntr the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashInvoiceEntry to wrap the given jaxb-object.
 	 */
-	protected GnucashCustVendInvoiceEntry createCustVendInvoiceEntry(
+	protected GnucashGenerInvoiceEntry createGenerInvoiceEntry(
 			final GncV2.GncBook.GncGncEntry jwsdpInvcEntr) {
-		GnucashCustVendInvoiceEntry entr = new GnucashCustVendInvoiceEntryImpl(jwsdpInvcEntr, this);
+		GnucashGenerInvoiceEntry entr = new GnucashGenerInvoiceEntryImpl(jwsdpInvcEntr, this);
 		return entr;
 	}
 
@@ -1438,9 +1439,9 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @param jwsdpJob the JWSDP-peer (parsed xml-element) to fill our object with
 	 * @return the new GnucashJob to wrap the given jaxb-object.
 	 */
-	protected GnucashJobImpl createCustVendJob(final GncV2.GncBook.GncGncJob jwsdpJob) {
+	protected GnucashGenerJobImpl createGenerJob(final GncV2.GncBook.GncGncJob jwsdpJob) {
 
-		GnucashJobImpl job = new GnucashJobImpl(jwsdpJob, this);
+		GnucashGenerJobImpl job = new GnucashGenerJobImpl(jwsdpJob, this);
 		return job;
 	}
 
@@ -1739,7 +1740,7 @@ public class GnucashFileImpl implements GnucashFile {
 		Collection<GnucashCustomerJob> retval = new LinkedList<GnucashCustomerJob>();
 
 		for (Object element : jobID2job.values()) {
-			GnucashJob job = (GnucashJob) element;
+			GnucashGenerJob job = (GnucashGenerJob) element;
 			if (job.getOwnerId().equals(customer.getId())) {
 			  retval.add((GnucashCustomerJob) job);
 			}
@@ -1759,7 +1760,7 @@ public class GnucashFileImpl implements GnucashFile {
         Collection<GnucashVendorJob> retval = new LinkedList<GnucashVendorJob>();
 
         for (Object element : jobID2job.values()) {
-            GnucashJob job = (GnucashJob) element;
+            GnucashGenerJob job = (GnucashGenerJob) element;
             if (job.getOwnerId().equals(vendor.getId())) {
               retval.add((GnucashVendorJob) job);
             }
@@ -1770,12 +1771,12 @@ public class GnucashFileImpl implements GnucashFile {
 	/**
 	 * @see GnucashFile#getJobByID(java.lang.String)
 	 */
-	public GnucashJob getJobByID(final String id) {
+	public GnucashGenerJob getJobByID(final String id) {
 		if (jobID2job == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		GnucashJob retval = jobID2job.get(id);
+		GnucashGenerJob retval = jobID2job.get(id);
 		if (retval == null) {
 			LOGGER.warn("No Job with id '"
 					+ id
@@ -1790,7 +1791,7 @@ public class GnucashFileImpl implements GnucashFile {
 	/**
 	 * @see GnucashFile#getJobs()
 	 */
-	public Collection<GnucashJob> getJobs() {
+	public Collection<GnucashGenerJob> getJobs() {
 		if (jobID2job == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}

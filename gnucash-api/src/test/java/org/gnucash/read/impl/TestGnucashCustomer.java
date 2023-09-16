@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 
 import org.gnucash.ConstTest;
-import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
@@ -101,13 +101,13 @@ public class TestGnucashCustomer
   {
     cust = gcshFile.getCustomerByID(CUST_1_ID);
     
-    assertEquals(1, cust.getPaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, cust.getPaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
     assertEquals("d9967c10fdf1465e9394a3e4b1e7bd79", 
-                 ((GnucashCustomerInvoice) cust.getPaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0]).getId());
+                 ((GnucashCustomerInvoice) cust.getPaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0]).getId());
     assertEquals(1, cust.getNofOpenInvoices());
-    assertEquals(1, cust.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
     assertEquals("6588f1757b9e4e24b62ad5b37b8d8e07", 
-                 ((GnucashCustomerInvoice) cust.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0]).getId());
+                 ((GnucashCustomerInvoice) cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0]).getId());
   }
 
   @Test
@@ -115,9 +115,9 @@ public class TestGnucashCustomer
   {
     cust = gcshFile.getCustomerByID(CUST_2_ID);
     
-    assertEquals(0, cust.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(0, cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
 //    assertEquals("[GnucashCustomerInvoiceImpl: id: d9967c10fdf1465e9394a3e4b1e7bd79 customer-id (dir.): 5d1dd9afa7554553988669830cc1f696 invoice-number: 'R1730' description: 'null' #entries: 0 date-opened: 2023-07-29]", 
-//                 cust.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0].toString());
+//                 cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0].toString());
   }
 
   @Test
@@ -125,8 +125,8 @@ public class TestGnucashCustomer
   {
     cust = gcshFile.getCustomerByID(CUST_3_ID);
     
-    assertEquals(0, cust.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).size());
+    assertEquals(0, cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
 //    assertEquals("[GnucashCustomerInvoiceImpl: id: d9967c10fdf1465e9394a3e4b1e7bd79 customer-id (dir.): 5d1dd9afa7554553988669830cc1f696 invoice-number: 'R1730' description: 'null' #entries: 0 date-opened: 2023-07-29]", 
-//                 cust.getUnpaidInvoices(GnucashCustVendInvoice.ReadVariant.DIRECT).toArray()[0].toString());
+//                 cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0].toString());
   }
 }

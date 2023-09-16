@@ -25,10 +25,10 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -41,9 +41,9 @@ import org.slf4j.LoggerFactory;
  * Implementation of GnucashInvoice that uses JWSDP.
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
+public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustVendInvoiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashGenerInvoiceImpl.class);
 
   protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
   protected static final DateFormat        DATE_OPENED_FORMAT_1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");  
@@ -65,19 +65,19 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   // ------------------------------
 
   /**
-   * @see GnucashCustVendInvoice#getDateOpened()
+   * @see GnucashGenerInvoice#getDateOpened()
    */
   protected ZonedDateTime dateOpened;
   
   /**
-   * @see GnucashCustVendInvoice#getDatePosted()
+   * @see GnucashGenerInvoice#getDatePosted()
    */
   protected ZonedDateTime datePosted;
 
   /**
    * The entries of this invoice.
    */
-  protected Collection<GnucashCustVendInvoiceEntry> entries = new HashSet<GnucashCustVendInvoiceEntry>();
+  protected Collection<GnucashGenerInvoiceEntry> entries = new HashSet<GnucashGenerInvoiceEntry>();
 
   /**
    * The transactions that are paying for this invoice.
@@ -106,7 +106,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
    * @see #jwsdpPeer
    * @param gncFile the file to register under
    */
-  public GnucashCustVendInvoiceImpl(
+  public GnucashGenerInvoiceImpl(
           final GncV2.GncBook.GncGncInvoice peer,
           final GnucashFile gncFile) {
     super();
@@ -121,7 +121,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   /**
    * @return getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes())
    * @throws WrongInvoiceTypeException
-   * @see GnucashCustVendInvoice#isNotInvcFullyPaid()
+   * @see GnucashGenerInvoice#isNotInvcFullyPaid()
    */
   public boolean isInvcFullyPaid() throws WrongInvoiceTypeException
   {
@@ -131,7 +131,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   /**
    * @return getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes())
    * @throws WrongInvoiceTypeException
-   * @see GnucashCustVendInvoice#isNotInvcFullyPaid()
+   * @see GnucashGenerInvoice#isNotInvcFullyPaid()
    */
   public boolean isNotInvcFullyPaid() throws WrongInvoiceTypeException
   {
@@ -141,7 +141,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   /**
    * @return getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes())
    * @throws WrongInvoiceTypeException
-   * @see GnucashCustVendInvoice#isNotInvcFullyPaid()
+   * @see GnucashGenerInvoice#isNotInvcFullyPaid()
    */
   public boolean isBillFullyPaid() throws WrongInvoiceTypeException
   {
@@ -151,7 +151,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   /**
    * @return getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes())
    * @throws WrongInvoiceTypeException
-   * @see GnucashCustVendInvoice#isNotInvcFullyPaid()
+   * @see GnucashGenerInvoice#isNotInvcFullyPaid()
    */
   public boolean isNotBillFullyPaid() throws WrongInvoiceTypeException
   {
@@ -217,11 +217,12 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	public FixedPointNumber getInvcAmountPaidWithTaxes() throws WrongInvoiceTypeException {
 
       FixedPointNumber takenFromReceivableAccount = new FixedPointNumber();
-		for (GnucashTransaction trx : getPayingTransactions()) {
-			for (GnucashTransactionSplit split : trx.getSplits()) {
-				if ( split.getAccount().getType().equals(GnucashAccount.TYPE_RECEIVABLE) &&
-                     ! split.getValue().isPositive() ) {
-				  takenFromReceivableAccount.subtract(split.getValue());
+		for ( GnucashTransaction trx : getPayingTransactions() ) {
+			for ( GnucashTransactionSplit split : trx.getSplits() ) {
+				if ( split.getAccount().getType().equals(GnucashAccount.TYPE_RECEIVABLE) ) {
+				  if ( ! split.getValue().isPositive() ) { 
+				    takenFromReceivableAccount.subtract(split.getValue());
+				  }
                }
 			} // split
 		} // trx
@@ -233,8 +234,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	public FixedPointNumber getInvcAmountPaidWithoutTaxes() throws WrongInvoiceTypeException {
 	  FixedPointNumber retval = new FixedPointNumber();
 	  
-	  for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
-        if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) ) {
+	  for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+        if ( entry.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
           retval.add(entry.getInvcSumExclTaxes());
         }
 	  }
@@ -254,8 +255,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   	//      multiply the sums with the tax% to be calculatng
   	//      correctly
   
-  	for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
-      if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) ) {
+  	for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+      if ( entry.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
   		retval.add(entry.getInvcSumInclTaxes());
       }
   	}
@@ -271,8 +272,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
   
   	FixedPointNumber retval = new FixedPointNumber();
   
-  	for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
-      if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) ) {
+  	for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+      if ( entry.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
   		retval.add(entry.getInvcSumExclTaxes());
       }
   	}
@@ -343,11 +344,12 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
     public FixedPointNumber getBillAmountPaidWithTaxes() throws WrongInvoiceTypeException {
 
       FixedPointNumber takenFromPayableAccount = new FixedPointNumber();
-        for (GnucashTransaction trx : getPayingTransactions()) {
-            for (GnucashTransactionSplit split : trx.getSplits()) {
-                if ( split.getAccount().getType().equals(GnucashAccount.TYPE_PAYABLE) &&
-                     split.getValue().isPositive() ) {
-                  takenFromPayableAccount.add(split.getValue());
+        for ( GnucashTransaction trx : getPayingTransactions() ) {
+            for ( GnucashTransactionSplit split : trx.getSplits() ) {
+                if ( split.getAccount().getType().equals(GnucashAccount.TYPE_PAYABLE) ) {
+                  if ( split.getValue().isPositive() ) {
+                    takenFromPayableAccount.add(split.getValue());
+                  }
                 }
             } // split
         } // trx
@@ -360,8 +362,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
     public FixedPointNumber getBillAmountPaidWithoutTaxes() throws WrongInvoiceTypeException {
       FixedPointNumber retval = new FixedPointNumber();
       
-      for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
-        if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) ) {
+      for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+        if ( entry.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
           retval.add(entry.getBillSumExclTaxes());
         }
       }
@@ -381,8 +383,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
       //      multiply the sums with the tax% to be calculatng
       //      correctly
     
-      for ( GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries() ) {
-        if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) ) {
+      for ( GnucashGenerInvoiceEntry entry : getGenerInvcEntries() ) {
+        if ( entry.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
           retval.add(entry.getBillSumInclTaxes());
         }
       }
@@ -398,8 +400,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
     
       FixedPointNumber retval = new FixedPointNumber();
     
-      for ( GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries() ) {
-        if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) ) {
+      for ( GnucashGenerInvoiceEntry entry : getGenerInvcEntries() ) {
+        if ( entry.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
           retval.add(entry.getBillSumExclTaxes());
         }
       }
@@ -460,7 +462,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 		List<TaxedSum> taxedSums = new LinkedList<TaxedSum>();
 
 		invoiceentries:
-		for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
+		for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
           if ( entry.getType().equals(TYPE_CUSTOMER) ) {
 			FixedPointNumber taxPerc = entry.getInvcApplicableTaxPercent();
 
@@ -494,7 +496,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
         List<TaxedSum> taxedSums = new LinkedList<TaxedSum>();
 
         invoiceentries:
-        for (GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries()) {
+        for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
           if ( entry.getType().equals(TYPE_VENDOR) ) {
             FixedPointNumber taxPerc = entry.getBillApplicableTaxPercent();
 
@@ -521,7 +523,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashJob getJob() {
+	public GnucashGenerJob getJob() {
 		return file.getJobByID(getJobID());
 	}
 
@@ -591,8 +593,8 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
     /**
      * {@inheritDoc}
      */
-    public GnucashCustVendInvoiceEntry getCustVendInvcEntryById(final String id) {
-        for (GnucashCustVendInvoiceEntry element : getCustVendInvcEntries()) {
+    public GnucashGenerInvoiceEntry getGenerInvcEntryById(final String id) {
+        for (GnucashGenerInvoiceEntry element : getGenerInvcEntries()) {
             if (element.getId().equals(id)) {
                 return element;
             }
@@ -604,16 +606,16 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<GnucashCustVendInvoiceEntry> getCustVendInvcEntries() {
+	public Collection<GnucashGenerInvoiceEntry> getGenerInvcEntries() {
 	    return entries;
 	}
 
     /**
      * {@inheritDoc}
      */
-    public void addCustVendInvcEntry(final GnucashCustVendInvoiceEntry entry) {
+    public void addGenerInvcEntry(final GnucashGenerInvoiceEntry entry) {
         if (!entries.contains(entry)) {
-            entries.add(new GnucashCustVendInvoiceEntryImpl(entry));
+            entries.add(new GnucashGenerInvoiceEntryImpl(entry));
         }
     }
 
@@ -731,7 +733,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	 * @param o invoice to compare with
 	 * @return -1 0 or 1
 	 */
-	public int compareTo(final GnucashCustVendInvoice otherInvc) {
+	public int compareTo(final GnucashGenerInvoice otherInvc) {
 		try {
 			int compare = otherInvc.getDatePosted().compareTo(getDatePosted());
 			if (compare != 0) {
@@ -752,7 +754,7 @@ public class GnucashCustVendInvoiceImpl implements GnucashCustVendInvoice {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("[GnucashCustVendInvoiceImpl:");
+		buffer.append("[GnucashGenerInvoiceImpl:");
         buffer.append(" id: ");
         buffer.append(getId());
         buffer.append(" owner-id (dir.): ");

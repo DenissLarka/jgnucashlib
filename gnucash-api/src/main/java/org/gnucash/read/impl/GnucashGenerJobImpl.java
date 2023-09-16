@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashJobImpl implements GnucashJob {
+public class GnucashGenerJobImpl implements GnucashGenerJob {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(GnucashJobImpl.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(GnucashGenerJobImpl.class);
 
     /**
      * the JWSDP-object we are facading.
@@ -30,7 +30,8 @@ public class GnucashJobImpl implements GnucashJob {
      * @see #jwsdpPeer
      * @param gncFile the file to register under
      */
-    public GnucashJobImpl(
+    @SuppressWarnings("exports")
+    public GnucashGenerJobImpl(
             final GncV2.GncBook.GncGncJob peer,
             final GnucashFile gncFile) {
         super();
@@ -51,6 +52,7 @@ public class GnucashJobImpl implements GnucashJob {
      *
      * @return The JWSDP-Object we are wrapping.
      */
+    @SuppressWarnings("exports")
     public GncV2.GncBook.GncGncJob getJwsdpPeer() {
         return jwsdpPeer;
     }
@@ -74,11 +76,11 @@ public class GnucashJobImpl implements GnucashJob {
 
     /**
      * @return all invoices that refer to this job.
-     * @see GnucashJob#getInvoices()
+     * @see GnucashGenerJob#getInvoices()
      */
-    public Collection<? extends GnucashCustVendInvoice> getInvoices() {
-        List<GnucashCustVendInvoice> retval = new LinkedList<GnucashCustVendInvoice>();
-        for (GnucashCustVendInvoice invoice : getFile().getInvoices()) {
+    public Collection<GnucashGenerInvoice> getInvoices() {
+        List<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
+        for (GnucashGenerInvoice invoice : getFile().getInvoices()) {
             if (invoice.getJobID().equals(getId())) {
                 retval.add(invoice);
             }

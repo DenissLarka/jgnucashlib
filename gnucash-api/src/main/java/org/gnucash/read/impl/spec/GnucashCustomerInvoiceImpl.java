@@ -5,21 +5,21 @@ import java.util.HashSet;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
-import org.gnucash.read.impl.GnucashCustVendInvoiceImpl;
+import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
+public class GnucashCustomerInvoiceImpl extends GnucashGenerInvoiceImpl
                                         implements GnucashCustomerInvoice
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerInvoiceImpl.class);
@@ -29,16 +29,16 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
     super(peer, gncFile);
   }
 
-  public GnucashCustomerInvoiceImpl(final GnucashCustVendInvoice invc) throws WrongInvoiceTypeException
+  public GnucashCustomerInvoiceImpl(final GnucashGenerInvoice invc) throws WrongInvoiceTypeException
   {
     super(invc.getJwsdpPeer(), invc.getFile());
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
-    if ( ! invc.getOwnerType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+    if ( ! invc.getOwnerType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
       throw new WrongInvoiceTypeException();
     
-    for ( GnucashCustVendInvoiceEntry entry : invc.getCustVendInvcEntries() )
+    for ( GnucashGenerInvoiceEntry entry : invc.getGenerInvcEntries() )
     {
       addEntry(new GnucashCustomerInvoiceEntryImpl(entry));
     }
@@ -49,13 +49,13 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
       {
         String lot = splt.getLotID();
         if ( lot != null ) {
-            for ( GnucashCustVendInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
+            for ( GnucashGenerInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
                 String lotID = invc1.getLotID();
                 if ( lotID != null &&
                      lotID.equals(lot) ) {
                     // Check if it's a payment transaction. 
                     // If so, add it to the invoice's list of payment transactions.
-                    if ( splt.getSplitAction().equals(GnucashTransactionSplit.ACTION_PAYMENT) ) {
+                    if ( splt.getAction().equals(GnucashTransactionSplit.ACTION_PAYMENT) ) {
                         addPayingTransaction(splt);
                     }
                 } // if lotID
@@ -70,7 +70,7 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   /**
    * {@inheritDoc}
    */
-  public String getCustomerId(GnucashCustVendInvoice.ReadVariant readVar) {
+  public String getCustomerId(GnucashGenerInvoice.ReadVariant readVar) {
     return getOwnerId(readVar);
   }
 
@@ -81,14 +81,14 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   }
 
   public GnucashCustomer getCustomer_direct() throws WrongInvoiceTypeException {
-    if ( ! getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+    if ( ! getJwsdpPeer().getInvoiceOwner().getOwnerType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
       throw new WrongInvoiceTypeException();
     
     return file.getCustomerByID(getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue());
   }
 
   public GnucashCustomer getCustomer_viaJob() throws WrongInvoiceTypeException {
-    if ( ! getJob().getOwnerType().equals(GnucashJob.TYPE_CUSTOMER) )
+    if ( ! getJob().getOwnerType().equals(GnucashGenerJob.TYPE_CUSTOMER) )
       throw new WrongInvoiceTypeException();
     
     return ((GnucashCustomerJobImpl) getJob()).getCustomer();
@@ -99,7 +99,7 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   @Override
   public GnucashCustomerInvoiceEntry getEntryById(String id) throws WrongInvoiceTypeException
   {
-    return new GnucashCustomerInvoiceEntryImpl(getCustVendInvcEntryById(id));
+    return new GnucashCustomerInvoiceEntryImpl(getGenerInvcEntryById(id));
   }
 
   @Override
@@ -107,9 +107,9 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   {
     Collection<GnucashCustomerInvoiceEntry> castEntries = new HashSet<GnucashCustomerInvoiceEntry>();
     
-    for ( GnucashCustVendInvoiceEntry entry : getCustVendInvcEntries() )
+    for ( GnucashGenerInvoiceEntry entry : getGenerInvcEntries() )
     {
-      if ( entry.getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+      if ( entry.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
       {
         castEntries.add(new GnucashCustomerInvoiceEntryImpl(entry));
       }
@@ -121,7 +121,7 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
   @Override
   public void addEntry(final GnucashCustomerInvoiceEntry entry)
   {
-    addCustVendInvcEntry(entry);
+    addGenerInvcEntry(entry);
   }
 
   // -----------------------------------------------------------------
@@ -285,7 +285,7 @@ public class GnucashCustomerInvoiceImpl extends GnucashCustVendInvoiceImpl
       buffer.append(" id: ");
       buffer.append(getId());
       buffer.append(" customer-id (dir.): ");
-      buffer.append(getCustomerId(GnucashCustVendInvoice.ReadVariant.DIRECT));
+      buffer.append(getCustomerId(GnucashGenerInvoice.ReadVariant.DIRECT));
       buffer.append(" invoice-number: '");
       buffer.append(getNumber() + "'");
       buffer.append(" description: '");

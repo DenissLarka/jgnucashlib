@@ -3,13 +3,13 @@ package org.gnucash.read.impl.spec;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.impl.GnucashJobImpl;
+import org.gnucash.read.impl.GnucashGenerJobImpl;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class GnucashCustomerJobImpl extends GnucashJobImpl
+public class GnucashCustomerJobImpl extends GnucashGenerJobImpl
                                     implements GnucashCustomerJob
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerJobImpl.class);

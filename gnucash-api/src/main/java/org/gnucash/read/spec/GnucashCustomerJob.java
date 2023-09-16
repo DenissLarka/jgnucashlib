@@ -1,9 +1,9 @@
 package org.gnucash.read.spec;
 
 import org.gnucash.read.GnucashCustomer;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerJob;
 
-public interface GnucashCustomerJob extends GnucashJob {
+public interface GnucashCustomerJob extends GnucashGenerJob {
 
 	String getCustomerType();
 

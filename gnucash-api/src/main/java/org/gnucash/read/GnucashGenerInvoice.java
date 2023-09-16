@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.aux.GnucashOwner;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
@@ -25,15 +26,29 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  * Implementations of this interface are comparable and sorts primarily on the date the Invoice was
  * created and secondarily on the date it should be paid.
  *
- * @see GnucashJob
+ * @see GnucashGenerJob
  * @see GnucashCustomer
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoice> {
+public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   
-  // ::MAGIC
-  final static String TYPE_CUSTOMER = "gncCustomer";
-  final static String TYPE_VENDOR   = "gncVendor";
+  // For the following types cf.:
+  // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/gncInvoice.h
+  
+  /**
+   * @deprecated Use {@link GnucashOwner#TYPE_CUSTOMER} instead
+   */
+  public static final String TYPE_CUSTOMER = GnucashOwner.TYPE_CUSTOMER;
+  /**
+   * @deprecated Use {@link GnucashOwner#TYPE_VENDOR} instead
+   */
+  public static final String TYPE_VENDOR   = GnucashOwner.TYPE_VENDOR;
+  /**
+   * @deprecated Use {@link GnucashOwner#TYPE_EMPLOYEE} instead
+   */
+  public static final String TYPE_EMPLOYEE = GnucashOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
+  
+  // ------------------------------
 
   public enum ReadVariant {
     DIRECT,
@@ -56,8 +71,9 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	 */
 	String getDescription();
 	
-	// ----------------------------
+    // ----------------------------
 
+    @SuppressWarnings("exports")
     GncGncInvoice getJwsdpPeer();
 
 	/**
@@ -130,7 +146,7 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
 	/**
 	 * @return the job this invoice is for
 	 */
-	GnucashJob getJob();
+	GnucashGenerJob getJob();
 	
 	// ---------------------------------------------------------------
 
@@ -411,20 +427,20 @@ public interface GnucashCustVendInvoice extends Comparable<GnucashCustVendInvoic
      * @param id the id to look for
      * @return the Entry found or null
      */
-    GnucashCustVendInvoiceEntry getCustVendInvcEntryById(String id);
+    GnucashGenerInvoiceEntry getGenerInvcEntryById(String id);
 
     /**
      *
      * @return the content of the invoice
-     * @see ${@link GnucashCustVendInvoiceEntry}
+     * @see ${@link GnucashGenerInvoiceEntry}
     */
-	Collection<GnucashCustVendInvoiceEntry> getCustVendInvcEntries();
+	Collection<GnucashGenerInvoiceEntry> getGenerInvcEntries();
 
 	/**
 	 * This method is used internally during the loading of a file.
 	 * @param entry the entry to ad during loading.
 	 */
-	void addCustVendInvcEntry(GnucashCustVendInvoiceEntry entry);
+	void addGenerInvcEntry(GnucashGenerInvoiceEntry entry);
 
     // ---------------------------------------------------------------
 

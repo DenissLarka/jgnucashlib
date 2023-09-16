@@ -3,8 +3,8 @@ package org.gnucash.read.spec;
 import java.util.Collection;
 
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 
 /**
@@ -18,15 +18,15 @@ import org.gnucash.read.GnucashVendor;
  * Implementations of this interface are comparable and sorts primarily on the date the Invoice was
  * created and secondarily on the date it should be paid.
  *
- * @see GnucashJob
+ * @see GnucashGenerJob
  * @see GnucashVendor
  */
-public interface GnucashVendorBill extends GnucashCustVendInvoice {
+public interface GnucashVendorBill extends GnucashGenerInvoice {
 
     /**
      * @return ID of vendor this invoice has been sent from 
      */
-    String getVendorId(GnucashCustVendInvoice.ReadVariant readVar);
+    String getVendorId(GnucashGenerInvoice.ReadVariant readVar);
 
     /**
      * @return Customer this invoice has been sent to.

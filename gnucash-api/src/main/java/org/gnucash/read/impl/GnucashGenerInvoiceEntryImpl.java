@@ -22,9 +22,9 @@ import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryITaxtable;
 import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryInvoice;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice;
-import org.gnucash.read.GnucashCustVendInvoiceEntry;
-import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
+import org.gnucash.read.aux.GnucashTaxTable;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +35,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl 
-                                             implements GnucashCustVendInvoiceEntry 
+public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl 
+                                          implements GnucashGenerInvoiceEntry 
 {
-  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustVendInvoiceEntryImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashGenerInvoiceEntryImpl.class);
 
   /**
       * The taxtable in the gnucash xml-file.
@@ -70,7 +70,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	/**
 	 * Our logger for debug- and error-ourput.
 	 */
-	private static final Logger LOG = LoggerFactory.getLogger(GnucashCustVendInvoiceEntryImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GnucashGenerInvoiceEntryImpl.class);
 
 	/**
 	 * Format of the JWSDP-Field for the entry-date.
@@ -91,8 +91,8 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	 * @param invoice The invoice we belong to.
 	 * @param peer    the JWSDP-Object we are wrapping.
 	 */
-	public GnucashCustVendInvoiceEntryImpl(
-			final GnucashCustVendInvoice invoice,
+	public GnucashGenerInvoiceEntryImpl(
+			final GnucashGenerInvoice invoice,
 			final GncV2.GncBook.GncGncEntry peer,
 			final boolean addEntryToInvoice) {
 		super((peer.getEntrySlots() == null) ? new ObjectFactory().createSlotsType() : peer.getEntrySlots(), invoice.getFile());
@@ -106,7 +106,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
 		if ( addEntryToInvoice ) {
         if ( invoice != null ) {
-          invoice.addCustVendInvcEntry(this);
+          invoice.addGenerInvcEntry(this);
         }
 		}
 	}
@@ -118,7 +118,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	 * @param peer    the JWSDP-object we are facading.
 	 * @see #jwsdpPeer
 	 */
-	public GnucashCustVendInvoiceEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) {
+	public GnucashGenerInvoiceEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) {
 		super((peer.getEntrySlots() == null) ? new ObjectFactory().createSlotsType() : peer.getEntrySlots(), gncFile);
 		
         if ( peer.getEntrySlots() == null ) {
@@ -128,17 +128,17 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 		this.jwsdpPeer = peer;
 
 		// an exception is thrown here if we have an invoice-ID but the invoice does not exist
-		GnucashCustVendInvoice invoice = getCustVendInvoice();
+		GnucashGenerInvoice invoice = getGenerInvoice();
 		if ( invoice != null ) {
 			// ...so we only need to handle the case of having no invoice-id at all
-			invoice.addCustVendInvcEntry(this);
+			invoice.addGenerInvcEntry(this);
 		}
 	}
 
 	// Copy-constructor
-    public GnucashCustVendInvoiceEntryImpl(final GnucashCustVendInvoiceEntry entry)
+    public GnucashGenerInvoiceEntryImpl(final GnucashGenerInvoiceEntry entry)
     {
-      super(entry.getCustVendInvoice().getFile());
+      super(entry.getGenerInvoice().getFile());
 
       if ( entry.getJwsdpPeer().getEntrySlots() == null ) {
         setSlots(new ObjectFactory().createSlotsType());
@@ -147,7 +147,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
         setSlots(entry.getJwsdpPeer().getEntrySlots());  
       }
       
-      this.myInvoice = entry.getCustVendInvoice();
+      this.myInvoice = entry.getGenerInvoice();
       this.jwsdpPeer = entry.getJwsdpPeer();
     }
 
@@ -164,14 +164,14 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
      * {@inheritDoc}
      */
 	public String getType() {
-      return getCustVendInvoice().getOwnerType();
+      return getGenerInvoice().getOwnerType();
 	}
 
 	/**
 	 * MAY RETURN NULL.
 	 * {@inheritDoc}
 	 */
-	public String getCustVendInvoiceID() {
+	public String getGenerInvoiceID() {
       EntryInvoice entrInvc = null;
       EntryBill entrBill = null;
       
@@ -212,19 +212,19 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	/**
 	 * The invoice this entry is from.
 	 */
-	protected GnucashCustVendInvoice myInvoice;
+	protected GnucashGenerInvoice myInvoice;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashCustVendInvoice getCustVendInvoice() {
+	public GnucashGenerInvoice getGenerInvoice() {
 		if (myInvoice == null) {
-			String invcId = getCustVendInvoiceID();
+			String invcId = getGenerInvoiceID();
 			if (invcId != null) {
-				myInvoice = getGnucashFile().getCustVendInvoiceByID(invcId);
+				myInvoice = getGnucashFile().getGenerInvoiceByID(invcId);
 				if (myInvoice == null) {
 					throw new IllegalStateException("No customer/vendor invoice/bill with id '"
-							+ getCustVendInvoiceID()
+							+ getGenerInvoiceID()
 							+ "' for invoiceEntry with id '"
 							+ getId()
 							+ "'");
@@ -459,14 +459,14 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	// ---------------------------------------------------------------
 
 	/**
-	 * @see GnucashCustVendInvoiceEntry#getInvcPrice()
+	 * @see GnucashGenerInvoiceEntry#getInvcPrice()
 	 */
 	public FixedPointNumber getInvcPrice() throws WrongInvoiceTypeException {
 		return new FixedPointNumber(jwsdpPeer.getEntryIPrice());
 	}
 
     /**
-     * @see GnucashCustVendInvoiceEntry#getInvcPrice()
+     * @see GnucashGenerInvoiceEntry#getInvcPrice()
      */
     public FixedPointNumber getBillPrice() throws WrongInvoiceTypeException {
         return new FixedPointNumber(jwsdpPeer.getEntryBPrice());
@@ -479,7 +479,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	 * type ${@link #getAction()}.
 	 */
 	public String getInvcPriceFormatted() throws WrongInvoiceTypeException {
-		return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcPrice());
+		return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getInvcPrice());
 	}
 	
     /**
@@ -487,13 +487,13 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
      * type ${@link #getAction()}.
      */
     public String getBillPriceFormatted() throws WrongInvoiceTypeException {
-        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillPrice());
+        return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getBillPrice());
     }
 
     // ---------------------------------------------------------------
 
 	/**
-	 * @see GnucashCustVendInvoiceEntry#getInvcSum()
+	 * @see GnucashGenerInvoiceEntry#getInvcSum()
 	 */
 	public FixedPointNumber getInvcSum() throws WrongInvoiceTypeException {
 		return getInvcPrice().multiply(getQuantity());
@@ -501,7 +501,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 	
     /**
      * @throws WrongInvoiceTypeException 
-     * @see GnucashCustVendInvoiceEntry#getInvcSumInclTaxes()
+     * @see GnucashGenerInvoiceEntry#getInvcSumInclTaxes()
      */
     public FixedPointNumber getInvcSumInclTaxes() throws WrongInvoiceTypeException {
         if (jwsdpPeer.getEntryITaxincluded() == 1) {
@@ -513,7 +513,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
     /**
      * @throws WrongInvoiceTypeException 
-     * @see GnucashCustVendInvoiceEntry#getInvcSumExclTaxes()
+     * @see GnucashGenerInvoiceEntry#getInvcSumExclTaxes()
      */
     public FixedPointNumber getInvcSumExclTaxes() throws WrongInvoiceTypeException {
 
@@ -531,10 +531,10 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
     /**
      * @throws WrongInvoiceTypeException 
-     * @see GnucashCustVendInvoiceEntry#getInvcSum()
+     * @see GnucashGenerInvoiceEntry#getInvcSum()
      */
     public String getInvcSumFormatted() throws WrongInvoiceTypeException {
-        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcSum());
+        return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getInvcSum());
     }
     
     /**
@@ -542,7 +542,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
      * @throws WrongInvoiceTypeException 
      */
     public String getInvcSumInclTaxesFormatted() throws WrongInvoiceTypeException {
-        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcSumInclTaxes());
+        return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getInvcSumInclTaxes());
     }
 
     /**
@@ -550,13 +550,13 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
      * @throws WrongInvoiceTypeException 
      */
     public String getInvcSumExclTaxesFormatted() throws WrongInvoiceTypeException {
-        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getInvcSumExclTaxes());
+        return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getInvcSumExclTaxes());
     }
     
     // ----------------------------
 
     /**
-     * @see GnucashCustVendInvoiceEntry#getInvcSum()
+     * @see GnucashGenerInvoiceEntry#getInvcSum()
      */
     public FixedPointNumber getBillSum() throws WrongInvoiceTypeException {
         return getBillPrice().multiply(getQuantity());
@@ -564,7 +564,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
     
     /**
      * @throws WrongInvoiceTypeException 
-     * @see GnucashCustVendInvoiceEntry#getInvcSumInclTaxes()
+     * @see GnucashGenerInvoiceEntry#getInvcSumInclTaxes()
      */
     public FixedPointNumber getBillSumInclTaxes() throws WrongInvoiceTypeException {
         if (jwsdpPeer.getEntryBTaxincluded() == 1) {
@@ -576,7 +576,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
     /**
      * @throws WrongInvoiceTypeException 
-     * @see GnucashCustVendInvoiceEntry#getInvcSumExclTaxes()
+     * @see GnucashGenerInvoiceEntry#getInvcSumExclTaxes()
      */
     public FixedPointNumber getBillSumExclTaxes() throws WrongInvoiceTypeException {
 
@@ -594,10 +594,10 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
     /**
      * @throws WrongInvoiceTypeException 
-     * @see GnucashCustVendInvoiceEntry#getInvcSum()
+     * @see GnucashGenerInvoiceEntry#getInvcSum()
      */
     public String getBillSumFormatted() throws WrongInvoiceTypeException {
-        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillSum());
+        return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getBillSum());
     }
     
     /**
@@ -605,7 +605,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
      * @throws WrongInvoiceTypeException 
      */
     public String getBillSumInclTaxesFormatted() throws WrongInvoiceTypeException {
-        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillSumInclTaxes());
+        return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getBillSumInclTaxes());
     }
 
     /**
@@ -613,34 +613,34 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
      * @throws WrongInvoiceTypeException 
      */
     public String getBillSumExclTaxesFormatted() throws WrongInvoiceTypeException {
-        return ((GnucashCustVendInvoiceImpl) getCustVendInvoice()).getCurrencyFormat().format(getBillSumExclTaxes());
+        return ((GnucashGenerInvoiceImpl) getGenerInvoice()).getCurrencyFormat().format(getBillSumExclTaxes());
     }
     
     // ---------------------------------------------------------------
 
 	/**
-	 * @see GnucashCustVendInvoiceEntry#isInvcTaxable()
+	 * @see GnucashGenerInvoiceEntry#isInvcTaxable()
 	 */
 	public boolean isInvcTaxable() {
 		return ( jwsdpPeer.getEntryITaxable() == 1 );
 	}
 
     /**
-     * @see GnucashCustVendInvoiceEntry#isInvcTaxable()
+     * @see GnucashGenerInvoiceEntry#isInvcTaxable()
      */
     public boolean isBillTaxable() {
         return ( jwsdpPeer.getEntryBTaxable() == 1 );
     }
 
 	/**
-	 * @see GnucashCustVendInvoiceEntry#getAction()
+	 * @see GnucashGenerInvoiceEntry#getAction()
 	 */
 	public String getAction() {
 		return jwsdpPeer.getEntryAction();
 	}
 
 	/**
-	 * @see GnucashCustVendInvoiceEntry#getQuantity()
+	 * @see GnucashGenerInvoiceEntry#getQuantity()
 	 */
 	public FixedPointNumber getQuantity() {
 		String val = getJwsdpPeer().getEntryQty();
@@ -649,18 +649,8 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @deprecated use ${@link #getQuantityFormated()}
 	 */
-	@Deprecated
 	public String getQuantityFormatted() {
-		return getNumberFormat().format(getQuantity());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getQuantityFormated() {
 		return getNumberFormat().format(getQuantity());
 	}
 
@@ -711,11 +701,11 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
     /**
      * {@inheritDoc}
      */
-    public int compareTo(final GnucashCustVendInvoiceEntry otherEntr) {
+    public int compareTo(final GnucashGenerInvoiceEntry otherEntr) {
         try {
-            GnucashCustVendInvoice otherInvc = otherEntr.getCustVendInvoice();
-            if (otherInvc != null && getCustVendInvoice() != null) {
-                int c = otherInvc.compareTo(getCustVendInvoice());
+            GnucashGenerInvoice otherInvc = otherEntr.getGenerInvoice();
+            if (otherInvc != null && getGenerInvoice() != null) {
+                int c = otherInvc.compareTo(getGenerInvoice());
                 if (c != 0) {
                     return c;
                 }
@@ -748,22 +738,22 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("[GnucashCustVendInvoiceEntryImpl:");
+        buffer.append("[GnucashGenerInvoiceEntryImpl:");
         buffer.append(" id: ");
         buffer.append(getId());
         buffer.append(" type: ");
         buffer.append(getType());
         buffer.append(" cust/vend-invoice-id: ");
-        buffer.append(getCustVendInvoiceID());
+        buffer.append(getGenerInvoiceID());
 //      //      buffer.append(" cust/vend-invoice: ");
-//      //      GnucashCustVendInvoice invc = getCustVendInvoice();
+//      //      GnucashGenerInvoice invc = getGenerInvoice();
 //      //      buffer.append(invoice==null?"null":invc.getName());
         buffer.append(" description: '");
         buffer.append(getDescription() + "'");
         buffer.append(" action: '");
         buffer.append(getAction() + "'");
         buffer.append(" price: ");
-        if ( getType().equals(GnucashCustVendInvoice.TYPE_CUSTOMER) )
+        if ( getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
         {
           try
           {
@@ -774,7 +764,7 @@ public class GnucashCustVendInvoiceEntryImpl extends GnucashObjectImpl
             buffer.append("ERROR");
           }
         }
-        else if ( getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) )
+        else if ( getType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
         {
           try
           {

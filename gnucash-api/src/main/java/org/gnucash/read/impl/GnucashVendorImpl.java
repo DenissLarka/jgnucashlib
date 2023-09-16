@@ -10,9 +10,9 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
@@ -75,7 +75,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
 		List<GnucashVendorJob> retval = new LinkedList<GnucashVendorJob>();
 
-		for (GnucashJob job : getGnucashFile().getJobs()) {
+		for (GnucashGenerJob job : getGnucashFile().getJobs()) {
 		  if ( job instanceof GnucashVendorJob ) {
             if ( ((GnucashVendorJob) job).getVendorId().equals(getId())) {
               retval.add((GnucashVendorJob) job);
@@ -104,8 +104,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
 		try
 		{
-		  for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
-		    if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) ) {
+		  for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
 		      GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
 		      GnucashVendor vend = bllSpec.getVendor(); 
               if ( vend.getId().equals(this.getId()) ) {
@@ -131,7 +131,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	private NumberFormat currencyFormat = null;
 
 	/**
-	 * @return formated acording to the current locale's currency-format
+	 * @return formatted acording to the current locale's currency-format
 	 * @see #getExpensesGenerated()
 	 */
 	public String getExpensesGeneratedFormatted() {
@@ -141,7 +141,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
 	/**
 	 * @param l the locale to format for
-	 * @return formated acording to the given locale's currency-format
+	 * @return formatted acording to the given locale's currency-format
 	 * @see #getExpensesGenerated()
 	 */
 	public String getExpensesGeneratedFormatted(final Locale l) {
@@ -157,8 +157,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
         try
         {
-          for ( GnucashCustVendInvoice invcGen : getGnucashFile().getInvoices() ) {
-            if ( invcGen.getType().equals(GnucashCustVendInvoice.TYPE_VENDOR) ) {
+          for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+            if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
               GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
               GnucashVendor vend = bllSpec.getVendor(); 
               if ( vend.getId().equals(this.getId()) ) {
@@ -350,22 +350,22 @@ public class GnucashVendorImpl extends GnucashObjectImpl
   // -----------------------------------------------------------------
 
   @Override
-  public Collection<GnucashVendorBill> getPaidBills(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashVendorBill> getPaidBills(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
   {
-    if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
+    if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
       return file.getPaidBillsForVendor_direct(this);
-    else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB ) 
+    else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB ) 
       return file.getPaidBillsForVendor_viaJob(this);
 
     return null; // Compiler happy
   }
 
   @Override
-  public Collection<GnucashVendorBill> getUnpaidBills(GnucashCustVendInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashVendorBill> getUnpaidBills(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
   {
-    if ( readVar == GnucashCustVendInvoice.ReadVariant.DIRECT )
+    if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
       return file.getUnpaidBillsForVendor_direct(this);
-    else if ( readVar == GnucashCustVendInvoice.ReadVariant.VIA_JOB )
+    else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB )
       return file.getUnpaidBillsForVendor_viaJob(this);
     
     return null; // Compiler happy

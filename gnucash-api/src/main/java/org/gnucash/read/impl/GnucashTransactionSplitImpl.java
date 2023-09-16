@@ -18,7 +18,7 @@ import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashCustVendInvoice;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.slf4j.Logger;
@@ -79,13 +79,13 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 
 		String lot = getLotID();
 		if ( lot != null ) {
-			for ( GnucashCustVendInvoice invc : getTransaction().getGnucashFile().getInvoices() ) {
+			for ( GnucashGenerInvoice invc : getTransaction().getGnucashFile().getInvoices() ) {
 				String lotID = invc.getLotID();
 				if ( lotID != null &&
                      lotID.equals(lot) ) {
 					// Check if it's a payment transaction. 
 				    // If so, add it to the invoice's list of payment transactions.
-                    if ( getSplitAction().equals(ACTION_PAYMENT) ) {
+                    if ( getAction().equals(ACTION_PAYMENT) ) {
 						invc.addPayingTransaction(this);
 					}
 				}
@@ -110,9 +110,9 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	}
 
 	/**
-	 * @see GnucashTransactionSplit#getSplitAction()
+	 * @see GnucashTransactionSplit#getAction()
 	 */
-	public String getSplitAction() {
+	public String getAction() {
 		if (getJwsdpPeer().getSplitAction() == null) {
 			return "";
 		}
@@ -220,14 +220,14 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	 * @see GnucashTransactionSplit#getValueFormattedForHTML()
 	 */
 	public String getValueFormattedForHTML() {
-		return getValueFormatted().replaceFirst("�", "&euro;");
+		return getValueFormatted().replaceFirst("€", "&euro;");
 	}
 
 	/**
 	 * @see GnucashTransactionSplit#getValueFormattedForHTML(java.util.Locale)
 	 */
 	public String getValueFormattedForHTML(final Locale locale) {
-		return getValueFormatted(locale).replaceFirst("�", "&euro;");
+		return getValueFormatted(locale).replaceFirst("€", "&euro;");
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	 * @see GnucashTransactionSplit#getAccountBalanceFormatted(java.util.Locale)
 	 */
 	public String getAccountBalanceFormatted(final Locale locale) {
-		return getAccount().getBalanceFormated(locale);
+		return getAccount().getBalanceFormatted(locale);
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	 * The value is in the currency of the account!
 	 *
 	 * @param locale the locale to format to
-	 * @return the formated number
+	 * @return the formatted number
 	 */
 	public String getQuantityFormatted(final Locale locale) {
 		if (getTransaction().getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
@@ -286,14 +286,14 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	 * The value is in the currency of the account!
 	 */
 	public String getQuantityFormattedForHTML() {
-		return getQuantityFormatted().replaceFirst("�", "&euro;");
+		return getQuantityFormatted().replaceFirst("€", "&euro;");
 	}
 
 	/**
 	 * The value is in the currency of the account!
 	 */
 	public String getQuantityFormattedForHTML(final Locale locale) {
-		return getQuantityFormatted(locale).replaceFirst("�", "&euro;");
+		return getQuantityFormatted(locale).replaceFirst("€", "&euro;");
 	}
 
 	/**
@@ -315,21 +315,35 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("[GnucashTransactionSplitImpl:");
+		
 		buffer.append(" id: ");
 		buffer.append(getId());
+		
+		buffer.append(" Action: '");
+		buffer.append(getAction() + "'");
+		
 		buffer.append(" transaction-id: ");
 		buffer.append(getTransaction().getId());
+		
 		buffer.append(" accountID: ");
 		buffer.append(getAccountID());
+		
 		buffer.append(" account: ");
 		GnucashAccount account = getAccount();
 		buffer.append(account == null ? "null" : "'" + account.getQualifiedName() + "'");
+		
 		buffer.append(" description: '");
 		buffer.append(getDescription() + "'");
+		
 		buffer.append(" transaction-description: '");
 		buffer.append(getTransaction().getDescription() + "'");
-		buffer.append(" value X quantity: ");
-		buffer.append(getValue()).append(" X ").append(getQuantity());
+		
+		buffer.append(" value: ");
+		buffer.append(getValue());
+		
+		buffer.append(" quantity: ");
+		buffer.append(getQuantity());
+		
 		buffer.append("]");
 		return buffer.toString();
 	}
