@@ -394,6 +394,7 @@ public interface GnucashFile extends GnucashObject {
     
     public int getNofEntriesAccountMap();
     public int getNofEntriesTransactionMap();
+    public int getNofEntriesTransactionSplitsMap();
     public int getNofEntriesGenerInvoiceMap();
     public int getNofEntriesGenerInvoiceEntriesMap();
     public int getNofEntriesGenerJobMap();

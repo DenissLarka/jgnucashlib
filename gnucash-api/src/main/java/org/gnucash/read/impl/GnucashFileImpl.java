@@ -735,6 +735,14 @@ public class GnucashFileImpl implements GnucashFile {
 	protected Map<String, GnucashTransaction> transactionID2transaction;
 
 	/**
+	 * All transaction-splits indexed by their unique id-String.
+	 *
+	 * @see GnucashTransactionSplit
+	 * @see GnucashTransactionSplitImpl
+	 */
+	protected Map<String, GnucashTransactionSplit> transactionSplitID2transactionSplit;
+
+	/**
 	 * All customer/vendor invoices indexed by their unique id-String.
 	 *
 	 * @see GnucashGenerInvoice
@@ -963,9 +971,10 @@ public class GnucashFileImpl implements GnucashFile {
 
   private void initTransactionMap(final GncV2 pRootElement)
   {
-    transactionID2transaction = new HashMap<>();
+      transactionID2transaction = new HashMap<>();
+      transactionSplitID2transactionSplit = new HashMap<>();
     
-    for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
+      for (Iterator iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext(); ) {
       Object bookElement = iter.next();
       if (!(bookElement instanceof GncTransaction)) {
         continue;
@@ -975,9 +984,8 @@ public class GnucashFileImpl implements GnucashFile {
       try {
         GnucashTransactionImpl trx = createTransaction(jwsdpTrx);
         transactionID2transaction.put(trx.getId(), trx);
-        // ::CHECK: what's the following loop for?
         for (GnucashTransactionSplit splt : trx.getSplits()) {
-          splt.getAccountID(); 
+            transactionSplitID2transactionSplit.put(splt.getId(), splt); 
         }
       }
       catch (RuntimeException e) {
@@ -2155,6 +2163,10 @@ public class GnucashFileImpl implements GnucashFile {
 	
 	public int getNofEntriesTransactionMap() {
 	    return transactionID2transaction.size();
+	}
+	
+	public int getNofEntriesTransactionSplitsMap() {
+	    return transactionSplitID2transactionSplit.size();
 	}
 	
 	public int getNofEntriesGenerInvoiceMap() {
