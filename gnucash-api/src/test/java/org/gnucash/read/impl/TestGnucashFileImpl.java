@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 
 import org.gnucash.ConstTest;
-import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
 import org.junit.Before;
 import org.junit.Test;
