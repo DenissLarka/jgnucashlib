@@ -2,7 +2,7 @@ package org.gnucash.write;
 
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashObject;
-import org.gnucash.read.aux.GnucashAddress;
+import org.gnucash.read.aux.Address;
 import org.gnucash.write.aux.GnucashWritableAddress;
 
 /**
@@ -31,9 +31,9 @@ public interface GnucashWritableCustomer extends GnucashCustomer,
 
 	void setName(String name);
 
-	void setAddress(GnucashAddress adr);
+	void setAddress(Address adr);
 
-	void setShippingAddress(GnucashAddress adr);
+	void setShippingAddress(Address adr);
 
 	GnucashWritableAddress getWritableAddress();
 

@@ -190,14 +190,14 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	/**
 	 * @see GnucashWritableTransactionSplit#setQuantity(FixedPointNumber)
 	 */
-	public void setInvcQuantity(final String n) {
+	public void setQuantity(final String n) {
 		try {
-			this.setInvcQuantity(new FixedPointNumber(n.toLowerCase().replaceAll("&euro;", "").replaceAll("&pound;", "")));
+			this.setQuantity(new FixedPointNumber(n.toLowerCase().replaceAll("&euro;", "").replaceAll("&pound;", "")));
 		}
 		catch (NumberFormatException e) {
 			try {
 				Number parsed = this.getQuantityCurrencyFormat().parse(n);
-				this.setInvcQuantity(new FixedPointNumber(parsed.toString()));
+				this.setQuantity(new FixedPointNumber(parsed.toString()));
 			}
 			catch (NumberFormatException e1) {
 				throw e;
@@ -237,7 +237,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	/**
 	 * @see GnucashWritableTransactionSplit#setQuantity(FixedPointNumber)
 	 */
-	public void setInvcQuantity(final FixedPointNumber n) {
+	public void setQuantity(final FixedPointNumber n) {
 		if (n == null) {
 			throw new NullPointerException("null quantity given");
 		}
@@ -397,7 +397,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	 * @see GnucashWritableTransactionSplit#setQuantityFormattedForHTML(java.lang.String)
 	 */
 	public void setQuantityFormattedForHTML(final String n) {
-		this.setInvcQuantity(n);
+		this.setQuantity(n);
 	}
 
 	/**

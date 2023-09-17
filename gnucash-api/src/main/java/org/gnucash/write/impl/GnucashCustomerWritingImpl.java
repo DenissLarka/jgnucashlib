@@ -6,7 +6,7 @@ import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashCustomer;
-import org.gnucash.read.aux.GnucashAddress;
+import org.gnucash.read.aux.Address;
 import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.read.impl.aux.GnucashAddressImpl;
 import org.gnucash.write.GnucashWritableCustomer;
@@ -265,7 +265,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	/**
 	 * @see GnucashWritableCustomer#setAdress(org.gnucash.fileformats.gnucash.GnucashCustomer.ShippingAdress)
 	 */
-	public void setAddress(final GnucashAddress adr) {
+	public void setAddress(final Address adr) {
 		/*if (adr instanceof AddressImpl) {
             AddressImpl adrImpl = (AddressImpl) adr;
             getJwsdpPeer().setCustAddr(adrImpl.getJwsdpPeer());
@@ -292,7 +292,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	/**
 	 * @see GnucashWritableCustomer#setShippingAddress(GnucashWritableAddress)
 	 */
-	public void setShippingAddress(final GnucashAddress adr) {
+	public void setShippingAddress(final Address adr) {
         /*if (adr instanceof AddressImpl) {
             AddressImpl adrImpl = (AddressImpl) adr;
             getJwsdpPeer().setCustShipaddr(adrImpl.getJwsdpPeer());

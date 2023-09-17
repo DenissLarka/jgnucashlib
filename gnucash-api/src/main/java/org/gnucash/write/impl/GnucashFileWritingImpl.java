@@ -33,7 +33,7 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.aux.TaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
@@ -231,14 +231,14 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 
 	/**
 	 * @return all TaxTables defined in the book
-	 * @see {@link GnucashTaxTable}
+	 * @see {@link TaxTable}
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<GnucashTaxTable> getTaxTables() {
+	public Collection<TaxTable> getTaxTables() {
 		if (taxTablesById == null) {
 
-			taxTablesById = new HashMap<String, GnucashTaxTable>();
+			taxTablesById = new HashMap<String, TaxTable>();
 			List bookElements = this.getRootElement().getGncBook().getBookElements();
 			for (Object bookElement : bookElements) {
 				if (bookElement instanceof GncV2.GncBook.GncGncTaxTable) {

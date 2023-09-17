@@ -6,7 +6,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.aux.TaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
@@ -29,7 +29,7 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 */
 	boolean isModifiable();
 
-	void setJob(GnucashGenerJob job);
+	void setGenerJob(GnucashGenerJob job);
 
 	void setDatePosted(LocalDateTime d);
 
@@ -66,9 +66,9 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * The entry will have 16% salex-tax and use the accounts of the
 	 * SKR03.
 	 * @throws WrongInvoiceTypeException 
-	 *
+	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException;
+	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * create and add a new entry.<br/>
@@ -87,6 +87,6 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * @throws NoTaxTableFoundException 
 	 */
 	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice,
-                                                    final FixedPointNumber quantity,
-                                                    final GnucashTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+                                                     final FixedPointNumber quantity,
+                                                     final TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 }

@@ -48,10 +48,10 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 * ${@link #setQuantity(FixedPointNumber)}.
 	 * @param n the new quantity (in the currency of the account)
 	 */
-	void setInvcQuantity(String n);
+	void setQuantity(String n);
 
 	/**
-	 * Same as ${@link #setInvcQuantity(String)}.
+	 * Same as ${@link #setQuantity(String)}.
 	 * @param n the new quantity (in the currency of the account)
 	 */
 	void setQuantityFormattedForHTML(String n);
@@ -61,7 +61,7 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 * ${@link #setQuantity(FixedPointNumber)}.
 	 * @param n the new quantity (in the currency of the account)
 	 */
-	void setInvcQuantity(FixedPointNumber n);
+	void setQuantity(FixedPointNumber n);
 
 	/**
 	 * If the currencies of transaction and account match, this also does

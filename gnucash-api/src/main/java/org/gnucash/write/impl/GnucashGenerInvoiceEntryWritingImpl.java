@@ -11,7 +11,7 @@ import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.IllegalGenerInvoiceEntryActionException;
-import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.aux.TaxTable;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
@@ -62,7 +62,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 */
 	public GnucashGenerInvoiceEntryWritingImpl(final GnucashGenerInvoiceWritingImpl invoice,
 			final GncV2.GncBook.GncGncEntry jwsdpPeer) {
-		super(invoice, jwsdpPeer);
+		super(invoice, jwsdpPeer, true);
 		
 		this.invoice = invoice;
 	}
@@ -90,8 +90,8 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 	public GnucashGenerInvoiceEntryWritingImpl(final GnucashGenerInvoiceWritingImpl invoice,
 			final FixedPointNumber quantity,
-			final FixedPointNumber price) throws WrongInvoiceTypeException {
-		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price));
+			final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price), true);
 		
 		invoice.addInvcEntry(this);
 		this.invoice = invoice;
@@ -107,12 +107,13 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
 	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 */
 	public GnucashGenerInvoiceEntryWritingImpl(final GnucashGenerInvoiceWritingImpl invoice,
-                                                  final GnucashAccount account,
-                                                  final FixedPointNumber quantity,
-                                                  final FixedPointNumber price) throws WrongInvoiceTypeException {
-		super(invoice, createInvoiceEntry(invoice, account, quantity, price));
+                                                   final GnucashAccount account,
+                                                   final FixedPointNumber quantity,
+                                                   final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		super(invoice, createInvoiceEntry(invoice, account, quantity, price), true);
 		
 		invoice.addInvcEntry(this);
 		this.invoice = invoice;
@@ -181,7 +182,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 			GncV2.GncBook.GncGncEntry.EntryITaxtable taxtableref = factory.createGncV2GncBookGncGncEntryEntryITaxtable();
 			taxtableref.setType("guid");
 
-			GnucashTaxTable taxTable = null;
+			TaxTable taxTable = null;
 			// ::TODO
 			// GnucashCustomer customer = invoice.getCustomer();
 			// if (customer != null) {
@@ -270,12 +271,33 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	}
 
 	/**
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 * @see GnucashGenerInvoiceEntry#isInvcTaxable()
+	 */
+	public void setBillTaxable(final boolean is) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractBillEntry(this);
+		if (is) {
+			getJwsdpPeer().setEntryBTaxable(1);
+		} else {
+			getJwsdpPeer().setEntryBTaxable(0);
+		}
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
+
+	}
+
+	// -----------------------------------------------------------
+
+	/**
 	 * {@inheritDoc}
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	public void setInvcTaxTable(final GnucashTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-
+	public void setInvcTaxTable(final TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
+	    	    throw new WrongInvoiceTypeException();
+	    
 		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
 
 		super.setInvcTaxtable(tax);
@@ -298,6 +320,38 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 */
+	public void setBillTaxTable(final TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
+	    	    throw new WrongInvoiceTypeException();
+
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
+
+		super.setBillTaxtable(tax);
+		if (tax == null) {
+			getJwsdpPeer().setEntryBTaxable(0);
+		} else {
+			getJwsdpPeer().setEntryBTaxable(1);
+			if (getJwsdpPeer().getEntryBTaxtable() == null) {
+				getJwsdpPeer().setEntryBTaxtable(
+						((GnucashFileWritingImpl) getGenerInvoice().getFile())
+								.getObjectFactory()
+								.createGncV2GncBookGncGncEntryEntryBTaxtable());
+				getJwsdpPeer().getEntryBTaxtable().setValue("guid");
+			}
+			getJwsdpPeer().getEntryBTaxtable().setValue(tax.getId());
+		}
+
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
+
+	}
+	
+	// -----------------------------------------------------------
+
+	/**
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NumberFormatException 
 	 * @throws NoTaxTableFoundException 
@@ -307,18 +361,17 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 		this.setInvcPrice(new FixedPointNumber(n));
 	}
 
-	public void setPriceFormatted(final String n) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
-		this.setInvcPrice(new FixedPointNumber(n));
-	}
-
 	/**
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 * @see GnucashWritableGenerInvoiceEntry#setInvcPrice(FixedPointNumber)
 	 */
 	public void setInvcPrice(final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
+	    	    throw new WrongInvoiceTypeException();
+	    
 		if (!this.getGenerInvoice().isModifiable()) {
-			throw new IllegalStateException("This Invoice has payments and is not modifiable!");
+			throw new IllegalStateException("This customer invoice has payments and is not modifiable!");
 		}
 
 		Object old = getInvcPrice();
@@ -333,6 +386,57 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 		}
 
 	}
+
+	public void setInvcPriceFormatted(final String n) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		this.setInvcPrice(new FixedPointNumber(n));
+	}
+
+	// ------------------------
+
+	/**
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NumberFormatException 
+	 * @throws NoTaxTableFoundException 
+	 * @see GnucashWritableGenerInvoiceEntry#setInvcPrice(FixedPointNumber)
+	 */
+	@Override
+	public void setBillPrice(final String n) 
+		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		this.setBillPrice(new FixedPointNumber(n));
+	}
+
+	/**
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 * @see GnucashWritableGenerInvoiceEntry#setInvcPrice(FixedPointNumber)
+	 */
+	@Override
+	public void setBillPrice(final FixedPointNumber price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
+	    	    throw new WrongInvoiceTypeException();
+	    
+		if (!this.getGenerInvoice().isModifiable()) {
+			throw new IllegalStateException("This vendor bill has payments and is not modifiable!");
+		}
+
+		Object old = getBillPrice();
+
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractBillEntry(this);
+		getJwsdpPeer().setEntryBPrice(price.toGnucashString());
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
+
+		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
+		if (propertyChangeSupport != null) {
+			propertyChangeSupport.firePropertyChange("price", old, price);
+		}
+
+	}
+
+	public void setBillPriceFormatted(final String n) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		this.setBillPrice(new FixedPointNumber(n));
+	}
+	
+	// -----------------------------------------------------------
 
 	/**
 	 * @see GnucashWritableGenerInvoiceEntry#setAction(java.lang.String)
@@ -362,12 +466,12 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	/**
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
-	 * @see GnucashWritableGenerInvoiceEntry#setInvcQuantity(FixedPointNumber)
+	 * @see GnucashWritableGenerInvoiceEntry#setQuantity(FixedPointNumber)
 	 */
-	public void setInvcQuantity(final String n) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void setQuantity(final String n) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		FixedPointNumber fp = new FixedPointNumber(n);
 		System.out.println("DEBUG: GnucashInvoiceEntryWritingImpl.setQuantity('" + n + "') - setting to " + fp.toGnucashString());
-		this.setInvcQuantity(fp);
+		this.setQuantity(fp);
 	}
 
 	/**
@@ -378,15 +482,15 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	public void setQuantityFormatted(final String n) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		FixedPointNumber fp = new FixedPointNumber(n);
 		System.out.println("DEBUG: GnucashInvoiceEntryWritingImpl.setQuantityFormatted('" + n + "') - setting to " + fp.toGnucashString());
-		this.setInvcQuantity(fp);
+		this.setQuantity(fp);
 	}
 
 	/**
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
-	 * @see GnucashWritableGenerInvoiceEntry#setInvcQuantity(FixedPointNumber)
+	 * @see GnucashWritableGenerInvoiceEntry#setQuantity(FixedPointNumber)
 	 */
-	public void setInvcQuantity(final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void setQuantity(final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		if (!this.getGenerInvoice().isModifiable()) {
 			throw new IllegalStateException("This Invoice has payments and is not modifiable!");
 		}
@@ -433,4 +537,5 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	public GnucashWritableFile getGnucashFile() {
 		return (GnucashWritableFile) super.getGnucashFile();
 	}
+
 }

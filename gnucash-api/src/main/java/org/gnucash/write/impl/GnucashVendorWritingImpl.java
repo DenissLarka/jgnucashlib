@@ -6,7 +6,7 @@ import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GnucashAddress;
+import org.gnucash.read.aux.Address;
 import org.gnucash.read.impl.GnucashVendorImpl;
 import org.gnucash.read.impl.aux.GnucashAddressImpl;
 import org.gnucash.write.GnucashWritableFile;
@@ -194,7 +194,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	/**
 	 * @see GnucashWritableVendor#setAdress(org.gnucash.fileformats.gnucash.GnucashVendor.ShippingAdress)
 	 */
-	public void setAddress(final GnucashAddress adr) {
+	public void setAddress(final Address adr) {
 		/*if (adr instanceof AddressImpl) {
             AddressImpl adrImpl = (AddressImpl) adr;
             getJwsdpPeer().setVendAddr(adrImpl.getJwsdpPeer());
