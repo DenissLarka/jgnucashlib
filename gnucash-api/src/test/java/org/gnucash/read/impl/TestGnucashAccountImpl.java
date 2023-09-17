@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashAccount
+public class TestGnucashAccountImpl
 {
   public static GnucashFile    gcshFile = null;
   public static GnucashAccount acct = null;
@@ -35,7 +35,7 @@ public class TestGnucashAccount
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashAccount.class);  
+    return new JUnit4TestAdapter(TestGnucashAccountImpl.class);  
   }
   
   @Before

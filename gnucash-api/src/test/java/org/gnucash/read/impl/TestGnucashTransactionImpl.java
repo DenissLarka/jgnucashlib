@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashTransaction
+public class TestGnucashTransactionImpl
 {
   private static GnucashFile        gcshFile = null;
   private static GnucashTransaction trx = null;
@@ -30,7 +30,7 @@ public class TestGnucashTransaction
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashTransaction.class);  
+    return new JUnit4TestAdapter(TestGnucashTransactionImpl.class);  
   }
   
   @Before

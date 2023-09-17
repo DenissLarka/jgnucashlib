@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashVendor
+public class TestGnucashVendorImpl
 {
   private static GnucashFile   gcshFile = null;
   private static GnucashVendor vend = null;
@@ -35,7 +35,7 @@ public class TestGnucashVendor
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashVendor.class);  
+    return new JUnit4TestAdapter(TestGnucashVendorImpl.class);  
   }
   
   @Before
