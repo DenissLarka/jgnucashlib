@@ -13,9 +13,9 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
-import org.gnucash.read.aux.GnucashAddress;
-import org.gnucash.read.aux.GnucashTaxTable;
-import org.gnucash.read.impl.aux.GnucashAddressImpl;
+import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
@@ -233,7 +233,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashTaxTable getCustomerTaxTable() {
+	public GCshTaxTable getCustomerTaxTable() {
 		String id = getCustomerTaxTableID();
 		if (id == null) {
 			return null;
@@ -251,15 +251,15 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashAddress getAddress() {
-		return new GnucashAddressImpl(jwsdpPeer.getCustAddr());
+	public GCshAddress getAddress() {
+		return new GCshAddressImpl(jwsdpPeer.getCustAddr());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashAddress getShippingAddress() {
-		return new GnucashAddressImpl(jwsdpPeer.getCustShipaddr());
+	public GCshAddress getShippingAddress() {
+		return new GCshAddressImpl(jwsdpPeer.getCustShipaddr());
 	}
 
 	/**

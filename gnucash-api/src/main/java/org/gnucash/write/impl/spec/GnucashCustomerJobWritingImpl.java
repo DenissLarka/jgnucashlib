@@ -28,7 +28,7 @@ import org.gnucash.generated.OwnerId;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
-import org.gnucash.read.aux.Owner;
+import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
@@ -124,7 +124,7 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 
 		{
 			GncV2.GncBook.GncGncJob.JobOwner owner = factory.createGncV2GncBookGncGncJobJobOwner();
-			owner.setOwnerType(Owner.TYPE_CUSTOMER);
+			owner.setOwnerType(GCshOwner.TYPE_CUSTOMER);
 
 			OwnerId ownerid = factory.createOwnerId();
 			ownerid.setType("guid");

@@ -14,8 +14,8 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GnucashAddress;
-import org.gnucash.read.impl.aux.GnucashAddressImpl;
+import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
@@ -218,8 +218,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashAddress getAddress() {
-		return new GnucashAddressImpl(jwsdpPeer.getVendorAddr());
+	public GCshAddress getAddress() {
+		return new GCshAddressImpl(jwsdpPeer.getVendorAddr());
 	}
 
 	/**

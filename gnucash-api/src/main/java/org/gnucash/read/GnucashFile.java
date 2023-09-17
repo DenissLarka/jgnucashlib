@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -45,13 +45,13 @@ public interface GnucashFile extends GnucashObject {
 	 * @param id id of a taxtable
 	 * @return the identified taxtable or null
 	 */
-	GnucashTaxTable getTaxTableByID(String id);
+	GCshTaxTable getTaxTableByID(String id);
 
 	/**
 	 * @return all TaxTables defined in the book
 	 * @link GnucashTaxTable
 	 */
-	Collection<GnucashTaxTable> getTaxTables();
+	Collection<GCshTaxTable> getTaxTables();
 
     // ----------------------------
 

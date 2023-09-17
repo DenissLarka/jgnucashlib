@@ -3,7 +3,7 @@ package org.gnucash.write;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashObject;
-import org.gnucash.read.aux.TaxTable;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
@@ -61,18 +61,32 @@ public interface GnucashWritableGenerInvoiceEntry extends GnucashGenerInvoiceEnt
 	// -----------------------------------------------------------
 
 	/**
-	 * @param tax the new taxtable to use. Null sets isTaxable to false.
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	void setInvcTaxTable(TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	void setInvcTaxable(boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * @param tax the new taxtable to use. Null sets isTaxable to false.
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	void setBillTaxTable(TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	void setInvcTaxTable(GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	
+	// ------------------------
+
+	/**
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 */
+	void setBillTaxable(boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+
+	/**
+	 * @param tax the new taxtable to use. Null sets isTaxable to false.
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 */
+	void setBillTaxTable(GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	// -----------------------------------------------------------
 

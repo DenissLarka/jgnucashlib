@@ -1,6 +1,6 @@
 package org.gnucash.read.aux;
 
-public interface GnucashOwner {
+public interface GCshOwner {
 
   // ::MAGIC
   public static final String TYPE_CUSTOMER = "gncCustomer";

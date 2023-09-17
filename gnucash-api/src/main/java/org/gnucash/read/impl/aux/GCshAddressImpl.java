@@ -2,10 +2,10 @@ package org.gnucash.read.impl.aux;
 
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GnucashAddress;
+import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
-public class GnucashAddressImpl implements GnucashAddress {
+public class GCshAddressImpl implements GCshAddress {
 
 	/**
 	 * The JWSDP-object we are wrapping.
@@ -18,7 +18,7 @@ public class GnucashAddressImpl implements GnucashAddress {
 	 * @param newPeer the JWSDP-object we are wrapping.
 	 */
 	@SuppressWarnings("exports")
-	public GnucashAddressImpl(final org.gnucash.generated.Address newPeer) {
+	public GCshAddressImpl(final org.gnucash.generated.Address newPeer) {
 		super();
 		
 		jwsdpPeer = newPeer;
@@ -35,7 +35,7 @@ public class GnucashAddressImpl implements GnucashAddress {
 	}
 
 	/**
-	 * @see GnucashVendor.Address#getAddressName()
+	 * @see GnucashVendor.GCshAddress#getAddressName()
 	 */
 	public String getAddressName() {
 		if (jwsdpPeer.getAddrName() == null) {
@@ -45,7 +45,7 @@ public class GnucashAddressImpl implements GnucashAddress {
 	}
 
 	/**
-	 * @see GnucashVendor.Address#getAddressLine1()
+	 * @see GnucashVendor.GCshAddress#getAddressLine1()
 	 */
 	public String getAddressLine1() {
 		if (jwsdpPeer.getAddrAddr1() == null) {
@@ -55,7 +55,7 @@ public class GnucashAddressImpl implements GnucashAddress {
 	}
 
 	/**
-	 * @see GnucashVendor.Address#getAddressLine2()
+	 * @see GnucashVendor.GCshAddress#getAddressLine2()
 	 */
 	public String getAddressLine2() {
 		if (jwsdpPeer.getAddrAddr2() == null) {

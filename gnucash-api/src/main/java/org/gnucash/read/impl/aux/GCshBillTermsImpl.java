@@ -8,13 +8,13 @@ import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermChild;
 import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermDays;
 import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermProximo;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.aux.GnucashBillTerms;
+import org.gnucash.read.aux.GCshBillTerms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashBillTermsImpl implements GnucashBillTerms {
+public class GCshBillTermsImpl implements GCshBillTerms {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashBillTermsImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GCshBillTermsImpl.class);
 
 	/**
 	 * the JWSDP-object we are facading.
@@ -32,7 +32,7 @@ public class GnucashBillTermsImpl implements GnucashBillTerms {
 	 * @param gncFile the file to register under
 	 */
 	@SuppressWarnings("exports")
-	public GnucashBillTermsImpl(
+	public GCshBillTermsImpl(
 			final GncV2.GncBook.GncGncBillTerm peer,
 			final GnucashFile gncFile) {
 		super();

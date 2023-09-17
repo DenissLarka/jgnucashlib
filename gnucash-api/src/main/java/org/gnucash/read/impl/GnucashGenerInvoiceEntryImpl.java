@@ -13,7 +13,7 @@ import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
-import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
       * The taxtable in the gnucash xml-file.
       * It defines what sales-tax-rates are known.
       */
-    private GnucashTaxTable myInvcTaxtable;
-    private GnucashTaxTable myBillTaxtable;
+    private GCshTaxTable myInvcTaxtable;
+    private GCshTaxTable myBillTaxtable;
   
     // ----------------------------
 
@@ -77,6 +77,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	 * @param invoice The invoice we belong to.
 	 * @param peer    the JWSDP-Object we are wrapping.
 	 */
+	@SuppressWarnings("exports")
 	public GnucashGenerInvoiceEntryImpl(
 			final GnucashGenerInvoice invoice,
 			final GncV2.GncBook.GncGncEntry peer,
@@ -104,6 +105,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	 * @param peer    the JWSDP-object we are facading.
 	 * @see #jwsdpPeer
 	 */
+	@SuppressWarnings("exports")
 	public GnucashGenerInvoiceEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) {
 		super((peer.getEntrySlots() == null) ? new ObjectFactory().createSlotsType() : peer.getEntrySlots(), gncFile);
 		
@@ -225,14 +227,14 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
     /**
      * @param aTaxtable the taxtable to set
      */
-    protected void setInvcTaxtable(final GnucashTaxTable aTaxtable) {
+    protected void setInvcTaxtable(final GCshTaxTable aTaxtable) {
         myInvcTaxtable = aTaxtable;
     }
 
     /**
      * @param aTaxtable the taxtable to set
      */
-    protected void setBillTaxtable(final GnucashTaxTable aTaxtable) {
+    protected void setBillTaxtable(final GCshTaxTable aTaxtable) {
         myBillTaxtable = aTaxtable;
     }
 
@@ -241,7 +243,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	 * It defines what sales-tax-rates are known.
 	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashTaxTable getInvcTaxTable() throws NoTaxTableFoundException {
+	public GCshTaxTable getInvcTaxTable() throws NoTaxTableFoundException {
 		if (myInvcTaxtable == null) {
           EntryITaxtable taxTableEntry = jwsdpPeer.getEntryITaxtable();
           if ( taxTableEntry == null ) {
@@ -252,7 +254,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 			if (taxTableId == null) {
 				System.err.println("Customer invoice with id '"
 						+ getId()
-						+ "' is taxable but has empty id for the taxtable");
+						+ "' is i-taxable but has empty id for the i-taxtable");
 				return null;
 			}
 			myInvcTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
@@ -260,8 +262,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 			if (myInvcTaxtable == null) {
 				System.err.println("Customer invoice with id '"
 						+ getId()
-						+ "' is taxable but has an unknown "
-						+ "taxtable-id '"
+						+ "' is i-taxable but has an unknown "
+						+ "i-taxtable-id '"
 						+ taxTableId
 						+ "'!");
 			}
@@ -275,7 +277,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * It defines what sales-tax-rates are known.
      * @throws NoTaxTableFoundException 
      */
-    public GnucashTaxTable getBillTaxTable() throws NoTaxTableFoundException {
+    public GCshTaxTable getBillTaxTable() throws NoTaxTableFoundException {
         if (myBillTaxtable == null) {
           EntryBTaxtable taxTableEntry = jwsdpPeer.getEntryBTaxtable();
           if ( taxTableEntry == null ) {
@@ -286,7 +288,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
             if (taxTableId == null) {
                 System.err.println("Vendor bill with id '"
                         + getId()
-                        + "' is taxable but has empty id for the taxtable");
+                        + "' is b-taxable but has empty id for the b-taxtable");
                 return null;
             }
             myBillTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
@@ -294,8 +296,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
             if (myBillTaxtable == null) {
                 System.err.println("Vendor bill with id '"
                         + getId()
-                        + "' is taxable but has an unknown "
-                        + "taxtable-id '"
+                        + "' is b-taxable but has an unknown "
+                        + "b-taxtable-id '"
                         + taxTableId
                         + "'!");
             }
@@ -325,7 +327,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
           }
         }
 
-        GnucashTaxTable taxtable = null;
+        GCshTaxTable taxtable = null;
         try {
           taxtable = getInvcTaxTable();
         } catch ( NoTaxTableFoundException exc ) {
@@ -344,8 +346,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 			return new FixedPointNumber("1900000/10000000");
 		}
 
-		GnucashTaxTable.TaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
-		if (!taxTableEntry.getType().equals(GnucashTaxTable.TaxTableEntry.TYPE_PERCENT)) {
+		GCshTaxTable.GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
+		if (!taxTableEntry.getType().equals(GCshTaxTable.GCshTaxTableEntry.TYPE_PERCENT)) {
 			System.err.println("Customer invoice with id '"
 					+ getId()
 					+ "' is taxable but has a i-taxtable "
@@ -381,7 +383,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
           }
         }
 
-        GnucashTaxTable taxtable = null;
+        GCshTaxTable taxtable = null;
         try {
           taxtable = getBillTaxTable();
         } catch ( NoTaxTableFoundException exc ) {
@@ -400,8 +402,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
             return new FixedPointNumber("1900000/10000000");
         }
 
-        GnucashTaxTable.TaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
-        if (!taxTableEntry.getType().equals(GnucashTaxTable.TaxTableEntry.TYPE_PERCENT)) {
+        GCshTaxTable.GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
+        if (!taxTableEntry.getType().equals(GCshTaxTable.GCshTaxTableEntry.TYPE_PERCENT)) {
             System.err.println("Vendor bill with id '"
                     + getId()
                     + "' is taxable but has a b-taxtable "

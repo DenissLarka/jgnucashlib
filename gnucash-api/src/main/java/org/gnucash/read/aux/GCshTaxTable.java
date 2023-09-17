@@ -14,7 +14,7 @@ import org.gnucash.read.GnucashFile;
  * @see GnucashCustomer
  */
 
-public interface GnucashTaxTable {
+public interface GCshTaxTable {
     /**
      * The gnucash-file is the top-level class to contain everything.
      * @return the file we are associated with
@@ -33,7 +33,7 @@ public interface GnucashTaxTable {
     String getName();
 
     /**
-     * @see GnucashTaxTable#isInvisible()
+     * @see GCshTaxTable#isInvisible()
      */
     boolean isInvisible();
 
@@ -45,14 +45,14 @@ public interface GnucashTaxTable {
     /**
      * @return the parent-taxtable
      */
-    GnucashTaxTable getParent();
+    GCshTaxTable getParent();
 
     /**
      * @return the entries in this tax-table
      */
-    Collection<TaxTableEntry> getEntries();
+    Collection<GCshTaxTableEntry> getEntries();
 
-    public interface TaxTableEntry {
+    public interface GCshTaxTableEntry {
 
         /**
          * @see ${@link #getType()}
@@ -66,7 +66,7 @@ public interface GnucashTaxTable {
         FixedPointNumber getAmount();
 
         /**
-         * usually ${@link TaxTableEntry#TYPE_PERCENT}.
+         * usually ${@link GCshTaxTableEntry#TYPE_PERCENT}.
          * @see ${@link #getAmount())
          */
         String getType();

@@ -6,7 +6,7 @@ import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermDays;
 import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermProximo;
 import org.gnucash.read.GnucashFile;
 
-public interface GnucashBillTerms {
+public interface GCshBillTerms {
 
 	GnucashFile getFile();
 

@@ -2,13 +2,13 @@ package org.gnucash.read.impl.aux;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.aux.GnucashCustomerTerms;
+import org.gnucash.read.aux.GCshCustomerTerms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashCustomerTermsImpl implements GnucashCustomerTerms {
+public class GCshCustomerTermsImpl implements GCshCustomerTerms {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerTermsImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GCshCustomerTermsImpl.class);
 
 	/**
 	 * the JWSDP-object we are facading.
@@ -26,7 +26,7 @@ public class GnucashCustomerTermsImpl implements GnucashCustomerTerms {
 	 * @param gncFile the file to register under
 	 */
 	@SuppressWarnings("exports")
-	public GnucashCustomerTermsImpl(
+	public GCshCustomerTermsImpl(
 			final GncV2.GncBook.GncGncCustomer.CustTerms peer,
 			final GnucashFile gncFile) {
 		super();

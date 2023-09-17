@@ -2,7 +2,7 @@ package org.gnucash.read;
 
 import java.util.Collection;
 
-import org.gnucash.read.aux.GnucashOwner;
+import org.gnucash.read.aux.GCshOwner;
 
 
 /**
@@ -15,17 +15,17 @@ import org.gnucash.read.aux.GnucashOwner;
 public interface GnucashGenerJob {
   
   /**
-   * @deprecated Use {@link GnucashOwner#TYPE_CUSTOMER} instead
+   * @deprecated Use {@link GCshOwner#TYPE_CUSTOMER} instead
    */
-  public static final String TYPE_CUSTOMER = GnucashOwner.TYPE_CUSTOMER;
+  public static final String TYPE_CUSTOMER = GCshOwner.TYPE_CUSTOMER;
   /**
-   * @deprecated Use {@link GnucashOwner#TYPE_VENDOR} instead
+   * @deprecated Use {@link GCshOwner#TYPE_VENDOR} instead
    */
-  public static final String TYPE_VENDOR   = GnucashOwner.TYPE_VENDOR;
+  public static final String TYPE_VENDOR   = GCshOwner.TYPE_VENDOR;
   /**
-   * @deprecated Use {@link GnucashOwner#TYPE_EMPLOYEE} instead
+   * @deprecated Use {@link GCshOwner#TYPE_EMPLOYEE} instead
    */
-  public static final String TYPE_EMPLOYEE = GnucashOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
+  public static final String TYPE_EMPLOYEE = GCshOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
   
   // -----------------------------------------------------------------
 

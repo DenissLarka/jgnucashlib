@@ -45,8 +45,8 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GnucashTaxTable;
-import org.gnucash.read.impl.aux.GnucashTaxTableImpl;
+import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.impl.aux.GCshTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
@@ -131,13 +131,13 @@ public class GnucashFileImpl implements GnucashFile {
 	 *
 	 * @see #getTaxTables()
 	 */
-	protected Map<String, GnucashTaxTable> taxTablesById = null;
+	protected Map<String, GCshTaxTable> taxTablesById = null;
 
 	/**
 	 * @param id id of a taxtable
 	 * @return the identified taxtable or null
 	 */
-	public GnucashTaxTable getTaxTableByID(final String id) {
+	public GCshTaxTable getTaxTableByID(final String id) {
 		if (taxTablesById == null) {
 			getTaxTables();
 		}
@@ -149,10 +149,10 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @link GnucashTaxTable
 	 */
 	@SuppressWarnings("unchecked")
-	public Collection<GnucashTaxTable> getTaxTables() {
+	public Collection<GCshTaxTable> getTaxTables() {
 		if (taxTablesById == null) {
 
-			taxTablesById = new HashMap<String, GnucashTaxTable>();
+			taxTablesById = new HashMap<String, GCshTaxTable>();
 
 			List bookElements = this.getRootElement().getGncBook().getBookElements();
 			for (Object bookElement : bookElements) {
@@ -160,7 +160,7 @@ public class GnucashFileImpl implements GnucashFile {
 					continue;
 				}
 				GncV2.GncBook.GncGncTaxTable jwsdpPeer = (GncV2.GncBook.GncGncTaxTable) bookElement;
-				GnucashTaxTableImpl gnucashTaxTable = new GnucashTaxTableImpl(jwsdpPeer, this);
+				GCshTaxTableImpl gnucashTaxTable = new GCshTaxTableImpl(jwsdpPeer, this);
 				taxTablesById.put(gnucashTaxTable.getId(), gnucashTaxTable);
 			}
 		}
@@ -1803,6 +1803,22 @@ public class GnucashFileImpl implements GnucashFile {
 		if (retval == null) {
 			LOGGER.warn("No Transaction with id '" + id + "'. We know "
 					+ transactionID2transaction.size() + " transactions.");
+		}
+		return retval;
+	}
+
+	/**
+	 * @see GnucashFile#getTransactionByID(java.lang.String)
+	 */
+	public GnucashTransactionSplit getTransactionSplitByID(final String id) {
+		if (transactionSplitID2transactionSplit == null) {
+			throw new IllegalStateException("no root-element loaded");
+		}
+
+		GnucashTransactionSplit retval = transactionSplitID2transactionSplit.get(id);
+		if (retval == null) {
+			LOGGER.warn("No Transaction-Split with id '" + id + "'. We know "
+					+ transactionSplitID2transactionSplit.size() + " transactions.");
 		}
 		return retval;
 	}

@@ -33,12 +33,12 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.aux.TaxTable;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
-import org.gnucash.read.impl.aux.GnucashTaxTableImpl;
+import org.gnucash.read.impl.aux.GCshTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.write.GnucashWritableAccount;
 import org.gnucash.write.GnucashWritableCustomer;
@@ -231,19 +231,19 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 
 	/**
 	 * @return all TaxTables defined in the book
-	 * @see {@link TaxTable}
+	 * @see {@link GCshTaxTable}
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<TaxTable> getTaxTables() {
+	public Collection<GCshTaxTable> getTaxTables() {
 		if (taxTablesById == null) {
 
-			taxTablesById = new HashMap<String, TaxTable>();
+			taxTablesById = new HashMap<String, GCshTaxTable>();
 			List bookElements = this.getRootElement().getGncBook().getBookElements();
 			for (Object bookElement : bookElements) {
 				if (bookElement instanceof GncV2.GncBook.GncGncTaxTable) {
 					GncV2.GncBook.GncGncTaxTable jwsdpPeer = (GncV2.GncBook.GncGncTaxTable) bookElement;
-					GnucashTaxTableImpl gnucashTaxTable = new GnucashTaxTableImpl(jwsdpPeer, this);
+					GCshTaxTableImpl gnucashTaxTable = new GCshTaxTableImpl(jwsdpPeer, this);
 					taxTablesById.put(gnucashTaxTable.getId(), gnucashTaxTable);
 				}
 			}
@@ -456,7 +456,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 
 	/**
 	 */
-	protected GncV2.GncBook.GncGncEntry createGncGncEntryType() {
+	public GncV2.GncBook.GncGncEntry createGncGncEntryType() {
 		GncV2.GncBook.GncGncEntry retval = getObjectFactory().createGncV2GncBookGncGncEntry();
 		incrementCountDataFor("gnc:GncEntry");
 		return retval;

@@ -1,13 +1,13 @@
 package org.gnucash.write.impl.aux;
 
-import org.gnucash.read.impl.aux.GnucashAddressImpl;
+import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.aux.GnucashWritableAddress;
 
 /**
- * Writable implementation in {@link GnucashAddressImpl}
+ * Writable implementation in {@link GCshAddressImpl}
  */
-public class GnucashWritableAddressImpl extends GnucashAddressImpl 
+public class GnucashWritableAddressImpl extends GCshAddressImpl 
                                         implements GnucashWritableAddress 
 {
 

@@ -5,8 +5,8 @@ import java.util.Collection;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
-import org.gnucash.read.aux.GnucashAddress;
-import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -32,7 +32,7 @@ public interface GnucashCustomer extends GnucashObject {
      * The prefered taxtable to use with this customer (may be null).
      * @see {@link #getCustomerTaxTableID()}
      */
-    GnucashTaxTable getCustomerTaxTable();
+    GCshTaxTable getCustomerTaxTable();
 
     /**
      * Date is not checked so invoiced that have entered payments in the future are considered Paid.
@@ -126,12 +126,12 @@ public interface GnucashCustomer extends GnucashObject {
     /**
      * @return the address including the name
      */
-    GnucashAddress getAddress();
+    GCshAddress getAddress();
 
     /**
      * @return the shipping-address including the name
      */
-    GnucashAddress getShippingAddress();
+    GCshAddress getShippingAddress();
     
     // ----------------------------
 

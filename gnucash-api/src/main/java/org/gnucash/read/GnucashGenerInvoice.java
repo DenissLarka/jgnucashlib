@@ -5,7 +5,8 @@ import java.util.Collection;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.aux.GnucashOwner;
+import org.gnucash.read.aux.GCshOwner;
+import org.gnucash.read.impl.aux.GCshTaxedSumImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
@@ -24,17 +25,17 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/gncInvoice.h
   
   /**
-   * @deprecated Use {@link GnucashOwner#TYPE_CUSTOMER} instead
+   * @deprecated Use {@link GCshOwner#TYPE_CUSTOMER} instead
    */
-  public static final String TYPE_CUSTOMER = GnucashOwner.TYPE_CUSTOMER;
+  public static final String TYPE_CUSTOMER = GCshOwner.TYPE_CUSTOMER;
   /**
-   * @deprecated Use {@link GnucashOwner#TYPE_VENDOR} instead
+   * @deprecated Use {@link GCshOwner#TYPE_VENDOR} instead
    */
-  public static final String TYPE_VENDOR   = GnucashOwner.TYPE_VENDOR;
+  public static final String TYPE_VENDOR   = GCshOwner.TYPE_VENDOR;
   /**
-   * @deprecated Use {@link GnucashOwner#TYPE_EMPLOYEE} instead
+   * @deprecated Use {@link GCshOwner#TYPE_EMPLOYEE} instead
    */
-  public static final String TYPE_EMPLOYEE = GnucashOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
+  public static final String TYPE_EMPLOYEE = GCshOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
   
   // ------------------------------
 
@@ -271,102 +272,20 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
     // ---------------------------------------------------------------
 
 	/**
-	 * This Class represents a sum of the taxes of
-	 * multiple invoice-lines for one of the different
-	 * tax-percentages that occured.<br/>
-	 * e.g. you may have 2 sales-tax-rates of 7% and 16%
-	 * and both occur, so you will get 2 instances
-	 * of this class. One sum of the 7%-items and one for
-	 * the 16%-items.
-	 */
-	class TaxedSum {
-		/**
-		 * @param pTaxpercent how much tax it is
-		 * @param pTaxsum the sum of Paid taxes
-		 */
-		public TaxedSum(final FixedPointNumber pTaxpercent,
-				final FixedPointNumber pTaxsum) {
-			super();
-			myTaxpercent = pTaxpercent;
-			taxsum = (FixedPointNumber) pTaxsum.clone();
-		}
-
-		/**
-		 * How much tax it is.
-		 * 16%=0.16
-		 */
-		private FixedPointNumber myTaxpercent;
-
-		/**
-		 * The sum of Paid taxes.
-		 */
-		private FixedPointNumber taxsum;
-
-		/**
-		 * @param taxpercent How much tax it is.
-		 */
-		public TaxedSum(final FixedPointNumber taxpercent) {
-			super();
-			myTaxpercent = taxpercent;
-		}
-
-		/**
-		 *
-		 * @return How much tax it is.
-		 */
-		public FixedPointNumber getTaxpercent() {
-			return myTaxpercent;
-		}
-
-		/**
-		 *
-		 * @param taxpercent How much tax it is.
-		 */
-		public void setTaxpercent(final FixedPointNumber taxpercent) {
-			if (taxpercent.doubleValue() < 0.0) {
-				throw new IllegalArgumentException(
-						"negative value '"
-								+ taxpercent
-								+ "' not allowed for field this.taxpercent");
-			}
-
-			myTaxpercent = taxpercent;
-		}
-
-		/**
-		 *
-		 * @return The sum of Paid taxes.
-		 */
-		public FixedPointNumber getTaxsum() {
-			return taxsum;
-		}
-
-		/**
-		 *
-		 * @param pTaxsum The sum of Paid taxes.
-		 */
-		public void setTaxsum(final FixedPointNumber pTaxsum) {
-			taxsum = pTaxsum;
-		}
-	}
-	
-	// ----------------------------
-
-	/**
 	 *
 	 * @return For a customer invoice: How much sales-taxes are to pay.
 	 * @throws WrongInvoiceTypeException 
-	 * @see TaxedSum
+	 * @see GCshTaxedSumImpl
 	 */
-	TaxedSum[] getInvcTaxes() throws WrongInvoiceTypeException;
+	GCshTaxedSumImpl[] getInvcTaxes() throws WrongInvoiceTypeException;
 
     /**
     *
     * @return For a vendor bill: How much sales-taxes are to pay.
     * @throws WrongInvoiceTypeException 
-    * @see TaxedSum
+    * @see GCshTaxedSumImpl
     */
-	TaxedSum[] getBillTaxes() throws WrongInvoiceTypeException;
+	GCshTaxedSumImpl[] getBillTaxes() throws WrongInvoiceTypeException;
 
     // ---------------------------------------------------------------
 

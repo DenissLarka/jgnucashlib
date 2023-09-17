@@ -1,6 +1,6 @@
 package org.gnucash.read.aux;
 
-public interface GnucashAddress {
+public interface GCshAddress {
 
     /**
      *

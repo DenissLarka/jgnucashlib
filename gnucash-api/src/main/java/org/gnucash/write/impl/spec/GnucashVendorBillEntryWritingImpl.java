@@ -1,6 +1,5 @@
 package org.gnucash.write.impl.spec;
 
-import java.beans.PropertyChangeSupport;
 import java.util.Date;
 
 import org.gnucash.Const;
@@ -10,16 +9,16 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
-import org.gnucash.read.IllegalGenerInvoiceEntryActionException;
-import org.gnucash.read.aux.TaxTable;
-import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
+import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
-import org.gnucash.write.GnucashWritableGenerInvoice;
-import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
 import org.gnucash.write.GnucashWritableFile;
+import org.gnucash.write.impl.GnucashFileWritingImpl;
+import org.gnucash.write.impl.GnucashGenerInvoiceEntryWritingImpl;
+import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
+import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
 
 /**
  * Additional supported properties for PropertyChangeListeners:
@@ -31,8 +30,8 @@ import org.gnucash.write.GnucashWritableFile;
  * </ul>
  * Entry-Line in an invoice that can be created or removed.
  */
-public class GnucashVendorBillEntryWritingImpl extends GnucashGenerInvoiceEntryImpl 
-                                                    implements GnucashWritableCustomerInvoiceEntry 
+public class GnucashVendorBillEntryWritingImpl extends GnucashGenerInvoiceEntryWritingImpl 
+                                               implements GnucashWritableVendorBillEntry
 {
 
 	/**
@@ -56,7 +55,7 @@ public class GnucashVendorBillEntryWritingImpl extends GnucashGenerInvoiceEntryI
 		final GncV2.GncBook.GncGncEntry jwsdpPeer) {
 		super(invoice, jwsdpPeer);
 		
-		this.invoice = invoice;
+		this.myInvoice = invoice;
 	}
 
 	/**
@@ -69,25 +68,17 @@ public class GnucashVendorBillEntryWritingImpl extends GnucashGenerInvoiceEntryI
 			final GnucashCustomerInvoiceWritingImpl invoice,
 			final FixedPointNumber quantity,
 			final FixedPointNumber price) {
-		GnucashAccount account = invoice.getFile().getAccountByName("Umsatzerl�se 16% USt");
-		if (account == null) {
-			account = invoice.getFile().getAccountByName("Umsatzerl�se 19% USt"); // national tax-rate has changed
-		}
-		if (account == null) {
-			throw new IllegalStateException("Cannot file account 'Umsatzerl�se 16% USt' from SKR04!");
-		}
-
-		return createInvoiceEntry(invoice, account, quantity, price);
+		return GnucashGenerInvoiceEntryWritingImpl.createSKR03_16PercentInvoiceEntry(invoice, quantity, price);
 	}
 
 	public GnucashVendorBillEntryWritingImpl(
 		final GnucashCustomerInvoiceWritingImpl invoice,
 		final FixedPointNumber quantity,
-		final FixedPointNumber price) throws WrongInvoiceTypeException {
+		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price));
 		
-		invoice.addInvcEntry(this);
-		this.invoice = invoice;
+		invoice.addBillEntry(this);
+		this.myInvoice = invoice;
 	}
 
 	/**
@@ -100,107 +91,17 @@ public class GnucashVendorBillEntryWritingImpl extends GnucashGenerInvoiceEntryI
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
 	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashVendorBillEntryWritingImpl(final GnucashCustomerInvoiceWritingImpl invoice,
-                                                  final GnucashAccount account,
-                                                  final FixedPointNumber quantity,
-                                                  final FixedPointNumber price) throws WrongInvoiceTypeException {
+	public GnucashVendorBillEntryWritingImpl(
+		final GnucashVendorBillWritingImpl invoice,
+		final GnucashAccount account,
+		final FixedPointNumber quantity,
+		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		super(invoice, createInvoiceEntry(invoice, account, quantity, price));
 		
-		invoice.addInvcEntry(this);
-		this.invoice = invoice;
-	}
-
-	/**
-	 * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashCustomerInvoiceWritingImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
-	 */
-	protected static GncV2.GncBook.GncGncEntry createInvoiceEntry(
-			final GnucashCustomerInvoiceWritingImpl invoice,
-			final GnucashAccount account,
-			final FixedPointNumber quantity,
-			final FixedPointNumber price) {
-
-		//      TODO: keep count-data in file intact <gnc:count-data cd:type="gnc:GncEntry">18</gnc:count-data>
-
-		if (!invoice.isModifiable()) {
-			throw new IllegalArgumentException("The given invoice has payments and is"
-					+ " thus not modifiable");
-		}
-
-		GnucashFileWritingImpl gnucashFileWritingImpl = (GnucashFileWritingImpl) invoice.getFile();
-		ObjectFactory factory = gnucashFileWritingImpl.getObjectFactory();
-
-		GncV2.GncBook.GncGncEntry entry = gnucashFileWritingImpl.createGncGncEntryType();
-
-		{
-			GncV2.GncBook.GncGncEntry.EntryGuid guid = factory.createGncV2GncBookGncGncEntryEntryGuid();
-			guid.setType("guid");
-			guid.setValue((gnucashFileWritingImpl).createGUID());
-			entry.setEntryGuid(guid);
-		}
-
-		entry.setEntryAction(ACTION_HOURS);
-		{
-			GncV2.GncBook.GncGncEntry.EntryDate entryDate = factory.createGncV2GncBookGncGncEntryEntryDate();
-			entryDate.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
-			entry.setEntryDate(entryDate);
-		}
-		entry.setEntryDescription("no description");
-		{
-			GncV2.GncBook.GncGncEntry.EntryEntered entered = factory.createGncV2GncBookGncGncEntryEntryEntered();
-			entered.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
-			entry.setEntryEntered(entered);
-		}
-		{
-			GncV2.GncBook.GncGncEntry.EntryIAcct iacct = factory.createGncV2GncBookGncGncEntryEntryIAcct();
-			iacct.setType("guid");
-			iacct.setValue(account.getId());
-			entry.setEntryIAcct(iacct);
-		}
-		entry.setEntryIDiscHow("PRETAX");
-		entry.setEntryIDiscType("PERCENT");
-		{
-
-			GncV2.GncBook.GncGncEntry.EntryInvoice inv = factory.createGncV2GncBookGncGncEntryEntryInvoice();
-			inv.setType("guid");
-			inv.setValue(invoice.getId());
-			entry.setEntryInvoice(inv);
-		}
-		entry.setEntryIPrice(price.toGnucashString());
-		entry.setEntryITaxable(1);
-		entry.setEntryITaxincluded(0);
-		{
-			//TODO: use not the first but the default taxtable
-			GncV2.GncBook.GncGncEntry.EntryITaxtable taxtableref = factory.createGncV2GncBookGncGncEntryEntryITaxtable();
-			taxtableref.setType("guid");
-
-			TaxTable taxTable = null;
-			// ::TODO
-			// GnucashCustomer customer = invoice.getCustomer();
-			// if (customer != null) {
-			// 	taxTable = customer.getCustomerTaxTable();
-			// }
-
-			// use first tax-table found
-			if (taxTable == null) {
-				taxTable = invoice.getFile().getTaxTables().iterator().next();
-			}
-
-            /*GncV2Type.GncBookType.GncGncTaxTableType taxtable = (GncV2Type.GncBookType.GncGncTaxTableType)
-				((GnucashFileImpl) invoice.getFile()).getRootElement().getGncBook().getGncGncTaxTable().get(0);
-
-            taxtableref.setValue(taxtable.getTaxtableGuid().getValue());*/
-			taxtableref.setValue(taxTable.getId());
-			entry.setEntryITaxtable(taxtableref);
-		}
-
-		entry.setEntryQty(quantity.toGnucashString());
-		entry.setVersion(Const.XML_FORMAT_VERSION);
-
-		invoice.getFile().getRootElement().getGncBook().getBookElements().add(entry);
-		invoice.getFile().setModified(true);
-
-		return entry;
+		invoice.addBillEntry(this);
+		this.myInvoice = invoice;
 	}
 
 	// -----------------------------------------------------------
@@ -226,7 +127,7 @@ public class GnucashVendorBillEntryWritingImpl extends GnucashGenerInvoiceEntryI
 	}
 
 	@Override
-	public void setTaxTable(TaxTable taxTab)
+	public void setTaxTable(GCshTaxTable taxTab)
 		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
 	    setBillTaxTable(taxTab);
 	}

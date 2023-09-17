@@ -42,7 +42,7 @@ import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.IllegalTransactionSplitActionException;
-import org.gnucash.read.aux.TaxTable;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
@@ -102,7 +102,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashWritableGenerInvoiceEntry createEntry(
+	public GnucashWritableGenerInvoiceEntry createGenerEntry(
 		final FixedPointNumber singleUnitPrice, 
 		final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		GnucashGenerInvoiceEntryWritingImpl entry = new GnucashGenerInvoiceEntryWritingImpl(this, quantity, singleUnitPrice);
@@ -116,10 +116,10 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashWritableGenerInvoiceEntry createEntry(
+	public GnucashWritableGenerInvoiceEntry createGenerEntry(
 		final FixedPointNumber singleUnitPrice,
 		final FixedPointNumber quantity,
-		final TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
 		GnucashGenerInvoiceEntryWritingImpl entry = new GnucashGenerInvoiceEntryWritingImpl(this, quantity, singleUnitPrice);
 		if (tax == null
@@ -143,7 +143,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashWritableGenerInvoiceEntry createEntry(
+	public GnucashWritableGenerInvoiceEntry createGenerEntry(
 		final FixedPointNumber singleUnitPrice, 
 		final FixedPointNumber quantity,
 		final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
@@ -224,7 +224,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 			GncV2.GncBook.GncGncInvoice.InvoicePostlot lotref = factory.createGncV2GncBookGncGncInvoiceInvoicePostlot();
 			lotref.setType("guid");
 
-			GncAccount.ActLots.GncLot newlot = createlot(file, factory, invoiceguid, accountToTransferMoneyTo, job);
+			GncAccount.ActLots.GncLot newlot = createLot(file, factory, invoiceguid, accountToTransferMoneyTo, job);
 
 			lotref.setValue(newlot.getLotId().getValue());
 			invc.setInvoicePostlot(lotref);
@@ -312,7 +312,8 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 		return postTransaction;
 	}
 
-	private static GncAccount.ActLots.GncLot createlot(final GnucashFileWritingImpl file,
+	private static GncAccount.ActLots.GncLot createLot(
+			final GnucashFileWritingImpl file,
 			final ObjectFactory factory,
 			final String invoiceID,
 			final GnucashAccountImpl accountToTransferMoneyTo,
@@ -407,10 +408,25 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	protected void removeInvcEntry(final GnucashGenerInvoiceEntryWritingImpl impl) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
 		if (!isModifiable()) {
-			throw new IllegalStateException("This Invoice has payments and is not modifiable!");
+			throw new IllegalStateException("This customer invoice has payments and is not modifiable!");
 		}
 
 		this.subtractInvcEntry(impl);
+		entries.remove(impl);
+	}
+
+	/**
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 * @see #addInvcEntry(GnucashGenerInvoiceEntryImpl)
+	 */
+	protected void removeBillEntry(final GnucashGenerInvoiceEntryWritingImpl impl) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+
+		if (!isModifiable()) {
+			throw new IllegalStateException("This vendor bill has payments and is not modifiable!");
+		}
+
+		this.subtractBillEntry(impl);
 		entries.remove(impl);
 	}
 
@@ -422,7 +438,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	protected void addInvcEntry(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void addInvcEntry(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
 		System.err.println("GnucashGenerInvoiceWritingImpl.addInvcEntry " + entry.toString());
 
@@ -440,9 +456,9 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 		boolean isTaxable = entry.isInvcTaxable();
 		FixedPointNumber sumExclTaxes = entry.getInvcSumExclTaxes();
 		FixedPointNumber sumInclTaxes = entry.getInvcSumInclTaxes();
-		String accountToTransferMoneyFrom = getAccountIDToTransferMoneyFrom(entry);
+		String accountToTransferMoneyFrom = getInvcAccountIDToTransferMoneyFrom(entry);
 
-		TaxTable taxtable = null;
+		GCshTaxTable taxtable = null;
 
 		if (entry.isInvcTaxable()) {
 			taxtable = entry.getInvcTaxTable();
@@ -465,7 +481,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	protected void addBillEntry(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void addBillEntry(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
 		System.err.println("GnucashGenerInvoiceWritingImpl.addBillEntry " + entry.toString());
 
@@ -483,9 +499,9 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 		boolean isTaxable = entry.isBillTaxable();
 		FixedPointNumber sumExclTaxes = entry.getBillSumExclTaxes();
 		FixedPointNumber sumInclTaxes = entry.getBillSumInclTaxes();
-		String accountToTransferMoneyFrom = getAccountIDToTransferMoneyFrom(entry);
+		String accountToTransferMoneyFrom = getBillAccountIDToTransferMoneyFrom(entry);
 
-		TaxTable taxtable = null;
+		GCshTaxTable taxtable = null;
 
 		if (entry.isBillTaxable()) {
 			taxtable = entry.getBillTaxTable();
@@ -500,13 +516,6 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 		getFile().setModified(true);
 	}
 
-	/**
-	 * @return the AccountID of the Account to transfer the money from
-	 */
-	private String getAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry) {
-		return entry.getJwsdpPeer().getEntryIAcct().getValue();
-	}
-
 	protected void subtractInvcEntry(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		System.err.println("GnucashGenerInvoiceWritingImpl.subtractInvcEntry " + entry.toString());
 		//==============================================================
@@ -518,7 +527,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 		FixedPointNumber sumInclTaxes = entry.getInvcSumInclTaxes().negate();
 		String accountToTransferMoneyFrom = entry.getJwsdpPeer().getEntryIAcct().getValue();
 
-		TaxTable taxtable = null;
+		GCshTaxTable taxtable = null;
 
 		if (entry.isInvcTaxable()) {
 			taxtable = entry.getInvcTaxTable();
@@ -543,7 +552,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 		FixedPointNumber sumInclTaxes = entry.getBillSumInclTaxes().negate();
 		String accountToTransferMoneyFrom = entry.getJwsdpPeer().getEntryBAcct().getValue();
 
-		TaxTable taxtable = null;
+		GCshTaxTable taxtable = null;
 
 		if (entry.isBillTaxable()) {
 			taxtable = entry.getBillTaxTable();
@@ -558,9 +567,23 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	}
 
 	/**
+	 * @return the AccountID of the Account to transfer the money from
+	 */
+	protected String getInvcAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry) {
+		return entry.getJwsdpPeer().getEntryIAcct().getValue();
+	}
+
+	/**
+	 * @return the AccountID of the Account to transfer the money from
+	 */
+	protected String getBillAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry) {
+		return entry.getJwsdpPeer().getEntryBAcct().getValue();
+	}
+
+	/**
 	 * @throws IllegalTransactionSplitActionException 
 	 */
-	private void updateEntry(final TaxTable taxtable,
+	private void updateEntry(final GCshTaxTable taxtable,
 			final boolean isTaxable,
 			final FixedPointNumber sumExclTaxes,
 			final FixedPointNumber sumInclTaxes,
@@ -576,7 +599,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 		if (isTaxable) {
 
 			// get the first account of the taxTable
-			TaxTable.TaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
+			GCshTaxTable.GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
 			GnucashAccount accountToTransferTaxTo = taxTableEntry.getAccount();
 			FixedPointNumber entryTaxAmount = ((FixedPointNumber) sumInclTaxes.clone()).subtract(sumExclTaxes);
 

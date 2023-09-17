@@ -11,7 +11,7 @@ import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.IllegalGenerInvoiceEntryActionException;
-import org.gnucash.read.aux.TaxTable;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
@@ -73,7 +73,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 * @param price
 	 * @return
 	 */
-	private static GncV2.GncBook.GncGncEntry createSKR03_16PercentInvoiceEntry(
+	protected static GncV2.GncBook.GncGncEntry createSKR03_16PercentInvoiceEntry(
 			final GnucashGenerInvoiceWritingImpl invoice,
 			final FixedPointNumber quantity,
 			final FixedPointNumber price) {
@@ -182,7 +182,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 			GncV2.GncBook.GncGncEntry.EntryITaxtable taxtableref = factory.createGncV2GncBookGncGncEntryEntryITaxtable();
 			taxtableref.setType("guid");
 
-			TaxTable taxTable = null;
+			GCshTaxTable taxTable = null;
 			// ::TODO
 			// GnucashCustomer customer = invoice.getCustomer();
 			// if (customer != null) {
@@ -253,15 +253,18 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 		}
 	}
 
+	// -----------------------------------------------------------
+
 	/**
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 * @see GnucashGenerInvoiceEntry#isInvcTaxable()
 	 */
-	public void setInvcTaxable(final boolean is) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	@Override
+	public void setInvcTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
 		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
-		if (is) {
+		if (val) {
 			getJwsdpPeer().setEntryITaxable(1);
 		} else {
 			getJwsdpPeer().setEntryITaxable(0);
@@ -270,31 +273,13 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 	}
 
-	/**
-	 * @throws WrongInvoiceTypeException 
-	 * @throws NoTaxTableFoundException 
-	 * @see GnucashGenerInvoiceEntry#isInvcTaxable()
-	 */
-	public void setBillTaxable(final boolean is) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractBillEntry(this);
-		if (is) {
-			getJwsdpPeer().setEntryBTaxable(1);
-		} else {
-			getJwsdpPeer().setEntryBTaxable(0);
-		}
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
-
-	}
-
-	// -----------------------------------------------------------
 
 	/**
 	 * {@inheritDoc}
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	public void setInvcTaxTable(final TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void setInvcTaxTable(final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
 	    	    throw new WrongInvoiceTypeException();
 	    
@@ -318,13 +303,32 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addInvcEntry(this);
 
 	}
+	
+	// ------------------------
+
+	/**
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 * @see GnucashGenerInvoiceEntry#isInvcTaxable()
+	 */
+	public void setBillTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractBillEntry(this);
+		if (val) {
+			getJwsdpPeer().setEntryBTaxable(1);
+		} else {
+			getJwsdpPeer().setEntryBTaxable(0);
+		}
+		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
+
+	}
 
 	/**
 	 * {@inheritDoc}
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	public void setBillTaxTable(final TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void setBillTaxTable(final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
 	    	    throw new WrongInvoiceTypeException();
 

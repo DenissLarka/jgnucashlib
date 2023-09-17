@@ -6,7 +6,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.aux.TaxTable;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
@@ -68,7 +68,7 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	GnucashWritableGenerInvoiceEntry createGenerEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * create and add a new entry.<br/>
@@ -77,7 +77,7 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity, final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	GnucashWritableGenerInvoiceEntry createGenerEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity, final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * create and add a new entry.<br/>
@@ -86,7 +86,7 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice,
+	GnucashWritableGenerInvoiceEntry createGenerEntry(final FixedPointNumber singleUnitPrice,
                                                      final FixedPointNumber quantity,
-                                                     final TaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+                                                     final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 }

@@ -1,8 +1,8 @@
 package org.gnucash.write.aux;
 
-import org.gnucash.read.aux.Address;
+import org.gnucash.read.aux.GCshAddress;
 
-public interface GnucashWritableAddress extends Address {
+public interface GnucashWritableAddress extends GCshAddress {
 
 	void setAddressName(String a);
 

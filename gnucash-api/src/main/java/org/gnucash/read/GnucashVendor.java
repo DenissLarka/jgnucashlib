@@ -6,7 +6,7 @@ import java.util.Locale;
 import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
-import org.gnucash.read.aux.GnucashAddress;
+import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -100,7 +100,7 @@ public interface GnucashVendor extends GnucashObject {
     /**
      * @return the address including the name
      */
-    GnucashAddress getAddress();
+    GCshAddress getAddress();
 
     // ----------------------------
 

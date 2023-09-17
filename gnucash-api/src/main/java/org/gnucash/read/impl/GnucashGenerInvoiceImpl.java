@@ -21,6 +21,7 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
+import org.gnucash.read.impl.aux.GCshTaxedSumImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -444,17 +445,17 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	 * {@inheritDoc}
 	 * @throws WrongInvoiceTypeException 
 	 */
-	public TaxedSum[] getInvcTaxes() throws WrongInvoiceTypeException {
+	public GCshTaxedSumImpl[] getInvcTaxes() throws WrongInvoiceTypeException {
 
-		List<TaxedSum> taxedSums = new LinkedList<TaxedSum>();
+		List<GCshTaxedSumImpl> taxedSums = new LinkedList<GCshTaxedSumImpl>();
 
 		invoiceentries:
 		for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
           if ( entry.getType().equals(TYPE_CUSTOMER) ) {
 			FixedPointNumber taxPerc = entry.getInvcApplicableTaxPercent();
 
-			for (TaxedSum taxedSum2 : taxedSums) {
-				TaxedSum taxedSum = taxedSum2;
+			for (GCshTaxedSumImpl taxedSum2 : taxedSums) {
+				GCshTaxedSumImpl taxedSum = taxedSum2;
 				if (taxedSum.getTaxpercent().equals(taxPerc)) {
 					taxedSum.setTaxsum(
 							taxedSum.getTaxsum().add(
@@ -465,12 +466,12 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 				}
 			}
 
-			TaxedSum taxedSum = new TaxedSum(taxPerc, entry.getInvcSumInclTaxes().subtract(entry.getInvcSumExclTaxes()));
+			GCshTaxedSumImpl taxedSum = new GCshTaxedSumImpl(taxPerc, entry.getInvcSumInclTaxes().subtract(entry.getInvcSumExclTaxes()));
 			taxedSums.add(taxedSum);
           } // type
 		} // for
 
-		return taxedSums.toArray(new TaxedSum[taxedSums.size()]);
+		return taxedSums.toArray(new GCshTaxedSumImpl[taxedSums.size()]);
 
 	}
 
@@ -478,17 +479,17 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
      * {@inheritDoc}
      * @throws WrongInvoiceTypeException 
      */
-    public TaxedSum[] getBillTaxes() throws WrongInvoiceTypeException {
+    public GCshTaxedSumImpl[] getBillTaxes() throws WrongInvoiceTypeException {
 
-        List<TaxedSum> taxedSums = new LinkedList<TaxedSum>();
+        List<GCshTaxedSumImpl> taxedSums = new LinkedList<GCshTaxedSumImpl>();
 
         invoiceentries:
         for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
           if ( entry.getType().equals(TYPE_VENDOR) ) {
             FixedPointNumber taxPerc = entry.getBillApplicableTaxPercent();
 
-            for (TaxedSum taxedSum2 : taxedSums) {
-                TaxedSum taxedSum = taxedSum2;
+            for (GCshTaxedSumImpl taxedSum2 : taxedSums) {
+                GCshTaxedSumImpl taxedSum = taxedSum2;
                 if (taxedSum.getTaxpercent().equals(taxPerc)) {
                     taxedSum.setTaxsum(
                             taxedSum.getTaxsum().add(
@@ -499,12 +500,12 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
                 }
             }
 
-            TaxedSum taxedSum = new TaxedSum(taxPerc, entry.getBillSumInclTaxes().subtract(entry.getBillSumExclTaxes()));
+            GCshTaxedSumImpl taxedSum = new GCshTaxedSumImpl(taxPerc, entry.getBillSumInclTaxes().subtract(entry.getBillSumExclTaxes()));
             taxedSums.add(taxedSum);
           } // type
         } // for
 
-        return taxedSums.toArray(new TaxedSum[taxedSums.size()]);
+        return taxedSums.toArray(new GCshTaxedSumImpl[taxedSums.size()]);
     }
 
 	/**
