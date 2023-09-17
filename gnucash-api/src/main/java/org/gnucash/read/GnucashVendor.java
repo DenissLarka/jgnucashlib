@@ -6,6 +6,7 @@ import java.util.Locale;
 import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
+import org.gnucash.read.aux.GnucashAddress;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -68,56 +69,6 @@ public interface GnucashVendor extends GnucashObject {
     String getOutstandingValueFormatted(Locale l) throws WrongInvoiceTypeException;
 
 
-    interface Address {
-
-        /**
-         *
-         * @return name as used in the address
-         */
-        String getAddressName();
-
-        /**
-         *
-         * @return first line below the name
-         */
-        String getAddressLine1();
-
-        /**
-         *
-         * @return second and last line below the name
-         */
-        String getAddressLine2();
-        /**
-         *
-         * @return third and last line below the name
-         */
-        String getAddressLine3();
-        /**
-         *
-         * @return fourth and last line below the name
-         */
-        String getAddressLine4();
-
-        /**
-         *
-         * @return telephone
-         */
-        String getTel();
-
-        /**
-         *
-         * @return Fax
-         */
-        String getFax();
-
-        /**
-         *
-         * @return Email
-         */
-        String getEmail();
-    }
-
-
     /**
      * The gnucash-file is the top-level class to contain everything.
      * @return the file we are associated with
@@ -149,7 +100,7 @@ public interface GnucashVendor extends GnucashObject {
     /**
      * @return the address including the name
      */
-    GnucashVendor.Address getAddress();
+    GnucashAddress getAddress();
 
     // ----------------------------
 

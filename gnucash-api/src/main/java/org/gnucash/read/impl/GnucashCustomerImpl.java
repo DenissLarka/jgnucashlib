@@ -13,7 +13,9 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.aux.GnucashAddress;
 import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.impl.aux.GnucashAddressImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
@@ -249,138 +251,15 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashCustomer.Address getAddress() {
-		return new AddressImpl(jwsdpPeer.getCustAddr());
+	public GnucashAddress getAddress() {
+		return new GnucashAddressImpl(jwsdpPeer.getCustAddr());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashCustomer.Address getShippingAddress() {
-		return new AddressImpl(jwsdpPeer.getCustShipaddr());
-	}
-
-	/**
-	 * (c) 2005 by Wolschon Softwaredesign und Beratung.<br/>
-	 * Project: gnucashReader<br/>
-	 * GnucashCustomerImpl.java<br/>
-	 *
-	 * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
-	 * @see Address
-	 */
-	public static class AddressImpl implements Address {
-
-		/**
-		 * The JWSDP-object we are wrapping.
-		 */
-		private final org.gnucash.generated.Address jwsdpPeer;
-
-		/**
-		 * @param newPeer the JWSDP-object we are wrapping.
-		 */
-		@SuppressWarnings("exports")
-        public AddressImpl(final org.gnucash.generated.Address newPeer) {
-			super();
-			jwsdpPeer = newPeer;
-		}
-
-		/**
-		 * @return The JWSDP-object we are wrapping.
-		 */
-		@SuppressWarnings("exports")
-		public org.gnucash.generated.Address getJwsdpPeer() {
-			return jwsdpPeer;
-		}
-
-		/**
-		 * @see GnucashCustomer.Address#getAddressName()
-		 */
-		public String getAddressName() {
-			if (jwsdpPeer.getAddrName() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrName();
-		}
-
-		/**
-		 * @see GnucashCustomer.Address#getAddressLine1()
-		 */
-		public String getAddressLine1() {
-			if (jwsdpPeer.getAddrAddr1() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr1();
-		}
-
-		/**
-		 * @see GnucashCustomer.Address#getAddressLine2()
-		 */
-		public String getAddressLine2() {
-			if (jwsdpPeer.getAddrAddr2() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr2();
-		}
-
-		/**
-		 * @return third and last line below the name
-		 */
-		public String getAddressLine3() {
-			if (jwsdpPeer.getAddrAddr3() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr3();
-		}
-
-		/**
-		 * @return fourth and last line below the name
-		 */
-		public String getAddressLine4() {
-			if (jwsdpPeer.getAddrAddr4() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr4();
-		}
-
-		/**
-		 * @return telephone
-		 */
-		public String getTel() {
-			if (jwsdpPeer.getAddrPhone() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrPhone();
-		}
-
-		/**
-		 * @return Fax
-		 */
-		public String getFax() {
-			if (jwsdpPeer.getAddrFax() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrFax();
-		}
-
-		/**
-		 * @return Email
-		 */
-		public String getEmail() {
-			if (jwsdpPeer.getAddrEmail() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrEmail();
-		}
-
-		/**
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			return getAddressName() + "\n"
-					+ getAddressLine1() + "\n"
-					+ getAddressLine2();
-		}
+	public GnucashAddress getShippingAddress() {
+		return new GnucashAddressImpl(jwsdpPeer.getCustShipaddr());
 	}
 
 	/**

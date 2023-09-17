@@ -932,7 +932,7 @@ public class GnucashFileImpl implements GnucashFile {
       }
     } // for
 
-    LOGGER.debug("No. of entries in invoice map: " + invoiceID2invoice.size());
+    LOGGER.debug("No. of entries in (generic) invoice map: " + invoiceID2invoice.size());
   }
 
   private void initInvoiceEntryMap(final GncV2 pRootElement)
@@ -958,7 +958,7 @@ public class GnucashFileImpl implements GnucashFile {
       }
     } // for
 
-    LOGGER.debug("No. of entries in invoice-entry map: " + invoiceEntryID2invoiceEntry.size());
+    LOGGER.debug("No. of entries in (generic) invoice-entry map: " + invoiceEntryID2invoiceEntry.size());
   }
 
   private void initTransactionMap(final GncV2 pRootElement)
@@ -975,8 +975,9 @@ public class GnucashFileImpl implements GnucashFile {
       try {
         GnucashTransactionImpl trx = createTransaction(jwsdpTrx);
         transactionID2transaction.put(trx.getId(), trx);
+        // ::CHECK: what's the following loop for?
         for (GnucashTransactionSplit splt : trx.getSplits()) {
-          splt.getAccountID();
+          splt.getAccountID(); 
         }
       }
       catch (RuntimeException e) {
@@ -1074,7 +1075,7 @@ public class GnucashFileImpl implements GnucashFile {
       }
     } // for
 
-    LOGGER.debug("No. of entries in job map: " + jobID2job.size());
+    LOGGER.debug("No. of entries in (generic) job map: " + jobID2job.size());
   }
 
   // ---------------------------------------------------------------
