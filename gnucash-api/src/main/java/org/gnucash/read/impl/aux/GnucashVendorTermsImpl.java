@@ -1,8 +1,8 @@
-package org.gnucash.read.impl;
+package org.gnucash.read.impl.aux;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashVendorTerms;
+import org.gnucash.read.aux.GnucashVendorTerms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

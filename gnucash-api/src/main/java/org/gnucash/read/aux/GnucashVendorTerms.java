@@ -1,9 +1,6 @@
-package org.gnucash.read;
+package org.gnucash.read.aux;
 
-/**
- * Contains vendor terms
- * @see GnucashVendor
- */
+import org.gnucash.read.GnucashFile;
 
 public interface GnucashVendorTerms {
 
