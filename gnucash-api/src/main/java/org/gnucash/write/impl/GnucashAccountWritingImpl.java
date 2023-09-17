@@ -23,12 +23,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -48,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * created: 16.05.2005 <br/>
  * Extension of GnucashAccountImpl to allow writing instead of
  * read-only access.<br/>
  * Supported properties for the propertyChangeListeners:
@@ -62,8 +61,6 @@ import org.slf4j.LoggerFactory;
  * <li>parentAccount</li>
  * <li>transactionSplits (not giving the old value of the list)</li>
  * </ul>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashAccountWritingImpl extends GnucashAccountImpl implements GnucashWritableAccount {
 
@@ -130,9 +127,9 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 		account.setActName("UNNAMED");
 		//      left unset account.setActNonStandardScu();
 		//left unset account.setActParent())
-		account.setActType("BANK");
+		account.setActType(GnucashAccount.TYPE_BANK);
 
-		account.setVersion("2.0.0");
+		account.setVersion(Const.XML_FORMAT_VERSION);
 
 		{
 			GncAccount.ActCommodity currency = factory.createGncAccountActCommodity();

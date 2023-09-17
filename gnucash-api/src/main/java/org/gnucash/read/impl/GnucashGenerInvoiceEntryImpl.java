@@ -1,14 +1,3 @@
-/**
- * GnucashInvoiceEntryImpl.java
- * License: GPLv3 or later
- * Created on 13.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 13.05.2005 - initial version
- * 03.01.2010 - support for invoice-entries without an invoice-id
- * ...
- */
 package org.gnucash.read.impl;
 
 import java.text.DateFormat;
@@ -30,10 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * created: 13.05.2005 <br/>
  * Implementation of GnucashInvoiceEntry that uses JWSDP.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl 
                                           implements GnucashGenerInvoiceEntry 

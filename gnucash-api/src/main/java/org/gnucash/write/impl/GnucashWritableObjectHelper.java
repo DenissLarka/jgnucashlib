@@ -1,9 +1,3 @@
-/**
- * GnucashWritableObjectHelper.java
- * created: 01.10.2005 13:31:21
- * License: GPLv3 or later
- * (c) 2005 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- */
 package org.gnucash.write.impl;
 
 //automatically created logger for debug and error -output
@@ -23,14 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
- * Project: gnucashReader<br/>
- * GnucashWritableObjectHelper.java<br/>
- * created: 01.10.2005 13:31:21 <br/>
- * <br/><br/>
  * Interface all writable gnucash-entities implement.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashWritableObjectHelper implements GnucashWritableObject {
 

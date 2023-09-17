@@ -25,13 +25,13 @@ import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.OwnerId;
-import org.gnucash.read.GnucashCustomer;
+import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.aux.GnucashOwner;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
-import org.gnucash.read.aux.GnucashOwner;
-import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
-import org.gnucash.read.spec.GnucashCustomerJob;
-import org.gnucash.write.spec.GnucashWritableCustomerJob;
+import org.gnucash.read.impl.spec.GnucashVendorJobImpl;
+import org.gnucash.read.spec.GnucashVendorJob;
+import org.gnucash.write.spec.GnucashWritableVendorJob;
 import org.gnucash.write.impl.GnucashFileWritingImpl;
 
 /**
@@ -39,41 +39,41 @@ import org.gnucash.write.impl.GnucashFileWritingImpl;
  * <p>
  * Additional supported properties for PropertyChangeListeners:
  * <ul>
- * <li>customer</li>
+ * <li>vendor</li>
  * <li>active</li>
  * <li>name</li>
  * </ul>
  */
 
-public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl 
-                                           implements GnucashCustomerJob,
-                                                      GnucashWritableCustomerJob 
+public class GnucashVendorJobWritingImpl extends GnucashVendorJobImpl 
+                                         implements GnucashVendorJob,
+                                                    GnucashWritableVendorJob 
 {
   /**
    * @param jwsdpPeer the XML(jaxb)-object we are fronting.
    * @param file      the file we belong to
    */
-  public GnucashCustomerJobWritingImpl(
+  public GnucashVendorJobWritingImpl(
           final GncV2.GncBook.GncGncJob jwsdpPeer,
           final GnucashFile file) {
       super(jwsdpPeer, file);
   }
 
   /**
-   * @param owner the customer the job is from
+   * @param owner the vendor the job is from
    * @param file  the file to add the jhe to
    */
-  public GnucashCustomerJobWritingImpl(
+  public GnucashVendorJobWritingImpl(
           final GnucashFileWritingImpl file,
           final String id,
-          final GnucashCustomer owner) {
+          final GnucashVendor owner) {
       super(createJob(file, id, owner), file);
   }
 
   // -----------------------------------------------------------------
   
 	/**
-	 * @see GnucashWritableCustomerJob#remove()
+	 * @see GnucashWritableVendorJob#remove()
 	 */
 	public void remove() {
 		if (!getInvoices().isEmpty()) {
@@ -85,7 +85,7 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 	}
 
 	/**
-	 * @param customer the customer the job is from
+	 * @param vendor the vendor the job is from
 	 * @param file     the file to add the jhe to
 	 * @param guid     the internal id to use. May be null to generate an ID.
 	 * @return the jaxb-job
@@ -94,14 +94,14 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 	private static GncV2.GncBook.GncGncJob createJob(
 			final GnucashFileWritingImpl file,
 			final String guid,
-			final GnucashCustomer customer) {
+			final GnucashVendor vendor) {
 
 		if (file == null) {
 			throw new IllegalArgumentException("null file given");
 		}
 
-		if (customer == null) {
-			throw new IllegalArgumentException("null customer given");
+		if (vendor == null) {
+			throw new IllegalArgumentException("null vendor given");
 		}
 
 
@@ -124,11 +124,11 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 
 		{
 			GncV2.GncBook.GncGncJob.JobOwner owner = factory.createGncV2GncBookGncGncJobJobOwner();
-			owner.setOwnerType(GnucashOwner.TYPE_CUSTOMER);
+			owner.setOwnerType(GnucashOwner.TYPE_VENDOR);
 
 			OwnerId ownerid = factory.createOwnerId();
 			ownerid.setType("guid");
-			ownerid.setValue(customer.getId());
+			ownerid.setValue(vendor.getId());
 
 			owner.setOwnerId(ownerid);
 			owner.setVersion(Const.XML_FORMAT_VERSION);
@@ -152,55 +152,55 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 	}
 
 	/**
-	 * @see GnucashWritableCustomerJob#setCustomerType(java.lang.String)
+	 * @see GnucashWritableVendorJob#setVendorType(java.lang.String)
 	 */
-	public void setCustomerType(final String customerType) {
-		if (customerType == null) {
-			throw new IllegalArgumentException("null 'customerType' given!");
+	public void setVendorType(final String vendorType) {
+		if (vendorType == null) {
+			throw new IllegalArgumentException("null 'vendorType' given!");
 		}
 
 		Object old = getJwsdpPeer().getJobOwner().getOwnerType();
-		if (old == customerType) {
+		if (old == vendorType) {
 			return; // nothing has changed
 		}
-		getJwsdpPeer().getJobOwner().setOwnerType(customerType);
+		getJwsdpPeer().getJobOwner().setOwnerType(vendorType);
 		getWritingFile().setModified(true);
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("customerType", old, customerType);
+			propertyChangeFirer.firePropertyChange("vendorType", old, vendorType);
 		}
 	}
 
 	/**
-	 * @see GnucashWritableCustomerJob#setCustomer(GnucashCustomer)
+	 * @see GnucashWritableVendorJob#setVendor(GnucashVendor)
 	 */
-	public void setCustomer(final GnucashCustomer customer) {
+	public void setVendor(final GnucashVendor vendor) {
 		if (!getInvoices().isEmpty()) {
-			throw new IllegalStateException("cannot change customer of a job that has invoices!");
+			throw new IllegalStateException("cannot change vendor of a job that has invoices!");
 		}
 
 
-		if (customer == null) {
-			throw new IllegalArgumentException("null 'customer' given!");
+		if (vendor == null) {
+			throw new IllegalArgumentException("null 'vendor' given!");
 		}
 
-		Object old = getCustomer();
-		if (old == customer) {
+		Object old = getVendor();
+		if (old == vendor) {
 			return; // nothing has changed
 		}
-		getJwsdpPeer().getJobOwner().getOwnerId().setValue(customer.getId());
+		getJwsdpPeer().getJobOwner().getOwnerId().setValue(vendor.getId());
 		getWritingFile().setModified(true);
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("customer", old, customer);
+			propertyChangeFirer.firePropertyChange("vendor", old, vendor);
 		}
 	}
 
 
 	/**
-	 * @see GnucashWritableCustomerJob#setJobNumber(java.lang.String)
+	 * @see GnucashWritableVendorJob#setJobNumber(java.lang.String)
 	 */
 	public void setJobNumber(final String jobId) {
 		if (jobId == null || jobId.trim().length() == 0) {
@@ -229,7 +229,7 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 	}
 
 	/**
-	 * @see GnucashWritableCustomerJob#setName(java.lang.String)
+	 * @see GnucashWritableVendorJob#setName(java.lang.String)
 	 */
 	public void setName(final String jobName) {
 		if (jobName == null || jobName.trim().length() == 0) {

@@ -1,21 +1,3 @@
-/**
- * GnucashWritableAccount.java
- * Created on 11.06.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 11.06.2005 - initial version
- * ...
- */
 package org.gnucash.write;
 
 import java.beans.PropertyChangeListener;
@@ -27,7 +9,6 @@ import org.gnucash.read.GnucashObject;
 
 
 /**
- * created: 11.06.2005 <br/>
  * Account that can be modified.<br/>
  * Supported properties for the propertyChangeListeners:
  * <ul>
@@ -39,8 +20,6 @@ import org.gnucash.read.GnucashObject;
  * <li>parentAccount</li>
  * <li>transactionSplits (not giving the old value of the list)</li>
  * </ul>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashWritableAccount extends GnucashAccount, GnucashObject, GnucashWritableObject {
 

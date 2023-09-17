@@ -1,8 +1,3 @@
-/**
- * SimpleAccount.java
- * License: GPLv3 or later
- * created: 22.05.2006 17:56:15
- */
 package org.gnucash.read.impl;
 
 //other imports
@@ -30,15 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * (c) 2006 by Wolschon Softwaredesign und Beratung.<br/>
- * Project: gnucashReader<br/>
- * SimpleAccount.java<br/>
- * created: 22.05.2006 17:56:15 <br/>
- * <br/><br/>
  * This is a base-class that helps implementing the GnucashAccount
  * -interface with it's extenive number of convenience-methods.<br/>
- *
- * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public abstract class SimpleAccount implements GnucashAccount {
 

@@ -1,13 +1,3 @@
-/**
- * GnucashAccount.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 05.05.2005 - initial version
- * ...
- */
 package org.gnucash.read;
 
 import org.gnucash.numbers.FixedPointNumber;
@@ -16,15 +6,11 @@ import java.time.LocalDate;
 import java.util.*;
 
 /**
- * <br>
- * created: 05.05.2005
- * <p>
  * An account is a collection of transactions that start or end there. <br>
  * You can compare it's functionality to an abstracted bank account. <br>
  * It has a balance, may have a parent-account(@see #getParentAccount()) and child-accounts(@see #getSubAccounts()) to form
  * a tree. <br>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
+ * 
  * @see #getParentAccount()
  */
 public interface GnucashAccount extends Comparable<GnucashAccount> {

@@ -1,13 +1,3 @@
-/**
- * GnucashFile.java .
- * License: GPLv3 or later
- * Created on 13.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 13.05.2005 - initial version
- * 11.11.2008 - added getDefaultCurrencyID()
- */
 package org.gnucash.read;
 
 import java.io.File;
@@ -21,13 +11,10 @@ import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
- * created: 13.05.2005<br/>
- * <br/>
  * Interface of a top-level class<br/>
  * that gives access to a gnucash-file <br/>
  * with all it's transactions and accounts,... <br/>
  * <br/>
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashFile extends GnucashObject {
 

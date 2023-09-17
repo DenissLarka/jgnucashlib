@@ -1,13 +1,3 @@
-/**
- * GnucashAccountImpl.java
- * License: GPLv3 or later
- * Created on 13.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 13.05.2005 - initial version
- * ...
- */
 package org.gnucash.read.impl;
 
 import java.util.Collection;
@@ -26,11 +16,8 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransactionSplit;
 
 /**
- * created: 13.05.2005 <br/>
  * Implementation of GnucashAccount that used a
  * jwsdp-generated backend.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashAccountImpl extends SimpleAccount 
                                 implements GnucashAccount 

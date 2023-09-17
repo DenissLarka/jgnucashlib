@@ -1,13 +1,3 @@
-/**
- * GnucashTransactionSplitImpl.java
- * License: GPLv3 or later
- * Created on 13.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 13.05.2005 - initial version
- * ...
- */
 package org.gnucash.read.impl;
 
 import java.text.NumberFormat;
@@ -25,10 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * created: 13.05.2005 <br/>
  * Implementation of GnucashTransactionSplit that uses JWSDSP.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashTransactionSplitImpl extends GnucashObjectImpl 
                                          implements GnucashTransactionSplit 

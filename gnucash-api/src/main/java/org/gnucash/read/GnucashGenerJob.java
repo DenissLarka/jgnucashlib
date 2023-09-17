@@ -1,15 +1,3 @@
-/**
- * GnucashJob.java
- * License: GPLv3 or later
- * Created on 14.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 14.05.2005 - initial version
- * ...
- */
 package org.gnucash.read;
 
 import java.util.Collection;
@@ -18,15 +6,12 @@ import org.gnucash.read.aux.GnucashOwner;
 
 
 /**
- * created: 14.05.2005 <br>
  * A job needs to be done. Once it or a part of it<br>
  * is done an invoice can be created and later be Paid by the customer<br>
  * of this job.
  * @see GnucashGenerInvoice
  * @see GnucashCustomer
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-
 public interface GnucashGenerJob {
   
   /**

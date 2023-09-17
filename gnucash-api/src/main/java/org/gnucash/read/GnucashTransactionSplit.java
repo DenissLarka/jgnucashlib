@@ -1,33 +1,14 @@
-/**
- * GnucashTransactionSplit.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  05.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read;
-
-
 
 import java.util.Collection;
 import java.util.Locale;
 
 import org.gnucash.numbers.FixedPointNumber;
 
-
-
 /**
- * created: 05.05.2005 <br/>
  * This denotes a single addition or removal of some
  * value from one account in a transaction made up of
  * multiple such splits.
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSplit> {
 

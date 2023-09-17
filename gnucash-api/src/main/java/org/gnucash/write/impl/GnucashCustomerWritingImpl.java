@@ -1,37 +1,23 @@
-/**
- * GnucashCustomerWritingImpl.java
- * Created on 11.06.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 11.06.2005 - initial version
- * ...
- */
 package org.gnucash.write.impl;
 
 import java.beans.PropertyChangeSupport;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashCustomer;
+import org.gnucash.read.aux.GnucashAddress;
 import org.gnucash.read.impl.GnucashCustomerImpl;
+import org.gnucash.read.impl.aux.GnucashAddressImpl;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
+import org.gnucash.write.aux.GnucashWritableAddress;
+import org.gnucash.write.impl.aux.GnucashWritableAddressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * created: 11.06.2005<br/>
  * Modifiable version of a customer.<br/>
  * <p>
  * Additional supported properties for PropertyChangeListeners:
@@ -41,11 +27,10 @@ import org.slf4j.LoggerFactory;
  * <li>discount</li>
  * <li>customerNumber</li>
  * </ul>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements GnucashWritableCustomer {
-
+public class GnucashCustomerWritingImpl extends GnucashCustomerImpl 
+                                        implements GnucashWritableCustomer 
+{
 	/**
 	 * Automatically created logger for debug and error-output.
 	 */
@@ -114,7 +99,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 		GncV2.GncBook.GncGncCustomer customer = file.createGncGncCustomerType();
 
 		customer.setCustTaxincluded("USEGLOBAL");
-		customer.setVersion("2.0.0");
+		customer.setVersion(Const.XML_FORMAT_VERSION);
 		customer.setCustDiscount("0/1");
 		customer.setCustCredit("0/1");
 		customer.setCustUseTt(0);
@@ -139,7 +124,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 			addr.setAddrEmail("");
 			addr.setAddrFax("");
 			addr.setAddrPhone("");
-			addr.setVersion("2.0.0");
+			addr.setVersion(Const.XML_FORMAT_VERSION);
 			customer.setCustAddr(addr);
 		}
 
@@ -153,7 +138,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 			saddr.setAddrEmail("");
 			saddr.setAddrFax("");
 			saddr.setAddrPhone("");
-			saddr.setVersion("2.0.0");
+			saddr.setVersion(Const.XML_FORMAT_VERSION);
 			customer.setCustShipaddr(saddr);
 		}
 
@@ -191,9 +176,9 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 	}
 
 	/**
-	 * @see GnucashWritableCustomer#setCustomerNumber(java.lang.String)
+	 * @see GnucashWritableCustomer#setNumber(java.lang.String)
 	 */
-	public void setCustomerNumber(final String number) {
+	public void setNumber(final String number) {
 		Object old = getNumber();
 		getJwsdpPeer().setCustId(number);
 		getGnucashFile().setModified(true);
@@ -251,7 +236,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 	 * @see GnucashCustomer#getAddress()
 	 */
 	@Override
-	public GnucashWritableCustomer.WritableAddress getAddress() {
+	public GnucashWritableAddress getAddress() {
 		return getWritableAddress();
 	}
 
@@ -259,28 +244,28 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 	 * @see GnucashCustomer#getShippingAddress()
 	 */
 	@Override
-	public GnucashWritableCustomer.WritableAddress getShippingAddress() {
+	public GnucashWritableAddress getShippingAddress() {
 		return getWritableShippingAddress();
 	}
 
 	/**
 	 * @see GnucashWritableCustomer#getWritableAddress()
 	 */
-	public GnucashWritableCustomer.WritableAddress getWritableAddress() {
-		return new WritableAddressImpl(getJwsdpPeer().getCustAddr());
+	public GnucashWritableAddress getWritableAddress() {
+		return new GnucashWritableAddressImpl(getJwsdpPeer().getCustAddr());
 	}
 
 	/**
 	 * @see GnucashWritableCustomer#getWritableShippingAddress()
 	 */
-	public GnucashWritableCustomer.WritableAddress getWritableShippingAddress() {
-		return new WritableAddressImpl(getJwsdpPeer().getCustShipaddr());
+	public GnucashWritableAddress getWritableShippingAddress() {
+		return new GnucashWritableAddressImpl(getJwsdpPeer().getCustShipaddr());
 	}
 
 	/**
 	 * @see GnucashWritableCustomer#setAdress(org.gnucash.fileformats.gnucash.GnucashCustomer.ShippingAdress)
 	 */
-	public void setAddress(final Address adr) {
+	public void setAddress(final GnucashAddress adr) {
 		/*if (adr instanceof AddressImpl) {
             AddressImpl adrImpl = (AddressImpl) adr;
             getJwsdpPeer().setCustAddr(adrImpl.getJwsdpPeer());
@@ -305,9 +290,9 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 	}
 
 	/**
-	 * @see GnucashWritableCustomer#setShippingAddress(Address)
+	 * @see GnucashWritableCustomer#setShippingAddress(GnucashWritableAddress)
 	 */
-	public void setShippingAddress(final Address adr) {
+	public void setShippingAddress(final GnucashAddress adr) {
         /*if (adr instanceof AddressImpl) {
             AddressImpl adrImpl = (AddressImpl) adr;
             getJwsdpPeer().setCustShipaddr(adrImpl.getJwsdpPeer());
@@ -328,91 +313,6 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl implements G
 			getJwsdpPeer().getCustShipaddr().setAddrPhone(adr.getTel());
 		}
 		getGnucashFile().setModified(true);
-	}
-
-	/**
-	 * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
-	 * Project: gnucashReader<br/>
-	 * GnucashCustomerWritingImpl.java<br/>
-	 * created: 03.09.2005 11:31:32 <br/>
-	 * <br/><br/>
-	 * Writable implementation in {@link GnucashCustomerImpl.AddressImpl}
-	 *
-	 * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
-	 */
-	public static class WritableAddressImpl extends GnucashCustomerImpl.AddressImpl implements GnucashWritableCustomer.WritableAddress {
-
-		/**
-		 * @param jwsdpPeer
-		 */
-		public WritableAddressImpl(final org.gnucash.generated.Address jwsdpPeer) {
-			super(jwsdpPeer);
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setAddressName(java.lang.String)
-		 */
-		public void setAddressName(final String a) {
-			getJwsdpPeer().setAddrName(a);
-			//TODO: setModified()
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setAddressLine1(java.lang.String)
-		 */
-		public void setAddressLine1(final String a) {
-			getJwsdpPeer().setAddrAddr1(a);
-			//TODO: setModified()
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setAddressLine2(java.lang.String)
-		 */
-		public void setAddressLine2(final String a) {
-			getJwsdpPeer().setAddrAddr2(a);
-			//TODO: setModified()
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setAddressLine4(java.lang.String)
-		 */
-		public void setAddressLine3(final String a) {
-			getJwsdpPeer().setAddrAddr3(a);
-			//TODO: setModified()
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setAddressLine4(java.lang.String)
-		 */
-		public void setAddressLine4(final String a) {
-			getJwsdpPeer().setAddrAddr4(a);
-			//TODO: setModified()
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setTel(java.lang.String)
-		 */
-		public void setTel(final String a) {
-			getJwsdpPeer().setAddrPhone(a);
-			//TODO: setModified()
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setFac(java.lang.String)
-		 */
-		public void setFax(final String a) {
-			getJwsdpPeer().setAddrFax(a);
-			//TODO: setModified()
-		}
-
-		/**
-		 * @see GnucashWritableCustomer.WritableAddress#setEmail(java.lang.String)
-		 */
-		public void setEmail(final String a) {
-			getJwsdpPeer().setAddrEmail(a);
-			//TODO: setModified()
-		}
-
 	}
 
 }

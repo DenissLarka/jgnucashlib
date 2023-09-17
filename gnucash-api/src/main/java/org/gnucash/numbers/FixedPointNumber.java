@@ -1,21 +1,12 @@
-/**
- * FixedPointNumber.java Created on 14.05.2005 (c) 2005 by
- * "Wolschon Softwaredesign und Beratung".
- * ----------------------------------------------------------- major Changes:
- * 14.05.2005 - initial version ...
- */
 package org.gnucash.numbers;
 
 import java.math.BigDecimal;
 
 /**
- * created: 14.05.2005 <br/>
  * Implementation of Fixed-point numbers that knows the String-format gnucash
  * uses and returns true if 2 numbers are compared that are mathematically equal
  * even if they have a different representation (unlike BigInteger). internal
  * format: "2/100" means "0.02"
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 

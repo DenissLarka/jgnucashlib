@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashAccount;
@@ -38,10 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * created: 16.05.2005 <br/>
  * JWSDP-Implmentation of a Transaction that can be changed.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implements GnucashWritableTransaction {
 
@@ -182,7 +180,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 			transaction.setTrnSplits(splits);
 		}
 
-		transaction.setVersion("2.0.0");
+		transaction.setVersion(Const.XML_FORMAT_VERSION);
 		transaction.setTrnDescription("-");
 
 		return transaction;

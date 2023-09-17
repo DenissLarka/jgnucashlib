@@ -1,15 +1,3 @@
-/**
- * GnucashFileImpl.java
- * License: GPLv3 or later
- * Created on 13.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 13.05.2005 - initial version
- * 11.11.2008 - using defaultCurrency from Gnucash-file
- * 03.01.2010 - support GNCVendor
- * ...
- */
 package org.gnucash.read.impl;
 
 import java.io.BufferedInputStream;
@@ -76,12 +64,8 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 
 /**
- * created: 13.05.2005<br/>
- * <br/>
  * Implementation of GnucashFile that can only
  * read but not modify Gnucash-Files. <br/>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  * @see GnucashFile
  */
 public class GnucashFileImpl implements GnucashFile {
@@ -1834,10 +1818,7 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
 	/**
-	 * created: 13.05.2005 <br/>
 	 * replaces ':' in tag-names and attribute-names by '_' .
-	 *
-	 * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
 	 */
 	public static class NamespaceRemovererReader extends Reader {
 
@@ -1983,10 +1964,7 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
 	/**
-	 * created: 13.05.2005 <br/>
 	 * replaces &#164; by the euro-sign .
-	 *
-	 * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
 	 */
 	public static class EuroConverterReader extends Reader {
 

@@ -1,6 +1,5 @@
 /**
  * @author Deniss Larka
- * on 2021.12.06
  */
 module gnucash.api {
 	requires static org.slf4j;

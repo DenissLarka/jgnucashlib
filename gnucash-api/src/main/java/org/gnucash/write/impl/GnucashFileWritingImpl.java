@@ -1,21 +1,3 @@
-/**
- * GnucashFileWritingImpl.java
- * Created on 16.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 16.05.2005 - initial version
- * ...
- */
 package org.gnucash.write.impl;
 
 import java.io.BufferedOutputStream;
@@ -36,7 +18,7 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.zip.GZIPOutputStream;
 
-
+import org.gnucash.Const;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
@@ -47,24 +29,26 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashInvoice;
-import org.gnucash.read.GnucashInvoiceEntry;
-import org.gnucash.read.GnucashJob;
-import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.aux.GnucashTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.impl.GnucashTaxTableImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
+import org.gnucash.read.impl.aux.GnucashTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.write.GnucashWritableAccount;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
-import org.gnucash.write.GnucashWritableInvoice;
-import org.gnucash.write.GnucashWritableCustomerJob;
+import org.gnucash.write.GnucashWritableGenerInvoice;
+import org.gnucash.write.GnucashWritableGenerJob;
 import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
+import org.gnucash.write.GnucashWritableVendor;
+import org.gnucash.write.impl.spec.GnucashCustomerJobWritingImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -77,9 +61,6 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 
 /**
- * @author Marcus@Wolschon.biz
- * created: 16.05.2005
- * <p>
  * Implementation of GnucashWritableFile based on GnucashFileImpl.
  * @see GnucashFileImpl
  */
@@ -244,7 +225,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 
 		getRootElement().getGncBook().getBookElements().add(impl.getJwsdpPeer());
 		setModified(true);
-		transactionid2transaction.put(impl.getId(), impl);
+		transactionID2transaction.put(impl.getId(), impl);
 
 	}
 
@@ -436,7 +417,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 *
 	 * @return the new gnucash-guid
 	 */
-	protected String createGUID() {
+	public String createGUID() {
 
 		int len = "74e492edf60d6a28b6c1d01cc410c058".length();
 
@@ -489,6 +470,14 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 		return retval;
 	}
 
+    /**
+     */
+    protected GncV2.GncBook.GncGncVendor createGncGncVendorType() {
+        GncV2.GncBook.GncGncVendor retval = getObjectFactory().createGncV2GncBookGncGncVendor();
+        incrementCountDataFor("gnc:GncVendor");
+        return retval;
+    }
+
 	/**
 	 * @return the jaxb-job
 	 */
@@ -520,11 +509,11 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * This overridden method creates the writable version of the returned object.
 	 *
-	 * @see GnucashFileImpl#createInvoice(GncV2.GncBook.GncGncInvoice)
+	 * @see GnucashFileImpl#createGenerInvoice(GncV2.GncBook.GncGncInvoice)
 	 */
 	@Override
-	protected GnucashInvoice createInvoice(final GncV2.GncBook.GncGncInvoice jwsdpInvoice) {
-		GnucashInvoice invoice = new GnucashInvoiceWritingImpl(jwsdpInvoice, this);
+	protected GnucashGenerInvoice createGenerInvoice(final GncV2.GncBook.GncGncInvoice jwsdpInvoice) {
+		GnucashGenerInvoice invoice = new GnucashGenerInvoiceWritingImpl(jwsdpInvoice, this);
 		return invoice;
 	}
 
@@ -533,21 +522,21 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 *
 	 * @param jwsdpInvoiceEntry the xml-object to represent in the entry.
 	 * @return a new invoice-entry, already registred with this file.
-	 * @see GnucashFileImpl#createInvoiceEntry(GncV2.GncBook.GncGncEntry)
+	 * @see GnucashFileImpl#createGenerInvoiceEntry(GncV2.GncBook.GncGncEntry)
 	 */
 	@Override
-	protected GnucashInvoiceEntry createInvoiceEntry(final GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry) {
-		GnucashInvoiceEntry entry = new GnucashInvoiceEntryWritingImpl(jwsdpInvoiceEntry, this);
+	protected GnucashGenerInvoiceEntry createGenerInvoiceEntry(final GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry) {
+		GnucashGenerInvoiceEntry entry = new GnucashGenerInvoiceEntryWritingImpl(jwsdpInvoiceEntry, this);
 		return entry;
 	}
 
 	/**
 	 * This overridden method creates the writable version of the returned object.
 	 *
-	 * @see GnucashFileImpl#createJob(GncV2.GncBook.GncGncJob)
+	 * @see GnucashFileImpl#createGenerJob(GncV2.GncBook.GncGncJob)
 	 */
 	@Override
-	protected GnucashCustomerJobImpl createJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
+	protected GnucashCustomerJobImpl createGenerJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
 		GnucashCustomerJobImpl job = new GnucashCustomerJobWritingImpl(jwsdpjob, this);
 		return job;
 	}
@@ -577,14 +566,8 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	}
 
 	/**
-	 * (c) 2005 by Wolschon Softwaredesign und Beratung - All rights reserved<br>
-	 * Project: gnucashReader <br>
-	 * GnucashFileWritingImpl.java <br>
-	 * <p>
 	 * Helper-Class needed for writing Gnucash-Files that are binary-identical
 	 * to what gnucash itself writes.
-	 *
-	 * @author <a href="mailto:marcus@wolschon.biz">Marcus Wolschon</a>
 	 */
 	private static class WritingContentHandler implements ContentHandler {
 
@@ -892,10 +875,6 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	}
 
 	/**
-	 * @author Marcus@Wolschon.biz
-	 * created: 13.05.2005
-	 * <p>
-	 * <p>
 	 * replaces ':' in tag-names and attribute-names by '_'
 	 */
 	public static class NamespaceAdderWriter extends Writer {
@@ -1052,22 +1031,22 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 * @see GnucashWritableFile#getJobByID(String)
 	 */
 	@Override
-	public GnucashWritableCustomerJob getJobByID(final String jobID) {
-		return (GnucashWritableCustomerJob) super.getJobByID(jobID);
+	public GnucashWritableGenerJob getJobByID(final String jobID) {
+		return (GnucashWritableGenerJob) super.getJobByID(jobID);
 	}
 
 	/**
 	 * @see GnucashWritableFile#getWritableJobs()
 	 */
-	public Collection<GnucashWritableCustomerJob> getWritableJobs() {
+	public Collection<GnucashWritableGenerJob> getWritableJobs() {
 
-		Collection<GnucashJob> jobs = getJobs();
+		Collection<GnucashGenerJob> jobs = getJobs();
 		if (jobs == null) {
 			throw new IllegalStateException("getJobs() returned null");
 		}
-		Collection<GnucashWritableCustomerJob> retval = new ArrayList<GnucashWritableCustomerJob>(jobs.size());
-		for (GnucashJob job : jobs) {
-			retval.add((GnucashWritableCustomerJob) job);
+		Collection<GnucashWritableGenerJob> retval = new ArrayList<GnucashWritableGenerJob>(jobs.size());
+		for (GnucashGenerJob job : jobs) {
+			retval.add((GnucashWritableGenerJob) job);
 		}
 		return retval;
 	}
@@ -1075,11 +1054,11 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @param id the unique invoice-id
 	 * @return A changable version of the Invoice or null if not found.
-	 * @see GnucashFile#getInvoiceByID(String)
+	 * @see GnucashFile#getGenerInvoiceByID(String)
 	 */
 	@Override
-	public GnucashWritableInvoice getInvoiceByID(final String id) {
-		return (GnucashWritableInvoice) super.getInvoiceByID(id);
+	public GnucashWritableGenerInvoice getGenerInvoiceByID(final String id) {
+		return (GnucashWritableGenerInvoice) super.getGenerInvoiceByID(id);
 	}
 
 	/**
@@ -1145,7 +1124,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 
 		getRootElement().getGncBook().getBookElements().remove(((GnucashTransactionWritingImpl) impl).getJwsdpPeer());
 		setModified(true);
-		transactionid2transaction.remove(impl.getId());
+		transactionID2transaction.remove(impl.getId());
 
 	}
 
@@ -1182,7 +1161,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 			newCurrency.setCmdtySpace(pCmdtySpace);
 			newCurrency.setCmdtyId(pCmdtyId);
 			newCurrency.setCmdtyName(pCmdtyName);
-			newCurrency.setVersion("2.0.0");
+			newCurrency.setVersion(Const.XML_FORMAT_VERSION);
 			getRootElement().getGncBook().getBookElements().add(newCurrency);
 			incrementCountDataFor("commodity");
 		}
@@ -1203,7 +1182,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 		newQuote.setPriceCommodity(currency);
 		newQuote.setPriceCurrency(baseCurrency);
 		newQuote.setPriceTime(getObjectFactory().createGncV2GncBookGncPricedbPricePriceTime());
-		newQuote.getPriceTime().setTsDate(PRICEQUOTEDATEFORMAT.format(new Date()));
+		newQuote.getPriceTime().setTsDate(PRICE_QUOTE_DATE_FORMAT.format(new Date()));
 		newQuote.setPriceType("last");
 		newQuote.setPriceValue(conversionFactor.toGnucashString());
 
@@ -1236,8 +1215,8 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableInvoice createWritableInvoice(final String invoiceNumber,
-			final GnucashJob job,
+	public GnucashWritableGenerInvoice createWritableInvoice(final String invoiceNumber,
+			final GnucashGenerJob job,
 			final GnucashAccount accountToTransferMoneyTo,
 			final java.util.Date dueDate) {
 		return createWritableInvoice(createGUID(),
@@ -1252,21 +1231,23 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 *
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableInvoice createWritableInvoice(final String internalID,
+	public GnucashWritableGenerInvoice createWritableInvoice(final String internalID,
 			final String invoiceNumber,
-			final GnucashJob job,
+			final GnucashGenerJob job,
 			final GnucashAccount accountToTransferMoneyTo,
 			final java.util.Date dueDate) {
-		GnucashInvoiceWritingImpl retval = new GnucashInvoiceWritingImpl(this,
+		GnucashGenerInvoiceWritingImpl retval = new GnucashGenerInvoiceWritingImpl(this,
 				internalID,
 				invoiceNumber,
 				job,
 				(GnucashAccountImpl) accountToTransferMoneyTo,
 				dueDate);
 
-		invoiceid2invoice.put(retval.getId(), retval);
+		invoiceID2invoice.put(retval.getId(), retval);
 		return retval;
 	}
+
+    // ----------------------------
 
 	/**
 	 * @see GnucashWritableFile#createWritableCustomer()
@@ -1286,7 +1267,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 			throw new IllegalArgumentException("null id given!");
 		}
 		GnucashCustomerWritingImpl w = new GnucashCustomerWritingImpl(this, id);
-		super.customerid2customer.put(w.getId(), w);
+		super.customerID2customer.put(w.getId(), w);
 		return w;
 	}
 
@@ -1294,15 +1275,50 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 * @param impl what to remove
 	 */
 	public void removeCustomer(final GnucashWritableCustomer impl) {
-		customerid2customer.remove(impl.getId());
+		customerID2customer.remove(impl.getId());
 		getRootElement().getGncBook().getBookElements().remove(((GnucashCustomerWritingImpl) impl).getJwsdpPeer());
 		setModified(true);
 	}
+	
+    // ----------------------------
+
+    /**
+     * @see GnucashWritableFile#createWritableCustomer()
+     */
+    public GnucashWritableVendor createWritableVendor() {
+        return createWritableVendor(createGUID());
+    }
+
+    /**
+     * THIS METHOD IS ONLY TO BE USED BY EXTENSIONS TO THIS LIBRARY!<br/>
+     *
+     * @param id the internal id the customer shall have
+     * @return the new customer. (already added to this file)
+     */
+    public GnucashWritableVendor createWritableVendor(final String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("null id given!");
+        }
+        GnucashVendorWritingImpl w = new GnucashVendorWritingImpl(this, id);
+        super.vendorID2vendor.put(w.getId(), w);
+        return w;
+    }
+
+    /**
+     * @param impl what to remove
+     */
+    public void removeVendor(final GnucashWritableVendor impl) {
+        vendorID2vendor.remove(impl.getId());
+        getRootElement().getGncBook().getBookElements().remove(((GnucashVendorWritingImpl) impl).getJwsdpPeer());
+        setModified(true);
+    }
+    
+	// ----------------------------
 
 	/**
 	 * @see GnucashWritableFile#createWritableJob(GnucashCustomer)
 	 */
-	public GnucashWritableCustomerJob createWritableJob(final GnucashCustomer customer) {
+	public GnucashWritableGenerJob createWritableJob(final GnucashCustomer customer) {
 		if (customer == null) {
 			throw new IllegalArgumentException("null customer given");
 		}
@@ -1312,20 +1328,20 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @see GnucashWritableFile#createWritableJob(String, GnucashCustomer)
 	 */
-	public GnucashWritableCustomerJob createWritableJob(final String id, final GnucashCustomer customer) {
+	public GnucashWritableGenerJob createWritableJob(final String id, final GnucashCustomer customer) {
 		if (customer == null) {
 			throw new IllegalArgumentException("null customer given");
 		}
 		GnucashCustomerJobWritingImpl w = new GnucashCustomerJobWritingImpl(this, id, customer);
-		super.jobid2job.put(w.getId(), w);
+		super.jobID2job.put(w.getId(), w);
 		return w;
 	}
 
 	/**
 	 * @param impl what to remove
 	 */
-	public void removeJob(final GnucashWritableCustomerJob impl) {
-		jobid2job.remove(impl.getId());
+	public void removeJob(final GnucashWritableGenerJob impl) {
+		jobID2job.remove(impl.getId());
 		getRootElement().getGncBook().getBookElements().remove(((GnucashCustomerJobWritingImpl) impl).getJwsdpPeer());
 		setModified(true);
 	}
@@ -1335,7 +1351,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 */
 	public GnucashWritableAccount createWritableAccount() {
 		GnucashWritableAccount w = new GnucashAccountWritingImpl(this);
-		super.accountid2account.put(w.getId(), w);
+		super.accountID2account.put(w.getId(), w);
 		return w;
 	}
 
@@ -1344,7 +1360,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 */
 	public GnucashWritableAccount createWritableAccount(final String newID) {
 		GnucashWritableAccount w = new GnucashAccountWritingImpl(this, newID);
-		super.accountid2account.put(w.getId(), w);
+		super.accountID2account.put(w.getId(), w);
 		return w;
 	}
 
@@ -1358,7 +1374,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 
 		getRootElement().getGncBook().getBookElements().remove(((GnucashAccountWritingImpl) impl).getJwsdpPeer());
 		setModified(true);
-		super.accountid2account.remove(impl.getId());
+		super.accountID2account.remove(impl.getId());
 	}
 
 	/**
@@ -1385,13 +1401,13 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 * @param jnr the job-number to look for.
 	 * @return the (first) jobs that have this number or null if not found
 	 */
-	public GnucashWritableCustomerJob getJobByNumber(final String jnr) {
-		if (jobid2job == null) {
+	public GnucashWritableGenerJob getJobByNumber(final String jnr) {
+		if (jobID2job == null) {
 			throw new IllegalStateException("no root-element loaded");
 		}
 
-		for (GnucashJob gnucashJob : jobid2job.values()) {
-			GnucashWritableCustomerJob job = (GnucashWritableCustomerJob) gnucashJob;
+		for (GnucashGenerJob gnucashJob : jobID2job.values()) {
+			GnucashWritableGenerJob job = (GnucashWritableGenerJob) gnucashJob;
 			if (job.getJobNumber().equals(jnr)) {
 				return job;
 			}
@@ -1403,7 +1419,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @param impl an invoice to remove
 	 */
-	public void removeInvoice(final GnucashInvoiceWritingImpl impl) {
+	public void removeInvoice(final GnucashGenerInvoiceWritingImpl impl) {
 
 		if (impl.getPayingTransactions().size() > 0) {
 			throw new IllegalArgumentException("cannot remove this invoice! It has payments!");
@@ -1414,7 +1430,7 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 			((GnucashWritableTransaction) postTransaction).remove();
 		}
 
-		invoiceid2invoice.remove(impl.getId());
+		invoiceID2invoice.remove(impl.getId());
 		getRootElement().getGncBook().getBookElements().remove(impl.getJwsdpPeer());
 		this.decrementCountDataFor("gnc:GncInvoice");
 		setModified(true);

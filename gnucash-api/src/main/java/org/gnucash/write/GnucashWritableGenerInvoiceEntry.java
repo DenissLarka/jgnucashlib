@@ -1,34 +1,23 @@
-/**
- * GnucashWritableInvoiceEntry.java
- * License: GPLv3 or later
- * created: 14.06.2005 09:50:15
- */
 package org.gnucash.write;
 
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashInvoiceEntry;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashObject;
-import org.gnucash.read.GnucashTaxTable;
-
-
-//other imports
+import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
- * Project: gnucashReader <br/>
- * GnucashWritableInvoiceEntry.java <br/>
- * created: 14.06.2005 09:50:15 <br/>
- * <p>
- * <p>
  * Invoice-Entry that can be modified.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public interface GnucashWritableInvoiceEntry extends GnucashInvoiceEntry, GnucashWritableObject {
+public interface GnucashWritableGenerInvoiceEntry extends GnucashGenerInvoiceEntry, 
+                                                          GnucashWritableObject 
+{
 
 	/**
-	 * @see GnucashInvoiceEntry#getInvoice() .
+	 * @see GnucashGenerInvoiceEntry#getGenerInvoice() .
 	 */
-	GnucashWritableInvoice getInvoice();
+	GnucashWritableGenerInvoice getGenerInvoice();
 
 	/**
 	 * Set the description-text.
@@ -37,27 +26,30 @@ public interface GnucashWritableInvoiceEntry extends GnucashInvoiceEntry, Gnucas
 	 */
 	void setDescription(String desc);
 
-	void setPrice(String price);
+	void setInvcPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
 
-	void setPrice(FixedPointNumber price);
+	void setInvcPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	void setAction(String a);
 
-	void setQuantity(String quantity);
+	void setInvcQuantity(String quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
-	void setQuantity(FixedPointNumber quantity);
+	void setInvcQuantity(FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
-	void setQuantityFormated(String n);
+	void setQuantityFormatted(String n) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
-	 *
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 */
-	void remove();
+	void remove() throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * @param tax the new taxtable to use. Null sets isTaxable to false.
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 */
-	void setTaxTable(GnucashTaxTable tax);
+	void setInvcTaxTable(GnucashTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * @param name  the name of the user-defined attribute

@@ -1,39 +1,21 @@
-/**
- * GnucashWritableInvoice.java
- * Created on 12.06.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 12.06.2005 - initial version
- * ...
- */
 package org.gnucash.write;
 
 import java.time.LocalDateTime;
 
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashInvoice;
-import org.gnucash.read.GnucashJob;
-import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.aux.GnucashTaxTable;
+import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
- * created: 12.06.2005 <br/>
  * Invoice that can be modified if isModifiable() returns true
  *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  * @see #isModifiable()
  */
-public interface GnucashWritableInvoice extends GnucashInvoice {
+public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 
 	/**
 	 * The gnucash-file is tohe top-level class to contain everything.
@@ -47,7 +29,7 @@ public interface GnucashWritableInvoice extends GnucashInvoice {
 	 */
 	boolean isModifiable();
 
-	void setJob(GnucashJob job);
+	void setJob(GnucashGenerJob job);
 
 	void setDatePosted(LocalDateTime d);
 
@@ -67,38 +49,44 @@ public interface GnucashWritableInvoice extends GnucashInvoice {
 	/**
 	 * @param id the id to look for
 	 * @return the modifiable version of the entry
-	 * @see GnucashInvoice#getEntryById(String)
+	 * @see GnucashGenerInvoice#getGenerInvcEntryById(String)
 	 */
-	GnucashWritableInvoiceEntry getWritableEntryById(String id);
+	GnucashWritableGenerInvoiceEntry getWritableEntryById(String id);
 
 	/**
 	 * remove this invoice from the system.
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 *
 	 */
-	void remove();
+	void remove() throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * create and add a new entry.<br/>
 	 * The entry will have 16% salex-tax and use the accounts of the
 	 * SKR03.
+	 * @throws WrongInvoiceTypeException 
 	 *
 	 */
-	GnucashWritableInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity);
+	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException;
 
 	/**
 	 * create and add a new entry.<br/>
 	 * The entry will use the accounts of the
 	 * SKR03.
-	 *
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity, final FixedPointNumber tax);
+	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity, final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * create and add a new entry.<br/>
 	 *
 	 * @return an entry using the given Tax-Table
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice,
-											final FixedPointNumber quantity,
-											final GnucashTaxTable tax);
+	GnucashWritableGenerInvoiceEntry createEntry(final FixedPointNumber singleUnitPrice,
+                                                    final FixedPointNumber quantity,
+                                                    final GnucashTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 }

@@ -1,16 +1,3 @@
-/**
- * GnucashJob.java
- * License: GPLv3 or later
- * Created on 14.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  14.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read.aux;
 
 import java.util.Collection;
@@ -23,10 +10,8 @@ import org.gnucash.read.GnucashFile;
 
 
 /**
- * created: 22.09.2005 <br>
  * Contains Tax-Rates.
  * @see GnucashCustomer
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 
 public interface GnucashTaxTable {
@@ -67,15 +52,6 @@ public interface GnucashTaxTable {
      */
     Collection<TaxTableEntry> getEntries();
 
-    /**
-     * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
-     * Project: gnucashReader<br/>
-     * GnucashTaxTableImpl.java<br/>
-     * created: 22.09.2005 16:37:34 <br/>
-     * <br/><br/>
-     * Entry in the Taxtable
-     * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
-     */
     public interface TaxTableEntry {
 
         /**

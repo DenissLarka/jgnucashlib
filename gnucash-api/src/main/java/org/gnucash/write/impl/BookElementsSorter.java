@@ -1,34 +1,3 @@
-/**
- * BookElementsSorter.java
- * created: 14.06.2009
- * (c) 2008 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- * This file is part of jgnucashLib-GPL by Marcus Wolschon <a href="mailto:Marcus@Wolscon.biz">Marcus@Wolscon.biz</a>.
- * You can purchase support for a sensible hourly rate or
- * a commercial license of this file (unless modified by others) by contacting him directly.
- * <p>
- * jgnucashLib-GPL is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * <p>
- * jgnucashLib-GPL is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * <p>
- * You should have received a copy of the GNU General Public License
- * along with jgnucashLib-V1.  If not, see <http://www.gnu.org/licenses/>.
- * <p>
- * **********************************
- * Editing this file:
- * -For consistent code-quality this file should be checked with the
- * checkstyle-ruleset enclosed in this project.
- * -After the design of this file has settled it should get it's own
- * JUnit-Test that shall be executed regularly. It is best to write
- * the test-case BEFORE writing this class and to run it on every build
- * as a regression-test.
- */
-
 package org.gnucash.write.impl;
 
 import java.util.Comparator;
@@ -40,13 +9,7 @@ import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
 
 /**
- * (c) 2009 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
- * Project: jgnucashLib-GPL<br/>
- * BookElementsSorter<br/>
- * created: 14.06.2009 <br/>
- *<br/><br/>
  * Sorter for the elements in a Gnc:Book.
- * @author  <a href="mailto:Marcus@Wolschon.biz">fox</a>
  */
 public class BookElementsSorter implements Comparator<Object> {
 

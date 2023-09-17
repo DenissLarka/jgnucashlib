@@ -1,13 +1,3 @@
-/**
- * GnucashTransactionSplit.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 05.05.2005 - initial version
- * ...
- */
 package org.gnucash.read;
 
 import org.gnucash.generated.GncV2;
@@ -15,12 +5,8 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
- * created: 05.05.2005 <br/>
  * Entry-Line in an invoice stating one position
  * with it's name, single-unit-price and count.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
- *
  */
 public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoiceEntry> {
 

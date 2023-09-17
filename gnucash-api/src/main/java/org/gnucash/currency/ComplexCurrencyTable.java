@@ -1,8 +1,3 @@
-/**
- * ComplexCurrencyTable.java
- * created: 28.08.2005 15:04:10
- * (c) 2005 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- */
 package org.gnucash.currency;
 
 //automatically created logger for debug and error -output
@@ -17,19 +12,11 @@ import java.util.Map;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
- * Project: gnucashReader<br/>
- * ComplexCurrencyTable.java<br/>
- * created: 28.08.2005 15:04:10 <br/>
- * <br/>
  * Currency-Table that can work with multiple namespaces.<br/>
  * By default "ISO4217"-GnucashFile.getDefaultCurrencyID() is added with the value 1. (to be used as a base.currency)
  *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  * @see GnucashFile#getDefaultCurrencyID()
  */
 public class ComplexCurrencyTable extends SimpleCurrencyTable implements Serializable {

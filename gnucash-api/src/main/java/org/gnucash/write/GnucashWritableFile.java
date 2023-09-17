@@ -1,21 +1,3 @@
-/**
- * GnucashWritableFile.java
- * Created on 16.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 16.05.2005 - initial version
- * ...
- */
 package org.gnucash.write;
 
 import java.io.File;
@@ -27,19 +9,15 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashJob;
+import org.gnucash.read.GnucashGenerJob;
 
 /**
- * created: 16.05.2005 <br/>
- *
  * Extension of GnucashFile that allows writing. <br/>
  * All the instances for accounts,... it returns can be assumed
  * to implement the respetive *Writable-interfaces.
  *
  * @see GnucashFile
  * @see org.gnucash.write.impl.GnucashFileWritingImpl
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
- *
  */
 public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject {
 
@@ -107,11 +85,11 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	GnucashWritableTransaction getTransactionByID(String id);
 
 	/**
-	 * @see GnucashFile#getInvoiceByID(String)
+	 * @see GnucashFile#getGenerInvoiceByID(String)
 	 * @param id the id to look for
 	 * @return A changable version of the invoice.
 	 */
-	GnucashWritableInvoice getInvoiceByID(String id);
+	GnucashWritableGenerInvoice getGenerInvoiceByID(String id);
 
 	/**
 	 * @see GnucashFile#getAccountByName(String)
@@ -138,18 +116,18 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	 * @param jobID the id of the job to fetch
 	 * @return A changable version of the job or null of not found.
 	 */
-	GnucashWritableCustomerJob getJobByID(String jobID);
+	GnucashWritableGenerJob getJobByID(String jobID);
 
 	/**
 	 * @param jnr the job-number to look for.
 	 * @return the (first) jobs that have this number or null if not found
 	 */
-	GnucashWritableCustomerJob getJobByNumber(final String jnr);
+	GnucashWritableGenerJob getJobByNumber(final String jnr);
 
 	/**
 	 * @return all jobs as writable versions.
 	 */
-	Collection<GnucashWritableCustomerJob> getWritableJobs();
+	Collection<GnucashWritableGenerJob> getWritableJobs();
 
 	/**
 	 * Add a new currency.<br/>
@@ -194,12 +172,12 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	/**
 	 * @return a new job with no values that is already added to this file
 	 */
-	GnucashWritableCustomerJob createWritableJob(final GnucashCustomer customer);
+	GnucashWritableGenerJob createWritableJob(final GnucashCustomer customer);
 
 	/**
 	 * @return a new job with no values that is already added to this file
 	 */
-	GnucashWritableCustomerJob createWritableJob(final String id, final GnucashCustomer customer);
+	GnucashWritableGenerJob createWritableJob(final String id, final GnucashCustomer customer);
 
 
 	/**
@@ -215,8 +193,8 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	/**
 	 * @return a new invoice with no entries that is already added to this file
 	 */
-	GnucashWritableInvoice createWritableInvoice(final String invoiceNumber,
-												 final GnucashJob job,
+	GnucashWritableGenerInvoice createWritableInvoice(final String invoiceNumber,
+												 final GnucashGenerJob job,
 												 final GnucashAccount accountToTransferMoneyTo,
 												 final java.util.Date dueDate);
 
@@ -224,9 +202,9 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	 * FOR USE BY EXTENSIONS ONLY
 	 * @return a new invoice with no entries that is already added to this file
 	 */
-	GnucashWritableInvoice createWritableInvoice(final String internalID,
+	GnucashWritableGenerInvoice createWritableInvoice(final String internalID,
 												 final String invoiceNumber,
-												 final GnucashJob job,
+												 final GnucashGenerJob job,
 												 final GnucashAccount accountToTransferMoneyTo,
 												 final java.util.Date dueDate);
 

@@ -1,16 +1,3 @@
-/**
- * GnucashCutomer.java
- * License: GPLv3 or later
- * Created on 14.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  14.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read;
 
 import java.util.Locale;
@@ -27,11 +14,9 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
 //TODO: model taxes and implement getTaxTable
 
 /**
- * created: 14.05.2005 <br/>
  * A customer that can issue jobs, get invoices sent to
  * him/her/it and pay them.
  *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  * @see GnucashGenerJob
  * @see GnucashGenerInvoice
  */

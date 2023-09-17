@@ -1,16 +1,3 @@
-/**
- * GnucashTransaction.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  05.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read;
 
 import java.time.ZonedDateTime;
@@ -22,13 +9,8 @@ import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
- * created: 05.05.2005
- * TODO write a comment what this type does here
- *
- *
  * It is comparable and sorts primarily on the date the transaction happened
  * and secondarily on the date it was entered.
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashTransaction extends Comparable<GnucashTransaction> {
   

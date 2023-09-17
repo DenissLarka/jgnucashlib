@@ -1,13 +1,3 @@
-/**
- * GnucashTransaction.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 05.05.2005 - initial version
- * ...
- */
 package org.gnucash.read;
 
 import java.time.ZonedDateTime;
@@ -19,7 +9,6 @@ import org.gnucash.read.aux.GnucashOwner;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
- * created: 26.05.2005 <br>
  * This class represents an invoice that is sent to a customer
  * so (s)he knows what to pay you. <br>
  * <br>
@@ -28,7 +17,6 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  *
  * @see GnucashGenerJob
  * @see GnucashCustomer
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   
@@ -283,11 +271,6 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
     // ---------------------------------------------------------------
 
 	/**
-	 *
-	 * (c) 2005 by Wolschon Softwaredesign und Beratung.<br/>
-	 * Project: gnucashReader<br/>
-	 * GnucashInvoice.java<br/>
-	 * created: 07.08.2005 08:58:04 <br/>
 	 * This Class represents a sum of the taxes of
 	 * multiple invoice-lines for one of the different
 	 * tax-percentages that occured.<br/>
@@ -295,7 +278,6 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
 	 * and both occur, so you will get 2 instances
 	 * of this class. One sum of the 7%-items and one for
 	 * the 16%-items.
-	 * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
 	 */
 	class TaxedSum {
 		/**

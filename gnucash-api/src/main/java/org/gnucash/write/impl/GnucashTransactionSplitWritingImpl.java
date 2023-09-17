@@ -27,6 +27,9 @@ import org.gnucash.generated.SlotValue;
 import org.gnucash.generated.SlotsType;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
+import org.gnucash.read.IllegalTransactionSplitActionException;
 import org.gnucash.read.impl.GnucashTransactionSplitImpl;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
@@ -34,11 +37,7 @@ import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
 
 /**
- * created: 16.05.2005 <br/>
- * <p>
  * Transaction-Split that can be newly created or removed from it's transaction.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitImpl implements GnucashWritableTransactionSplit {
 
@@ -139,7 +138,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 			split.setSplitId(id);
 		}
 
-		split.setSplitReconciledState("n");
+		split.setSplitReconciledState(GnucashTransactionSplit.NREC);
 
 		split.setSplitQuantity("0/100");
 		split.setSplitValue("0/100");
@@ -191,14 +190,14 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	/**
 	 * @see GnucashWritableTransactionSplit#setQuantity(FixedPointNumber)
 	 */
-	public void setQuantity(final String n) {
+	public void setInvcQuantity(final String n) {
 		try {
-			this.setQuantity(new FixedPointNumber(n.toLowerCase().replaceAll("&euro;", "").replaceAll("&pound;", "")));
+			this.setInvcQuantity(new FixedPointNumber(n.toLowerCase().replaceAll("&euro;", "").replaceAll("&pound;", "")));
 		}
 		catch (NumberFormatException e) {
 			try {
 				Number parsed = this.getQuantityCurrencyFormat().parse(n);
-				this.setQuantity(new FixedPointNumber(parsed.toString()));
+				this.setInvcQuantity(new FixedPointNumber(parsed.toString()));
 			}
 			catch (NumberFormatException e1) {
 				throw e;
@@ -238,7 +237,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	/**
 	 * @see GnucashWritableTransactionSplit#setQuantity(FixedPointNumber)
 	 */
-	public void setQuantity(final FixedPointNumber n) {
+	public void setInvcQuantity(final FixedPointNumber n) {
 		if (n == null) {
 			throw new NullPointerException("null quantity given");
 		}
@@ -336,16 +335,18 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	 * Set the type of association this split has with
 	 * an invoice's lot.
 	 *
-	 * @param action null, "Zahlung" or "Rechnung" or freeform-string
+	 * @param action null, or one of the defined ACTION_xyz values
+	 * @throws IllegalTransactionSplitActionException 
 	 */
-	public void setSplitAction(final String action) {
-		/*if (action != null
-				&&
-            !action.equals("Zahlung")
-                &&
-            !action.equals("Rechnung")) {
-                throw new IllegalArgumentException("action may only be null, 'Zahlung' or 'Rechnung'");
-            }*/
+	public void setSplitAction(final String action) throws IllegalTransactionSplitActionException {
+//		if ( action != null &&
+//             ! action.equals(ACTION_PAYMENT) &&
+//             ! action.equals(ACTION_INVOICE) &&
+//             ! action.equals(ACTION_BILL) && 
+//             ! action.equals(ACTION_BUY) && 
+//             ! action.equals(ACTION_SELL) ) {
+//                throw new IllegalSplitActionException();
+//		}
 
 		String old = getJwsdpPeer().getSplitAction();
 		getJwsdpPeer().setSplitAction(action);
@@ -372,7 +373,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 		getJwsdpPeer().getSplitLot().setValue(lotID);
 		getJwsdpPeer().getSplitLot().setType("guid");
 
-		// if we have a lot, we are a "P"aying transaction, check the slots
+		// if we have a lot, and if we are a paying transaction, then check the slots
 		SlotsType slots = getJwsdpPeer().getSplitSlots();
 		if (slots == null) {
 			slots = factory.createSlotsType();
@@ -383,7 +384,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 			slot.setSlotKey("trans-txn-type");
 			SlotValue value = factory.createSlotValue();
 			value.setType("string");
-			value.getContent().add("P");
+			value.getContent().add(GnucashTransaction.TYPE_PAYMENT);
 			slot.setSlotValue(value);
 			slots.getSlot().add(slot);
 		}
@@ -393,16 +394,16 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	// --------------------- support for propertyChangeListeners ---------------
 
 	/**
-	 * @see GnucashWritableTransactionSplit#setQuantityFormatetForHTML(java.lang.String)
+	 * @see GnucashWritableTransactionSplit#setQuantityFormattedForHTML(java.lang.String)
 	 */
-	public void setQuantityFormatetForHTML(final String n) {
-		this.setQuantity(n);
+	public void setQuantityFormattedForHTML(final String n) {
+		this.setInvcQuantity(n);
 	}
 
 	/**
-	 * @see GnucashWritableTransactionSplit#setValueFormatetForHTML(java.lang.String)
+	 * @see GnucashWritableTransactionSplit#setValueFormattedForHTML(java.lang.String)
 	 */
-	public void setValueFormatetForHTML(final String n) {
+	public void setValueFormattedForHTML(final String n) {
 		this.setValue(n);
 	}
 

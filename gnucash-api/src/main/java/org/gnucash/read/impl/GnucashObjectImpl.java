@@ -1,9 +1,3 @@
-/**
- * GnucashObjectImpl.java
- * License: GPLv3 or later
- * created: 01.10.2005 13:32:15
- * (c) 2005 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- */
 package org.gnucash.read.impl;
 
 //other imports
@@ -27,14 +21,7 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashObject;
 
 /**
- * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
- * Project: gnucashReader<br/>
- * GnucashObjectImpl.java<br/>
- * created: 01.10.2005 13:32:15 <br/>
- * <br/><br/>
  * Helper-Class used to implement functions all gnucash-objects support.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashObjectImpl implements GnucashObject {
 
