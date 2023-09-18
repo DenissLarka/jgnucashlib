@@ -2,24 +2,26 @@ package org.gnucash.write.impl.aux;
 
 import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.write.GnucashWritableCustomer;
-import org.gnucash.write.aux.GnucashWritableAddress;
+import org.gnucash.write.aux.GCshWritableAddress;
 
 /**
  * Writable implementation in {@link GCshAddressImpl}
  */
-public class GnucashWritableAddressImpl extends GCshAddressImpl 
-                                        implements GnucashWritableAddress 
+public class GCshWritableAddressImpl extends GCshAddressImpl 
+                                     implements GCshWritableAddress 
 {
 
 	/**
 	 * @param jwsdpPeer
 	 */
-	public GnucashWritableAddressImpl(final org.gnucash.generated.Address jwsdpPeer) {
+	public GCshWritableAddressImpl(final org.gnucash.generated.Address jwsdpPeer) {
 		super(jwsdpPeer);
 	}
+	
+	// -----------------------------------------------------------
 
 	/**
-	 * @see GnucashWritableAddress#setAddressName(java.lang.String)
+	 * @see GCshWritableAddress#setAddressName(java.lang.String)
 	 */
 	public void setAddressName(final String a) {
 		getJwsdpPeer().setAddrName(a);
@@ -27,7 +29,7 @@ public class GnucashWritableAddressImpl extends GCshAddressImpl
 	}
 
 	/**
-	 * @see GnucashWritableAddress#setAddressLine1(java.lang.String)
+	 * @see GCshWritableAddress#setAddressLine1(java.lang.String)
 	 */
 	public void setAddressLine1(final String a) {
 		getJwsdpPeer().setAddrAddr1(a);
@@ -35,7 +37,7 @@ public class GnucashWritableAddressImpl extends GCshAddressImpl
 	}
 
 	/**
-	 * @see GnucashWritableAddress#setAddressLine2(java.lang.String)
+	 * @see GCshWritableAddress#setAddressLine2(java.lang.String)
 	 */
 	public void setAddressLine2(final String a) {
 		getJwsdpPeer().setAddrAddr2(a);
