@@ -12,22 +12,11 @@ import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
-import org.gnucash.write.aux.GnucashWritableAddress;
-import org.gnucash.write.impl.aux.GnucashWritableAddressImpl;
+import org.gnucash.write.aux.GCshWritableAddress;
+import org.gnucash.write.impl.aux.GCshWritableAddressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Modifiable version of a customer.<br/>
- * <p>
- * Additional supported properties for PropertyChangeListeners:
- * <ul>
- * <li>name</li>
- * <li>notes</li>
- * <li>discount</li>
- * <li>customerNumber</li>
- * </ul>
- */
 public class GnucashCustomerWritingImpl extends GnucashCustomerImpl 
                                         implements GnucashWritableCustomer 
 {
@@ -96,21 +85,21 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 
 		ObjectFactory factory = file.getObjectFactory();
 
-		GncV2.GncBook.GncGncCustomer customer = file.createGncGncCustomerType();
+		GncV2.GncBook.GncGncCustomer cust = file.createGncGncCustomerType();
 
-		customer.setCustTaxincluded("USEGLOBAL");
-		customer.setVersion(Const.XML_FORMAT_VERSION);
-		customer.setCustDiscount("0/1");
-		customer.setCustCredit("0/1");
-		customer.setCustUseTt(0);
-		customer.setCustName("no name given");
+		cust.setCustTaxincluded("USEGLOBAL");
+		cust.setVersion(Const.XML_FORMAT_VERSION);
+		cust.setCustDiscount("0/1");
+		cust.setCustCredit("0/1");
+		cust.setCustUseTt(0);
+		cust.setCustName("no name given");
 
 		{
 			GncV2.GncBook.GncGncCustomer.CustGuid id = factory.createGncV2GncBookGncGncCustomerCustGuid();
 			id.setType("guid");
 			id.setValue(guid);
-			customer.setCustGuid(id);
-			customer.setCustId(id.getValue());
+			cust.setCustGuid(id);
+			cust.setCustId(id.getValue());
 		}
 
 		{
@@ -125,7 +114,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 			addr.setAddrFax("");
 			addr.setAddrPhone("");
 			addr.setVersion(Const.XML_FORMAT_VERSION);
-			customer.setCustAddr(addr);
+			cust.setCustAddr(addr);
 		}
 
 		{
@@ -139,21 +128,22 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 			saddr.setAddrFax("");
 			saddr.setAddrPhone("");
 			saddr.setVersion(Const.XML_FORMAT_VERSION);
-			customer.setCustShipaddr(saddr);
+			cust.setCustShipaddr(saddr);
 		}
 
 		{
 			GncV2.GncBook.GncGncCustomer.CustCurrency currency = factory.createGncV2GncBookGncGncCustomerCustCurrency();
 			currency.setCmdtyId(file.getDefaultCurrencyID());
 			currency.setCmdtySpace("ISO4217");
-			customer.setCustCurrency(currency);
+			cust.setCustCurrency(currency);
 		}
 
-		customer.setCustActive(1);
+		cust.setCustActive(1);
 
-		file.getRootElement().getGncBook().getBookElements().add(customer);
+		file.getRootElement().getGncBook().getBookElements().add(cust);
 		file.setModified(true);
-		return customer;
+		
+		return cust;
 	}
 
 	/**
@@ -236,7 +226,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	 * @see GnucashCustomer#getAddress()
 	 */
 	@Override
-	public GnucashWritableAddress getAddress() {
+	public GCshWritableAddress getAddress() {
 		return getWritableAddress();
 	}
 
@@ -244,22 +234,22 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	 * @see GnucashCustomer#getShippingAddress()
 	 */
 	@Override
-	public GnucashWritableAddress getShippingAddress() {
+	public GCshWritableAddress getShippingAddress() {
 		return getWritableShippingAddress();
 	}
 
 	/**
 	 * @see GnucashWritableCustomer#getWritableAddress()
 	 */
-	public GnucashWritableAddress getWritableAddress() {
-		return new GnucashWritableAddressImpl(getJwsdpPeer().getCustAddr());
+	public GCshWritableAddress getWritableAddress() {
+		return new GCshWritableAddressImpl(getJwsdpPeer().getCustAddr());
 	}
 
 	/**
 	 * @see GnucashWritableCustomer#getWritableShippingAddress()
 	 */
-	public GnucashWritableAddress getWritableShippingAddress() {
-		return new GnucashWritableAddressImpl(getJwsdpPeer().getCustShipaddr());
+	public GCshWritableAddress getWritableShippingAddress() {
+		return new GCshWritableAddressImpl(getJwsdpPeer().getCustShipaddr());
 	}
 
 	/**
@@ -290,7 +280,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	}
 
 	/**
-	 * @see GnucashWritableCustomer#setShippingAddress(GnucashWritableAddress)
+	 * @see GnucashWritableCustomer#setShippingAddress(GCshWritableAddress)
 	 */
 	public void setShippingAddress(final GCshAddress adr) {
         /*if (adr instanceof AddressImpl) {

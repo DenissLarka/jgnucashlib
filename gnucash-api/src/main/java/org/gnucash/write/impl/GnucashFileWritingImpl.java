@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -65,6 +66,12 @@ import jakarta.xml.bind.Marshaller;
  * @see GnucashFileImpl
  */
 public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWritableFile {
+
+    public GnucashFileWritingImpl(final InputStream is) throws IOException {
+        super(is);
+    }
+    
+    // ---------------------------------------------------------------
 
 	/**
 	 *
@@ -414,6 +421,8 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 * create a GUID for a new element.
 	 * (guids are globally unique and not tied
 	 * to a specific kind of entity)
+	 * 
+	 * ::TODO: Change implementation: use Apache commons UUID class.
 	 *
 	 * @return the new gnucash-guid
 	 */
@@ -1215,7 +1224,8 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	/**
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableGenerInvoice createWritableInvoice(final String invoiceNumber,
+	public GnucashWritableGenerInvoice createWritableInvoice(
+			final String invoiceNumber,
 			final GnucashGenerJob job,
 			final GnucashAccount accountToTransferMoneyTo,
 			final java.util.Date dueDate) {
@@ -1231,7 +1241,8 @@ public class GnucashFileWritingImpl extends GnucashFileImpl implements GnucashWr
 	 *
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableGenerInvoice createWritableInvoice(final String internalID,
+	public GnucashWritableGenerInvoice createWritableInvoice(
+			final String internalID,
 			final String invoiceNumber,
 			final GnucashGenerJob job,
 			final GnucashAccount accountToTransferMoneyTo,

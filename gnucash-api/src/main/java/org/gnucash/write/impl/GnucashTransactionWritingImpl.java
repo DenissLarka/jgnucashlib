@@ -28,7 +28,9 @@ import org.gnucash.Const;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.GnucashTransactionSplitImpl;
@@ -53,12 +55,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 */
 	private final GnucashWritableObjectHelper helper = new GnucashWritableObjectHelper(this);
 
-	/**
-	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
-	 */
-	public void setUserDefinedAttribute(final String name, final String value) {
-		helper.setUserDefinedAttribute(name, value);
-	}
+	// -----------------------------------------------------------
 
 	/**
 	 * @param file      the file we belong to
@@ -91,6 +88,26 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	public GnucashTransactionWritingImpl(final GnucashFileWritingImpl file, final String id) {
 		super(createTransaction(file, id), file);
 		file.addTransaction(this);
+	}
+
+	public GnucashTransactionWritingImpl(final GnucashTransaction trx) {
+	    super(trx.getJwsdpPeer(), trx.getGnucashFile());
+	    
+	    // ::TODO
+	    System.err.println("NOT IMPLEMENTED YET");
+//	    for ( GnucashTransactionSplit splt : trx.getSplits() ) 
+//	    {
+//		addSplit(new GnucashTransactionSplitImpl(splt.getJwsdpPeer(), trx));
+//	    }
+	}
+	
+	// -----------------------------------------------------------
+
+	/**
+	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
+	 */
+	public void setUserDefinedAttribute(final String name, final String value) {
+		helper.setUserDefinedAttribute(name, value);
 	}
 
 	/**

@@ -121,7 +121,7 @@ public interface GnucashFile extends GnucashObject {
 	Collection<GnucashAccount> getAccountsByParentID(String id);
 
 	/**
-	 * @param id the unique id of the invoice to look for
+	 * @param id the unique id of the (generic) invoice to look for
 	 * @return the invoice or null if it's not found
 	 * @see #getUnpaidInvoices()
 	 * @see #getPaidInvoices()
@@ -129,6 +129,17 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
 	GnucashGenerInvoice getGenerInvoiceByID(String id);
+
+
+	/**
+	 * @param id the unique id of the (generic) invoice entry to look for
+	 * @return the invoice entry or null if it's not found
+	 * @see #getUnpaidInvoices()
+	 * @see #getPaidInvoices()
+	 * @see #getGenerInvoiceByID(String)
+	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
+	 */
+	GnucashGenerInvoiceEntry getGenerInvoiceEntryByID(String id);
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices

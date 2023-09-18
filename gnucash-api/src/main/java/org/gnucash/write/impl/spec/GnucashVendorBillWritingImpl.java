@@ -44,6 +44,7 @@ import org.gnucash.write.impl.GnucashGenerInvoiceWritingImpl;
 import org.gnucash.write.impl.GnucashTransactionSplitWritingImpl;
 import org.gnucash.write.impl.GnucashTransactionWritingImpl;
 import org.gnucash.write.spec.GnucashWritableVendorBill;
+import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
 import org.gnucash.write.spec.GnucashWritableVendorEntry;
 
 import jakarta.xml.bind.JAXBElement;
@@ -177,33 +178,6 @@ public class GnucashVendorBillWritingImpl extends GnucashGenerInvoiceWritingImpl
 	 */
 	public GnucashWritableVendorBillEntry getWritableEntryById(final String id) {
 		return (GnucashWritableVendorBillEntry) super.getGenerInvcEntryById(id);
-	}
-
-	/**
-	 * @throws WrongInvoiceTypeException 
-	 * @throws NoTaxTableFoundException 
-	 * @see GnucashWritableVendorBill#remove()
-	 */
-	public void remove() throws WrongInvoiceTypeException, NoTaxTableFoundException {
-
-		if (!isModifiable()) {
-			throw new IllegalStateException("Vendor bill has payments and cannot be deleted!");
-		}
-
-		// we copy the list because element.remove() modifies it
-		Collection<GnucashVendorBillEntry> entries2 = new LinkedList<GnucashVendorBillEntry>();
-		entries2.addAll(this.getGenerInvcEntries());
-		for (GnucashVendorBillEntry element : entries2) {
-			((GnucashWritableVendorBillInvoiceEntry) element).remove();
-		}
-
-		GnucashWritableTransaction post = (GnucashWritableTransaction) getPostTransaction();
-		if (post != null) {
-			post.remove();
-		}
-
-		((GnucashFileWritingImpl) getFile()).removeInvoice(this);
-
 	}
 
 }

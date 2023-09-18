@@ -12,8 +12,8 @@ import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
 import org.gnucash.write.GnucashWritableVendor;
-import org.gnucash.write.aux.GnucashWritableAddress;
-import org.gnucash.write.impl.aux.GnucashWritableAddressImpl;
+import org.gnucash.write.aux.GCshWritableAddress;
+import org.gnucash.write.impl.aux.GCshWritableAddressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,19 +85,19 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 
 		ObjectFactory factory = file.getObjectFactory();
 
-		GncV2.GncBook.GncGncVendor Vendor = file.createGncGncVendorType();
+		GncV2.GncBook.GncGncVendor vend = file.createGncGncVendorType();
 
-		Vendor.setVendorTaxincluded("USEGLOBAL");
-		Vendor.setVersion(Const.XML_FORMAT_VERSION);
-		Vendor.setVendorUseTt(0);
-		Vendor.setVendorName("no name given");
+		vend.setVendorTaxincluded("USEGLOBAL");
+		vend.setVersion(Const.XML_FORMAT_VERSION);
+		vend.setVendorUseTt(0);
+		vend.setVendorName("no name given");
 
 		{
 			GncV2.GncBook.GncGncVendor.VendorGuid id = factory.createGncV2GncBookGncGncVendorVendorGuid();
 			id.setType("guid");
 			id.setValue(guid);
-			Vendor.setVendorGuid(id);
-			Vendor.setVendorId(id.getValue());
+			vend.setVendorGuid(id);
+			vend.setVendorId(id.getValue());
 		}
 
 		{
@@ -112,21 +112,22 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 			addr.setAddrFax("");
 			addr.setAddrPhone("");
 			addr.setVersion(Const.XML_FORMAT_VERSION);
-			Vendor.setVendorAddr(addr);
+			vend.setVendorAddr(addr);
 		}
 
 		{
 			GncV2.GncBook.GncGncVendor.VendorCurrency currency = factory.createGncV2GncBookGncGncVendorVendorCurrency();
 			currency.setCmdtyId(file.getDefaultCurrencyID());
 			currency.setCmdtySpace("ISO4217");
-			Vendor.setVendorCurrency(currency);
+			vend.setVendorCurrency(currency);
 		}
 
-		Vendor.setVendorActive(1);
+		vend.setVendorActive(1);
 
-		file.getRootElement().getGncBook().getBookElements().add(Vendor);
+		file.getRootElement().getGncBook().getBookElements().add(vend);
 		file.setModified(true);
-		return Vendor;
+		
+		return vend;
 	}
 
 	/**
@@ -180,15 +181,15 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @see GnucashVendor#getAddress()
 	 */
 	@Override
-	public GnucashWritableAddress getAddress() {
+	public GCshWritableAddress getAddress() {
 		return getWritableAddress();
 	}
 
 	/**
 	 * @see GnucashWritableVendor#getWritableAddress()
 	 */
-	public GnucashWritableAddress getWritableAddress() {
-		return new GnucashWritableAddressImpl(getJwsdpPeer().getVendorAddr());
+	public GCshWritableAddress getWritableAddress() {
+		return new GCshWritableAddressImpl(getJwsdpPeer().getVendorAddr());
 	}
 
 	/**

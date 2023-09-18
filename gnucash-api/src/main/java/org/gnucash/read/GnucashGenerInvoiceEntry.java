@@ -2,6 +2,8 @@ package org.gnucash.read;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
@@ -130,6 +132,16 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
 
 	/**
 	 *
+	 * @return true if any sales-tax applies at all to this item.
+	 */
+	boolean isBillTaxable();
+	
+	public GCshTaxTable getInvcTaxTable() throws NoTaxTableFoundException;
+
+	public GCshTaxTable getBillTaxTable() throws NoTaxTableFoundException;
+
+	/**
+	 *
 	 * @return e.g. "0.16" for "16%"
 	 */
 	FixedPointNumber getInvcApplicableTaxPercent();
@@ -225,6 +237,6 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
     
     // ---------------------------------------------------------------
 
-	@SuppressWarnings("exports")
+    @SuppressWarnings("exports")
     GncV2.GncBook.GncGncEntry getJwsdpPeer();
 }

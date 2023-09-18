@@ -78,6 +78,47 @@ public class GnucashCustomerInvoiceWritingImpl extends GnucashGenerInvoiceWritin
 			final Date dueDate) {
 		super(createInvoice(file, internalID, invoiceNumber, job, accountToTransferMoneyTo, dueDate), file);
 	}
+	
+	/**
+	 * @param file the file we are associated with.
+	 * @throws WrongInvoiceTypeException 
+	 */
+	protected GnucashCustomerInvoiceWritingImpl(final GnucashGenerInvoiceWritingImpl invc) throws WrongInvoiceTypeException {
+	    super(invc.getJwsdpPeer(), invc.getFile());
+
+	    // No, we cannot check that first, because the super() method
+	    // always has to be called first.
+	    if ( ! invc.getOwnerType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
+	      throw new WrongInvoiceTypeException();
+	    
+	    for ( GnucashGenerInvoiceEntry entry : invc.getGenerInvcEntries() )
+	    {
+	      addEntry(new GnucashCustomerInvoiceEntryWritingImpl(entry));
+	    }
+
+	    for ( GnucashTransaction trx : invc.getPayingTransactions() )
+	    {
+	      for ( GnucashTransactionSplit splt : trx.getSplits() ) 
+	      {
+	        String lot = splt.getLotID();
+	        if ( lot != null ) {
+	            for ( GnucashGenerInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
+	                String lotID = invc1.getLotID();
+	                if ( lotID != null &&
+	                     lotID.equals(lot) ) {
+	                    // Check if it's a payment transaction. 
+	                    // If so, add it to the invoice's list of payment transactions.
+	                    if ( splt.getAction().equals(GnucashTransactionSplit.ACTION_PAYMENT) ) {
+	                        addPayingTransaction(splt);
+	                    }
+	                } // if lotID
+	            } // for invc
+	        } // if lot
+	      } // for splt
+	    } // for trx
+	}
+	
+	// -----------------------------------------------------------
 
 	/**
 	 * create and add a new entry.
@@ -177,33 +218,6 @@ public class GnucashCustomerInvoiceWritingImpl extends GnucashGenerInvoiceWritin
 	 */
 	public GnucashWritableCustomerInvoiceEntry getWritableEntryById(final String id) {
 		return (GnucashWritableCustomerInvoiceEntry) super.getGenerInvcEntryById(id);
-	}
-
-	/**
-	 * @throws WrongInvoiceTypeException 
-	 * @throws NoTaxTableFoundException 
-	 * @see GnucashWritableCustomerInvoice#remove()
-	 */
-	public void remove() throws WrongInvoiceTypeException, NoTaxTableFoundException {
-
-		if (!isModifiable()) {
-			throw new IllegalStateException("Customer invoice has payments and cannot be deleted!");
-		}
-
-		// we copy the list because element.remove() modifies it
-		Collection<GnucashCustomerInvoiceEntry> entries2 = new LinkedList<GnucashCustomerInvoiceEntry>();
-		entries2.addAll(this.getGenerInvcEntries());
-		for (GnucashCustomerInvoiceEntry element : entries2) {
-			((GnucashWritableCustomerInvoiceEntry) element).remove();
-		}
-
-		GnucashWritableTransaction post = (GnucashWritableTransaction) getPostTransaction();
-		if (post != null) {
-			post.remove();
-		}
-
-		((GnucashFileWritingImpl) getFile()).removeInvoice(this);
-
 	}
 
 }

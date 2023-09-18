@@ -40,32 +40,11 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	private final GnucashWritableObjectHelper helper = new GnucashWritableObjectHelper(this);
 
 	/**
-	 * {@inheritDoc}
+	 * @see {@link #getGenerInvoice()}
 	 */
-	public void setUserDefinedAttribute(final String name, final String value) {
-		helper.setUserDefinedAttribute(name, value);
-	}
+	private GnucashWritableGenerInvoice invoice;
 
-	/**
-	 * @param file      the file we belong to
-	 * @param jwsdpPeer the JWSDP-object we are facading.
-	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GncV2.GncBook.GncGncEntry, GnucashFileImpl)
-	 */
-	public GnucashGenerInvoiceEntryWritingImpl(final GncV2.GncBook.GncGncEntry jwsdpPeer, final GnucashFileWritingImpl file) {
-		super(jwsdpPeer, file);
-	}
-
-	/**
-	 * @param invoice   tne invoice this entry shall belong to
-	 * @param jwsdpPeer the JWSDP-object we are facading.
-	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
-	 */
-	public GnucashGenerInvoiceEntryWritingImpl(final GnucashGenerInvoiceWritingImpl invoice,
-			final GncV2.GncBook.GncGncEntry jwsdpPeer) {
-		super(invoice, jwsdpPeer, true);
-		
-		this.invoice = invoice;
-	}
+	// -----------------------------------------------------------
 
 	/**
 	 * @param invoice
@@ -87,38 +66,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 		return createInvoiceEntry(invoice, account, quantity, price);
 	}
-
-	public GnucashGenerInvoiceEntryWritingImpl(final GnucashGenerInvoiceWritingImpl invoice,
-			final FixedPointNumber quantity,
-			final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price), true);
-		
-		invoice.addInvcEntry(this);
-		this.invoice = invoice;
-	}
-
-	/**
-	 * Create a taxable invoiceEntry.
-	 * (It has the taxtable of the customer with a fallback
-	 * to the first taxtable found assigned)
-	 *
-	 * @param invoice  the invoice to add this split to
-	 * @param account  the income-account the money comes from
-	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
-	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
-	 * @throws WrongInvoiceTypeException 
-	 * @throws NoTaxTableFoundException 
-	 */
-	public GnucashGenerInvoiceEntryWritingImpl(final GnucashGenerInvoiceWritingImpl invoice,
-                                                   final GnucashAccount account,
-                                                   final FixedPointNumber quantity,
-                                                   final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createInvoiceEntry(invoice, account, quantity, price), true);
-		
-		invoice.addInvcEntry(this);
-		this.invoice = invoice;
-	}
-
+	
 	/**
 	 * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashGenerInvoiceWritingImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
 	 */
@@ -211,15 +159,82 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 		return entry;
 	}
 
+	// -----------------------------------------------------------
+
+	/**
+	 * @param file      the file we belong to
+	 * @param jwsdpPeer the JWSDP-object we are facading.
+	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GncV2.GncBook.GncGncEntry, GnucashFileImpl)
+	 */
+	@SuppressWarnings("exports")
+	public GnucashGenerInvoiceEntryWritingImpl(
+		final GncV2.GncBook.GncGncEntry jwsdpPeer, 
+		final GnucashFileWritingImpl file) {
+		super(jwsdpPeer, file);
+	}
+
+	/**
+	 * @param invoice   tne invoice this entry shall belong to
+	 * @param jwsdpPeer the JWSDP-object we are facading.
+	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
+	 */
+	@SuppressWarnings("exports")
+	public GnucashGenerInvoiceEntryWritingImpl(
+			final GnucashGenerInvoiceWritingImpl invoice,
+			final GncV2.GncBook.GncGncEntry jwsdpPeer) {
+		super(invoice, jwsdpPeer, true);
+		
+		this.invoice = invoice;
+	}
+
+	// -----------------------------------------------------------
+
+	public GnucashGenerInvoiceEntryWritingImpl(
+		final GnucashGenerInvoiceWritingImpl invoice,
+		final FixedPointNumber quantity,
+		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price), true);
+		
+		invoice.addInvcEntry(this);
+		this.invoice = invoice;
+	}
+
+	/**
+	 * Create a taxable invoiceEntry.
+	 * (It has the taxtable of the customer with a fallback
+	 * to the first taxtable found assigned)
+	 *
+	 * @param invoice  the invoice to add this split to
+	 * @param account  the income-account the money comes from
+	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
+	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
+	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
+	 */
+	public GnucashGenerInvoiceEntryWritingImpl(
+		final GnucashGenerInvoiceWritingImpl invoice,
+		final GnucashAccount account,
+		final FixedPointNumber quantity,
+		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		super(invoice, createInvoiceEntry(invoice, account, quantity, price), true);
+		
+		invoice.addInvcEntry(this);
+		this.invoice = invoice;
+	}
+
+	// -----------------------------------------------------------
+
     /*public GncV2Type.GncBookType.GncGncEntryType getJwsdpPeer() {
         return super.getJwsdpPeer();
     }*/
 
 	/**
-	 * @see {@link #getGenerInvoice()}
+	 * {@inheritDoc}
 	 */
-	private GnucashWritableGenerInvoice invoice;
-
+	public void setUserDefinedAttribute(final String name, final String value) {
+		helper.setUserDefinedAttribute(name, value);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -285,7 +300,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	    
 		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
 
-		super.setInvcTaxtable(tax);
+		super.setInvcTaxTable(tax);
 		if (tax == null) {
 			getJwsdpPeer().setEntryITaxable(0);
 		} else {
@@ -334,7 +349,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
 
-		super.setBillTaxtable(tax);
+		super.setBillTaxTable(tax);
 		if (tax == null) {
 			getJwsdpPeer().setEntryBTaxable(0);
 		} else {

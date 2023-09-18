@@ -42,7 +42,9 @@ import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.IllegalTransactionSplitActionException;
+import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.aux.WrongOwnerJITypeException;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
@@ -71,6 +73,7 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	 * @param file      the file to register under
 	 * @see GnucashGenerInvoiceImpl#GnucashInvoiceImpl(GncV2.GncBook.GncGncInvoice, GnucashFile)
 	 */
+	@SuppressWarnings("exports")
 	public GnucashGenerInvoiceWritingImpl(final GncV2.GncBook.GncGncInvoice jwsdpPeer, final GnucashFile file) {
 		super(jwsdpPeer, file);
 	}
@@ -767,6 +770,23 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 			throw new IllegalStateException("this invoice is NOT changable because there are already payment for it made!");
 		}
 	}
+	
+	// -----------------------------------------------------------
+
+	// ::TODO
+//	void setOwnerID(String ownerID, String type) {
+//	    GCshOwner owner = new GCshOwner();
+//	    getJwsdpPeer().setInvoiceOwner(new GCShOwner(xxx));
+//	}
+	
+	public void setOwner(GCshOwner owner) throws WrongOwnerJITypeException {
+	    if ( owner.getJIType() != GCshOwner.JIType.INVOICE ) 
+		throw new WrongOwnerJITypeException();
+	    
+	    getJwsdpPeer().setInvoiceOwner(owner.getInvcOwner());
+	}
+	
+	// -----------------------------------------------------------
 
 	/**
 	 * @see GnucashWritableGenerInvoice#setGenerJob(GnucashGenerJob)
@@ -824,8 +844,15 @@ public class GnucashGenerInvoiceWritingImpl extends GnucashGenerInvoiceImpl
 	/**
 	 * @see GnucashGenerInvoice#getPayingTransactions()
 	 */
-	public Collection getWritingPayingTransactions() {
-		return getPayingTransactions();
+	public Collection<GnucashWritableTransaction> getWritingPayingTransactions() {
+		Collection<GnucashWritableTransaction> trxList = new LinkedList<GnucashWritableTransaction>();
+		
+		for ( GnucashTransaction trx : getPayingTransactions()) {
+		    GnucashWritableTransaction newTrx = new GnucashTransactionWritingImpl(trx);
+		    trxList.add(newTrx);
+		}
+		
+		return trxList;
 	}
 
 	/**

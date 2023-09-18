@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import org.gnucash.Const;
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
@@ -370,7 +371,17 @@ public class GnucashFileImpl implements GnucashFile {
 	 * @see GnucashFile#getGenerInvoiceByID(java.lang.String)
 	 */
 	public GnucashGenerInvoice getGenerInvoiceByID(final String id) {
-		return invoiceID2invoice.get(id);
+		if (invoiceID2invoice == null) {
+			throw new IllegalStateException("no root-element loaded");
+		}
+
+		GnucashGenerInvoice retval = invoiceID2invoice.get(id);
+		if (retval == null) {
+			System.err.println("No (generic) Invoice with id '" + id + "'. We know "
+					+ invoiceID2invoice.size() + " accounts.");
+		}
+		
+		return retval;
 	}
 
 	/**
@@ -663,8 +674,18 @@ public class GnucashFileImpl implements GnucashFile {
     /**
      * @see GnucashFile#getGenerInvoiceByID(java.lang.String)
      */
-    public GnucashGenerInvoiceEntry getInvoiceEntryByID(final String id) {
-        return invoiceEntryID2invoiceEntry.get(id);
+    public GnucashGenerInvoiceEntry getGenerInvoiceEntryByID(final String id) {
+	if (invoiceEntryID2invoiceEntry == null) {
+		throw new IllegalStateException("no root-element loaded");
+	}
+
+	GnucashGenerInvoiceEntry retval = invoiceEntryID2invoiceEntry.get(id);
+	if (retval == null) {
+		System.err.println("No (generic) Invoice-Entry with id '" + id + "'. We know "
+				+ invoiceEntryID2invoiceEntry.size() + " accounts.");
+	}
+	
+	return retval;
     }
 
     /**
@@ -802,11 +823,11 @@ public class GnucashFileImpl implements GnucashFile {
 		// fill maps
 		initAccountMap(pRootElement);
 
-		initInvoiceMap(pRootElement);
+		initGenerInvoiceMap(pRootElement);
 		
 		// invoiceEntries refer to invoices, therefore they must be loaded after
 		// them
-		initInvoiceEntryMap(pRootElement);
+		initGenerInvoiceEntryMap(pRootElement);
 
 		// transactions refer to invoices, therefore they must be loaded after
 		// them
@@ -900,7 +921,7 @@ public class GnucashFileImpl implements GnucashFile {
     LOGGER.debug("No. of entries in account map: " + accountID2account.size());
   }
 
-  private void initInvoiceMap(final GncV2 pRootElement)
+  private void initGenerInvoiceMap(final GncV2 pRootElement)
   {
     invoiceID2invoice = new HashMap<>();
     
@@ -918,7 +939,7 @@ public class GnucashFileImpl implements GnucashFile {
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName() + ".initInvoiceMap: "
-            + "ignoring illegal Customer/Vendor-Invoice-Entry with id="
+            + "ignoring illegal (generic) Invoice-Entry with id="
             + jwsdpInvc.getInvoiceId(),
             e);
       }
@@ -927,7 +948,7 @@ public class GnucashFileImpl implements GnucashFile {
     LOGGER.debug("No. of entries in (generic) invoice map: " + invoiceID2invoice.size());
   }
 
-  private void initInvoiceEntryMap(final GncV2 pRootElement)
+  private void initGenerInvoiceEntryMap(final GncV2 pRootElement)
   {
     invoiceEntryID2invoiceEntry = new HashMap<>();
     
@@ -945,7 +966,7 @@ public class GnucashFileImpl implements GnucashFile {
       catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in "
             + getClass().getName() + ".initInvoiceEntryMap: "
-            + "ignoring illegal Customer/Vendor-Invoice-Entry-Entry with id="
+            + "ignoring illegal (generic) Invoice-Entry-Entry with id="
             + jwsdpInvcEntr.getEntryGuid().getValue(), e);
       }
     } // for
@@ -1176,7 +1197,7 @@ public class GnucashFileImpl implements GnucashFile {
 	/**
 	 * @see {@link #getLatestPrice(String, String)}
 	 */
-	protected static final DateFormat PRICE_QUOTE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+	protected static final DateFormat PRICE_QUOTE_DATE_FORMAT = new SimpleDateFormat(Const.STANDARD_DATE_FORMAT);
 
 	/**
 	 * @param pCmdtySpace the namespace for pCmdtyId
@@ -1535,7 +1556,7 @@ public class GnucashFileImpl implements GnucashFile {
 
 	}
 
-  private void loadInputStream(InputStream in)
+  protected void loadInputStream(InputStream in)
       throws UnsupportedEncodingException, IOException
   {
     long start = System.currentTimeMillis();

@@ -1,10 +1,6 @@
 package org.gnucash.write.impl.spec;
 
-import java.util.Date;
-
-import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
-import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
@@ -13,6 +9,7 @@ import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.impl.GnucashFileWritingImpl;
@@ -101,6 +98,10 @@ public class GnucashCustomerInvoiceEntryWritingImpl extends GnucashGenerInvoiceE
 		
 		invoice.addInvcEntry(this);
 		this.myInvoice = invoice;
+	}
+
+	public GnucashCustomerInvoiceEntryWritingImpl(final GnucashCustomerInvoiceEntry entry) {
+	    super(entry.getJwsdpPeer(), entry.getGnucashFile());
 	}
 
 	// -----------------------------------------------------------

@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -319,7 +320,6 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	/**
 	 * @param impl the split to add to mySplits
 	 */
-	@SuppressWarnings("unchecked")
 	protected void addSplit(final GnucashTransactionSplitImpl impl) {
 		if (!jwsdpPeer.getTrnSplits().getTrnSplit().contains(impl.getJwsdpPeer())) {
 			jwsdpPeer.getTrnSplits().getTrnSplit().add(impl.getJwsdpPeer());
@@ -398,7 +398,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	/**
 	 * @see GnucashTransaction#getDateEntered()
 	 */
-	protected static final DateTimeFormatter DATE_ENTERED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
+	protected static final DateTimeFormatter DATE_ENTERED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
 
 	/**
 	 * @see GnucashTransaction#getDateEntered()
@@ -429,7 +429,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	/**
 	 * format of the dataPosted-field in the xml(jwsdp)-file.
 	 */
-	private static final DateTimeFormatter DATE_POSTED_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
+	private static final DateTimeFormatter DATE_POSTED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
 
 	/**
 	 * @see GnucashTransaction#getDatePosted()

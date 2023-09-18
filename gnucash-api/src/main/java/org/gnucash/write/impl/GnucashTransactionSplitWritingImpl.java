@@ -39,7 +39,9 @@ import org.gnucash.write.GnucashWritableTransactionSplit;
 /**
  * Transaction-Split that can be newly created or removed from it's transaction.
  */
-public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitImpl implements GnucashWritableTransactionSplit {
+public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitImpl 
+                                                implements GnucashWritableTransactionSplit 
+{
 
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.

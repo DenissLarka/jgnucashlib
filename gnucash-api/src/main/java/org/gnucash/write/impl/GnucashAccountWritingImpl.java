@@ -429,7 +429,7 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 	}
 
 	/**
-	 * @see GnucashWritableAccount#setType(java.lang.String)
+	 * @see GnucashWritableAccount#setInvcType(java.lang.String)
 	 */
 	public void setType(final String type) {
 		if (type == null) {
