@@ -12,8 +12,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.gnucash.ConstTest;
-import org.gnucash.read.GnucashCustomer;
-import org.gnucash.write.GnucashWritableCustomer;
+import org.gnucash.read.GnucashVendor;
+import org.gnucash.write.GnucashWritableVendor;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashWritableCustomerImpl
+public class TestGnucashWritableVendorImpl
 {
     private GnucashFileWritingImpl gcshInFile = null;
     private String outFileGlobNameAbs = null;
@@ -46,7 +46,7 @@ public class TestGnucashWritableCustomerImpl
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashWritableCustomerImpl.class);  
+    return new JUnit4TestAdapter(TestGnucashWritableVendorImpl.class);  
   }
   
   @Before
@@ -89,12 +89,12 @@ public class TestGnucashWritableCustomerImpl
   @Test
   public void test01_1() throws Exception
   {
-      GnucashWritableCustomer cust = gcshInFile.createWritableCustomer();
-      cust.setNumber(GnucashCustomer.getNewNumber(cust));
-      cust.setName("Frederic Austerlitz");
+      GnucashWritableVendor vend = gcshInFile.createWritableVendor();
+      vend.setNumber(GnucashVendor.getNewNumber(vend));
+      vend.setName("Norma Jean Baker");
       
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
-      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test01_1: '" + outFile.getPath() + "'");
+      System.err.println("Outfile for TestGnucashWritableVendorImpl.test01_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
       gcshInFile.writeFile(outFile);
@@ -149,15 +149,15 @@ public class TestGnucashWritableCustomerImpl
       document.getDocumentElement().normalize();
 //      System.err.println("xxxx XML normalized");
       
-      NodeList nList = document.getElementsByTagName("gnc:GncCustomer");
+      NodeList nList = document.getElementsByTagName("gnc:GncVendor");
       assertEquals(4, nList.getLength());
 
       // Last (new) node
       Node lastNode = nList.item(nList.getLength() - 1);
       assertEquals(lastNode.getNodeType(), Node.ELEMENT_NODE);
       Element elt = (Element) lastNode;
-      assertEquals("Frederic Austerlitz", elt.getElementsByTagName("cust:name").item(0).getTextContent());
-      assertEquals("000004", elt.getElementsByTagName("cust:id").item(0).getTextContent());
+      assertEquals("Norma Jean Baker", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      assertEquals("000004", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
   }
 
   // -----------------------------------------------------------------
@@ -165,20 +165,20 @@ public class TestGnucashWritableCustomerImpl
   @Test
   public void test02_1() throws Exception
   {
-      GnucashWritableCustomer cust1 = gcshInFile.createWritableCustomer();
-      cust1.setNumber(GnucashCustomer.getNewNumber(cust1));
-      cust1.setName("Frederic Austerlitz");
+      GnucashWritableVendor vend1 = gcshInFile.createWritableVendor();
+      vend1.setNumber(GnucashVendor.getNewNumber(vend1));
+      vend1.setName("Norma Jean Baker");
       
-      GnucashWritableCustomer cust2 = gcshInFile.createWritableCustomer();
-      cust2.setNumber(GnucashCustomer.getNewNumber(cust2));
-      cust2.setName("Doris Kappelhoff");
+      GnucashWritableVendor vend2 = gcshInFile.createWritableVendor();
+      vend2.setNumber(GnucashVendor.getNewNumber(vend2));
+      vend2.setName("Madonna Louise Ciccone");
       
-      GnucashWritableCustomer cust3 = gcshInFile.createWritableCustomer();
-      cust3.setNumber(GnucashCustomer.getNewNumber(cust3));
-      cust3.setName("Georgios Panayiotou");
+      GnucashWritableVendor vend3 = gcshInFile.createWritableVendor();
+      vend3.setNumber(GnucashVendor.getNewNumber(vend3));
+      vend3.setName("Rowan Atkinson");
       
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
-      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test02_1: '" + outFile.getPath() + "'");
+      System.err.println("Outfile for TestGnucashWritableVendorImpl.test02_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
       gcshInFile.writeFile(outFile);
@@ -204,27 +204,27 @@ public class TestGnucashWritableCustomerImpl
       document.getDocumentElement().normalize();
 //      System.err.println("xxxx XML normalized");
       
-      NodeList nList = document.getElementsByTagName("gnc:GncCustomer");
+      NodeList nList = document.getElementsByTagName("gnc:GncVendor");
       assertEquals(6, nList.getLength());
 
       // Last three nodes (the new ones)
       Node node = nList.item(nList.getLength() - 3);
       assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       Element elt = (Element) node;
-      assertEquals("Frederic Austerlitz", elt.getElementsByTagName("cust:name").item(0).getTextContent());
-      assertEquals("000004", elt.getElementsByTagName("cust:id").item(0).getTextContent());
+      assertEquals("Norma Jean Baker", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      assertEquals("000004", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
 
       node = nList.item(nList.getLength() - 2);
       assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       elt = (Element) node;
-      assertEquals("Doris Kappelhoff", elt.getElementsByTagName("cust:name").item(0).getTextContent());
-      assertEquals("000005", elt.getElementsByTagName("cust:id").item(0).getTextContent());
+      assertEquals("Madonna Louise Ciccone", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      assertEquals("000005", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
 
       node = nList.item(nList.getLength() - 1);
       assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       elt = (Element) node;
-      assertEquals("Georgios Panayiotou", elt.getElementsByTagName("cust:name").item(0).getTextContent());
-      assertEquals("000006", elt.getElementsByTagName("cust:id").item(0).getTextContent());
+      assertEquals("Rowan Atkinson", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      assertEquals("000006", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
   }
 
 //  @AfterClass

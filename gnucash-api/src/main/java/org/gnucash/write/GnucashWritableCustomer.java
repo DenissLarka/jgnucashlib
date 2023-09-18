@@ -3,7 +3,7 @@ package org.gnucash.write;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.aux.GCshAddress;
-import org.gnucash.write.aux.GnucashWritableAddress;
+import org.gnucash.write.aux.GCshWritableAddress;
 
 /**
  * Customer that can be modified
@@ -35,13 +35,13 @@ public interface GnucashWritableCustomer extends GnucashCustomer,
 
 	void setShippingAddress(GCshAddress adr);
 
-	GnucashWritableAddress getWritableAddress();
+	GCshWritableAddress getWritableAddress();
 
-	GnucashWritableAddress getWritableShippingAddress();
+	GCshWritableAddress getWritableShippingAddress();
 
-	GnucashWritableAddress getAddress();
+	GCshWritableAddress getAddress();
 
-	GnucashWritableAddress getShippingAddress();
+	GCshWritableAddress getShippingAddress();
 
 
 	/**

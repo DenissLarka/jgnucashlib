@@ -2,7 +2,7 @@ package org.gnucash.write;
 
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshAddress;
-import org.gnucash.write.aux.GnucashWritableAddress;
+import org.gnucash.write.aux.GCshWritableAddress;
 import org.gnucash.read.GnucashObject;
 
 /**
@@ -24,9 +24,9 @@ public interface GnucashWritableVendor extends GnucashVendor,
 
 	void setAddress(GCshAddress adr);
 
-	GnucashWritableAddress getWritableAddress();
+	GCshWritableAddress getWritableAddress();
 
-	GnucashWritableAddress getAddress();
+	GCshWritableAddress getAddress();
 
 
 	/**
