@@ -228,15 +228,19 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
     /**
      * @param aTaxtable the taxtable to set
+     * @throws NoTaxTableFoundException 
+     * @throws WrongInvoiceTypeException 
      */
-    protected void setInvcTaxTable(final GCshTaxTable aTaxtable) {
+    protected void setInvcTaxTable(final GCshTaxTable aTaxtable) throws WrongInvoiceTypeException, NoTaxTableFoundException {
         myInvcTaxtable = aTaxtable;
     }
 
     /**
      * @param aTaxtable the taxtable to set
+     * @throws NoTaxTableFoundException 
+     * @throws WrongInvoiceTypeException 
      */
-    protected void setBillTaxTable(final GCshTaxTable aTaxtable) {
+    protected void setBillTaxTable(final GCshTaxTable aTaxtable) throws WrongInvoiceTypeException, NoTaxTableFoundException {
         myBillTaxtable = aTaxtable;
     }
 

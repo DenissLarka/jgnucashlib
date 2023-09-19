@@ -12,8 +12,8 @@ import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableFile;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
-import org.gnucash.write.impl.GnucashGenerInvoiceEntryWritingImpl;
+import org.gnucash.write.impl.GnucashWritableFileImpl;
+import org.gnucash.write.impl.GnucashWritableGenerInvoiceEntryImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
 
 /**
@@ -26,7 +26,7 @@ import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
  * </ul>
  * Entry-Line in an invoice that can be created or removed.
  */
-public class GnucashCustomerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntryWritingImpl 
+public class GnucashCustomerInvoiceEntryWritingImpl extends GnucashWritableGenerInvoiceEntryImpl 
                                                     implements GnucashWritableCustomerInvoiceEntry
 {
 
@@ -37,7 +37,7 @@ public class GnucashCustomerInvoiceEntryWritingImpl extends GnucashGenerInvoiceE
 	 */
 	public GnucashCustomerInvoiceEntryWritingImpl(
 		final GncV2.GncBook.GncGncEntry jwsdpPeer, 
-		final GnucashFileWritingImpl file) {
+		final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
@@ -64,7 +64,7 @@ public class GnucashCustomerInvoiceEntryWritingImpl extends GnucashGenerInvoiceE
 			final GnucashCustomerInvoiceWritingImpl invoice,
 			final FixedPointNumber quantity,
 			final FixedPointNumber price) {
-		return GnucashGenerInvoiceEntryWritingImpl.createSKR03_16PercentInvoiceEntry(invoice, quantity, price);
+		return GnucashWritableGenerInvoiceEntryImpl.createSKR03_16PercentInvoiceEntry(invoice, quantity, price);
 	}
 
 	public GnucashCustomerInvoiceEntryWritingImpl(

@@ -27,7 +27,7 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashWritableVendorImpl
 {
-    private GnucashFileWritingImpl gcshInFile = null;
+    private GnucashWritableFileImpl gcshInFile = null;
     private String outFileGlobNameAbs = null;
     private File outFileGlob = null;
 
@@ -68,7 +68,7 @@ public class TestGnucashWritableVendorImpl
     
     try
     {
-      gcshInFile = new GnucashFileWritingImpl(gcshInFileStream);
+      gcshInFile = new GnucashWritableFileImpl(gcshInFileStream);
     }
     catch ( Exception exc )
     {

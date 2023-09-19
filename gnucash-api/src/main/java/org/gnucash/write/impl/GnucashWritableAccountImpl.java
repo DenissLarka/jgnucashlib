@@ -1,21 +1,3 @@
-/**
- * GnucashAccountImpl.java
- * Created on 16.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 16.05.2005 - initial version
- * ...
- */
 package org.gnucash.write.impl;
 
 import java.beans.PropertyChangeEvent;
@@ -62,17 +44,19 @@ import org.slf4j.LoggerFactory;
  * <li>transactionSplits (not giving the old value of the list)</li>
  * </ul>
  */
-public class GnucashAccountWritingImpl extends GnucashAccountImpl implements GnucashWritableAccount {
+public class GnucashWritableAccountImpl extends GnucashAccountImpl 
+                                        implements GnucashWritableAccount 
+{
 
 	/**
 	 * Our logger for debug- and error-ourput.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashAccountWritingImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableAccountImpl.class);
 
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
-	private GnucashWritableObjectHelper helper;
+	private GnucashWritableObjectImpl helper;
 
 	/**
 	 * {@inheritDoc}
@@ -81,7 +65,7 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 	 */
 	public void setUserDefinedAttribute(final String name, final String value) {
 		if (helper == null) {
-			helper = new GnucashWritableObjectHelper(super.helper);
+			helper = new GnucashWritableObjectImpl(super.helper);
 		}
 		LOGGER.debug("GnucashAccountWritingImpl[account-id="
 				+ getId() + " name="
@@ -94,21 +78,21 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 	/**
 	 * @see GnucashAccountImpl#GnucashAccountImpl(GncAccount, GnucashFile)
 	 */
-	public GnucashAccountWritingImpl(final GncAccount jwsdpPeer, final GnucashFileImpl file) {
+	public GnucashWritableAccountImpl(final GncAccount jwsdpPeer, final GnucashFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
 	/**
 	 * @see GnucashAccountImpl#GnucashAccountImpl(GncAccount, GnucashFile) )
 	 */
-	public GnucashAccountWritingImpl(final GnucashFileWritingImpl file) {
+	public GnucashWritableAccountImpl(final GnucashWritableFileImpl file) {
 		super(createAccount(file, file.createGUID()), file);
 	}
 
 	/**
 	 * @see GnucashAccountImpl#GnucashAccountImpl(GncAccount, GnucashFile)
 	 */
-	public GnucashAccountWritingImpl(final GnucashFileWritingImpl file, final String id) {
+	public GnucashWritableAccountImpl(final GnucashWritableFileImpl file, final String id) {
 		super(createAccount(file, id), file);
 	}
 
@@ -116,7 +100,7 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 	 * @param file
 	 * @return
 	 */
-	private static GncAccount createAccount(final GnucashFileWritingImpl file, final String accountguid) {
+	private static GncAccount createAccount(final GnucashWritableFileImpl file, final String accountguid) {
 		ObjectFactory factory = file.getObjectFactory();
 
 		GncAccount account = factory.createGncAccount();
@@ -197,7 +181,7 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 	 * @return the file we are associated with
 	 */
 	public GnucashWritableFile getWritableGnucashFile() {
-		return (GnucashFileWritingImpl) getGnucashFile();
+		return (GnucashWritableFileImpl) getGnucashFile();
 	}
 
 	/**
@@ -371,7 +355,7 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 								&&
 								evt.getSource() instanceof GnucashWritableTransactionSplit) {
 							GnucashWritableTransactionSplit splitw = (GnucashWritableTransactionSplit) evt.getSource();
-							if (splitw.getAccount() != GnucashAccountWritingImpl.this) {
+							if (splitw.getAccount() != GnucashWritableAccountImpl.this) {
 								splitw.removePropertyChangeListener("account", this);
 								splitw.removePropertyChangeListener("quantity", this);
 								splitw.getTransaction().removePropertyChangeListener("datePosted", this);
@@ -482,7 +466,7 @@ public class GnucashAccountWritingImpl extends GnucashAccountImpl implements Gnu
 		Object old = null;
 		GncAccount.ActParent parent = getJwsdpPeer().getActParent();
 		if (parent == null) {
-			parent = ((GnucashFileWritingImpl) getWritableGnucashFile())
+			parent = ((GnucashWritableFileImpl) getWritableGnucashFile())
 					.getObjectFactory().createGncAccountActParent();
 			parent.setType("guid");
 			parent.setValue(parentAccount.getId());

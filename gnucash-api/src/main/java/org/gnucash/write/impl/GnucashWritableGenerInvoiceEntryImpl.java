@@ -30,14 +30,14 @@ import org.gnucash.write.GnucashWritableFile;
  * </ul>
  * Entry-Line in an invoice that can be created or removed.
  */
-public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntryImpl 
-                                                 implements GnucashWritableGenerInvoiceEntry 
+public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImpl 
+                                                  implements GnucashWritableGenerInvoiceEntry 
 {
 
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
-	private final GnucashWritableObjectHelper helper = new GnucashWritableObjectHelper(this);
+	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
 
 	/**
 	 * @see {@link #getGenerInvoice()}
@@ -53,7 +53,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 * @return
 	 */
 	protected static GncV2.GncBook.GncGncEntry createSKR03_16PercentInvoiceEntry(
-			final GnucashGenerInvoiceWritingImpl invoice,
+			final GnucashWritableGenerInvoiceImpl invoice,
 			final FixedPointNumber quantity,
 			final FixedPointNumber price) {
 		GnucashAccount account = invoice.getFile().getAccountByName("Umsatzerl�se 16% USt");
@@ -68,10 +68,10 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	}
 	
 	/**
-	 * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashGenerInvoiceWritingImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
+	 * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
 	 */
 	protected static GncV2.GncBook.GncGncEntry createInvoiceEntry(
-			final GnucashGenerInvoiceWritingImpl invoice,
+			final GnucashWritableGenerInvoiceImpl invoice,
 			final GnucashAccount account,
 			final FixedPointNumber quantity,
 			final FixedPointNumber price) {
@@ -83,7 +83,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 					+ " thus not modifiable");
 		}
 
-		GnucashFileWritingImpl gnucashFileWritingImpl = (GnucashFileWritingImpl) invoice.getFile();
+		GnucashWritableFileImpl gnucashFileWritingImpl = (GnucashWritableFileImpl) invoice.getFile();
 		ObjectFactory factory = gnucashFileWritingImpl.getObjectFactory();
 
 		GncV2.GncBook.GncGncEntry entry = gnucashFileWritingImpl.createGncGncEntryType();
@@ -167,9 +167,9 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GncV2.GncBook.GncGncEntry, GnucashFileImpl)
 	 */
 	@SuppressWarnings("exports")
-	public GnucashGenerInvoiceEntryWritingImpl(
+	public GnucashWritableGenerInvoiceEntryImpl(
 		final GncV2.GncBook.GncGncEntry jwsdpPeer, 
-		final GnucashFileWritingImpl file) {
+		final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
@@ -179,8 +179,8 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
 	@SuppressWarnings("exports")
-	public GnucashGenerInvoiceEntryWritingImpl(
-			final GnucashGenerInvoiceWritingImpl invoice,
+	public GnucashWritableGenerInvoiceEntryImpl(
+			final GnucashWritableGenerInvoiceImpl invoice,
 			final GncV2.GncBook.GncGncEntry jwsdpPeer) {
 		super(invoice, jwsdpPeer, true);
 		
@@ -189,8 +189,8 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 	// -----------------------------------------------------------
 
-	public GnucashGenerInvoiceEntryWritingImpl(
-		final GnucashGenerInvoiceWritingImpl invoice,
+	public GnucashWritableGenerInvoiceEntryImpl(
+		final GnucashWritableGenerInvoiceImpl invoice,
 		final FixedPointNumber quantity,
 		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price), true);
@@ -211,8 +211,8 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashGenerInvoiceEntryWritingImpl(
-		final GnucashGenerInvoiceWritingImpl invoice,
+	public GnucashWritableGenerInvoiceEntryImpl(
+		final GnucashWritableGenerInvoiceImpl invoice,
 		final GnucashAccount account,
 		final FixedPointNumber quantity,
 		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
@@ -278,13 +278,13 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	@Override
 	public void setInvcTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
 		if (val) {
 			getJwsdpPeer().setEntryITaxable(1);
 		} else {
 			getJwsdpPeer().setEntryITaxable(0);
 		}
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addInvcEntry(this);
 
 	}
 
@@ -298,7 +298,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
 	    	    throw new WrongInvoiceTypeException();
 	    
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
 
 		super.setInvcTaxTable(tax);
 		if (tax == null) {
@@ -307,7 +307,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 			getJwsdpPeer().setEntryITaxable(1);
 			if (getJwsdpPeer().getEntryITaxtable() == null) {
 				getJwsdpPeer().setEntryITaxtable(
-						((GnucashFileWritingImpl) getGenerInvoice().getFile())
+						((GnucashWritableFileImpl) getGenerInvoice().getFile())
 								.getObjectFactory()
 								.createGncV2GncBookGncGncEntryEntryITaxtable());
 				getJwsdpPeer().getEntryITaxtable().setValue("guid");
@@ -315,7 +315,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 			getJwsdpPeer().getEntryITaxtable().setValue(tax.getId());
 		}
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addInvcEntry(this);
 
 	}
 	
@@ -328,13 +328,13 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	 */
 	public void setBillTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractBillEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractBillEntry(this);
 		if (val) {
 			getJwsdpPeer().setEntryBTaxable(1);
 		} else {
 			getJwsdpPeer().setEntryBTaxable(0);
 		}
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addBillEntry(this);
 
 	}
 
@@ -347,7 +347,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 	    	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
 	    	    throw new WrongInvoiceTypeException();
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
 
 		super.setBillTaxTable(tax);
 		if (tax == null) {
@@ -356,7 +356,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 			getJwsdpPeer().setEntryBTaxable(1);
 			if (getJwsdpPeer().getEntryBTaxtable() == null) {
 				getJwsdpPeer().setEntryBTaxtable(
-						((GnucashFileWritingImpl) getGenerInvoice().getFile())
+						((GnucashWritableFileImpl) getGenerInvoice().getFile())
 								.getObjectFactory()
 								.createGncV2GncBookGncGncEntryEntryBTaxtable());
 				getJwsdpPeer().getEntryBTaxtable().setValue("guid");
@@ -364,7 +364,7 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 			getJwsdpPeer().getEntryBTaxtable().setValue(tax.getId());
 		}
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addBillEntry(this);
 
 	}
 	
@@ -395,9 +395,9 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 		Object old = getInvcPrice();
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
 		getJwsdpPeer().setEntryIPrice(price.toGnucashString());
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addInvcEntry(this);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
@@ -440,9 +440,9 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 		Object old = getBillPrice();
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractBillEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractBillEntry(this);
 		getJwsdpPeer().setEntryBPrice(price.toGnucashString());
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addBillEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addBillEntry(this);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
@@ -516,9 +516,9 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 
 		Object old = getQuantity();
 
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).subtractInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
 		getJwsdpPeer().setEntryQty(quantity.toGnucashString());
-		((GnucashGenerInvoiceWritingImpl) getGenerInvoice()).addInvcEntry(this);
+		((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addInvcEntry(this);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
@@ -536,10 +536,10 @@ public class GnucashGenerInvoiceEntryWritingImpl extends GnucashGenerInvoiceEntr
 		if (!this.getGenerInvoice().isModifiable()) {
 			throw new IllegalStateException("This Invoice has payments and is not modifiable!");
 		}
-		GnucashGenerInvoiceWritingImpl gnucashInvoiceWritingImpl = ((GnucashGenerInvoiceWritingImpl) getGenerInvoice());
+		GnucashWritableGenerInvoiceImpl gnucashInvoiceWritingImpl = ((GnucashWritableGenerInvoiceImpl) getGenerInvoice());
 		gnucashInvoiceWritingImpl.removeInvcEntry(this);
 		gnucashInvoiceWritingImpl.getFile().getRootElement().getGncBook().getBookElements().remove(this.getJwsdpPeer());
-		((GnucashFileWritingImpl) gnucashInvoiceWritingImpl.getFile()).decrementCountDataFor("gnc:GncEntry");
+		((GnucashWritableFileImpl) gnucashInvoiceWritingImpl.getFile()).decrementCountDataFor("gnc:GncEntry");
 	}
 
 	/**

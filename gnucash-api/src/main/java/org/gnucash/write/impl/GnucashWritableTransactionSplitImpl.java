@@ -1,21 +1,3 @@
-/**
- * GnucashTransactionSplitWritingImpl.java
- * Created on 16.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 16.05.2005 - initial version
- * ...
- */
 package org.gnucash.write.impl;
 
 import java.text.ParseException;
@@ -39,14 +21,14 @@ import org.gnucash.write.GnucashWritableTransactionSplit;
 /**
  * Transaction-Split that can be newly created or removed from it's transaction.
  */
-public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitImpl 
-                                                implements GnucashWritableTransactionSplit 
+public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplitImpl 
+                                                 implements GnucashWritableTransactionSplit 
 {
 
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
-	private final GnucashWritableObjectHelper helper = new GnucashWritableObjectHelper(this);
+	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
 
 	/**
 	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
@@ -67,7 +49,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	 * @param jwsdpPeer   the JWSDP-object we are facading.
 	 * @param transaction the transaction we belong to
 	 */
-	public GnucashTransactionSplitWritingImpl(final GncTransaction.TrnSplits.TrnSplit jwsdpPeer, final GnucashWritableTransaction transaction) {
+	public GnucashWritableTransactionSplitImpl(final GncTransaction.TrnSplits.TrnSplit jwsdpPeer, final GnucashWritableTransaction transaction) {
 		super(jwsdpPeer, transaction);
 	}
 
@@ -77,7 +59,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	 * @param transaction transaction the transaction we will belong to
 	 * @param account     the account we take money (or other things) from or give it to
 	 */
-	public GnucashTransactionSplitWritingImpl(final GnucashTransactionWritingImpl transaction, final GnucashAccount account) {
+	public GnucashWritableTransactionSplitImpl(final GnucashWritableTransactionImpl transaction, final GnucashAccount account) {
 		this(transaction, account, (transaction.getWritingFile()).createGUID());
 	}
 
@@ -87,7 +69,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	 * @param transaction transaction the transaction we will belong to
 	 * @param account     the account we take money (or other things) from or give it to
 	 */
-	public GnucashTransactionSplitWritingImpl(final GnucashTransactionWritingImpl transaction, final GnucashAccount account, String pSplitID) {
+	public GnucashWritableTransactionSplitImpl(final GnucashWritableTransactionImpl transaction, final GnucashAccount account, String pSplitID) {
 		super(createTransactionSplit(transaction, account, pSplitID), transaction);
 
 		// this is a workaound.
@@ -105,7 +87,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	 * Creates a new Transaction and add's it to the given gnucash-file
 	 * Don't modify the ID of the new transaction!
 	 */
-	protected static GncTransaction.TrnSplits.TrnSplit createTransactionSplit(final GnucashTransactionWritingImpl transaction,
+	protected static GncTransaction.TrnSplits.TrnSplit createTransactionSplit(final GnucashWritableTransactionImpl transaction,
 			final GnucashAccount account,
 			final String pSplitID) {
 
@@ -129,7 +111,7 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 		// the other is this object.
 		transaction.getSplits();
 
-		GnucashFileWritingImpl gnucashFileImpl = transaction.getWritingFile();
+		GnucashWritableFileImpl gnucashFileImpl = transaction.getWritingFile();
 		ObjectFactory factory = gnucashFileImpl.getObjectFactory();
 
 		GncTransaction.TrnSplits.TrnSplit split = gnucashFileImpl.createGncTransactionTypeTrnSplitsTypeTrnSplitType();
@@ -364,8 +346,8 @@ public class GnucashTransactionSplitWritingImpl extends GnucashTransactionSplitI
 	@SuppressWarnings("unchecked")
 	public void setLotID(final String lotID) {
 
-		GnucashTransactionWritingImpl transaction = (GnucashTransactionWritingImpl) getTransaction();
-		GnucashFileWritingImpl writingFile = transaction.getWritingFile();
+		GnucashWritableTransactionImpl transaction = (GnucashWritableTransactionImpl) getTransaction();
+		GnucashWritableFileImpl writingFile = transaction.getWritingFile();
 		ObjectFactory factory = writingFile.getObjectFactory();
 
 		if (getJwsdpPeer().getSplitLot() == null) {

@@ -1,21 +1,3 @@
-/**
- * GnucashTransactionWritingImpl.java
- * Created on 16.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 16.05.2005 - initial version
- * ...
- */
 package org.gnucash.write.impl;
 
 import java.time.LocalDateTime;
@@ -28,9 +10,7 @@ import org.gnucash.Const;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.GnucashTransactionSplitImpl;
@@ -43,17 +23,19 @@ import org.slf4j.LoggerFactory;
 /**
  * JWSDP-Implmentation of a Transaction that can be changed.
  */
-public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implements GnucashWritableTransaction {
+public class GnucashWritableTransactionImpl extends GnucashTransactionImpl 
+                                            implements GnucashWritableTransaction 
+{
 
 	/**
 	 * Our logger for debug- and error-ourput.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashTransactionWritingImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableTransactionImpl.class);
 
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
-	private final GnucashWritableObjectHelper helper = new GnucashWritableObjectHelper(this);
+	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
 
 	// -----------------------------------------------------------
 
@@ -61,7 +43,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 * @param file      the file we belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 */
-	public GnucashTransactionWritingImpl(final GncTransaction jwsdpPeer, final GnucashFileImpl file) {
+	public GnucashWritableTransactionImpl(final GncTransaction jwsdpPeer, final GnucashFileImpl file) {
 		super(jwsdpPeer, file);
 
 		// repair a broken file
@@ -85,12 +67,12 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 *
 	 * @param file the file we belong to
 	 */
-	public GnucashTransactionWritingImpl(final GnucashFileWritingImpl file, final String id) {
+	public GnucashWritableTransactionImpl(final GnucashWritableFileImpl file, final String id) {
 		super(createTransaction(file, id), file);
 		file.addTransaction(this);
 	}
 
-	public GnucashTransactionWritingImpl(final GnucashTransaction trx) {
+	public GnucashWritableTransactionImpl(final GnucashTransaction trx) {
 	    super(trx.getJwsdpPeer(), trx.getGnucashFile());
 	    
 	    // ::TODO
@@ -115,8 +97,8 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 *
 	 * @return the file we are associated with
 	 */
-	public GnucashFileWritingImpl getWritingFile() {
-		return (GnucashFileWritingImpl) getGnucashFile();
+	public GnucashWritableFileImpl getWritingFile() {
+		return (GnucashWritableFileImpl) getGnucashFile();
 	}
 
 	/**
@@ -127,7 +109,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 */
 	@Override
 	protected GnucashTransactionSplitImpl createSplit(final GncTransaction.TrnSplits.TrnSplit element) {
-		GnucashTransactionSplitWritingImpl gnucashTransactionSplitWritingImpl = new GnucashTransactionSplitWritingImpl(element, this);
+		GnucashWritableTransactionSplitImpl gnucashTransactionSplitWritingImpl = new GnucashWritableTransactionSplitImpl(element, this);
 		if (getPropertyChangeSupport() != null) {
 			getPropertyChangeSupport().firePropertyChange("splits", null, getWritingSplits());
 		}
@@ -138,7 +120,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 * @see GnucashWritableTransaction#createWritingSplit(GnucashAccount)
 	 */
 	public GnucashWritableTransactionSplit createWritingSplit(final GnucashAccount account) {
-		GnucashTransactionSplitWritingImpl gnucashTransactionSplitWritingImpl = new GnucashTransactionSplitWritingImpl(this, account);
+		GnucashWritableTransactionSplitImpl gnucashTransactionSplitWritingImpl = new GnucashWritableTransactionSplitImpl(this, account);
 		addSplit(gnucashTransactionSplitWritingImpl);
 		if (getPropertyChangeSupport() != null) {
 			getPropertyChangeSupport().firePropertyChange("splits", null, getWritingSplits());
@@ -150,7 +132,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 * @see GnucashWritableTransaction#createWritingSplit(GnucashAccount)
 	 */
 	public GnucashWritableTransactionSplit createWritingSplit(final GnucashAccount account, final String splitID) {
-		GnucashTransactionSplitWritingImpl gnucashTransactionSplitWritingImpl = new GnucashTransactionSplitWritingImpl(this, account, splitID);
+		GnucashWritableTransactionSplitImpl gnucashTransactionSplitWritingImpl = new GnucashWritableTransactionSplitImpl(this, account, splitID);
 		if (getPropertyChangeSupport() != null) {
 			getPropertyChangeSupport().firePropertyChange("splits", null, getWritingSplits());
 		}
@@ -161,7 +143,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 * Creates a new Transaction and add's it to the given gnucash-file
 	 * Don't modify the ID of the new transaction!
 	 */
-	protected static GncTransaction createTransaction(final GnucashFileWritingImpl file, final String newId) {
+	protected static GncTransaction createTransaction(final GnucashWritableFileImpl file, final String newId) {
 
 		ObjectFactory factory = file.getObjectFactory();
 		GncTransaction transaction = file.createGncTransaction();
@@ -207,12 +189,12 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	 * @param impl the split to remove from this transaction
 	 */
 	public void remove(final GnucashWritableTransactionSplit impl) {
-		getJwsdpPeer().getTrnSplits().getTrnSplit().remove(((GnucashTransactionSplitWritingImpl) impl).getJwsdpPeer());
+		getJwsdpPeer().getTrnSplits().getTrnSplit().remove(((GnucashWritableTransactionSplitImpl) impl).getJwsdpPeer());
 		getWritingFile().setModified(true);
 		if (mySplits != null) {
 			mySplits.remove(impl);
 		}
-		GnucashAccountWritingImpl account = (GnucashAccountWritingImpl)
+		GnucashWritableAccountImpl account = (GnucashWritableAccountImpl)
 				impl.getAccount();
 		if (account != null) {
 			account.removeTransactionSplit(impl);
@@ -272,7 +254,7 @@ public class GnucashTransactionWritingImpl extends GnucashTransactionImpl implem
 	/**
 	 * @param impl the split to add to mySplits
 	 */
-	protected void addSplit(final GnucashTransactionSplitWritingImpl impl) {
+	protected void addSplit(final GnucashWritableTransactionSplitImpl impl) {
 		super.addSplit(impl);
 	}
 

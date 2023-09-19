@@ -32,7 +32,7 @@ import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
+import org.gnucash.write.impl.GnucashWritableFileImpl;
 
 /**
  * Modifiable version of a Job implemented.<br/>
@@ -64,7 +64,7 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
    * @param file  the file to add the jhe to
    */
   public GnucashCustomerJobWritingImpl(
-          final GnucashFileWritingImpl file,
+          final GnucashWritableFileImpl file,
           final String id,
           final GnucashCustomer owner) {
       super(createJob(file, id, owner), file);
@@ -79,7 +79,7 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 		if (!getInvoices().isEmpty()) {
 			throw new IllegalStateException("cannot remove a job that has invoices!");
 		}
-		GnucashFileWritingImpl writableFile = (GnucashFileWritingImpl) getFile();
+		GnucashWritableFileImpl writableFile = (GnucashWritableFileImpl) getFile();
 		writableFile.getRootElement().getGncBook().getBookElements().remove(getJwsdpPeer());
 		writableFile.removeJob(this);
 	}
@@ -92,7 +92,7 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 	 */
 	@SuppressWarnings("unchecked")
 	private static GncV2.GncBook.GncGncJob createJob(
-			final GnucashFileWritingImpl file,
+			final GnucashWritableFileImpl file,
 			final String guid,
 			final GnucashCustomer customer) {
 
@@ -147,8 +147,8 @@ public class GnucashCustomerJobWritingImpl extends GnucashCustomerJobImpl
 	 *
 	 * @return the file we are associated with
 	 */
-	protected GnucashFileWritingImpl getWritingFile() {
-		return (GnucashFileWritingImpl) getFile();
+	protected GnucashWritableFileImpl getWritingFile() {
+		return (GnucashWritableFileImpl) getFile();
 	}
 
 	/**

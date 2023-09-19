@@ -10,7 +10,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
+import org.gnucash.write.impl.GnucashWritableFileImpl;
 
 /**
  * Created by Deniss Larka
@@ -26,7 +26,7 @@ public class GnuCashSandbox {
 
 	private void process() throws IOException {
 
-		GnucashFileWritingImpl gnucashFile = new GnucashFileWritingImpl(new File("/tmp/aaa/test.gnucash"));
+		GnucashWritableFileImpl gnucashFile = new GnucashWritableFileImpl(new File("/tmp/aaa/test.gnucash"));
 		Collection<GnucashAccount> accounts = gnucashFile.getAccounts();
 		for (GnucashAccount account : accounts) {
 			System.out.println(account.getQualifiedName());

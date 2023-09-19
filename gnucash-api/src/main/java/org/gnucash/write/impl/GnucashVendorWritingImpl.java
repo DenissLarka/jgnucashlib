@@ -8,7 +8,6 @@ import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.impl.GnucashVendorImpl;
-import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
 import org.gnucash.write.GnucashWritableVendor;
@@ -28,7 +27,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
-	private final GnucashWritableObjectHelper helper = new GnucashWritableObjectHelper(this);
+	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
 
 	/**
 	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
@@ -43,7 +42,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @param file      the file we belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 */
-	protected GnucashVendorWritingImpl(final GncV2.GncBook.GncGncVendor jwsdpPeer, final GnucashFileWritingImpl file) {
+	protected GnucashVendorWritingImpl(final GncV2.GncBook.GncGncVendor jwsdpPeer, final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
@@ -53,7 +52,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @param file the file we belong to
 	 * @param id   the ID we shall have
 	 */
-	protected GnucashVendorWritingImpl(final GnucashFileWritingImpl file,
+	protected GnucashVendorWritingImpl(final GnucashWritableFileImpl file,
 			final String id) {
 		super(createVendor(file, id), file);
 	}
@@ -77,7 +76,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @param guid the ID we shall have
 	 * @return a new jwsdp-peer alredy entered into th jwsdp-peer of the file
 	 */
-	protected static GncV2.GncBook.GncGncVendor createVendor(final GnucashFileWritingImpl file, final String guid) {
+	protected static GncV2.GncBook.GncGncVendor createVendor(final GnucashWritableFileImpl file, final String guid) {
 
 		if (guid == null) {
 			throw new IllegalArgumentException("null guid given!");
@@ -135,8 +134,8 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 *
 	 * @return the file we are associated with
 	 */
-	public GnucashFileWritingImpl getWritableGnucashFile() {
-		return (GnucashFileWritingImpl) super.getGnucashFile();
+	public GnucashWritableFileImpl getWritableGnucashFile() {
+		return (GnucashWritableFileImpl) super.getGnucashFile();
 	}
 
 	/**
@@ -145,8 +144,8 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @return the file we are associated with
 	 */
 	@Override
-	public GnucashFileWritingImpl getGnucashFile() {
-		return (GnucashFileWritingImpl) super.getGnucashFile();
+	public GnucashWritableFileImpl getGnucashFile() {
+		return (GnucashWritableFileImpl) super.getGnucashFile();
 	}
 
 	/**

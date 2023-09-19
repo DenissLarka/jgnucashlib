@@ -39,10 +39,10 @@ import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableTransaction;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
-import org.gnucash.write.impl.GnucashGenerInvoiceWritingImpl;
-import org.gnucash.write.impl.GnucashTransactionSplitWritingImpl;
-import org.gnucash.write.impl.GnucashTransactionWritingImpl;
+import org.gnucash.write.impl.GnucashWritableFileImpl;
+import org.gnucash.write.impl.GnucashWritableGenerInvoiceImpl;
+import org.gnucash.write.impl.GnucashWritableTransactionSplitImpl;
+import org.gnucash.write.impl.GnucashWritableTransactionImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
 
@@ -51,7 +51,7 @@ import jakarta.xml.bind.JAXBElement;
 /**
  * TODO write a comment what this type does here
  */
-public class GnucashCustomerInvoiceWritingImpl extends GnucashGenerInvoiceWritingImpl 
+public class GnucashCustomerInvoiceWritingImpl extends GnucashWritableGenerInvoiceImpl 
                                                implements GnucashWritableCustomerInvoice 
 {
 
@@ -70,7 +70,7 @@ public class GnucashCustomerInvoiceWritingImpl extends GnucashGenerInvoiceWritin
 	 * @param file the file we are associated with.
 	 */
 	protected GnucashCustomerInvoiceWritingImpl(
-			final GnucashFileWritingImpl file,
+			final GnucashWritableFileImpl file,
 			final String internalID,
 			final String invoiceNumber,
 			final GnucashGenerJob job,
@@ -83,7 +83,7 @@ public class GnucashCustomerInvoiceWritingImpl extends GnucashGenerInvoiceWritin
 	 * @param file the file we are associated with.
 	 * @throws WrongInvoiceTypeException 
 	 */
-	protected GnucashCustomerInvoiceWritingImpl(final GnucashGenerInvoiceWritingImpl invc) throws WrongInvoiceTypeException {
+	protected GnucashCustomerInvoiceWritingImpl(final GnucashWritableGenerInvoiceImpl invc) throws WrongInvoiceTypeException {
 	    super(invc.getJwsdpPeer(), invc.getFile());
 
 	    // No, we cannot check that first, because the super() method
@@ -173,7 +173,7 @@ public class GnucashCustomerInvoiceWritingImpl extends GnucashGenerInvoiceWritin
 
 	/**
 	 * Called by
-	 * ${@link GnucashCustomerInvoiceEntryWritingImpl#createInvoiceEntry(GnucashGenerInvoiceWritingImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
+	 * ${@link GnucashCustomerInvoiceEntryWritingImpl#createInvoiceEntry(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
 	 *
 	 * @param entry the entry to add to our internal list of customer-invoice-entries
 	 * @throws WrongInvoiceTypeException 

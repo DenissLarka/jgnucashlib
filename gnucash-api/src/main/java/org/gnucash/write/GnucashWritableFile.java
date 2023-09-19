@@ -17,7 +17,7 @@ import org.gnucash.read.GnucashGenerJob;
  * to implement the respetive *Writable-interfaces.
  *
  * @see GnucashFile
- * @see org.gnucash.write.impl.GnucashFileWritingImpl
+ * @see org.gnucash.write.impl.GnucashWritableFileImpl
  */
 public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject {
 

@@ -8,7 +8,6 @@ import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.impl.GnucashCustomerImpl;
-import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
@@ -17,18 +16,18 @@ import org.gnucash.write.impl.aux.GCshWritableAddressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashCustomerWritingImpl extends GnucashCustomerImpl 
-                                        implements GnucashWritableCustomer 
+public class GnucashWritableCustomerImpl extends GnucashCustomerImpl 
+                                         implements GnucashWritableCustomer 
 {
 	/**
 	 * Automatically created logger for debug and error-output.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerWritingImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableCustomerImpl.class);
 
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
-	private final GnucashWritableObjectHelper helper = new GnucashWritableObjectHelper(this);
+	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
 
 	/**
 	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
@@ -43,7 +42,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	 * @param file      the file we belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 */
-	protected GnucashCustomerWritingImpl(final GncV2.GncBook.GncGncCustomer jwsdpPeer, final GnucashFileWritingImpl file) {
+	protected GnucashWritableCustomerImpl(final GncV2.GncBook.GncGncCustomer jwsdpPeer, final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
@@ -53,7 +52,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	 * @param file the file we belong to
 	 * @param id   the ID we shall have
 	 */
-	protected GnucashCustomerWritingImpl(final GnucashFileWritingImpl file,
+	protected GnucashWritableCustomerImpl(final GnucashWritableFileImpl file,
 			final String id) {
 		super(createCustomer(file, id), file);
 	}
@@ -77,7 +76,7 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	 * @param guid the ID we shall have
 	 * @return a new jwsdp-peer alredy entered into th jwsdp-peer of the file
 	 */
-	protected static GncV2.GncBook.GncGncCustomer createCustomer(final GnucashFileWritingImpl file, final String guid) {
+	protected static GncV2.GncBook.GncGncCustomer createCustomer(final GnucashWritableFileImpl file, final String guid) {
 
 		if (guid == null) {
 			throw new IllegalArgumentException("null guid given!");
@@ -151,8 +150,8 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	 *
 	 * @return the file we are associated with
 	 */
-	public GnucashFileWritingImpl getWritableGnucashFile() {
-		return (GnucashFileWritingImpl) super.getGnucashFile();
+	public GnucashWritableFileImpl getWritableGnucashFile() {
+		return (GnucashWritableFileImpl) super.getGnucashFile();
 	}
 
 	/**
@@ -161,8 +160,8 @@ public class GnucashCustomerWritingImpl extends GnucashCustomerImpl
 	 * @return the file we are associated with
 	 */
 	@Override
-	public GnucashFileWritingImpl getGnucashFile() {
-		return (GnucashFileWritingImpl) super.getGnucashFile();
+	public GnucashWritableFileImpl getGnucashFile() {
+		return (GnucashWritableFileImpl) super.getGnucashFile();
 	}
 
 	/**

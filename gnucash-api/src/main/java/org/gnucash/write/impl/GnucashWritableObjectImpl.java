@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Interface all writable gnucash-entities implement.
  */
-public class GnucashWritableObjectHelper implements GnucashWritableObject {
+public class GnucashWritableObjectImpl implements GnucashWritableObject {
 
 	/**
 	 *
@@ -44,7 +44,7 @@ public class GnucashWritableObjectHelper implements GnucashWritableObject {
 	/**
 	 * @param aGnucashObject the object we are helping with
 	 */
-	public GnucashWritableObjectHelper(final GnucashObjectImpl aGnucashObject) {
+	public GnucashWritableObjectImpl(final GnucashObjectImpl aGnucashObject) {
 		super();
 		setGnucashObject(aGnucashObject);
 	}
@@ -89,7 +89,7 @@ public class GnucashWritableObjectHelper implements GnucashWritableObject {
 	/**
 	 * Automatically created logger for debug and error-output.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableObjectHelper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableObjectImpl.class);
 
 	//------------------------ support for propertyChangeListeners ------------------
 
@@ -183,7 +183,7 @@ public class GnucashWritableObjectHelper implements GnucashWritableObject {
 	/**
 	 *
 	 */
-	public GnucashWritableObjectHelper() {
+	public GnucashWritableObjectImpl() {
 		super();
 		// TODO implement constructor for GnucashWritableObjectHelper
 	}

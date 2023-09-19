@@ -39,10 +39,10 @@ import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableTransaction;
-import org.gnucash.write.impl.GnucashFileWritingImpl;
-import org.gnucash.write.impl.GnucashGenerInvoiceWritingImpl;
-import org.gnucash.write.impl.GnucashTransactionSplitWritingImpl;
-import org.gnucash.write.impl.GnucashTransactionWritingImpl;
+import org.gnucash.write.impl.GnucashWritableFileImpl;
+import org.gnucash.write.impl.GnucashWritableGenerInvoiceImpl;
+import org.gnucash.write.impl.GnucashWritableTransactionSplitImpl;
+import org.gnucash.write.impl.GnucashWritableTransactionImpl;
 import org.gnucash.write.spec.GnucashWritableVendorBill;
 import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
 import org.gnucash.write.spec.GnucashWritableVendorEntry;
@@ -52,7 +52,7 @@ import jakarta.xml.bind.JAXBElement;
 /**
  * TODO write a comment what this type does here
  */
-public class GnucashVendorBillWritingImpl extends GnucashGenerInvoiceWritingImpl 
+public class GnucashVendorBillWritingImpl extends GnucashWritableGenerInvoiceImpl 
                                           implements GnucashWritableVendorBill
 {
 
@@ -71,7 +71,7 @@ public class GnucashVendorBillWritingImpl extends GnucashGenerInvoiceWritingImpl
 	 * @param file the file we are associated with.
 	 */
 	protected GnucashVendorBillWritingImpl(
-			final GnucashFileWritingImpl file,
+			final GnucashWritableFileImpl file,
 			final String internalID,
 			final String invoiceNumber,
 			final GnucashGenerJob job,
@@ -133,7 +133,7 @@ public class GnucashVendorBillWritingImpl extends GnucashGenerInvoiceWritingImpl
 
 	/**
 	 * Called by
-	 * ${@link GnucashVendorBillEntryWritingImpl#createInvoiceEntry(GnucashGenerInvoiceWritingImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
+	 * ${@link GnucashVendorBillEntryWritingImpl#createInvoiceEntry(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
 	 *
 	 * @param entry the entry to add to our internal list of vendor-bill-entries
 	 * @throws WrongInvoiceTypeException 
