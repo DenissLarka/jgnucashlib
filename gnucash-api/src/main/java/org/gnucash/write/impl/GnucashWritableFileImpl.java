@@ -49,7 +49,7 @@ import org.gnucash.write.GnucashWritableGenerJob;
 import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.write.GnucashWritableVendor;
-import org.gnucash.write.impl.spec.GnucashCustomerJobWritingImpl;
+import org.gnucash.write.impl.spec.GnucashWritableCustomerJobImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -548,7 +548,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	 */
 	@Override
 	protected GnucashCustomerJobImpl createGenerJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
-		GnucashCustomerJobImpl job = new GnucashCustomerJobWritingImpl(jwsdpjob, this);
+		GnucashCustomerJobImpl job = new GnucashWritableCustomerJobImpl(jwsdpjob, this);
 		return job;
 	}
 
@@ -1345,7 +1345,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 		if (customer == null) {
 			throw new IllegalArgumentException("null customer given");
 		}
-		GnucashCustomerJobWritingImpl w = new GnucashCustomerJobWritingImpl(this, id, customer);
+		GnucashWritableCustomerJobImpl w = new GnucashWritableCustomerJobImpl(this, id, customer);
 		super.jobID2job.put(w.getId(), w);
 		return w;
 	}
@@ -1355,7 +1355,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	 */
 	public void removeJob(final GnucashWritableGenerJob impl) {
 		jobID2job.remove(impl.getId());
-		getRootElement().getGncBook().getBookElements().remove(((GnucashCustomerJobWritingImpl) impl).getJwsdpPeer());
+		getRootElement().getGncBook().getBookElements().remove(((GnucashWritableCustomerJobImpl) impl).getJwsdpPeer());
 		setModified(true);
 	}
 
