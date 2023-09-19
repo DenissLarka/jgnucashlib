@@ -95,7 +95,7 @@
       </slot>
       <slot>
         <slot:key>gncJob</slot:key>
-        <slot:value type="integer">0</slot:value>
+        <slot:value type="integer">2</slot:value>
       </slot>
       <slot>
         <slot:key>gncOrder</slot:key>
@@ -221,6 +221,7 @@
 <gnc:count-data cd:type="gnc:GncCustomer">3</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncEntry">8</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncInvoice">4</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncTaxTable">2</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncVendor">3</gnc:count-data>
 <gnc:commodity version="2.0.0">
@@ -2867,6 +2868,26 @@
     <cmdty:id>EUR</cmdty:id>
   </invoice:currency>
 </gnc:GncInvoice>
+<gnc:GncJob version="2.0.0">
+  <job:guid type="guid">028cfb5993ef4d6b83206bc844e2fe56</job:guid>
+  <job:id>000002</job:id>
+  <job:name>Let's buy help</job:name>
+  <job:owner version="2.0.0">
+    <owner:type>gncVendor</owner:type>
+    <owner:id type="guid">4f16fd55c0d64ebe82ffac0bb25fe8f5</owner:id>
+  </job:owner>
+  <job:active>1</job:active>
+</gnc:GncJob>
+<gnc:GncJob version="2.0.0">
+  <job:guid type="guid">e91b99cd6fbb48a985cbf1e8041f378c</job:guid>
+  <job:id>000001</job:id>
+  <job:name>Do more for others</job:name>
+  <job:owner version="2.0.0">
+    <owner:type>gncCustomer</owner:type>
+    <owner:id type="guid">f44645d2397946bcac90dff68cc03b76</owner:id>
+  </job:owner>
+  <job:active>1</job:active>
+</gnc:GncJob>
 <gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">3c9690f9f31b4cd0baa936048b833c06</taxtable:guid>
   <taxtable:name>UStd_Std</taxtable:name>
