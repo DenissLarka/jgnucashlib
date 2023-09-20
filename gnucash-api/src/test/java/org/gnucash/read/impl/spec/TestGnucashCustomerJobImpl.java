@@ -1,4 +1,4 @@
-package org.gnucash.read.impl;
+package org.gnucash.read.impl.spec;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,18 +7,19 @@ import java.io.InputStream;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.impl.GnucashFileImpl;
+import org.gnucash.read.impl.TestGnucashGenerJobImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashGenerJobImpl
+public class TestGnucashCustomerJobImpl
 {
   private static GnucashFile     gcshFile = null;
   private static GnucashGenerJob job = null;
   
-  public static final String JOB_1_ID = "e91b99cd6fbb48a985cbf1e8041f378c";
-  public static final String JOB_2_ID = "028cfb5993ef4d6b83206bc844e2fe56";
+  private static final String JOB_1_ID = TestGnucashGenerJobImpl.JOB_1_ID;
 
   // -----------------------------------------------------------------
   
@@ -30,7 +31,7 @@ public class TestGnucashGenerJobImpl
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashGenerJobImpl.class);  
+    return new JUnit4TestAdapter(TestGnucashCustomerJobImpl.class);  
   }
   
   @Before
@@ -64,24 +65,12 @@ public class TestGnucashGenerJobImpl
   // -----------------------------------------------------------------
 
   @Test
-  public void test01_1() throws Exception
+  public void test01() throws Exception
   {
     job = gcshFile.getJobByID(JOB_1_ID);
     
     assertEquals(JOB_1_ID, job.getId());
     assertEquals("000001", job.getNumber());
-    assertEquals(GnucashGenerJob.TYPE_CUSTOMER, job.getOwnerType());
     assertEquals("Do more for others", job.getName());
-  }
-
-  @Test
-  public void test01_2() throws Exception
-  {
-    job = gcshFile.getJobByID(JOB_2_ID);
-    
-    assertEquals(JOB_2_ID, job.getId());
-    assertEquals("000002", job.getNumber());
-    assertEquals(GnucashGenerJob.TYPE_VENDOR, job.getOwnerType());
-    assertEquals("Let's buy help", job.getName());
   }
 }

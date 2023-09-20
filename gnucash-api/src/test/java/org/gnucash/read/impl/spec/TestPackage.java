@@ -16,6 +16,8 @@ public class TestPackage extends TestCase
   {
     TestSuite suite = new TestSuite();
     
+    suite.addTest(org.gnucash.read.impl.spec.TestGnucashCustomerJobImpl.suite());
+    suite.addTest(org.gnucash.read.impl.spec.TestGnucashVendorJobImpl.suite());
     suite.addTest(org.gnucash.read.impl.spec.TestGnucashCustomerInvoiceImpl.suite());
     suite.addTest(org.gnucash.read.impl.spec.TestGnucashVendorBillImpl.suite());
 
