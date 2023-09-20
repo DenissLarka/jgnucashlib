@@ -1421,7 +1421,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 
 		for (GnucashGenerJob gnucashJob : jobID2job.values()) {
 			GnucashWritableGenerJob job = (GnucashWritableGenerJob) gnucashJob;
-			if (job.getJobNumber().equals(jnr)) {
+			if (job.getNumber().equals(jnr)) {
 				return job;
 			}
 		}

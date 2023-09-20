@@ -54,7 +54,7 @@ public interface GnucashGenerJob {
 	 *
 	 * @return the user-defines number of this job (may contain non-digits)
 	 */
-	String getJobNumber();
+	String getNumber();
 
 	/**
 	 *

@@ -99,7 +99,7 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
     /**
      * {@inheritDoc}
      */
-    public String getJobNumber() {
+    public String getNumber() {
         return jwsdpPeer.getJobId();
     }
 
