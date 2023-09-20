@@ -1,11 +1,11 @@
 package org.gnucash.read.spec;
 
+import java.util.Collection;
+
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerJob;
 
 public interface GnucashCustomerJob extends GnucashGenerJob {
-
-	String getCustomerType();
 
 	/**
 	 *
@@ -19,4 +19,11 @@ public interface GnucashCustomerJob extends GnucashGenerJob {
 	 * @see #getCustomer()
 	 */
 	String getCustomerId();
+	
+	// -----------------------------------------------------------
+	
+	Collection<GnucashJobInvoice> getInvoices() throws WrongInvoiceTypeException;
+
+	public void addInvoice(final GnucashJobInvoice invc);
+	
 }

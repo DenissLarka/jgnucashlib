@@ -74,7 +74,7 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 	 * @see GnucashWritableVendorJob#remove()
 	 */
 	public void remove() {
-		if (!getInvoices().isEmpty()) {
+		if (!getGenerInvoices().isEmpty()) {
 			throw new IllegalStateException("cannot remove a job that has invoices!");
 		}
 		GnucashWritableFileImpl writableFile = (GnucashWritableFileImpl) getFile();
@@ -174,7 +174,7 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 	 * @see GnucashWritableVendorJob#setVendor(GnucashVendor)
 	 */
 	public void setVendor(final GnucashVendor vendor) {
-		if (!getInvoices().isEmpty()) {
+		if (!getGenerInvoices().isEmpty()) {
 			throw new IllegalStateException("cannot change vendor of a job that has invoices!");
 		}
 

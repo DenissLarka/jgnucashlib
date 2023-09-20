@@ -2,6 +2,8 @@ package org.gnucash.read;
 
 import java.util.Collection;
 
+import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.read.aux.GCshOwner;
 
 
@@ -26,14 +28,23 @@ public interface GnucashGenerJob {
    * @deprecated Use {@link GCshOwner#TYPE_EMPLOYEE} instead
    */
   public static final String TYPE_EMPLOYEE = GCshOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
+  /**
+   * @deprecated Use {@link GCshOwner#TYPE_JOB} instead
+   */
+  public static final String TYPE_JOB      = GCshOwner.TYPE_JOB;
   
-  // -----------------------------------------------------------------
+  	// -----------------------------------------------------------------
+
+  	@SuppressWarnings("exports")
+  	GncV2.GncBook.GncGncJob getJwsdpPeer();
 
 	/**
 	 * The gnucash-file is the top-level class to contain everything.
 	 * @return the file we are associated with
 	 */
 	GnucashFile getFile();
+
+	// -----------------------------------------------------------------
 
 	/**
 	 * @return the unique-id to identify this object with across name- and hirarchy-changes
@@ -43,7 +54,7 @@ public interface GnucashGenerJob {
 	/**
 	 * @return all invoices that refer to this job.
 	 */
-	Collection<GnucashGenerInvoice> getInvoices();
+	Collection<GnucashGenerInvoice> getGenerInvoices();
 
 	/**
 	 * @return true if the job is still active

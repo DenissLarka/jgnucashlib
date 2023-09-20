@@ -325,7 +325,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
         if ( jwsdpPeer.getEntryITaxtable() != null ) {
           if ( ! jwsdpPeer.getEntryITaxtable().getType().equals("guid") ) {
-			System.err.println("Customer invoice entry with id '"
+              LOGGER.error("Customer invoice entry with id '"
 					+ getId()
 					+ "' has i-taxtable with type='"
 					+ jwsdpPeer.getEntryITaxtable().getType()
@@ -337,7 +337,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
         try {
           taxtable = getInvcTaxTable();
         } catch ( NoTaxTableFoundException exc ) {
-          System.err.println("Customer invoice entry with id '"
+          LOGGER.error("Customer invoice entry with id '"
               + getId()
               + "' is taxable but JWSDP peer has no i-taxtable-entry! "
               + "Assuming 0%");
@@ -345,7 +345,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
         }
 
 		if (taxtable == null) {
-			System.err.println("Customer invoice entry with id '"
+		    LOGGER.error("Customer invoice entry with id '"
 					+ getId()
 					+ "' is taxable but has an unknown i-taxtable! "
 					+ "Assuming 19%");
@@ -354,7 +354,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
 		GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
 		if (!taxTableEntry.getType().equals(GCshTaxTableEntry.TYPE_PERCENT)) {
-			System.err.println("Customer invoice entry with id '"
+		    LOGGER.error("Customer invoice entry with id '"
 					+ getId()
 					+ "' is taxable but has a i-taxtable "
 					+ "that is not in percent but in '"
@@ -381,7 +381,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
         if ( jwsdpPeer.getEntryBTaxtable() != null ) {
           if ( ! jwsdpPeer.getEntryBTaxtable().getType().equals("guid") ) {
-            System.err.println("Vendor bill entry with id '"
+              LOGGER.error("Vendor bill entry with id '"
                     + getId()
                     + "' has b-taxtable with type='"
                     + jwsdpPeer.getEntryBTaxtable().getType()
@@ -393,7 +393,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
         try {
           taxtable = getBillTaxTable();
         } catch ( NoTaxTableFoundException exc ) {
-          System.err.println("Vendor bill entry with id '"
+            LOGGER.error("Vendor bill entry with id '"
               + getId()
               + "' is taxable but JWSDP peer has no b-taxtable-entry! "
               + "Assuming 0%");
@@ -401,7 +401,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
         }
 
         if (taxtable == null) {
-            System.err.println("Vendor bill entry with id '"
+            LOGGER.error("Vendor bill entry with id '"
                     + getId()
                     + "' is taxable but has an unknown b-taxtable! "
                     + "Assuming 19%");
@@ -410,7 +410,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
         GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
         if (!taxTableEntry.getType().equals(GCshTaxTableEntry.TYPE_PERCENT)) {
-            System.err.println("Vendor bill entry with id '"
+            LOGGER.error("Vendor bill entry with id '"
                     + getId()
                     + "' is taxable but has a b-taxtable "
                     + "that is not in percent but in '"

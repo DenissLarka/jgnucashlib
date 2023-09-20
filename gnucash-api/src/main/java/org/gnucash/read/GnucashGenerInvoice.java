@@ -36,6 +36,10 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
    * @deprecated Use {@link GCshOwner#TYPE_EMPLOYEE} instead
    */
   public static final String TYPE_EMPLOYEE = GCshOwner.TYPE_EMPLOYEE; // Not used yet, for future releases
+  /**
+   * @deprecated Use {@link GCshOwner#TYPE_JOB} instead
+   */
+  public static final String TYPE_JOB      = GCshOwner.TYPE_JOB;
   
   // ------------------------------
 
@@ -135,7 +139,7 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
 	/**
 	 * @return the job this invoice is for
 	 */
-	GnucashGenerJob getJob();
+	GnucashGenerJob getGenerJob();
 	
 	// ---------------------------------------------------------------
 

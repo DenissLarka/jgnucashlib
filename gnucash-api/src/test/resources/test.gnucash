@@ -75,7 +75,7 @@
     <slot:value type="frame">
       <slot>
         <slot:key>gncBill</slot:key>
-        <slot:value type="integer">0</slot:value>
+        <slot:value type="integer">1</slot:value>
       </slot>
       <slot>
         <slot:key>gncCustomer</slot:key>
@@ -219,8 +219,8 @@
 <gnc:count-data cd:type="price">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncBillTerm">1</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncCustomer">3</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncEntry">8</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncInvoice">4</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncEntry">13</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncInvoice">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncTaxTable">2</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncVendor">3</gnc:count-data>
@@ -2635,6 +2635,26 @@
   <entry:b-pay>CASH</entry:b-pay>
 </gnc:GncEntry>
 <gnc:GncEntry version="2.0.0">
+  <entry:guid type="guid">2a3b269cbf604076b4438c2b62817b53</entry:guid>
+  <entry:date>
+    <ts:date>2023-09-20 10:00:00 +0000</ts:date>
+  </entry:date>
+  <entry:entered>
+    <ts:date>2023-09-20 14:01:35 +0000</ts:date>
+  </entry:entered>
+  <entry:description>Item 1</entry:description>
+  <entry:action>Auftrag</entry:action>
+  <entry:qty>1/1</entry:qty>
+  <entry:b-acct type="guid">16305960bddc463aa18212dd4f230d4d</entry:b-acct>
+  <entry:b-price>920/1</entry:b-price>
+  <entry:bill type="guid">169331c9860642cf84b04f3e3151058a</entry:bill>
+  <entry:billable>0</entry:billable>
+  <entry:b-taxable>1</entry:b-taxable>
+  <entry:b-taxincluded>0</entry:b-taxincluded>
+  <entry:b-pay>CASH</entry:b-pay>
+  <entry:b-taxtable type="guid">3c9690f9f31b4cd0baa936048b833c06</entry:b-taxtable>
+</gnc:GncEntry>
+<gnc:GncEntry version="2.0.0">
   <entry:guid type="guid">3c67a99b5fe34387b596bb1fbab21a74</entry:guid>
   <entry:date>
     <ts:date>2023-08-30 10:00:00 +0000</ts:date>
@@ -2712,6 +2732,26 @@
   <entry:i-taxincluded>0</entry:i-taxincluded>
 </gnc:GncEntry>
 <gnc:GncEntry version="2.0.0">
+  <entry:guid type="guid">993eae09ce664094adf63b85509de2bc</entry:guid>
+  <entry:date>
+    <ts:date>2023-09-20 10:00:00 +0000</ts:date>
+  </entry:date>
+  <entry:entered>
+    <ts:date>2023-09-20 10:32:01 +0000</ts:date>
+  </entry:entered>
+  <entry:description>Item 3</entry:description>
+  <entry:action>Material</entry:action>
+  <entry:qty>40/1</entry:qty>
+  <entry:i-acct type="guid">3a4fe87c83ac4a1ba8c4d851ccd4d940</entry:i-acct>
+  <entry:i-price>30/1</entry:i-price>
+  <entry:invoice type="guid">b1e981f796b94ca0b17a9dccb91fedc0</entry:invoice>
+  <entry:i-disc-type>PERCENT</entry:i-disc-type>
+  <entry:i-disc-how>PRETAX</entry:i-disc-how>
+  <entry:i-taxable>1</entry:i-taxable>
+  <entry:i-taxincluded>0</entry:i-taxincluded>
+  <entry:i-taxtable type="guid">3c9690f9f31b4cd0baa936048b833c06</entry:i-taxtable>
+</gnc:GncEntry>
+<gnc:GncEntry version="2.0.0">
   <entry:guid type="guid">99b0115f9e804cf485976c4c94d70cb7</entry:guid>
   <entry:date>
     <ts:date>2023-08-13 10:00:00 +0000</ts:date>
@@ -2770,6 +2810,69 @@
   <entry:b-pay>CASH</entry:b-pay>
   <entry:b-taxtable type="guid">cba6011c826f426fbc4a1a72c3d6c8ee</entry:b-taxtable>
 </gnc:GncEntry>
+<gnc:GncEntry version="2.0.0">
+  <entry:guid type="guid">eb5eb3b7c1e34965b36fb6d5af183e82</entry:guid>
+  <entry:date>
+    <ts:date>2023-09-20 10:00:00 +0000</ts:date>
+  </entry:date>
+  <entry:entered>
+    <ts:date>2023-09-20 10:31:16 +0000</ts:date>
+  </entry:entered>
+  <entry:description>Item 2</entry:description>
+  <entry:action>Stunden</entry:action>
+  <entry:qty>5/1</entry:qty>
+  <entry:i-acct type="guid">690f25c6ef0649cba836529ba6724f78</entry:i-acct>
+  <entry:i-price>95/1</entry:i-price>
+  <entry:invoice type="guid">b1e981f796b94ca0b17a9dccb91fedc0</entry:invoice>
+  <entry:i-disc-type>PERCENT</entry:i-disc-type>
+  <entry:i-disc-how>PRETAX</entry:i-disc-how>
+  <entry:i-taxable>1</entry:i-taxable>
+  <entry:i-taxincluded>0</entry:i-taxincluded>
+  <entry:i-taxtable type="guid">3c9690f9f31b4cd0baa936048b833c06</entry:i-taxtable>
+</gnc:GncEntry>
+<gnc:GncEntry version="2.0.0">
+  <entry:guid type="guid">fa483972d10a4ce0abf2a7e1319706e7</entry:guid>
+  <entry:date>
+    <ts:date>2023-09-20 10:00:00 +0000</ts:date>
+  </entry:date>
+  <entry:entered>
+    <ts:date>2023-09-20 10:30:51 +0000</ts:date>
+  </entry:entered>
+  <entry:description>Item 1</entry:description>
+  <entry:action>Auftrag</entry:action>
+  <entry:qty>1/1</entry:qty>
+  <entry:i-acct type="guid">690f25c6ef0649cba836529ba6724f78</entry:i-acct>
+  <entry:i-price>2450/1</entry:i-price>
+  <entry:invoice type="guid">b1e981f796b94ca0b17a9dccb91fedc0</entry:invoice>
+  <entry:i-disc-type>PERCENT</entry:i-disc-type>
+  <entry:i-disc-how>PRETAX</entry:i-disc-how>
+  <entry:i-taxable>1</entry:i-taxable>
+  <entry:i-taxincluded>0</entry:i-taxincluded>
+  <entry:i-taxtable type="guid">3c9690f9f31b4cd0baa936048b833c06</entry:i-taxtable>
+</gnc:GncEntry>
+<gnc:GncInvoice version="2.0.0">
+  <invoice:guid type="guid">169331c9860642cf84b04f3e3151058a</invoice:guid>
+  <invoice:id>000001</invoice:id>
+  <invoice:owner version="2.0.0">
+    <owner:type>gncJob</owner:type>
+    <owner:id type="guid">028cfb5993ef4d6b83206bc844e2fe56</owner:id>
+  </invoice:owner>
+  <invoice:opened>
+    <ts:date>2023-09-20 10:59:00 +0000</ts:date>
+  </invoice:opened>
+  <invoice:notes>With vendor job / with taxes</invoice:notes>
+  <invoice:active>1</invoice:active>
+  <invoice:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </invoice:currency>
+  <invoice:slots>
+    <slot>
+      <slot:key>credit-note</slot:key>
+      <slot:value type="integer">0</slot:value>
+    </slot>
+  </invoice:slots>
+</gnc:GncInvoice>
 <gnc:GncInvoice version="2.0.0">
   <invoice:guid type="guid">286fc2651a7848038a23bb7d065c8b67</invoice:guid>
   <invoice:id>2740921</invoice:id>
@@ -2846,6 +2949,29 @@
   </invoice:slots>
 </gnc:GncInvoice>
 <gnc:GncInvoice version="2.0.0">
+  <invoice:guid type="guid">b1e981f796b94ca0b17a9dccb91fedc0</invoice:guid>
+  <invoice:id>R94871</invoice:id>
+  <invoice:owner version="2.0.0">
+    <owner:type>gncJob</owner:type>
+    <owner:id type="guid">e91b99cd6fbb48a985cbf1e8041f378c</owner:id>
+  </invoice:owner>
+  <invoice:opened>
+    <ts:date>2023-09-20 10:59:00 +0000</ts:date>
+  </invoice:opened>
+  <invoice:notes>With job / with taxes</invoice:notes>
+  <invoice:active>1</invoice:active>
+  <invoice:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </invoice:currency>
+  <invoice:slots>
+    <slot>
+      <slot:key>credit-note</slot:key>
+      <slot:value type="integer">0</slot:value>
+    </slot>
+  </invoice:slots>
+</gnc:GncInvoice>
+<gnc:GncInvoice version="2.0.0">
   <invoice:guid type="guid">d9967c10fdf1465e9394a3e4b1e7bd79</invoice:guid>
   <invoice:id>R1730</invoice:id>
   <invoice:owner version="2.0.0">
@@ -2891,7 +3017,7 @@
 <gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">3c9690f9f31b4cd0baa936048b833c06</taxtable:guid>
   <taxtable:name>UStd_Std</taxtable:name>
-  <taxtable:refcount>0</taxtable:refcount>
+  <taxtable:refcount>4</taxtable:refcount>
   <taxtable:invisible>0</taxtable:invisible>
   <taxtable:child type="guid">cba6011c826f426fbc4a1a72c3d6c8ee</taxtable:child>
   <taxtable:entries>

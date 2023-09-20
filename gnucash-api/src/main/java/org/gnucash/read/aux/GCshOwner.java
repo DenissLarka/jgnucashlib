@@ -16,6 +16,7 @@ public interface GCshOwner {
     public static final String TYPE_CUSTOMER = "gncCustomer";
     public static final String TYPE_VENDOR   = "gncVendor";
     public static final String TYPE_EMPLOYEE = "gncEmployee"; // Not used yet, for future releases
+    public static final String TYPE_JOB      = "gncJob";
     
     public static final String TYPE_UNSET    = "UNSET";
     

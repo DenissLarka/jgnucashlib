@@ -66,7 +66,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 
 		String lot = getLotID();
 		if ( lot != null ) {
-			for ( GnucashGenerInvoice invc : getTransaction().getGnucashFile().getInvoices() ) {
+			for ( GnucashGenerInvoice invc : getTransaction().getGnucashFile().getGenerInvoices() ) {
 				String lotID = invc.getLotID();
 				if ( lotID != null &&
                      lotID.equals(lot) ) {

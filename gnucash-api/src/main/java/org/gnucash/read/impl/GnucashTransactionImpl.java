@@ -72,7 +72,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 		jwsdpPeer = peer;
 		file = gncFile;
 
-		for (GnucashGenerInvoice invc : getInvoices()) {
+		for (GnucashGenerInvoice invc : getGenerInvoices()) {
 			invc.addTransaction(this);
 		}
 
@@ -97,7 +97,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
       jwsdpPeer = trx.getJwsdpPeer();
       file = trx.getGnucashFile();
 
-      for (GnucashGenerInvoice invc : getInvoices()) {
+      for (GnucashGenerInvoice invc : getGenerInvoices()) {
           invc.addTransaction(this);
       }
 
@@ -217,7 +217,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	/**
 	 * @return the invoices this transaction belongs to (not payments but the transaction belonging to handing out the invoice)
 	 */
-	public Collection<GnucashGenerInvoice> getInvoices() {
+	public Collection<GnucashGenerInvoice> getGenerInvoices() {
 		Collection<String> invoiceIDs = getInvoiceIDs();
 		List<GnucashGenerInvoice> retval = new ArrayList<GnucashGenerInvoice>(invoiceIDs.size());
 

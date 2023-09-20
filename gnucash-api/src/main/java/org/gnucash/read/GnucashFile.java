@@ -149,14 +149,14 @@ public interface GnucashFile extends GnucashObject {
 	 * @see #getGenerInvoiceByID(String)
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
-	Collection<GnucashGenerInvoice> getInvoices();
+	Collection<GnucashGenerInvoice> getGenerInvoices();
 
 	/**
 	 * @return a (possibly read-only) collection of all invoices that are fully Paid
 	 * Do not modify the returned collection!
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getUnpaidInvoices()
-	 * @see #getInvoices()
+	 * @see #getGenerInvoices()
 	 * @see #getGenerInvoiceByID(String)
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
@@ -167,7 +167,7 @@ public interface GnucashFile extends GnucashObject {
 	 * Do not modify the returned collection!
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getPaidInvoices()
-	 * @see #getInvoices()
+	 * @see #getGenerInvoices()
 	 * @see #getGenerInvoiceByID(String)
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
@@ -182,7 +182,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
-     * @see #getInvoices()
+     * @see #getGenerInvoices()
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
@@ -195,7 +195,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
-     * @see #getInvoices()
+     * @see #getGenerInvoices()
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
@@ -208,7 +208,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
-     * @see #getInvoices()
+     * @see #getGenerInvoices()
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
@@ -221,7 +221,7 @@ public interface GnucashFile extends GnucashObject {
 	 * Do not modify the returned collection!
 	 * @throws WrongInvoiceTypeException 
 	 * @see #getPaidInvoices()
-	 * @see #getInvoices()
+	 * @see #getGenerInvoices()
 	 * @see #getGenerInvoiceByID(String)
 	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
 	 */
@@ -236,7 +236,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
-     * @see #getInvoices()
+     * @see #getGenerInvoices()
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
@@ -249,7 +249,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
-     * @see #getInvoices()
+     * @see #getGenerInvoices()
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
@@ -262,7 +262,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
-     * @see #getInvoices()
+     * @see #getGenerInvoices()
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
@@ -275,7 +275,7 @@ public interface GnucashFile extends GnucashObject {
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
-     * @see #getInvoices()
+     * @see #getGenerInvoices()
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */

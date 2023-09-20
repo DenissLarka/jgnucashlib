@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -101,12 +102,21 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
     
     jwsdpPeer = peer;
     file = gncFile;
+  }
 
+  // Copy-constructor
+  public GnucashGenerInvoiceImpl(final GnucashGenerInvoice invc)
+  {
+    super();
+    
+    this.jwsdpPeer = invc.getJwsdpPeer();
+    this.file      = invc.getFile();
   }
 
   // -----------------------------------------------------------------
 
-  /**
+
+/**
    * @return getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes())
    * @throws WrongInvoiceTypeException
    * @see GnucashGenerInvoice#isNotInvcFullyPaid()
@@ -511,7 +521,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	/**
 	 * {@inheritDoc}
 	 */
-	public GnucashGenerJob getJob() {
+	public GnucashGenerJob getGenerJob() {
 		return file.getJobByID(getJobID());
 	}
 
@@ -526,7 +536,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	 * {@inheritDoc}
 	 */
 	public String getJobType() {
-		return getJob().getOwnerType();
+		return getGenerJob().getOwnerType();
 	}
 
 	/**
@@ -702,7 +712,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
     }
 
     protected String getOwnerId_viaJob() {
-        return getJob().getOwnerId();
+        return getGenerJob().getOwnerId();
     }
 
     public String getOwnerType() {

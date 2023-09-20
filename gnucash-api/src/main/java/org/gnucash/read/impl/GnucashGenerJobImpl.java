@@ -7,6 +7,7 @@ import java.util.List;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,20 +42,20 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
     }
 
     /**
+    *
+    * @return The JWSDP-Object we are wrapping.
+    */
+    @SuppressWarnings("exports")
+    public GncV2.GncBook.GncGncJob getJwsdpPeer() {
+	return jwsdpPeer;
+    }
+
+    /**
      * The gnucash-file is the top-level class to contain everything.
      * @return the file we are associated with
      */
     public GnucashFile getFile() {
         return file;
-    }
-
-    /**
-     *
-     * @return The JWSDP-Object we are wrapping.
-     */
-    @SuppressWarnings("exports")
-    public GncV2.GncBook.GncGncJob getJwsdpPeer() {
-        return jwsdpPeer;
     }
 
 
@@ -72,21 +73,6 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
         }
 
          return guid;
-    }
-
-    /**
-     * @return all invoices that refer to this job.
-     * @see GnucashGenerJob#getInvoices()
-     */
-    public Collection<GnucashGenerInvoice> getInvoices() {
-        List<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
-        for (GnucashGenerInvoice invoice : getFile().getInvoices()) {
-            if (invoice.getJobID().equals(getId())) {
-                retval.add(invoice);
-            }
-        }
-
-        return retval;
     }
 
     /**
@@ -126,4 +112,31 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
         assert jwsdpPeer.getJobOwner().getOwnerId().getType().equals("guid");
         return jwsdpPeer.getJobOwner().getOwnerId().getValue();
     }
+    
+    // ---------------------------------------------------------------
+    
+    /**
+     * @return all invoices that refer to this job.
+     * @see GnucashGenerJob#getGenerInvoices()
+     */
+    public Collection<GnucashGenerInvoice> getGenerInvoices() {
+        List<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
+        for (GnucashGenerInvoice invoice : getFile().getGenerInvoices()) {
+            if (invoice.getJobID().equals(getId())) {
+                retval.add(invoice);
+            }
+        }
+
+        return retval;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addGenerInvoice(final GnucashGenerInvoice invc) {
+        if ( ! getFile().getGenerInvoices().contains(invc) ) {
+            getFile().getGenerInvoices().add(new GnucashGenerInvoiceImpl(invc));
+        }
+    }
+
 }

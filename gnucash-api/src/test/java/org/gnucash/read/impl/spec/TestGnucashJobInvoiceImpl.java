@@ -13,20 +13,20 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.TestGnucashGenerInvoiceImpl;
-import org.gnucash.read.spec.GnucashCustomerInvoice;
-import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
+import org.gnucash.read.spec.GnucashJobInvoice;
+import org.gnucash.read.spec.GnucashJobInvoiceEntry;
 import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashCustomerInvoiceImpl
+public class TestGnucashJobInvoiceImpl
 {
-  private static GnucashFile            gcshFile = null;
+  private static GnucashFile         gcshFile = null;
   private static GnucashGenerInvoice invcGen = null;
-  private static GnucashCustomerInvoice invcSpec = null;
+  private static GnucashJobInvoice   invcSpec = null;
   
-  private static final String INVC_1_ID = TestGnucashGenerInvoiceImpl.INVC_1_ID;
+  private static final String INVC_3_ID = TestGnucashGenerInvoiceImpl.INVC_3_ID;
   
   // -----------------------------------------------------------------
   
@@ -38,7 +38,7 @@ public class TestGnucashCustomerInvoiceImpl
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashCustomerInvoiceImpl.class);  
+    return new JUnit4TestAdapter(TestGnucashJobInvoiceImpl.class);  
   }
   
   @Before
@@ -74,66 +74,71 @@ public class TestGnucashCustomerInvoiceImpl
   @Test
   public void test01_1() throws Exception
   {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
-    invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+    invcSpec = new GnucashJobInvoiceImpl(invcGen);
     
-    assertEquals(true, invcSpec instanceof GnucashCustomerInvoiceImpl);
-    assertEquals(INVC_1_ID, invcSpec.getId());
-    assertEquals("gncCustomer", invcSpec.getOwnerType());
-    assertEquals("R1730", invcSpec.getNumber());
-    assertEquals("Alles ohne Steuern / voll bezahlt", invcSpec.getDescription());
+    assertEquals(true, invcSpec instanceof GnucashJobInvoiceImpl);
+    assertEquals(INVC_3_ID, invcSpec.getId());
+    assertEquals("gncJob", invcSpec.getOwnerType());
+    assertEquals("R94871", invcSpec.getNumber());
+    assertEquals("With job / with taxes", invcSpec.getDescription());
 
-    assertEquals("2023-07-29T10:59Z", invcSpec.getDateOpened().toString());
-    assertEquals("2023-07-29T10:59Z", invcSpec.getDatePosted().toString());
+    assertEquals("2023-09-20T10:59Z", invcSpec.getDateOpened().toString());
+    assertEquals("2023-09-20T10:59Z", invcSpec.getDatePosted().toString());
   }
 
   @Test
   public void test02_1() throws Exception
   {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
-    invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+    invcSpec = new GnucashJobInvoiceImpl(invcGen);
 
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(2, invcGen.getGenerInvcEntries().size());
-    assertEquals(2, invcSpec.getGenerInvcEntries().size());
-    assertEquals(2, invcSpec.getEntries().size());
+    assertEquals(3, invcGen.getGenerInvcEntries().size());
+    assertEquals(3, invcSpec.getGenerInvcEntries().size());
+    assertEquals(3, invcSpec.getEntries().size());
 
     TreeSet entrList = new TreeSet(); // sort elements of HashSet
     entrList.addAll(invcSpec.getEntries());
-    assertEquals("92e54c04b66f4682a9afb48e27dfe397", 
-                 ((GnucashCustomerInvoiceEntry) entrList.toArray()[0]).getId());
-    assertEquals("3c67a99b5fe34387b596bb1fbab21a74", 
-                 ((GnucashCustomerInvoiceEntry) entrList.toArray()[1]).getId());
+    assertEquals("fa483972d10a4ce0abf2a7e1319706e7", 
+                 ((GnucashJobInvoiceEntry) entrList.toArray()[0]).getId());
+    assertEquals("eb5eb3b7c1e34965b36fb6d5af183e82", 
+                 ((GnucashJobInvoiceEntry) entrList.toArray()[1]).getId());
+    assertEquals("993eae09ce664094adf63b85509de2bc", 
+                 ((GnucashJobInvoiceEntry) entrList.toArray()[2]).getId());
   }
 
   @Test
   public void test03_1() throws Exception
   {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
-    invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+    invcSpec = new GnucashJobInvoiceImpl(invcGen);
 
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(1327.60, invcGen.getInvcAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(1327.60, invcSpec.getInvcAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    // ::TODO
+//    assertEquals(1327.60, invcGen.getJobAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+//    assertEquals(1327.60, invcSpec.getJobAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(1327.60, invcSpec.getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(1327.60, invcGen.getInvcAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(1327.60, invcSpec.getInvcAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    // ::TODO
+//    assertEquals(1327.60, invcGen.getJobAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+//    assertEquals(1327.60, invcSpec.getJobAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(1327.60, invcSpec.getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
+  // ::TODO
   @Test
   public void test04_1() throws Exception
   {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_1_ID);
-    invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+    invcSpec = new GnucashJobInvoiceImpl(invcGen);
 
     // Note: That the following two return the same result
     // is *not* trivial (in fact, a serious implemetation error was

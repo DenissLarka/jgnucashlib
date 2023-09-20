@@ -1,6 +1,7 @@
 package org.gnucash.read.impl.spec;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 
@@ -9,6 +10,7 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.TestGnucashGenerJobImpl;
+import org.gnucash.read.spec.GnucashCustomerJob;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,8 +18,9 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashCustomerJobImpl
 {
-  private static GnucashFile     gcshFile = null;
-  private static GnucashGenerJob job = null;
+  private static GnucashFile        gcshFile = null;
+  private static GnucashGenerJob    jobGener = null;
+  private static GnucashCustomerJob jobSpec = null;
   
   private static final String JOB_1_ID = TestGnucashGenerJobImpl.JOB_1_ID;
 
@@ -67,10 +70,41 @@ public class TestGnucashCustomerJobImpl
   @Test
   public void test01() throws Exception
   {
-    job = gcshFile.getJobByID(JOB_1_ID);
-    
-    assertEquals(JOB_1_ID, job.getId());
-    assertEquals("000001", job.getNumber());
-    assertEquals("Do more for others", job.getName());
+    jobGener = gcshFile.getJobByID(JOB_1_ID);
+    jobSpec  = new GnucashCustomerJobImpl(jobGener);
+
+    assertTrue(jobSpec instanceof GnucashCustomerJob);
+    assertEquals(JOB_1_ID, jobSpec.getId());
+    assertEquals("000001", jobSpec.getNumber());
+    assertEquals("Do more for others", jobSpec.getName());
+  }
+
+  @Test
+  public void test02() throws Exception
+  {
+    jobGener = gcshFile.getJobByID(JOB_1_ID);
+    jobSpec  = new GnucashCustomerJobImpl(jobGener);
+      
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(1, jobGener.getGenerInvoices().size());
+    assertEquals(1, jobSpec.getGenerInvoices().size());
+    assertEquals(1, jobSpec.getInvoices().size());
+  }
+
+  @Test
+  public void test03() throws Exception
+  {
+    jobGener = gcshFile.getJobByID(JOB_1_ID);
+    jobSpec  = new GnucashCustomerJobImpl(jobGener);
+      
+    // Note: That the following three return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    String custID = "f44645d2397946bcac90dff68cc03b76";
+    assertEquals(custID, jobGener.getOwnerId());
+    assertEquals(custID, jobGener.getOwnerId());
+    assertEquals(custID, jobSpec.getCustomerId());
   }
 }

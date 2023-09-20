@@ -21,7 +21,7 @@ public class TestGnucashGenerInvoiceEntryImpl
   private static final String INVCENTR_1_ID = "513589a11391496cbb8d025fc1e87eaa";
   private static final String INVCENTR_2_ID = "0041b8d397f04ae4a2e9e3c7f991c4ec";
   private static final String INVCENTR_3_ID = "83e78ce224d94c3eafc55e33d3d5f3e6";
-  
+
   // -----------------------------------------------------------------
   
   public static void main(String[] args) throws Exception
@@ -68,7 +68,7 @@ public class TestGnucashGenerInvoiceEntryImpl
   @Test
   public void test01() throws Exception
   {
-    assertEquals(8, gcshFile.getNofEntriesGenerInvoiceEntriesMap());
+    assertEquals(11, gcshFile.getNofEntriesGenerInvoiceEntriesMap());
   }
 
   @Test

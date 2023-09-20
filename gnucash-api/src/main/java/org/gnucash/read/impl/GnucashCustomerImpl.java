@@ -123,7 +123,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 
 		try
 		{
-		  for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+		  for ( GnucashGenerInvoice invcGen : getGnucashFile().getGenerInvoices() ) {
 		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
 		      GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen); 
 		      GnucashCustomer cust = invcSpec.getCustomer(); 
@@ -177,7 +177,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 
         try
         {
-          for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+          for ( GnucashGenerInvoice invcGen : getGnucashFile().getGenerInvoices() ) {
             if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
               GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen); 
               GnucashCustomer cust = invcSpec.getCustomer(); 

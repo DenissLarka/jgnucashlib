@@ -79,19 +79,19 @@ public class TestGnucashFileImpl
   @Test
   public void test04() throws Exception
   {    
-    assertEquals(4, gcshFile.getNofEntriesGenerInvoiceMap());
+    assertEquals(5, gcshFile.getNofEntriesGenerInvoiceMap());
   }
 
   @Test
   public void test05() throws Exception
   {    
-    assertEquals(8, gcshFile.getNofEntriesGenerInvoiceEntriesMap());
+    assertEquals(11, gcshFile.getNofEntriesGenerInvoiceEntriesMap());
   }
 
   @Test
   public void test06() throws Exception
   {    
-    assertEquals(0, gcshFile.getNofEntriesGenerJobMap());
+    assertEquals(2, gcshFile.getNofEntriesGenerJobMap());
   }
 
   @Test

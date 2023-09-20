@@ -105,7 +105,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
 		try
 		{
-		  for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+		  for ( GnucashGenerInvoice invcGen : getGnucashFile().getGenerInvoices() ) {
 		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
 		      GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
 		      GnucashVendor vend = bllSpec.getVendor(); 
@@ -158,7 +158,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
         try
         {
-          for ( GnucashGenerInvoice invcGen : getGnucashFile().getInvoices() ) {
+          for ( GnucashGenerInvoice invcGen : getGnucashFile().getGenerInvoices() ) {
             if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
               GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
               GnucashVendor vend = bllSpec.getVendor(); 

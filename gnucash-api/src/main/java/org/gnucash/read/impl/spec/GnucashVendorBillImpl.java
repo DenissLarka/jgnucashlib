@@ -35,7 +35,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
-    if (! invc.getOwnerType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
+    if ( ! invc.getOwnerType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
     
     for ( GnucashGenerInvoiceEntry entry : invc.getGenerInvcEntries() )
@@ -49,7 +49,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
       {
         String lot = splt.getLotID();
         if ( lot != null ) {
-            for ( GnucashGenerInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
+            for ( GnucashGenerInvoice invc1 : splt.getTransaction().getGnucashFile().getGenerInvoices() ) {
                 String lotID = invc1.getLotID();
                 if ( lotID != null &&
                      lotID.equals(lot) ) {
@@ -87,10 +87,10 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
   }
 
   public GnucashVendor getVendor_viaJob() throws WrongInvoiceTypeException {
-    if ( ! getJob().getOwnerType().equals(GnucashGenerJob.TYPE_VENDOR) )
+    if ( ! getGenerJob().getOwnerType().equals(GnucashGenerJob.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
     
-    return ((GnucashVendorJobImpl) getJob()).getVendor();
+    return ((GnucashVendorJobImpl) getGenerJob()).getVendor();
   }
 
   // ---------------------------------------------------------------

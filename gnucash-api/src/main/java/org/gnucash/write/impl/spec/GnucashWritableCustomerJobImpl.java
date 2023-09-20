@@ -74,7 +74,7 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
 	 * @see GnucashWritableCustomerJob#remove()
 	 */
 	public void remove() {
-		if (!getInvoices().isEmpty()) {
+		if (!getGenerInvoices().isEmpty()) {
 			throw new IllegalStateException("cannot remove a job that has invoices!");
 		}
 		GnucashWritableFileImpl writableFile = (GnucashWritableFileImpl) getFile();
@@ -174,7 +174,7 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
 	 * @see GnucashWritableCustomerJob#setCustomer(GnucashCustomer)
 	 */
 	public void setCustomer(final GnucashCustomer customer) {
-		if (!getInvoices().isEmpty()) {
+		if (!getGenerInvoices().isEmpty()) {
 			throw new IllegalStateException("cannot change customer of a job that has invoices!");
 		}
 

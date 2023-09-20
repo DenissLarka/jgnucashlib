@@ -102,7 +102,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	      {
 	        String lot = splt.getLotID();
 	        if ( lot != null ) {
-	            for ( GnucashGenerInvoice invc1 : splt.getTransaction().getGnucashFile().getInvoices() ) {
+	            for ( GnucashGenerInvoice invc1 : splt.getTransaction().getGnucashFile().getGenerInvoices() ) {
 	                String lotID = invc1.getLotID();
 	                if ( lotID != null &&
 	                     lotID.equals(lot) ) {

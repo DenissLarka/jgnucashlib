@@ -4,17 +4,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
 import org.gnucash.ConstTest;
-import org.gnucash.read.GnucashGenerInvoice;
-import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
+import org.gnucash.read.impl.TestGnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorBillEntry;
 import org.junit.Before;
@@ -28,8 +26,8 @@ public class TestGnucashVendorBillImpl
   private static GnucashGenerInvoice bllGen = null;
   private static GnucashVendorBill      bllSpec = null;
   
-  private static final String BLL_1_ID = "4eb0dc387c3f4daba57b11b2a657d8a4";
-  private static final String BLL_2_ID = "286fc2651a7848038a23bb7d065c8b67";
+  private static final String BLL_1_ID = TestGnucashGenerInvoiceImpl.INVC_4_ID;
+  private static final String BLL_2_ID = TestGnucashGenerInvoiceImpl.INVC_2_ID;
 
   // -----------------------------------------------------------------
   
