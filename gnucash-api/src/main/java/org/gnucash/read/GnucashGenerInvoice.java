@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
+import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.impl.aux.GCshTaxedSumImpl;
@@ -421,5 +422,10 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
     boolean isJobFullyPaid() throws WrongInvoiceTypeException;
 
     boolean isNotJobFullyPaid() throws WrongInvoiceTypeException;
+
+    // ----------------------------
+
+    @SuppressWarnings("exports")
+    InvoiceOwner getOwnerPeerObj();
 
 }

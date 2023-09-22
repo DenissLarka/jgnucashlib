@@ -13,6 +13,7 @@ import java.util.List;
 import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
+import org.gnucash.generated.GncV2.GncBook.GncGncInvoice.InvoiceOwner;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
@@ -1005,6 +1006,14 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 		}
 
 		return currencyFormat;
+	}
+
+	// ---------------------------------------------------------------
+	
+	@SuppressWarnings("exports")
+	@Override
+	public InvoiceOwner getOwnerPeerObj() {
+	    return jwsdpPeer.getInvoiceOwner();
 	}
 
 }

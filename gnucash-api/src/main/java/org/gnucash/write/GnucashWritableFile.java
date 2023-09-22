@@ -112,11 +112,11 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	GnucashWritableAccount getAccountByID(String id);
 
 	/**
-	 * @see GnucashFile#getJobByID(String)
+	 * @see GnucashFile#getGenerJobByID(String)
 	 * @param jobID the id of the job to fetch
 	 * @return A changable version of the job or null of not found.
 	 */
-	GnucashWritableGenerJob getJobByID(String jobID);
+	GnucashWritableGenerJob getGenerJobByID(String jobID);
 
 	/**
 	 * @param jnr the job-number to look for.

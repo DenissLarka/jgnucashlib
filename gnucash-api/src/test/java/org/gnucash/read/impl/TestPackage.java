@@ -27,6 +27,7 @@ public class TestPackage extends TestCase
     suite.addTest(org.gnucash.read.impl.TestGnucashGenerInvoiceImpl.suite());
     suite.addTest(org.gnucash.read.impl.TestGnucashGenerInvoiceEntryImpl.suite());
     
+    suite.addTest(org.gnucash.read.impl.aux.TestPackage.suite());
     suite.addTest(org.gnucash.read.impl.spec.TestPackage.suite());
 
     return suite;

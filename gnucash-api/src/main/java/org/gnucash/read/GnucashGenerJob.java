@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Locale;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncJob.JobOwner;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.spec.GnucashJobInvoice;
@@ -148,5 +149,10 @@ public interface GnucashGenerJob {
     public static String getNewNumber(GnucashCustomer cust) {
 	return cust.getGnucashFile().getNewJobNumber();
     }
+
+    // ---------------------------------------------------------------
+
+    @SuppressWarnings("exports")
+    JobOwner getOwnerPeerObj();
 
 }

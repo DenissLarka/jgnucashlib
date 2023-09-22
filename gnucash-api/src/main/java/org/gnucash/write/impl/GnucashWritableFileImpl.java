@@ -1038,12 +1038,12 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	/**
 	 * @param jobID the id of the job to fetch
 	 * @return A changable version of the job or null of not found.
-	 * @see GnucashFile#getJobByID(String)
-	 * @see GnucashWritableFile#getJobByID(String)
+	 * @see GnucashFile#getGenerJobByID(String)
+	 * @see GnucashWritableFile#getGenerJobByID(String)
 	 */
 	@Override
-	public GnucashWritableGenerJob getJobByID(final String jobID) {
-		return (GnucashWritableGenerJob) super.getJobByID(jobID);
+	public GnucashWritableGenerJob getGenerJobByID(final String jobID) {
+		return (GnucashWritableGenerJob) super.getGenerJobByID(jobID);
 	}
 
 	/**

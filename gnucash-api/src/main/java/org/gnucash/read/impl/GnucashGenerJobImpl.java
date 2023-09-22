@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncGncJob.JobOwner;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
@@ -248,6 +249,14 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
     public static int getHighestNumber(GnucashCustomer cust)
     {
       return cust.getGnucashFile().getHighestJobNumber();
+    }
+
+    // -----------------------------------------------------------------
+
+    @SuppressWarnings("exports")
+    @Override
+    public JobOwner getOwnerPeerObj() {
+	return jwsdpPeer.getJobOwner();
     }
 
 }

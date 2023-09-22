@@ -51,6 +51,8 @@ public class GCshCustomerTermsImpl implements GCshCustomerTerms {
     public GncV2.GncBook.GncGncCustomer.CustTerms getJwsdpPeer() {
 		return jwsdpPeer;
 	}
+	
+	// -----------------------------------------------------------
 
 	public String getType() {
 		return jwsdpPeer.getType();
@@ -59,4 +61,5 @@ public class GCshCustomerTermsImpl implements GCshCustomerTerms {
 	public String getValue() {
 		return jwsdpPeer.getValue();
 	}
+	
 }

@@ -51,6 +51,8 @@ public class GCshVendorTermsImpl implements GCshVendorTerms {
     public GncV2.GncBook.GncGncVendor.VendorTerms getJwsdpPeer() {
 		return jwsdpPeer;
 	}
+	
+	// -----------------------------------------------------------
 
 	public String getType() {
 		return jwsdpPeer.getType();
@@ -59,4 +61,5 @@ public class GCshVendorTermsImpl implements GCshVendorTerms {
 	public String getValue() {
 		return jwsdpPeer.getValue();
 	}
+	
 }

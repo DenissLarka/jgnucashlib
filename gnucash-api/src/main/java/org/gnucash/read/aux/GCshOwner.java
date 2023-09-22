@@ -24,7 +24,7 @@ public interface GCshOwner {
   
     public JIType getJIType();
 
-    public String getType();
+    public String getInvcType() throws WrongOwnerJITypeException;
     
     public String getId() throws OwnerJITypeUnsetException;
     
