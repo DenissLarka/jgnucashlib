@@ -19,6 +19,7 @@ import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
+import org.gnucash.read.spec.SpecInvoiceCommon;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,9 +93,10 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	 * the future are considered Paid.
 	 *
 	 * @return the current number of Unpaid invoices
+	 * @throws WrongInvoiceTypeException 
 	 */
-	public int getNofOpenBills() {
-		return getGnucashFile().getUnpaidBillsForVendor_direct(this).size();
+	public int getNofOpenBills() throws WrongInvoiceTypeException {
+		return getGnucashFile().getUnpaidBillsForVendor(this).size();
 	}
 
 	/**
@@ -105,14 +107,14 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
 		try
 		{
-		  for ( GnucashGenerInvoice invcGen : getGnucashFile().getGenerInvoices() ) {
-		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
-		      GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
+		  for ( GnucashVendorBill bllSpec : getPaidBills() ) {
+//		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
+//		      GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
 		      GnucashVendor vend = bllSpec.getVendor(); 
               if ( vend.getId().equals(this.getId()) ) {
-                retval.add(bllSpec.getAmountWithoutTaxes());
+                retval.add(((SpecInvoiceCommon) bllSpec).getAmountWithoutTaxes());
               }
-            } // if invc type
+//            } // if invc type
 		  } // for
 		}
         catch (WrongInvoiceTypeException e)
@@ -158,14 +160,14 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
         try
         {
-          for ( GnucashGenerInvoice invcGen : getGnucashFile().getGenerInvoices() ) {
-            if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
-              GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
+          for ( GnucashVendorBill bllSpec : getUnpaidBills() ) {
+//            if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
+//              GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
               GnucashVendor vend = bllSpec.getVendor(); 
               if ( vend.getId().equals(this.getId()) ) {
-                retval.add(bllSpec.getAmountUnpaidWithTaxes());
+                retval.add(((SpecInvoiceCommon) bllSpec).getAmountUnpaidWithTaxes());
               }
-            } // if invc type
+//            } // if invc type
           } // for
         }
         catch (WrongInvoiceTypeException e)
@@ -236,25 +238,15 @@ public class GnucashVendorImpl extends GnucashObjectImpl
   // -----------------------------------------------------------------
 
   @Override
-  public Collection<GnucashVendorBill> getPaidBills(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashVendorBill> getPaidBills() throws WrongInvoiceTypeException
   {
-    if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
-      return file.getPaidBillsForVendor_direct(this);
-    else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB ) 
-      return file.getPaidBillsForVendor_viaJob(this);
-
-    return null; // Compiler happy
+      return file.getPaidBillsForVendor(this);
   }
 
   @Override
-  public Collection<GnucashVendorBill> getUnpaidBills(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException
+  public Collection<GnucashVendorBill> getUnpaidBills() throws WrongInvoiceTypeException
   {
-    if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
-      return file.getUnpaidBillsForVendor_direct(this);
-    else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB )
-      return file.getUnpaidBillsForVendor_viaJob(this);
-    
-    return null; // Compiler happy
+      return file.getUnpaidBillsForVendor(this);
   }
 
   // -----------------------------------------------------------------

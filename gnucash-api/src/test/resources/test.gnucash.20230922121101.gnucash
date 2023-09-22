@@ -219,7 +219,7 @@
 <gnc:count-data cd:type="price">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncBillTerm">1</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncCustomer">3</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncEntry">12</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncEntry">13</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncInvoice">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncTaxTable">2</gnc:count-data>

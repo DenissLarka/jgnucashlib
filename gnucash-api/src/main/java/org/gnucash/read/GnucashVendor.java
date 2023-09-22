@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
@@ -25,7 +24,7 @@ public interface GnucashVendor extends GnucashObject {
      * @return the current number of Unpaid invoices
      * @throws WrongInvoiceTypeException 
      */
-    int getNofOpenBills();
+    int getNofOpenBills() throws WrongInvoiceTypeException;
 
     /**
      * @return the sum of payments for invoices to this client
@@ -104,9 +103,9 @@ public interface GnucashVendor extends GnucashObject {
 
     // ----------------------------
 
-    Collection<GnucashVendorBill> getPaidBills(ReadVariant readVar) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getPaidBills() throws WrongInvoiceTypeException;
     
-    Collection<GnucashVendorBill> getUnpaidBills(ReadVariant readVar) throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill> getUnpaidBills() throws WrongInvoiceTypeException;
     
     // ----------------------------
     

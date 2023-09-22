@@ -2,7 +2,6 @@ package org.gnucash.read.spec;
 
 import java.util.Collection;
 
-import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
@@ -26,8 +25,14 @@ public interface GnucashJobInvoice extends GnucashGenerInvoice {
 
     /**
      * @return ID of customer this invoice/bill has been sent to.
+     * 
+     * Note that a job may lead to multiple o no invoices.
+     * (e.g. a monthly payment for a long lasting contract.)
+     * @return the ID of the job this invoice is for.
      */
     String getJobId();
+
+    String getJobType();
 
     /**
      * @return ID of customer this invoice/bill has been sent to.
@@ -41,6 +46,11 @@ public interface GnucashJobInvoice extends GnucashGenerInvoice {
     
     // ----------------------------
 
+    /**
+     * @return the job this invoice is for
+     */
+    GnucashGenerJob getGenerJob();
+	
     /**
      * @return Customer this invoice has been sent to.
      * @throws WrongInvoiceTypeException 
@@ -75,34 +85,4 @@ public interface GnucashJobInvoice extends GnucashGenerInvoice {
 
     void addEntry(final GnucashJobInvoiceEntry entry);
     
-    // ---------------------------------------------------------------
-
-    public FixedPointNumber getAmountUnpaidWithTaxes() throws WrongInvoiceTypeException;
-
-    public FixedPointNumber getAmountPaidWithTaxes() throws WrongInvoiceTypeException;
-
-    public FixedPointNumber getAmountPaidWithoutTaxes() throws WrongInvoiceTypeException;
-
-    public FixedPointNumber getAmountWithTaxes() throws WrongInvoiceTypeException;
-    
-    public FixedPointNumber getAmountWithoutTaxes() throws WrongInvoiceTypeException;
-
-    // ----------------------------
-
-    public String getAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountWithTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
-
-    // ---------------------------------------------------------------
-
-    public boolean isFullyPaid() throws WrongInvoiceTypeException;
-
-    public boolean isNotFullyPaid() throws WrongInvoiceTypeException;
-
 }

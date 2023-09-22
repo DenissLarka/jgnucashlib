@@ -15,6 +15,7 @@ import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.TestGnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
+import org.gnucash.read.spec.SpecInvoiceCommon;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,7 +80,7 @@ public class TestGnucashCustomerInvoiceImpl
     
     assertEquals(true, invcSpec instanceof GnucashCustomerInvoiceImpl);
     assertEquals(INVC_1_ID, invcSpec.getId());
-    assertEquals("gncCustomer", invcSpec.getOwnerType());
+    assertEquals("gncCustomer", invcSpec.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT));
     assertEquals("R1730", invcSpec.getNumber());
     assertEquals("Alles ohne Steuern / voll bezahlt", invcSpec.getDescription());
 
@@ -119,14 +120,14 @@ public class TestGnucashCustomerInvoiceImpl
     // found with this test)
     assertEquals(1327.60, invcGen.getInvcAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(1327.60, invcSpec.getInvcAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(1327.60, invcSpec.getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(1327.60, ((SpecInvoiceCommon) invcSpec).getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
     assertEquals(1327.60, invcGen.getInvcAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(1327.60, invcSpec.getInvcAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(1327.60, invcSpec.getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(1327.60, ((SpecInvoiceCommon) invcSpec).getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
@@ -157,6 +158,6 @@ public class TestGnucashCustomerInvoiceImpl
     // found with this test)
     assertEquals(true, invcGen.isInvcFullyPaid());
     assertEquals(true, invcSpec.isInvcFullyPaid());
-    assertEquals(true, invcSpec.isFullyPaid());
+    assertEquals(true, ((SpecInvoiceCommon) invcSpec).isFullyPaid());
   }
 }

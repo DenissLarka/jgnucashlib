@@ -7,8 +7,6 @@ import java.io.InputStream;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
-import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
-import org.gnucash.read.impl.spec.GnucashVendorJobImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,7 +66,7 @@ public class TestGnucashGenerJobImpl
   @Test
   public void testCust01() throws Exception
   {
-    job = gcshFile.getJobByID(JOB_1_ID);
+    job = gcshFile.getGenerJobByID(JOB_1_ID);
     
     assertEquals(JOB_1_ID, job.getId());
     assertEquals("000001", job.getNumber());
@@ -79,15 +77,16 @@ public class TestGnucashGenerJobImpl
   @Test
   public void testCust02() throws Exception
   {
-    job = gcshFile.getJobByID(JOB_1_ID);
+    job = gcshFile.getGenerJobByID(JOB_1_ID);
       
-    assertEquals(1, job.getGenerInvoices().size());
+    assertEquals(0, job.getPaidInvoices().size());
+    assertEquals(1, job.getUnpaidInvoices().size());
   }
 
   @Test
   public void testCust03() throws Exception
   {
-    job = gcshFile.getJobByID(JOB_1_ID);
+    job = gcshFile.getGenerJobByID(JOB_1_ID);
       
     String custID = "f44645d2397946bcac90dff68cc03b76";
     assertEquals(custID, job.getOwnerId());
@@ -98,7 +97,7 @@ public class TestGnucashGenerJobImpl
   @Test
   public void testVend01() throws Exception
   {
-    job = gcshFile.getJobByID(JOB_2_ID);
+    job = gcshFile.getGenerJobByID(JOB_2_ID);
     
     assertEquals(JOB_2_ID, job.getId());
     assertEquals("000002", job.getNumber());
@@ -109,15 +108,16 @@ public class TestGnucashGenerJobImpl
   @Test
   public void testVend02() throws Exception
   {
-    job = gcshFile.getJobByID(JOB_2_ID);
+    job = gcshFile.getGenerJobByID(JOB_2_ID);
       
-    assertEquals(1, job.getGenerInvoices().size());
+    assertEquals(0, job.getPaidInvoices().size());
+    assertEquals(1, job.getUnpaidInvoices().size());
   }
 
   @Test
   public void testVend03() throws Exception
   {
-    job = gcshFile.getJobByID(JOB_2_ID);
+    job = gcshFile.getGenerJobByID(JOB_2_ID);
       
     String vendID = "4f16fd55c0d64ebe82ffac0bb25fe8f5";
     assertEquals(vendID, job.getOwnerId());

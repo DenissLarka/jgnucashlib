@@ -44,8 +44,14 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   // ------------------------------
 
   public enum ReadVariant {
-    DIRECT,
-    VIA_JOB
+    DIRECT,  // The entity that directly owns the
+             // invoice, be it a customer invoice, 
+             // a vendor bill or a job invoice (thus,
+             // the customer's / vendor's / job's ID.
+    VIA_JOB, // If it's a job invoice, then this option means
+             // that we want the ID of the customer / vendor 
+             // who is the owner of the job (depending of the
+             // job's type).
   }
   
   // -----------------------------------------------------------------
@@ -112,8 +118,9 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
     /**
     *
     * @return Invoice' owner ID 
+     * @throws WrongInvoiceTypeException 
     */
-	String getOwnerId(ReadVariant readvar);
+	String getOwnerId(ReadVariant readvar) throws WrongInvoiceTypeException;
 
 //    /**
 //    *
@@ -121,26 +128,8 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
 //    */
 //    InvoiceOwner getOwner();
     
-    String getOwnerType();
+    String getOwnerType(ReadVariant readvar) throws WrongInvoiceTypeException;
     
-	/**
-	 * Note that a job may lead to multiple o no invoices.
-	 * (e.g. a monthly payment for a long lasting contract.)
-	 * @return the ID of the job this invoice is for.
-	 */
-	String getJobID();
-
-	/**
-	 *
-	 * @return unused.
-	 */
-	String getJobType();
-
-	/**
-	 * @return the job this invoice is for
-	 */
-	GnucashGenerJob getGenerJob();
-	
 	// ---------------------------------------------------------------
 
 	/**
@@ -272,6 +261,74 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
      * @throws WrongInvoiceTypeException 
      */
     String getBillAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
+    
+    // ---------------------------------------------------------------
+
+    /**
+     * @return what the customer must still pay (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    FixedPointNumber getJobAmountUnpaidWithTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    FixedPointNumber getJobAmountPaidWithTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    FixedPointNumber getJobAmountPaidWithoutTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer needs to pay in total (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    FixedPointNumber getJobAmountWithTaxes() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer needs to pay in total (excl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    FixedPointNumber getJobAmountWithoutTaxes() throws WrongInvoiceTypeException;
+
+// ----------------------------
+
+    /**
+     * Formating uses the default-locale's currency-format.
+     * 
+     * @return what the customer must still pay (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    String getJobAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    String getJobAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer has already pay (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    String getJobAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException;
+
+    /**
+     * Formating uses the default-locale's currency-format.
+     * 
+     * @return what the customer needs to pay in total (incl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    String getJobAmountWithTaxesFormatted() throws WrongInvoiceTypeException;
+
+    /**
+     * @return what the customer needs to pay in total (excl. taxes)
+     * @throws WrongInvoiceTypeException
+     */
+    String getJobAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
 
     // ---------------------------------------------------------------
 
@@ -349,28 +406,20 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
 
     // ---------------------------------------------------------------
 
-    /**
-     * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
-     * @throws WrongInvoiceTypeException 
-     */
     boolean isInvcFullyPaid() throws WrongInvoiceTypeException;
 
-	/**
-	 * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
-	 * @throws WrongInvoiceTypeException 
-	 */
-	boolean isNotInvcFullyPaid() throws WrongInvoiceTypeException;
+    boolean isNotInvcFullyPaid() throws WrongInvoiceTypeException;
+    
+    // ----------------------------
 
-    /**
-     * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
-     * @throws WrongInvoiceTypeException 
-     */
     boolean isBillFullyPaid() throws WrongInvoiceTypeException;
 
-    /**
-     * @return (getAmountWithoutTaxes().isGreaterThan(getAmountPaidWithoutTaxes()))
-     * @throws WrongInvoiceTypeException 
-     */
     boolean isNotBillFullyPaid() throws WrongInvoiceTypeException;
+
+    // ----------------------------
+
+    boolean isJobFullyPaid() throws WrongInvoiceTypeException;
+
+    boolean isNotJobFullyPaid() throws WrongInvoiceTypeException;
 
 }

@@ -219,7 +219,7 @@
 <gnc:count-data cd:type="price">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncBillTerm">1</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncCustomer">3</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncEntry">12</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncEntry">13</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncInvoice">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncTaxTable">2</gnc:count-data>
@@ -2958,7 +2958,7 @@
   <invoice:opened>
     <ts:date>2023-09-20 10:59:00 +0000</ts:date>
   </invoice:opened>
-  <invoice:notes>With customer job / with taxes</invoice:notes>
+  <invoice:notes>With job / with taxes</invoice:notes>
   <invoice:active>1</invoice:active>
   <invoice:currency>
     <cmdty:space>CURRENCY</cmdty:space>

@@ -70,7 +70,7 @@ public class TestGnucashCustomerJobImpl
   @Test
   public void test01() throws Exception
   {
-    jobGener = gcshFile.getJobByID(JOB_1_ID);
+    jobGener = gcshFile.getGenerJobByID(JOB_1_ID);
     jobSpec  = new GnucashCustomerJobImpl(jobGener);
 
     assertTrue(jobSpec instanceof GnucashCustomerJob);
@@ -82,21 +82,26 @@ public class TestGnucashCustomerJobImpl
   @Test
   public void test02() throws Exception
   {
-    jobGener = gcshFile.getJobByID(JOB_1_ID);
+    jobGener = gcshFile.getGenerJobByID(JOB_1_ID);
     jobSpec  = new GnucashCustomerJobImpl(jobGener);
       
-    // Note: That the following three return the same result
+    // Note: That the following two return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(1, jobGener.getGenerInvoices().size());
-    assertEquals(1, jobSpec.getGenerInvoices().size());
-    assertEquals(1, jobSpec.getInvoices().size());
+    assertEquals(0, jobGener.getPaidInvoices().size());
+    assertEquals(0, jobSpec.getPaidInvoices().size());
+
+    // Note: That the following two return the same result
+    // is *not* trivial (in fact, a serious implemetation error was
+    // found with this test)
+    assertEquals(1, jobGener.getUnpaidInvoices().size());
+    assertEquals(1, jobSpec.getUnpaidInvoices().size());
   }
 
   @Test
   public void test03() throws Exception
   {
-    jobGener = gcshFile.getJobByID(JOB_1_ID);
+    jobGener = gcshFile.getGenerJobByID(JOB_1_ID);
     jobSpec  = new GnucashCustomerJobImpl(jobGener);
       
     // Note: That the following three return the same result
@@ -104,7 +109,7 @@ public class TestGnucashCustomerJobImpl
     // found with this test)
     String custID = "f44645d2397946bcac90dff68cc03b76";
     assertEquals(custID, jobGener.getOwnerId());
-    assertEquals(custID, jobGener.getOwnerId());
+    assertEquals(custID, jobSpec.getOwnerId());
     assertEquals(custID, jobSpec.getCustomerId());
   }
 }

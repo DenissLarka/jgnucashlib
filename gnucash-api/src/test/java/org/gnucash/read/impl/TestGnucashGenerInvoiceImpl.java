@@ -12,8 +12,6 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
-import org.gnucash.read.spec.GnucashVendorBillEntry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,7 +73,7 @@ public class TestGnucashGenerInvoiceImpl
   @Test
   public void test01() throws Exception
   {
-    assertEquals(5, gcshFile.getNofEntriesGenerInvoiceMap());
+    assertEquals(6, gcshFile.getNofEntriesGenerInvoiceMap());
   }
 
   // -----------------------------------------------------------------
@@ -86,7 +84,7 @@ public class TestGnucashGenerInvoiceImpl
     invc = gcshFile.getGenerInvoiceByID(INVC_1_ID);
     
     assertEquals(INVC_1_ID, invc.getId());
-    assertEquals("gncCustomer", invc.getOwnerType());
+    assertEquals("gncCustomer", invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT));
     assertEquals("R1730", invc.getNumber());
     assertEquals("Alles ohne Steuern / voll bezahlt", invc.getDescription());
 
@@ -143,7 +141,7 @@ public class TestGnucashGenerInvoiceImpl
     invc = gcshFile.getGenerInvoiceByID(INVC_4_ID);
     
     assertEquals(INVC_4_ID, invc.getId());
-    assertEquals("gncVendor", invc.getOwnerType());
+    assertEquals("gncVendor", invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT));
     assertEquals("1730-383/2", invc.getNumber());
     assertEquals("Sie wissen schon: Gefälligkeiten, ne?", invc.getDescription());
 
@@ -158,7 +156,7 @@ public class TestGnucashGenerInvoiceImpl
     invc = gcshFile.getGenerInvoiceByID(INVC_2_ID);
     
     assertEquals(INVC_2_ID, invc.getId());
-    assertEquals("gncVendor", invc.getOwnerType());
+    assertEquals("gncVendor", invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT));
     assertEquals("2740921", invc.getNumber());
     assertEquals("Dat isjamaol eine schöne jepflejgte Reschnung!", invc.getDescription());
 

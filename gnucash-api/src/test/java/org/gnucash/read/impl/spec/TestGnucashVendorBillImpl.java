@@ -15,6 +15,7 @@ import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.TestGnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorBillEntry;
+import org.gnucash.read.spec.SpecInvoiceCommon;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,7 +81,7 @@ public class TestGnucashVendorBillImpl
     
     assertEquals(true, bllSpec instanceof GnucashVendorBillImpl);
     assertEquals(BLL_1_ID, bllSpec.getId());
-    assertEquals("gncVendor", bllSpec.getOwnerType());
+    assertEquals("gncVendor", bllSpec.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT));
     assertEquals("1730-383/2", bllSpec.getNumber());
     assertEquals("Sie wissen schon: Gefälligkeiten, ne?", bllSpec.getDescription());
 
@@ -97,7 +98,7 @@ public class TestGnucashVendorBillImpl
     
     assertEquals(true, bllSpec instanceof GnucashVendorBillImpl);
     assertEquals(BLL_2_ID, bllSpec.getId());
-    assertEquals("gncVendor", bllSpec.getOwnerType());
+    assertEquals("gncVendor", bllSpec.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT));
     assertEquals("2740921", bllSpec.getNumber());
     assertEquals("Dat isjamaol eine schöne jepflejgte Reschnung!", bllSpec.getDescription());
 
@@ -157,7 +158,7 @@ public class TestGnucashVendorBillImpl
     // found with this test)
     assertEquals(41.40, bllGen.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(41.40, bllSpec.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(41.40, bllSpec.getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(41.40, ((SpecInvoiceCommon) bllSpec).getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
@@ -166,7 +167,7 @@ public class TestGnucashVendorBillImpl
     // of this bill is *not* 49.27 EUR, but 41.40 EUR (its net amount).
     assertEquals(41.40, bllGen.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(41.40, bllSpec.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(41.40, bllSpec.getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(41.40, ((SpecInvoiceCommon) bllSpec).getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
@@ -180,14 +181,14 @@ public class TestGnucashVendorBillImpl
     // found with this test)
     assertEquals(79.11, bllGen.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(79.11, bllSpec.getBillAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(79.11, bllSpec.getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(79.11, ((SpecInvoiceCommon) bllSpec).getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
     assertEquals(94.14, bllGen.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(94.14, bllSpec.getBillAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(94.14, bllSpec.getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(94.14, ((SpecInvoiceCommon) bllSpec).getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
@@ -219,7 +220,7 @@ public class TestGnucashVendorBillImpl
     // found with this test)
     assertEquals(false, bllGen.isBillFullyPaid());
     assertEquals(false, bllSpec.isBillFullyPaid());
-    assertEquals(false, bllSpec.isFullyPaid());
+    assertEquals(false, ((SpecInvoiceCommon) bllSpec).isFullyPaid());
   }
 
   @Test
@@ -250,6 +251,6 @@ public class TestGnucashVendorBillImpl
     // found with this test)
     assertEquals(true, bllGen.isBillFullyPaid());
     assertEquals(true, bllSpec.isBillFullyPaid());
-    assertEquals(true, bllSpec.isFullyPaid());
+    assertEquals(true, ((SpecInvoiceCommon) bllSpec).isFullyPaid());
   }
 }

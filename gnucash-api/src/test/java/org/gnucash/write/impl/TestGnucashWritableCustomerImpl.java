@@ -100,7 +100,8 @@ public class TestGnucashWritableCustomerImpl
       gcshInFile.writeFile(outFile);
       
       // copy file
-      FileUtils.delete(outFileGlob);
+      if ( outFileGlob.exists() )
+	  FileUtils.delete(outFileGlob);
       FileUtils.copyFile(outFile, outFileGlob);
   }
 
@@ -184,7 +185,8 @@ public class TestGnucashWritableCustomerImpl
       gcshInFile.writeFile(outFile);
       
       // copy file
-      FileUtils.delete(outFileGlob);
+      if ( outFileGlob.exists() )
+	  FileUtils.delete(outFileGlob);
       FileUtils.copyFile(outFile, outFileGlob);
   }
   

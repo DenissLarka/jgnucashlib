@@ -7,6 +7,7 @@ import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
+import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
@@ -88,7 +89,7 @@ public interface GnucashFile extends GnucashObject {
 	 * @param id the unique id of the job to look for
 	 * @return the job or null if it's not found
 	 */
-	GnucashGenerJob getJobByID(String id);
+	GnucashGenerJob getGenerJobByID(String id);
 
 	/**
 	 * @return a (possibly read-only) collection of all jobs
@@ -186,20 +187,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
-    Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_direct(GnucashCustomer customer);
-
-    /**
-     * @param customer the customer to look for (not null)
-     * @return a (possibly read-only) collection of all invoices that have fully been paid 
-     * and are from the given customer
-     * Do not modify the returned collection!
-     * @throws WrongInvoiceTypeException 
-     * @see #getPaidInvoices()
-     * @see #getGenerInvoices()
-     * @see #getGenerInvoiceByID(String)
-     * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
-     */
-    Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_viaJob(GnucashCustomer customer);
+    Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer(GnucashCustomer customer) throws WrongInvoiceTypeException;
 
     /**
      * @param customer the customer to look for (not null)
@@ -212,27 +200,42 @@ public interface GnucashFile extends GnucashObject {
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
      */
-    Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_direct(GnucashCustomer customer);
-
-	/**
-	 * @param customer the customer to look for (not null)
-	 * @return a (possibly read-only) collection of all invoices that have not fully been paid 
-	 * and are from the given customer
-	 * Do not modify the returned collection!
-	 * @throws WrongInvoiceTypeException 
-	 * @see #getPaidInvoices()
-	 * @see #getGenerInvoices()
-	 * @see #getGenerInvoiceByID(String)
-	 * @see #getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer)
-	 */
-	Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_viaJob(GnucashCustomer customer);
+    Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer(GnucashCustomer customer) throws WrongInvoiceTypeException;
 
     // ----------------------------
 
     /**
      * @param vendor the vendor to look for (not null)
+     * @return a (possibly read-only) collection of all bills that have fully been paid 
+     * and are from the given vendor
+     * Do not modify the returned collection!
+     * @throws WrongInvoiceTypeException 
+     * @see #getPaidInvoices()
+     * @see #getGenerInvoices()
+     * @see #getGenerInvoiceByID(String)
+     * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
+     */
+    Collection<GnucashVendorBill> getPaidBillsForVendor(GnucashVendor vendor) throws WrongInvoiceTypeException;
+
+    /**
+     * @param vendor the vendor to look for (not null)
+     * @return a (possibly read-only) collection of all bills that have not fully been paid 
+     * and are from the given vendor
+     * Do not modify the returned collection!
+     * @throws WrongInvoiceTypeException 
+     * @see #getPaidInvoices()
+     * @see #getGenerInvoices()
+     * @see #getGenerInvoiceByID(String)
+     * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
+     */
+    Collection<GnucashVendorBill> getUnpaidBillsForVendor(GnucashVendor vendor) throws WrongInvoiceTypeException;
+
+    // ----------------------------
+
+    /**
+     * @param vendor the job to look for (not null)
      * @return a (possibly read-only) collection of all invoices that have fully been paid 
-     * and are from the given vendor
+     * and are from the given job
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
@@ -240,25 +243,12 @@ public interface GnucashFile extends GnucashObject {
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getPaidBillsForVendor_direct(GnucashVendor vendor);
+    Collection<GnucashJobInvoice> getPaidInvoicesForJob(GnucashGenerJob job) throws WrongInvoiceTypeException;
 
     /**
-     * @param vendor the vendor to look for (not null)
-     * @return a (possibly read-only) collection of all invoices that have fully been paid 
-     * and are from the given vendor
-     * Do not modify the returned collection!
-     * @throws WrongInvoiceTypeException 
-     * @see #getPaidInvoices()
-     * @see #getGenerInvoices()
-     * @see #getGenerInvoiceByID(String)
-     * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
-     */
-    Collection<GnucashVendorBill> getPaidBillsForVendor_viaJob(GnucashVendor vendor);
-
-    /**
-     * @param vendor the vendor to look for (not null)
+     * @param vendor the job to look for (not null)
      * @return a (possibly read-only) collection of all invoices that have not fully been paid 
-     * and are from the given vendor
+     * and are from the given job
      * Do not modify the returned collection!
      * @throws WrongInvoiceTypeException 
      * @see #getPaidInvoices()
@@ -266,20 +256,7 @@ public interface GnucashFile extends GnucashObject {
      * @see #getGenerInvoiceByID(String)
      * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    Collection<GnucashVendorBill> getUnpaidBillsForVendor_direct(GnucashVendor vendor);
-
-    /**
-     * @param vendor the vendor to look for (not null)
-     * @return a (possibly read-only) collection of all invoices that have not fully been paid 
-     * and are from the given vendor
-     * Do not modify the returned collection!
-     * @throws WrongInvoiceTypeException 
-     * @see #getPaidInvoices()
-     * @see #getGenerInvoices()
-     * @see #getGenerInvoiceByID(String)
-     * @see #getUnpaidBillsForVendor_viaJob(GnucashVendor)
-     */
-    Collection<GnucashVendorBill> getUnpaidBillsForVendor_viaJob(GnucashVendor vendor);
+    Collection<GnucashJobInvoice> getUnpaidInvoicesForJob(GnucashGenerJob job) throws WrongInvoiceTypeException;
 
     // ---------------------------------------------------------------
     
@@ -400,14 +377,20 @@ public interface GnucashFile extends GnucashObject {
     public int getNofEntriesVendorMap();
     
     // ---------------------------------------------------------------
-    // In this section, we assume that all customer and vendor numbers
-    // (internally, the IDs, not the GUIDs) are purely numeric (as 
+    // In this section, we assume that customer, vendor and job numbers
+    // (internally, the IDs, not the GUIDs) are purely numeric, resp. (as 
     // automatically generated by default).
+    // CAUTION: 
+    // For customers and vendors, this may typically be usual and effective.
+    // For jobs, however, things are typically different, so think twice
+    // before using the job-methods!
 
     public int getHighestCustomerNumber();
     public int getHighestVendorNumber();
+    public int getHighestJobNumber();
     
     public String getNewCustomerNumber();
     public String getNewVendorNumber();
+    public String getNewJobNumber();
 
 }

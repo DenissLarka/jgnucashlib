@@ -101,13 +101,13 @@ public class TestGnucashCustomerImpl
   {
     cust = gcshFile.getCustomerByID(CUST_1_ID);
     
-    assertEquals(1, cust.getPaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, cust.getPaidInvoices().size());
     assertEquals("d9967c10fdf1465e9394a3e4b1e7bd79", 
-                 ((GnucashCustomerInvoice) cust.getPaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0]).getId());
+                 ((GnucashCustomerInvoice) cust.getPaidInvoices().toArray()[0]).getId());
     assertEquals(1, cust.getNofOpenInvoices());
-    assertEquals(1, cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
+    assertEquals(1, cust.getUnpaidInvoices().size());
     assertEquals("6588f1757b9e4e24b62ad5b37b8d8e07", 
-                 ((GnucashCustomerInvoice) cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0]).getId());
+                 ((GnucashCustomerInvoice) cust.getUnpaidInvoices().toArray()[0]).getId());
   }
 
   @Test
@@ -115,7 +115,7 @@ public class TestGnucashCustomerImpl
   {
     cust = gcshFile.getCustomerByID(CUST_2_ID);
     
-    assertEquals(0, cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
+    assertEquals(0, cust.getUnpaidInvoices().size());
 //    assertEquals("[GnucashCustomerInvoiceImpl: id: d9967c10fdf1465e9394a3e4b1e7bd79 customer-id (dir.): 5d1dd9afa7554553988669830cc1f696 invoice-number: 'R1730' description: 'null' #entries: 0 date-opened: 2023-07-29]", 
 //                 cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0].toString());
   }
@@ -125,7 +125,7 @@ public class TestGnucashCustomerImpl
   {
     cust = gcshFile.getCustomerByID(CUST_3_ID);
     
-    assertEquals(0, cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).size());
+    assertEquals(0, cust.getUnpaidInvoices().size());
 //    assertEquals("[GnucashCustomerInvoiceImpl: id: d9967c10fdf1465e9394a3e4b1e7bd79 customer-id (dir.): 5d1dd9afa7554553988669830cc1f696 invoice-number: 'R1730' description: 'null' #entries: 0 date-opened: 2023-07-29]", 
 //                 cust.getUnpaidInvoices(GnucashGenerInvoice.ReadVariant.DIRECT).toArray()[0].toString());
   }

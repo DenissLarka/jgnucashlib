@@ -2,7 +2,6 @@ package org.gnucash.read.spec;
 
 import java.util.Collection;
 
-import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
@@ -26,7 +25,7 @@ public interface GnucashVendorBill extends GnucashGenerInvoice {
     /**
      * @return ID of vendor this invoice has been sent from 
      */
-    String getVendorId(GnucashGenerInvoice.ReadVariant readVar);
+    String getVendorId();
 
     /**
      * @return Customer this invoice has been sent to.
@@ -41,35 +40,5 @@ public interface GnucashVendorBill extends GnucashGenerInvoice {
     Collection<GnucashVendorBillEntry> getEntries() throws WrongInvoiceTypeException;
 
     void addEntry(final GnucashVendorBillEntry entry);
-
-    // ---------------------------------------------------------------
-
-    public FixedPointNumber getAmountUnpaidWithTaxes() throws WrongInvoiceTypeException;
-
-    public FixedPointNumber getAmountPaidWithTaxes() throws WrongInvoiceTypeException;
-
-    public FixedPointNumber getAmountPaidWithoutTaxes() throws WrongInvoiceTypeException;
-
-    public FixedPointNumber getAmountWithTaxes() throws WrongInvoiceTypeException;
-    
-    public FixedPointNumber getAmountWithoutTaxes() throws WrongInvoiceTypeException;
-
-    // ----------------------------
-
-    public String getAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountWithTaxesFormatted() throws WrongInvoiceTypeException;
-
-    public String getAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException;
-
-    // ---------------------------------------------------------------
-
-    public boolean isFullyPaid() throws WrongInvoiceTypeException;
-
-    public boolean isNotFullyPaid() throws WrongInvoiceTypeException;
 
 }

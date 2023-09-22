@@ -8,19 +8,20 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
-import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorBillEntry;
+import org.gnucash.read.spec.SpecInvoiceCommon;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
-                                   implements GnucashVendorBill
+                                   implements GnucashVendorBill,
+                                              SpecInvoiceCommon
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorBillImpl.class);
 
@@ -35,7 +36,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
 
     // No, we cannot check that first, because the super() method
     // always has to be called first.
-    if ( ! invc.getOwnerType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
+    if ( ! invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT).equals(GnucashGenerInvoice.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
     
     for ( GnucashGenerInvoiceEntry entry : invc.getGenerInvcEntries() )
@@ -67,11 +68,9 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
   
   // -----------------------------------------------------------------
 
-  /**
-   * {@inheritDoc}
-   */
-  public String getVendorId(GnucashGenerInvoice.ReadVariant readVar) {
-    return getOwnerId(readVar);
+  @Override
+  public String getVendorId() {
+      return getOwnerId();
   }
 
   @Override
@@ -84,13 +83,6 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
       throw new WrongInvoiceTypeException();
     
     return file.getVendorByID(getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue());
-  }
-
-  public GnucashVendor getVendor_viaJob() throws WrongInvoiceTypeException {
-    if ( ! getGenerJob().getOwnerType().equals(GnucashGenerJob.TYPE_VENDOR) )
-      throw new WrongInvoiceTypeException();
-    
-    return ((GnucashVendorJobImpl) getGenerJob()).getVendor();
   }
 
   // ---------------------------------------------------------------
@@ -264,6 +256,68 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
   // ------------------------------
 
   @Override
+  public FixedPointNumber getJobAmountUnpaidWithTaxes() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public FixedPointNumber getJobAmountPaidWithTaxes() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public FixedPointNumber getJobAmountPaidWithoutTaxes() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public FixedPointNumber getJobAmountWithTaxes() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+  
+  @Override
+  public FixedPointNumber getJobAmountWithoutTaxes() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getJobAmountUnpaidWithTaxesFormatted() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getJobAmountPaidWithTaxesFormatted() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getJobAmountPaidWithoutTaxesFormatted() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getJobAmountWithTaxesFormatted() throws WrongInvoiceTypeException 
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getJobAmountWithoutTaxesFormatted() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+  
+  // ------------------------------
+
+  @Override
   public boolean isInvcFullyPaid() throws WrongInvoiceTypeException
   {
     throw new WrongInvoiceTypeException();
@@ -271,6 +325,18 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
 
   @Override
   public boolean isNotInvcFullyPaid() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+  
+  @Override
+  public boolean isJobFullyPaid() throws WrongInvoiceTypeException
+  {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public boolean isNotJobFullyPaid() throws WrongInvoiceTypeException
   {
     throw new WrongInvoiceTypeException();
   }
@@ -283,8 +349,8 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
       buffer.append("[GnucashVendorBillImpl:");
       buffer.append(" id: ");
       buffer.append(getId());
-      buffer.append(" vendor-id (dir.): ");
-      buffer.append(getVendorId(GnucashGenerInvoice.ReadVariant.DIRECT));
+      buffer.append(" vendor-id: ");
+      buffer.append(getVendorId());
       buffer.append(" bill-number: '");
       buffer.append(getNumber() + "'");
       buffer.append(" description: '");
