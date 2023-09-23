@@ -14,13 +14,14 @@ public interface GnucashWritableVendorBillEntry extends GnucashGenerInvoiceEntry
                                                         GnucashWritableObject 
 {
 
-	void setTaxable(boolean val) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setTaxable(boolean val) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
 
-	void setTaxTable(GCshTaxTable taxTab) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setTaxTable(GCshTaxTable taxTab) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+    
+    // ---------------------------------------------------------------
 
-	void setPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
 
-	void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 }
-

@@ -42,7 +42,9 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @param file      the file we belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 */
-	protected GnucashVendorWritingImpl(final GncV2.GncBook.GncGncVendor jwsdpPeer, final GnucashWritableFileImpl file) {
+	protected GnucashVendorWritingImpl(
+		final GncV2.GncBook.GncGncVendor jwsdpPeer, 
+		final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
@@ -52,9 +54,8 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @param file the file we belong to
 	 * @param id   the ID we shall have
 	 */
-	protected GnucashVendorWritingImpl(final GnucashWritableFileImpl file,
-			final String id) {
-		super(createVendor(file, id), file);
+	protected GnucashVendorWritingImpl(final GnucashWritableFileImpl file) {
+		super(createVendor(file, file.createGUID()), file);
 	}
 
 	/**

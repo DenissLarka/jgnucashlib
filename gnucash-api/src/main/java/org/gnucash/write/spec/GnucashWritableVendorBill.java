@@ -1,6 +1,7 @@
 package org.gnucash.write.spec;
 
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
@@ -12,15 +13,28 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  */
 public interface GnucashWritableVendorBill extends GnucashGenerInvoice {
 
-	void setJob(GnucashVendorJob job);
+    void setJob(GnucashVendorJob job) throws WrongInvoiceTypeException;
 
-	GnucashWritableVendorBillEntry getWritableEntryById(String id);
+    GnucashWritableVendorBillEntry getWritableEntryById(String id);
+    
+    // ---------------------------------------------------------------
 
-	GnucashWritableVendorBillEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException;
+    GnucashWritableVendorBillEntry createEntry(
+	    GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
-	GnucashWritableVendorBillEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity, final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    GnucashWritableVendorBillEntry createEntry(
+	    GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber tax)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
-	GnucashWritableVendorBillEntry createEntry(final FixedPointNumber singleUnitPrice,
-                                                   final FixedPointNumber quantity,
-                                                   final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    GnucashWritableVendorBillEntry createEntry(
+	    GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity, 
+	    final GCshTaxTable tax)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
 }

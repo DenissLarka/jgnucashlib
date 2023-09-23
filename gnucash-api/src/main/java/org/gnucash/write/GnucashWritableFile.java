@@ -2,6 +2,7 @@ package org.gnucash.write;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Collection;
 
 import org.gnucash.generated.GncV2;
@@ -10,6 +11,9 @@ import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.GnucashVendor;
+import org.gnucash.write.spec.GnucashWritableCustomerJob;
+import org.gnucash.write.spec.GnucashWritableVendorJob;
 
 /**
  * Extension of GnucashFile that allows writing. <br/>
@@ -152,17 +156,10 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	GnucashWritableTransaction createWritableTransaction();
 
 	/**
-	 * @return a new transaction with no splits that is already added to this file
-	 */
-	GnucashWritableTransaction createWritableTransaction(final String id);
-
-
-	/**
 	 *
 	 * @param impl the transaction to remove.
 	 */
 	void removeTransaction(GnucashWritableTransaction impl);
-
 
 	/**
 	 * @return a new customer with no values that is already added to this file
@@ -170,55 +167,54 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	GnucashWritableCustomer createWritableCustomer();
 
 	/**
-	 * @return a new job with no values that is already added to this file
+	 * @return a new customer with no values that is already added to this file
 	 */
-	GnucashWritableGenerJob createWritableJob(final GnucashCustomer customer);
+	GnucashWritableVendor createWritableVendor();
 
 	/**
-	 * @return a new job with no values that is already added to this file
+	 * @return a new customer job with no values that is already added to this file
 	 */
-	GnucashWritableGenerJob createWritableJob(final String id, final GnucashCustomer customer);
+	GnucashWritableCustomerJob createWritableCustomerJob(final GnucashCustomer cust);
 
+	/**
+	 * @return a new vendor job with no values that is already added to this file
+	 */
+	GnucashWritableVendorJob createWritableVendorJob(final GnucashVendor vend);
 
 	/**
 	 * @return a new account that is already added to this file as a top-level account
 	 */
 	GnucashWritableAccount createWritableAccount();
-
-	/**
-	 * @return a new account that is already added to this file as a top-level account
-	 */
-	GnucashWritableAccount createWritableAccount(final String id);
-
-	/**
-	 * @return a new invoice with no entries that is already added to this file
-	 */
-	GnucashWritableGenerInvoice createWritableInvoice(final String invoiceNumber,
-												 final GnucashGenerJob job,
-												 final GnucashAccount accountToTransferMoneyTo,
-												 final java.util.Date dueDate);
+	
+	// -----------------------------------------------------------
 
 	/**
 	 * FOR USE BY EXTENSIONS ONLY
 	 * @return a new invoice with no entries that is already added to this file
 	 */
-	GnucashWritableGenerInvoice createWritableInvoice(final String internalID,
-												 final String invoiceNumber,
-												 final GnucashGenerJob job,
-												 final GnucashAccount accountToTransferMoneyTo,
-												 final java.util.Date dueDate);
+	GnucashWritableGenerInvoice createWritableJobInvoice(
+		final String invoiceNumber,
+	        final GnucashGenerJob job,
+		final GnucashAccount accountToTransferMoneyTo,
+		final LocalDate dueDate);
+
+	GnucashWritableGenerInvoice createWritableCustomerInvoice(
+		final String invoiceNumber,
+		final GnucashCustomer cust,
+		final GnucashAccount accountToTransferMoneyTo,
+	        final LocalDate dueDate);
+
+	GnucashWritableGenerInvoice createWritableVendorInvoice(
+		final String invoiceNumber,
+	        final GnucashVendor vend,
+		final GnucashAccount accountToTransferMoneyTo,
+	        final LocalDate dueDate);
+
+	// -----------------------------------------------------------
 
 	/**
 	 * @param impl the account to remove
 	 */
 	void removeAccount(GnucashWritableAccount impl);
-
-	/**
-	 * THIS METHOD IS ONLY TO BE USED BY EXTENSIONS TO THIS LIBRARY!<br/>
-	 * @return a new customer
-	 * @param id the id the customer shall have
-	 */
-	GnucashWritableCustomer createWritableCustomer(String id);
-
 
 }

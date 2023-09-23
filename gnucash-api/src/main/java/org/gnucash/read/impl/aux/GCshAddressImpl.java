@@ -1,9 +1,7 @@
 package org.gnucash.read.impl.aux;
 
-import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshAddress;
-import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 public class GCshAddressImpl implements GCshAddress {
 

@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,6 +35,7 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashCustomerImpl;
@@ -50,6 +52,9 @@ import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.write.GnucashWritableVendor;
 import org.gnucash.write.impl.spec.GnucashWritableCustomerJobImpl;
+import org.gnucash.write.impl.spec.GnucashWritableVendorJobImpl;
+import org.gnucash.write.spec.GnucashWritableCustomerJob;
+import org.gnucash.write.spec.GnucashWritableVendorJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -1213,29 +1218,14 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	 * {@inheritDoc}
 	 */
 	public GnucashWritableTransaction createWritableTransaction() {
-		return new GnucashWritableTransactionImpl(this, createGUID());
+		return new GnucashWritableTransactionImpl(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public GnucashWritableTransaction createWritableTransaction(final String id) {
-		return new GnucashWritableTransactionImpl(this, id);
-	}
-
-	/**
-	 * @see GnucashWritableFile#createWritableTransaction()
-	 */
-	public GnucashWritableGenerInvoice createWritableInvoice(
-			final String invoiceNumber,
-			final GnucashGenerJob job,
-			final GnucashAccount accountToTransferMoneyTo,
-			final java.util.Date dueDate) {
-		return createWritableInvoice(createGUID(),
-				invoiceNumber,
-				job,
-				accountToTransferMoneyTo,
-				dueDate);
+		return new GnucashWritableTransactionImpl(this);
 	}
 
 	/**
@@ -1243,16 +1233,54 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	 *
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableGenerInvoice createWritableInvoice(
-			final String internalID,
+	public GnucashWritableGenerInvoice createWritableJobInvoice(
 			final String invoiceNumber,
 			final GnucashGenerJob job,
 			final GnucashAccount accountToTransferMoneyTo,
-			final java.util.Date dueDate) {
+			final LocalDate dueDate) {
 		GnucashWritableGenerInvoiceImpl retval = new GnucashWritableGenerInvoiceImpl(this,
-				internalID,
 				invoiceNumber,
 				job,
+				(GnucashAccountImpl) accountToTransferMoneyTo,
+				dueDate);
+
+		invoiceID2invoice.put(retval.getId(), retval);
+		return retval;
+	}
+
+	/**
+	 * FOR USE BY EXTENSIONS ONLY!
+	 *
+	 * @see GnucashWritableFile#createWritableTransaction()
+	 */
+	public GnucashWritableGenerInvoice createWritableCustomerInvoice(
+			final String invoiceNumber,
+			final GnucashCustomer cust,
+			final GnucashAccount accountToTransferMoneyTo,
+			final LocalDate dueDate) {
+		GnucashWritableGenerInvoiceImpl retval = new GnucashWritableGenerInvoiceImpl(this,
+				invoiceNumber,
+				cust,
+				(GnucashAccountImpl) accountToTransferMoneyTo,
+				dueDate);
+
+		invoiceID2invoice.put(retval.getId(), retval);
+		return retval;
+	}
+
+	/**
+	 * FOR USE BY EXTENSIONS ONLY!
+	 *
+	 * @see GnucashWritableFile#createWritableTransaction()
+	 */
+	public GnucashWritableGenerInvoice createWritableVendorInvoice(
+			final String invoiceNumber,
+			final GnucashVendor vend,
+			final GnucashAccount accountToTransferMoneyTo,
+			final LocalDate dueDate) {
+		GnucashWritableGenerInvoiceImpl retval = new GnucashWritableGenerInvoiceImpl(this,
+				invoiceNumber,
+				vend,
 				(GnucashAccountImpl) accountToTransferMoneyTo,
 				dueDate);
 
@@ -1266,22 +1294,9 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	 * @see GnucashWritableFile#createWritableCustomer()
 	 */
 	public GnucashWritableCustomer createWritableCustomer() {
-		return createWritableCustomer(createGUID());
-	}
-
-	/**
-	 * THIS METHOD IS ONLY TO BE USED BY EXTENSIONS TO THIS LIBRARY!<br/>
-	 *
-	 * @param id the internal id the customer shall have
-	 * @return the new customer. (already added to this file)
-	 */
-	public GnucashWritableCustomer createWritableCustomer(final String id) {
-		if (id == null) {
-			throw new IllegalArgumentException("null id given!");
-		}
-		GnucashWritableCustomerImpl w = new GnucashWritableCustomerImpl(this, id);
-		super.customerID2customer.put(w.getId(), w);
-		return w;
+		GnucashWritableCustomerImpl cust = new GnucashWritableCustomerImpl(this);
+		super.customerID2customer.put(cust.getId(), cust);
+		return cust;
 	}
 
 	/**
@@ -1299,22 +1314,9 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * @see GnucashWritableFile#createWritableCustomer()
      */
     public GnucashWritableVendor createWritableVendor() {
-        return createWritableVendor(createGUID());
-    }
-
-    /**
-     * THIS METHOD IS ONLY TO BE USED BY EXTENSIONS TO THIS LIBRARY!<br/>
-     *
-     * @param id the internal id the customer shall have
-     * @return the new customer. (already added to this file)
-     */
-    public GnucashWritableVendor createWritableVendor(final String id) {
-        if (id == null) {
-            throw new IllegalArgumentException("null id given!");
-        }
-        GnucashVendorWritingImpl w = new GnucashVendorWritingImpl(this, id);
-        super.vendorID2vendor.put(w.getId(), w);
-        return w;
+        GnucashVendorWritingImpl vend = new GnucashVendorWritingImpl(this);
+        super.vendorID2vendor.put(vend.getId(), vend);
+        return vend;
     }
 
     /**
@@ -1329,25 +1331,29 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	// ----------------------------
 
 	/**
-	 * @see GnucashWritableFile#createWritableJob(GnucashCustomer)
+	 * @see GnucashWritableFile#createWritableCustomerJob(GnucashCustomer)
 	 */
-	public GnucashWritableGenerJob createWritableJob(final GnucashCustomer customer) {
-		if (customer == null) {
+	public GnucashWritableCustomerJob createWritableCustomerJob(final GnucashCustomer cust) {
+		if (cust == null) {
 			throw new IllegalArgumentException("null customer given");
 		}
-		return this.createWritableJob(this.createGUID(), customer);
+
+		GnucashWritableCustomerJobImpl job = new GnucashWritableCustomerJobImpl(this, cust);
+		super.jobID2job.put(job.getId(), job);
+		return job;
 	}
 
 	/**
-	 * @see GnucashWritableFile#createWritableJob(String, GnucashCustomer)
+	 * @see GnucashWritableFile#createWritableCustomerJob(GnucashCustomer)
 	 */
-	public GnucashWritableGenerJob createWritableJob(final String id, final GnucashCustomer customer) {
-		if (customer == null) {
-			throw new IllegalArgumentException("null customer given");
+	public GnucashWritableVendorJob createWritableVendorJob(final GnucashVendor vend) {
+		if (vend == null) {
+			throw new IllegalArgumentException("null vendor given");
 		}
-		GnucashWritableCustomerJobImpl w = new GnucashWritableCustomerJobImpl(this, id, customer);
-		super.jobID2job.put(w.getId(), w);
-		return w;
+
+		GnucashWritableVendorJobImpl job = new GnucashWritableVendorJobImpl(this, vend);
+		super.jobID2job.put(job.getId(), job);
+		return job;
 	}
 
 	/**
@@ -1363,18 +1369,9 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	 * @see GnucashWritableFile#createWritableAccount()
 	 */
 	public GnucashWritableAccount createWritableAccount() {
-		GnucashWritableAccount w = new GnucashWritableAccountImpl(this);
-		super.accountID2account.put(w.getId(), w);
-		return w;
-	}
-
-	/**
-	 * @see GnucashWritableFile#createWritableAccount()
-	 */
-	public GnucashWritableAccount createWritableAccount(final String newID) {
-		GnucashWritableAccount w = new GnucashWritableAccountImpl(this, newID);
-		super.accountID2account.put(w.getId(), w);
-		return w;
+		GnucashWritableAccount acct = new GnucashWritableAccountImpl(this);
+		super.accountID2account.put(acct.getId(), acct);
+		return acct;
 	}
 
 	/**
@@ -1518,4 +1515,5 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 		}
 		return rootAccounts;
 	}
+
 }

@@ -103,6 +103,8 @@ public interface GnucashVendor extends GnucashObject {
 
     // ----------------------------
 
+    Collection<GnucashVendorBill> getBills() throws WrongInvoiceTypeException;
+    
     Collection<GnucashVendorBill> getPaidBills() throws WrongInvoiceTypeException;
     
     Collection<GnucashVendorBill> getUnpaidBills() throws WrongInvoiceTypeException;

@@ -116,8 +116,8 @@ public class TestGnucashVendorBillImpl
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(1, bllGen.getGenerInvcEntries().size());
-    assertEquals(1, bllSpec.getGenerInvcEntries().size());
+    assertEquals(1, bllGen.getGenerEntries().size());
+    assertEquals(1, bllSpec.getGenerEntries().size());
     assertEquals(1, bllSpec.getEntries().size());
 
     TreeSet entrList = new TreeSet(); // sort elements of HashSet
@@ -135,8 +135,8 @@ public class TestGnucashVendorBillImpl
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(2, bllGen.getGenerInvcEntries().size());
-    assertEquals(2, bllSpec.getGenerInvcEntries().size());
+    assertEquals(2, bllGen.getGenerEntries().size());
+    assertEquals(2, bllSpec.getGenerEntries().size());
     assertEquals(2, bllSpec.getEntries().size());
 
     TreeSet entrList = new TreeSet(); // sort elements of HashSet

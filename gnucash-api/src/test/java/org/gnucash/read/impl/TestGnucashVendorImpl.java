@@ -20,9 +20,9 @@ public class TestGnucashVendorImpl
   private static GnucashFile   gcshFile = null;
   private static GnucashVendor vend = null;
   
-  private static final String VEND_1_ID = "087e1a3d43fa4ef9a9bdd4b4797c4231";
-  private static final String VEND_2_ID = "4f16fd55c0d64ebe82ffac0bb25fe8f5";
-  private static final String VEND_3_ID = "bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7";
+  public static final String VEND_1_ID = "087e1a3d43fa4ef9a9bdd4b4797c4231";
+  public static final String VEND_2_ID = "4f16fd55c0d64ebe82ffac0bb25fe8f5";
+  public static final String VEND_3_ID = "bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7";
 
   // -----------------------------------------------------------------
   

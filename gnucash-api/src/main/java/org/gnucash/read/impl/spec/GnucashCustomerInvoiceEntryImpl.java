@@ -17,6 +17,7 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImp
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerInvoiceEntryImpl.class);
 
+  @SuppressWarnings("exports")
   public GnucashCustomerInvoiceEntryImpl(
           final GnucashCustomerInvoice invoice,
           final GncV2.GncBook.GncGncEntry peer) 
@@ -24,6 +25,7 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImp
     super(invoice, peer, true);
   }
 
+  @SuppressWarnings("exports")
   public GnucashCustomerInvoiceEntryImpl(
           final GnucashGenerInvoice invoice,
           final GncV2.GncBook.GncGncEntry peer) throws WrongInvoiceTypeException 
@@ -36,6 +38,7 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImp
       throw new WrongInvoiceTypeException();
   }
 
+  @SuppressWarnings("exports")
   public GnucashCustomerInvoiceEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) 
   {
     super(peer, gncFile);

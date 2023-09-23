@@ -4,9 +4,8 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
-import org.gnucash.read.GnucashGenerJob;
-import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
+import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashJobInvoiceEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -18,6 +17,7 @@ public class GnucashJobInvoiceEntryImpl extends GnucashGenerInvoiceEntryImpl
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashJobInvoiceEntryImpl.class);
 
+  @SuppressWarnings("exports")
   public GnucashJobInvoiceEntryImpl(
           final GnucashJobInvoice invoice,
           final GncV2.GncBook.GncGncEntry peer) 
@@ -25,6 +25,7 @@ public class GnucashJobInvoiceEntryImpl extends GnucashGenerInvoiceEntryImpl
     super(invoice, peer, true);
   }
 
+  @SuppressWarnings("exports")
   public GnucashJobInvoiceEntryImpl(
           final GnucashGenerInvoice invoice,
           final GncV2.GncBook.GncGncEntry peer) throws WrongInvoiceTypeException 
@@ -37,6 +38,7 @@ public class GnucashJobInvoiceEntryImpl extends GnucashGenerInvoiceEntryImpl
       throw new WrongInvoiceTypeException();
   }
 
+  @SuppressWarnings("exports")
   public GnucashJobInvoiceEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) 
   {
     super(peer, gncFile);

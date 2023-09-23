@@ -94,13 +94,6 @@ public interface GnucashWritableTransaction extends GnucashTransaction {
 	GnucashWritableTransactionSplit createWritingSplit(GnucashAccount account);
 
 	/**
-	 * Create a new split, already atached to this transaction.
-	 * @param account the account for the new split
-	 * @return a new split, already atached to this transaction
-	 */
-	GnucashWritableTransactionSplit createWritingSplit(GnucashAccount account, String splitID);
-
-	/**
 	 * Also removes the split from it's account.
 	 * @param impl the split to remove from this transaction
 	 */

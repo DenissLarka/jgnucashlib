@@ -9,6 +9,7 @@ import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.spec.GnucashVendorBillEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
@@ -54,29 +55,6 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	/**
-	 * @param invoice
-	 * @param quantity
-	 * @param price
-	 * @return
-	 */
-	private static GncV2.GncBook.GncGncEntry createSKR03_16PercentInvoiceEntry(
-			final GnucashWritableCustomerInvoiceImpl invoice,
-			final FixedPointNumber quantity,
-			final FixedPointNumber price) {
-		return GnucashWritableGenerInvoiceEntryImpl.createSKR03_16PercentInvoiceEntry(invoice, quantity, price);
-	}
-
-	public GnucashWritableVendorBillEntryImpl(
-		final GnucashWritableCustomerInvoiceImpl invoice,
-		final FixedPointNumber quantity,
-		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price));
-		
-		invoice.addBillEntry(this);
-		this.myInvoice = invoice;
-	}
-
-	/**
 	 * Create a taxable invoiceEntry.
 	 * (It has the taxtable of the customer with a fallback
 	 * to the first taxtable found assigned)
@@ -97,6 +75,14 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 		
 		invoice.addBillEntry(this);
 		this.myInvoice = invoice;
+	}
+
+	public GnucashWritableVendorBillEntryImpl(final GnucashGenerInvoiceEntry entry) {
+	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
+	}
+
+	public GnucashWritableVendorBillEntryImpl(final GnucashVendorBillEntry entry) {
+	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
 	}
 
 	// -----------------------------------------------------------

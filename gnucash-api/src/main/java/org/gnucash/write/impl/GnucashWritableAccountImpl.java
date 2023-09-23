@@ -90,13 +90,6 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 	}
 
 	/**
-	 * @see GnucashAccountImpl#GnucashAccountImpl(GncAccount, GnucashFile)
-	 */
-	public GnucashWritableAccountImpl(final GnucashWritableFileImpl file, final String id) {
-		super(createAccount(file, id), file);
-	}
-
-	/**
 	 * @param file
 	 * @return
 	 */
@@ -392,7 +385,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 	}
 
 	/**
-	 * @see GnucashWritableAccount#setDescription(java.lang.String)
+	 * @see GnucashWritableAccount#setName(java.lang.String)
 	 */
 	public void setDescription(final String description) {
 		if (description == null) {

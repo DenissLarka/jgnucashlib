@@ -1,11 +1,17 @@
 package org.gnucash.read.impl.aux;
 
 import org.gnucash.generated.GncV2;
+import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.OwnerJITypeUnsetException;
 import org.gnucash.read.aux.WrongOwnerJITypeException;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
+import org.gnucash.read.spec.GnucashJobInvoice;
+import org.gnucash.read.spec.GnucashVendorBill;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +33,7 @@ public class GCshOwnerImpl implements GCshOwner {
   protected GncV2.GncBook.GncGncInvoice.InvoiceOwner invcOwner; // peer 1
   protected GncV2.GncBook.GncGncJob.JobOwner         jobOwner;  // peer 2
   
-  private org.gnucash.generated.OwnerId generOwner;  // NOT peer
+  // private org.gnucash.generated.OwnerId generOwner;  // NOT peer
 
   // -----------------------------------------------------------------
   
@@ -54,25 +60,116 @@ public class GCshOwnerImpl implements GCshOwner {
   // ------------------------------
 
   public GCshOwnerImpl(
-	  JIType jiType,
-	  String id,
-	  final GnucashFile gncFile) throws WrongOwnerJITypeException {
-      this.jiType = jiType;
+	  String ownerType,
+	  String ownerID,
+	  final GnucashFile gncFile) throws WrongOwnerTypeException, CouldNotDetermineInvoiceException {
+
       this.file = gncFile;
       
-      if ( jiType == JIType.INVOICE )
+      if ( ownerType.equals(TYPE_CUSTOMER) ) 
       {
-	  GnucashGenerInvoice invc = file.getGenerInvoiceByID(id); 
-	  this.invcOwner = invc.getOwnerPeerObj();
-	  this.invcType = invc.getType();
+	  this.jiType = JIType.INVOICE;
+	  this.jobOwner = null;
+	  
+	  try 
+	  {
+	      GnucashCustomer cust = file.getCustomerByID(ownerID);
+		  
+	      // TODO: try ALL invoices
+	      if ( cust.getPaidInvoices().size() == 0 )
+		  throw new CouldNotDetermineInvoiceException();
+	      
+	      boolean found = false;
+	      for ( GnucashCustomerInvoice invc : cust.getPaidInvoices() )
+	      {
+		  if ( invc.getOwnerId(GnucashGenerInvoice.ReadVariant.DIRECT).equals(ownerID) )
+		  {
+		      found = true;
+		      this.invcOwner = invc.getOwnerPeerObj();
+		      this.invcType = invc.getType();
+		  }
+	      }
+	      
+	      if ( ! found ) 
+		throw new CouldNotDetermineInvoiceException();
+	      
+	  } 
+	  catch ( Exception exc )
+{
+	      throw new CouldNotDetermineInvoiceException();
+	  }
+      } 
+      else if ( ownerType.equals(TYPE_VENDOR) ) 
+      {
+	  this.jiType = JIType.INVOICE;
+	  this.jobOwner = null;
+	  
+	  try 
+	  {
+	      GnucashVendor vend = file.getVendorByID(ownerID);
+		  
+	      // TODO: try ALL invoices
+	      if ( vend.getPaidBills().size() == 0 )
+		  throw new CouldNotDetermineInvoiceException();
+	      
+	      boolean found = false;
+	      for ( GnucashVendorBill invc : vend.getPaidBills() )
+	      {
+		  if ( invc.getOwnerId(GnucashGenerInvoice.ReadVariant.DIRECT).equals(ownerID) )
+		  {
+		      found = true;
+		      this.invcOwner = invc.getOwnerPeerObj();
+		      this.invcType = invc.getType();
+		  }
+	      }
+	      
+	      if ( ! found ) 
+		throw new CouldNotDetermineInvoiceException();
+	      
+	  } 
+	  catch ( Exception exc )
+	  {
+	      throw new CouldNotDetermineInvoiceException();
+	  }
+      } 
+      else if ( ownerType.equals(TYPE_JOB) ) 
+      {
+	  this.jiType = JIType.JOB;
+	  
+	  try 
+	  {
+	      GnucashGenerJob job = file.getGenerJobByID(ownerID);
+		  
+	      // TODO: try ALL invoices
+	      if ( job.getPaidInvoices().size() == 0 )
+		  throw new CouldNotDetermineInvoiceException();
+	      
+	      boolean found = false;
+	      for ( GnucashJobInvoice invc : job.getPaidInvoices() )
+	      {
+		  if ( invc.getOwnerId(GnucashGenerInvoice.ReadVariant.DIRECT).equals(ownerID) )
+		  {
+		      found = true;
+		      // ::TODO: No, that's not it!
+		      this.jobOwner = job.getOwnerPeerObj();
+		  }
+	      }
+	      
+	      if ( ! found ) 
+		throw new CouldNotDetermineInvoiceException();
+	      
+	  } 
+	  catch ( Exception exc )
+	  {
+	      throw new CouldNotDetermineInvoiceException();
+	  }
+	  
+	  this.invcOwner = null;
+	  this.invcType = null;
       }
-      else if ( jiType == JIType.JOB )
+      else 
       {
-	  this.jobOwner = file.getGenerJobByID(id).getOwnerPeerObj();
-      }
-      else if ( jiType == JIType.UNSET )
-      {
-	  throw new WrongOwnerJITypeException();
+	  throw new WrongOwnerTypeException();
       }
   }
 

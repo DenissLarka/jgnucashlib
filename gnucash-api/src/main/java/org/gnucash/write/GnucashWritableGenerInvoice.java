@@ -3,9 +3,12 @@ package org.gnucash.write;
 import java.time.LocalDateTime;
 
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.aux.WrongOwnerJITypeException;
@@ -42,9 +45,13 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	
 	// ------------------------
 	
-	void setGenerJob(GnucashGenerJob job);
+	void setCustomer(final GnucashCustomer cust) throws WrongInvoiceTypeException;
 
-	// ------------------------
+	void setVendor(final GnucashVendor vend) throws WrongInvoiceTypeException;
+
+	void setGenerJob(final GnucashGenerJob job) throws WrongInvoiceTypeException;
+
+	// -----------------------------------------------------------
 	
 	void setDatePosted(LocalDateTime d);
 
@@ -56,18 +63,24 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 
 	// -----------------------------------------------------------
 	
+	void setDescription(String descr);
+	
+	// -----------------------------------------------------------
+	
 	/**
 	 * @return the transaction that adds this invoice's sum to
 	 * the expected money.
 	 */
 	GnucashTransaction getPostTransaction();
 
+	// ------------------------
+	
 	/**
 	 * @param id the id to look for
 	 * @return the modifiable version of the entry
 	 * @see GnucashGenerInvoice#getGenerInvcEntryById(String)
 	 */
-	GnucashWritableGenerInvoiceEntry getWritableEntryById(String id);
+	GnucashWritableGenerInvoiceEntry getWritableGenerEntryById(String id);
 
 	/**
 	 * remove this invoice from the system.
@@ -77,6 +90,8 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 */
 	void remove() throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
+	// -----------------------------------------------------------
+	
 	/**
 	 * create and add a new entry.<br/>
 	 * The entry will have 16% salex-tax and use the accounts of the
@@ -84,7 +99,9 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableGenerInvoiceEntry createGenerEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	GnucashWritableGenerInvoiceEntry createGenerEntry(final GnucashAccount   acct,
+		                                          final FixedPointNumber singleUnitPrice, 
+		                                          final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * create and add a new entry.<br/>
@@ -93,7 +110,9 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableGenerInvoiceEntry createGenerEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity, final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	GnucashWritableGenerInvoiceEntry createGenerEntry(final GnucashAccount   acct,
+		                                          final FixedPointNumber singleUnitPrice, 
+		                                          final FixedPointNumber quantity, final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
 	/**
 	 * create and add a new entry.<br/>
@@ -102,7 +121,8 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	GnucashWritableGenerInvoiceEntry createGenerEntry(final FixedPointNumber singleUnitPrice,
+	GnucashWritableGenerInvoiceEntry createGenerEntry(final GnucashAccount   acct,
+                                                          final FixedPointNumber singleUnitPrice,
                                                           final FixedPointNumber quantity,
                                                           final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
 }

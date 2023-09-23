@@ -8,6 +8,7 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.IllegalGenerInvoiceEntryActionException;
@@ -43,30 +44,9 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	 * @see {@link #getGenerInvoice()}
 	 */
 	private GnucashWritableGenerInvoice invoice;
-
+	
 	// -----------------------------------------------------------
 
-	/**
-	 * @param invoice
-	 * @param quantity
-	 * @param price
-	 * @return
-	 */
-	protected static GncV2.GncBook.GncGncEntry createSKR03_16PercentInvoiceEntry(
-			final GnucashWritableGenerInvoiceImpl invoice,
-			final FixedPointNumber quantity,
-			final FixedPointNumber price) {
-		GnucashAccount account = invoice.getFile().getAccountByName("Umsatzerl�se 16% USt");
-		if (account == null) {
-			account = invoice.getFile().getAccountByName("Umsatzerl�se 19% USt"); // national tax-rate has changed
-		}
-		if (account == null) {
-			throw new IllegalStateException("Cannot file account 'Umsatzerl�se 16% USt' from SKR04!");
-		}
-
-		return createInvoiceEntry(invoice, account, quantity, price);
-	}
-	
 	/**
 	 * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
 	 */
@@ -162,15 +142,15 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	// -----------------------------------------------------------
 
 	/**
-	 * @param file      the file we belong to
+	 * @param gnucashFile      the file we belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GncV2.GncBook.GncGncEntry, GnucashFileImpl)
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableGenerInvoiceEntryImpl(
 		final GncV2.GncBook.GncGncEntry jwsdpPeer, 
-		final GnucashWritableFileImpl file) {
-		super(jwsdpPeer, file);
+		final GnucashWritableFileImpl gnucashFile) {
+		super(jwsdpPeer, gnucashFile);
 	}
 
 	/**
@@ -188,16 +168,6 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	}
 
 	// -----------------------------------------------------------
-
-	public GnucashWritableGenerInvoiceEntryImpl(
-		final GnucashWritableGenerInvoiceImpl invoice,
-		final FixedPointNumber quantity,
-		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price), true);
-		
-		invoice.addInvcEntry(this);
-		this.invoice = invoice;
-	}
 
 	/**
 	 * Create a taxable invoiceEntry.

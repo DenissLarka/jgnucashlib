@@ -55,29 +55,6 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 	}
 
 	/**
-	 * @param invoice
-	 * @param quantity
-	 * @param price
-	 * @return
-	 */
-	private static GncV2.GncBook.GncGncEntry createSKR03_16PercentInvoiceEntry(
-			final GnucashWritableCustomerInvoiceImpl invoice,
-			final FixedPointNumber quantity,
-			final FixedPointNumber price) {
-		return GnucashWritableGenerInvoiceEntryImpl.createSKR03_16PercentInvoiceEntry(invoice, quantity, price);
-	}
-
-	public GnucashWritableCustomerInvoiceEntryImpl(
-		final GnucashWritableCustomerInvoiceImpl invoice,
-		final FixedPointNumber quantity,
-		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createSKR03_16PercentInvoiceEntry(invoice, quantity, price));
-		
-		invoice.addInvcEntry(this);
-		this.myInvoice = invoice;
-	}
-
-	/**
 	 * Create a taxable invoiceEntry.
 	 * (It has the taxtable of the customer with a fallback
 	 * to the first taxtable found assigned)
@@ -100,8 +77,12 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 		this.myInvoice = invoice;
 	}
 
+	public GnucashWritableCustomerInvoiceEntryImpl(final GnucashGenerInvoiceEntry entry) {
+	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
+	}
+
 	public GnucashWritableCustomerInvoiceEntryImpl(final GnucashCustomerInvoiceEntry entry) {
-	    super(entry.getJwsdpPeer(), entry.getGnucashFile());
+	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
 	}
 
 	// -----------------------------------------------------------

@@ -83,10 +83,12 @@ public class GCshBillTermsImpl implements GCshBillTerms {
 		return false;
 	}
 		
+	@SuppressWarnings("exports")
 	public BilltermProximo getProximo() {
 		return jwsdpPeer.getBilltermProximo();
 	}
 	
+	@SuppressWarnings("exports")
 	public BilltermDays getDays() {
 		return jwsdpPeer.getBilltermDays();
 	}

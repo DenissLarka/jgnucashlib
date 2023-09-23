@@ -49,7 +49,10 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 * @param jwsdpPeer   the JWSDP-object we are facading.
 	 * @param transaction the transaction we belong to
 	 */
-	public GnucashWritableTransactionSplitImpl(final GncTransaction.TrnSplits.TrnSplit jwsdpPeer, final GnucashWritableTransaction transaction) {
+	@SuppressWarnings("exports")
+	public GnucashWritableTransactionSplitImpl(
+		final GncTransaction.TrnSplits.TrnSplit jwsdpPeer, 
+		final GnucashWritableTransaction transaction) {
 		super(jwsdpPeer, transaction);
 	}
 
@@ -59,18 +62,12 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 * @param transaction transaction the transaction we will belong to
 	 * @param account     the account we take money (or other things) from or give it to
 	 */
-	public GnucashWritableTransactionSplitImpl(final GnucashWritableTransactionImpl transaction, final GnucashAccount account) {
-		this(transaction, account, (transaction.getWritingFile()).createGUID());
-	}
-
-	/**
-	 * create a new split and and add it to the given transaction.
-	 *
-	 * @param transaction transaction the transaction we will belong to
-	 * @param account     the account we take money (or other things) from or give it to
-	 */
-	public GnucashWritableTransactionSplitImpl(final GnucashWritableTransactionImpl transaction, final GnucashAccount account, String pSplitID) {
-		super(createTransactionSplit(transaction, account, pSplitID), transaction);
+	public GnucashWritableTransactionSplitImpl(
+		final GnucashWritableTransactionImpl transaction, 
+		final GnucashAccount account) {
+		super(createTransactionSplit(transaction, account, 
+				(transaction.getWritingFile()).createGUID()), 
+				transaction);
 
 		// this is a workaound.
 		// if super does account.addSplit(this) it adds an instance on GnucashTransactionSplitImpl that is "!=
@@ -87,9 +84,10 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 * Creates a new Transaction and add's it to the given gnucash-file
 	 * Don't modify the ID of the new transaction!
 	 */
-	protected static GncTransaction.TrnSplits.TrnSplit createTransactionSplit(final GnucashWritableTransactionImpl transaction,
-			final GnucashAccount account,
-			final String pSplitID) {
+	protected static GncTransaction.TrnSplits.TrnSplit createTransactionSplit(
+		final GnucashWritableTransactionImpl transaction,
+		final GnucashAccount account,
+		final String pSplitID) {
 
 		if (transaction == null) {
 			throw new IllegalArgumentException("null transaction given");
@@ -343,7 +341,6 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void setLotID(final String lotID) {
 
 		GnucashWritableTransactionImpl transaction = (GnucashWritableTransactionImpl) getTransaction();

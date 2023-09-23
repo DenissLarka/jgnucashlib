@@ -136,6 +136,8 @@ public interface GnucashGenerJob {
 
     // ---------------------------------------------------------------
 
+    Collection<GnucashJobInvoice> getInvoices() throws WrongInvoiceTypeException;
+
     Collection<GnucashJobInvoice> getPaidInvoices() throws WrongInvoiceTypeException;
 
     Collection<GnucashJobInvoice> getUnpaidInvoices() throws WrongInvoiceTypeException;

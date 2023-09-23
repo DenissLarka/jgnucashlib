@@ -32,15 +32,14 @@ public class GnuCashSandbox {
 			System.out.println(account.getQualifiedName());
 		}
 
-
-
 		GnucashWritableTransaction writableTransaction = gnucashFile.createWritableTransaction();
-		writableTransaction.setDescription("check");
+		writableTransaction.setName("check");
 		writableTransaction.setCurrencyID("EUR");
 		writableTransaction.setDateEntered(LocalDateTime.now());
+		
 		GnucashWritableTransactionSplit writingSplit = writableTransaction.createWritingSplit(gnucashFile.getAccountByName("Root Account::Income::Bonus"));
 		writingSplit.setValue(new FixedPointNumber(100));
-		writingSplit.setDescription("descr");
+		writingSplit.setName("descr");
 
 		Collection<? extends GnucashTransaction> transactions = gnucashFile.getTransactions();
 		for (GnucashTransaction transaction : transactions) {

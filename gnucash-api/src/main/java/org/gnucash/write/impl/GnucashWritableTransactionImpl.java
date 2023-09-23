@@ -67,8 +67,8 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
 	 *
 	 * @param file the file we belong to
 	 */
-	public GnucashWritableTransactionImpl(final GnucashWritableFileImpl file, final String id) {
-		super(createTransaction(file, id), file);
+	public GnucashWritableTransactionImpl(final GnucashWritableFileImpl file) {
+		super(createTransaction(file, file.createGUID()), file);
 		file.addTransaction(this);
 	}
 
@@ -120,23 +120,12 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
 	 * @see GnucashWritableTransaction#createWritingSplit(GnucashAccount)
 	 */
 	public GnucashWritableTransactionSplit createWritingSplit(final GnucashAccount account) {
-		GnucashWritableTransactionSplitImpl gnucashTransactionSplitWritingImpl = new GnucashWritableTransactionSplitImpl(this, account);
-		addSplit(gnucashTransactionSplitWritingImpl);
+		GnucashWritableTransactionSplitImpl splt = new GnucashWritableTransactionSplitImpl(this, account);
+		addSplit(splt);
 		if (getPropertyChangeSupport() != null) {
 			getPropertyChangeSupport().firePropertyChange("splits", null, getWritingSplits());
 		}
-		return gnucashTransactionSplitWritingImpl;
-	}
-
-	/**
-	 * @see GnucashWritableTransaction#createWritingSplit(GnucashAccount)
-	 */
-	public GnucashWritableTransactionSplit createWritingSplit(final GnucashAccount account, final String splitID) {
-		GnucashWritableTransactionSplitImpl gnucashTransactionSplitWritingImpl = new GnucashWritableTransactionSplitImpl(this, account, splitID);
-		if (getPropertyChangeSupport() != null) {
-			getPropertyChangeSupport().firePropertyChange("splits", null, getWritingSplits());
-		}
-		return gnucashTransactionSplitWritingImpl;
+		return splt;
 	}
 
 	/**
@@ -307,7 +296,7 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
 	}
 
 	/**
-	 * @see GnucashWritableTransaction#setDescription(java.lang.String)
+	 * @see GnucashWritableTransaction#setNotes(java.lang.String)
 	 */
 	public void setDescription(final String desc) {
 		if (desc == null) {

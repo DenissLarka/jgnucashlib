@@ -19,9 +19,9 @@ public class TestGnucashCustomerImpl
   private static GnucashFile     gcshFile = null;
   private static GnucashCustomer cust = null;
   
-  private static final String CUST_1_ID = "5d1dd9afa7554553988669830cc1f696";
-  private static final String CUST_2_ID = "f44645d2397946bcac90dff68cc03b76";
-  private static final String CUST_3_ID = "1d2081e8a10e4d5e9312d9fff17d470d";
+  public static final String CUST_1_ID = "5d1dd9afa7554553988669830cc1f696";
+  public static final String CUST_2_ID = "f44645d2397946bcac90dff68cc03b76";
+  public static final String CUST_3_ID = "1d2081e8a10e4d5e9312d9fff17d470d";
 
   // -----------------------------------------------------------------
   

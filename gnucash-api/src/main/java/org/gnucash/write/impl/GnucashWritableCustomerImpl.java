@@ -32,7 +32,9 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	/**
 	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
 	 */
-	public void setUserDefinedAttribute(final String name, final String value) {
+	public void setUserDefinedAttribute(
+		final String name, 
+		final String value) {
 		helper.setUserDefinedAttribute(name, value);
 	}
 
@@ -42,7 +44,9 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	 * @param file      the file we belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 */
-	protected GnucashWritableCustomerImpl(final GncV2.GncBook.GncGncCustomer jwsdpPeer, final GnucashWritableFileImpl file) {
+	protected GnucashWritableCustomerImpl(
+		final GncV2.GncBook.GncGncCustomer jwsdpPeer, 
+		final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
@@ -52,9 +56,8 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	 * @param file the file we belong to
 	 * @param id   the ID we shall have
 	 */
-	protected GnucashWritableCustomerImpl(final GnucashWritableFileImpl file,
-			final String id) {
-		super(createCustomer(file, id), file);
+	protected GnucashWritableCustomerImpl(final GnucashWritableFileImpl file) {
+		super(createCustomer(file, file.createGUID()), file);
 	}
 
 	/**

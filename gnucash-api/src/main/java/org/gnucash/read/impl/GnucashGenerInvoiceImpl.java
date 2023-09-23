@@ -97,6 +97,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
    * @see #jwsdpPeer
    * @param gncFile the file to register under
    */
+  @SuppressWarnings("exports")
   public GnucashGenerInvoiceImpl(
           final GncV2.GncBook.GncGncInvoice peer,
           final GnucashFile gncFile) {
@@ -269,7 +270,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 
 	  FixedPointNumber retval = new FixedPointNumber();
 	  
-	  for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+	  for (GnucashGenerInvoiceEntry entry : getGenerEntries()) {
         if ( entry.getType().equals(getType()) ) {
           retval.add(entry.getInvcSumExclTaxes());
         }
@@ -294,7 +295,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
   	//      multiply the sums with the tax% to be calculatng
   	//      correctly
   
-  	for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+  	for (GnucashGenerInvoiceEntry entry : getGenerEntries()) {
       if ( entry.getType().equals(getType()) ) {
   		retval.add(entry.getInvcSumInclTaxes());
       }
@@ -315,7 +316,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 
   	FixedPointNumber retval = new FixedPointNumber();
   
-  	for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+  	for (GnucashGenerInvoiceEntry entry : getGenerEntries()) {
       if ( entry.getType().equals(getType()) ) {
   		retval.add(entry.getInvcSumExclTaxes());
       }
@@ -405,7 +406,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
     public FixedPointNumber getBillAmountPaidWithoutTaxes() throws WrongInvoiceTypeException {
       FixedPointNumber retval = new FixedPointNumber();
       
-      for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+      for (GnucashGenerInvoiceEntry entry : getGenerEntries()) {
         if ( entry.getType().equals(getType()) ) {
           retval.add(entry.getBillSumExclTaxes());
         }
@@ -426,7 +427,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
       //      multiply the sums with the tax% to be calculatng
       //      correctly
     
-      for ( GnucashGenerInvoiceEntry entry : getGenerInvcEntries() ) {
+      for ( GnucashGenerInvoiceEntry entry : getGenerEntries() ) {
         if ( entry.getType().equals(getType()) ) {
           retval.add(entry.getBillSumInclTaxes());
         }
@@ -443,7 +444,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
     
       FixedPointNumber retval = new FixedPointNumber();
     
-      for ( GnucashGenerInvoiceEntry entry : getGenerInvcEntries() ) {
+      for ( GnucashGenerInvoiceEntry entry : getGenerEntries() ) {
         if ( entry.getType().equals(getType()) ) {
           retval.add(entry.getBillSumExclTaxes());
         }
@@ -642,7 +643,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 		List<GCshTaxedSumImpl> taxedSums = new LinkedList<GCshTaxedSumImpl>();
 
 		invoiceentries:
-		for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+		for (GnucashGenerInvoiceEntry entry : getGenerEntries()) {
           if ( entry.getType().equals(getType()) ) {
 			FixedPointNumber taxPerc = entry.getInvcApplicableTaxPercent();
 
@@ -680,7 +681,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
         List<GCshTaxedSumImpl> taxedSums = new LinkedList<GCshTaxedSumImpl>();
 
         invoiceentries:
-        for (GnucashGenerInvoiceEntry entry : getGenerInvcEntries()) {
+        for (GnucashGenerInvoiceEntry entry : getGenerEntries()) {
           if ( entry.getType().equals(getType()) ) {
             FixedPointNumber taxPerc = entry.getBillApplicableTaxPercent();
 
@@ -777,8 +778,8 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
     /**
      * {@inheritDoc}
      */
-    public GnucashGenerInvoiceEntry getGenerInvcEntryById(final String id) {
-        for (GnucashGenerInvoiceEntry element : getGenerInvcEntries()) {
+    public GnucashGenerInvoiceEntry getGenerEntryById(final String id) {
+        for (GnucashGenerInvoiceEntry element : getGenerEntries()) {
             if (element.getId().equals(id)) {
                 return element;
             }
@@ -790,14 +791,14 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection<GnucashGenerInvoiceEntry> getGenerInvcEntries() {
+	public Collection<GnucashGenerInvoiceEntry> getGenerEntries() {
 	    return entries;
 	}
 
     /**
      * {@inheritDoc}
      */
-    public void addGenerInvcEntry(final GnucashGenerInvoiceEntry entry) {
+    public void addGenerEntry(final GnucashGenerInvoiceEntry entry) {
         if (!entries.contains(entry)) {
             entries.add(new GnucashGenerInvoiceEntryImpl(entry));
         }

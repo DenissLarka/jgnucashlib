@@ -1,5 +1,6 @@
 package org.gnucash.write.impl.spec;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.gnucash.generated.GncV2;
@@ -46,21 +47,24 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	 */
 	protected GnucashWritableVendorBillImpl(
 			final GnucashWritableFileImpl file,
-			final String internalID,
 			final String invoiceNumber,
 			final GnucashGenerJob job,
 			final GnucashAccountImpl accountToTransferMoneyTo,
-			final Date dueDate) {
-		super(createInvoice(file, internalID, invoiceNumber, job, accountToTransferMoneyTo, dueDate), file);
+			final LocalDate dueDate) {
+		super(createJobInvoice(file, invoiceNumber, job, accountToTransferMoneyTo, dueDate), file);
 	}
 
 	/**
 	 * create and add a new entry.
 	 * @throws WrongInvoiceTypeException 
+	 * @throws NoTaxTableFoundException 
 	 */
-	public GnucashWritableVendorBillEntry createEntry(final FixedPointNumber singleUnitPrice, final FixedPointNumber quantity) throws WrongInvoiceTypeException {
-		GnucashWritableGenerInvoiceEntry entryGener = createGenerEntry(singleUnitPrice, quantity);
-		return new GnucashVendorBillEntry(entryGener);
+	public GnucashWritableVendorBillEntry createEntry(
+		final GnucashAccount acct,
+		final FixedPointNumber singleUnitPrice, 
+		final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		GnucashWritableGenerInvoiceEntry entryGener = createGenerEntry(acct, singleUnitPrice, quantity);
+		return new GnucashWritableVendorBillEntryImpl(entryGener);
 	}
 
 	/**
@@ -71,12 +75,13 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	 * @throws NoTaxTableFoundException 
 	 */
 	public GnucashWritableVendorBillEntry createEntry(
-			final FixedPointNumber singleUnitPrice,
-			final FixedPointNumber quantity,
-			final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		final GnucashAccount acct,
+		final FixedPointNumber singleUnitPrice,
+		final FixedPointNumber quantity,
+		final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-		GnucashWritableGenerInvoiceEntry entryGener = createGenerEntry(singleUnitPrice, quantity, tax);
-		return new GnucashVendorBillEntryImpl(entryGener);
+		GnucashWritableGenerInvoiceEntry entryGener = createGenerEntry(acct, singleUnitPrice, quantity, tax);
+		return new GnucashWritableVendorBillEntryImpl(entryGener);
 	}
 
 	/**
@@ -87,13 +92,16 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	 * @throws NoTaxTableFoundException 
 	 */
 	public GnucashWritableVendorBillEntry createEntry(
-			final FixedPointNumber singleUnitPrice, 
-			final FixedPointNumber quantity,
-			final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		final GnucashAccount acct,
+		final FixedPointNumber singleUnitPrice, 
+		final FixedPointNumber quantity,
+		final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-		GnucashWritableGenerInvoiceEntry entryGener = createGenerEntry(singleUnitPrice, quantity, tax);
-		return (GnucashWritableVednorBillEntry) new GnucashVendorBillEntry(entryGener);
+		GnucashWritableGenerInvoiceEntry entryGener = createGenerEntry(acct, singleUnitPrice, quantity, tax);
+		return new GnucashWritableVendorBillEntryImpl(entryGener);
 	}
+	
+	// -----------------------------------------------------------
 
 	/**
 	 * @throws WrongInvoiceTypeException 
@@ -123,10 +131,16 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	}
 
 	/**
-	 * @return the AccountID of the Account to transfer the money from
+	 * @return the ID of the Account to transfer the money from
+	 * @throws WrongInvoiceTypeException 
 	 */
-	private String getAccountIDToTransferMoneyFrom(final GnucashVendorBillEntryImpl entry) {
+	private String getAccountIDToTransferMoneyFrom(final GnucashVendorBillEntryImpl entry) throws WrongInvoiceTypeException {
 		return getBillAccountIDToTransferMoneyFrom(entry);
+	}
+
+	@Override
+	protected String getInvcAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException {
+		throw new WrongInvoiceTypeException();
 	}
 
 	/**
@@ -134,24 +148,25 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	 *
 	 * @see #isModifiable()
 	 */
-	protected void atemptChange() {
+	protected void attemptChange() {
 		if (!isModifiable()) {
 			throw new IllegalStateException("this vendor bill is NOT changable because there are already payment for it made!");
 		}
 	}
 
 	/**
+	 * @throws WrongInvoiceTypeException 
 	 * @see GnucashWritableGenerInvoice#setGenerJob(GnucashGenerJob)
 	 */
-	public void setJob(final GnucashVendorJob job) {
+	public void setJob(final GnucashVendorJob job) throws WrongInvoiceTypeException {
 		setGenerJob(job);
 	}
 
 	/**
-	 * @see GnucashWritableGenerInvoice#getWritableEntryById(java.lang.String)
+	 * @see GnucashWritableGenerInvoice#getWritableGenerEntryById(java.lang.String)
 	 */
 	public GnucashWritableVendorBillEntry getWritableEntryById(final String id) {
-		return (GnucashWritableVendorBillEntry) super.getGenerInvcEntryById(id);
+		return new GnucashWritableVendorBillEntryImpl(getGenerEntryById(id));
 	}
 
 }

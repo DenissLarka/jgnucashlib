@@ -97,8 +97,8 @@ public class TestGnucashJobInvoiceImpl
     // Note: That the following three return the same result
     // is *not* trivial (in fact, a serious implemetation error was
     // found with this test)
-    assertEquals(3, invcGen.getGenerInvcEntries().size());
-    assertEquals(3, invcSpec.getGenerInvcEntries().size());
+    assertEquals(3, invcGen.getGenerEntries().size());
+    assertEquals(3, invcSpec.getGenerEntries().size());
     assertEquals(3, invcSpec.getEntries().size());
 
     TreeSet entrList = new TreeSet(); // sort elements of HashSet

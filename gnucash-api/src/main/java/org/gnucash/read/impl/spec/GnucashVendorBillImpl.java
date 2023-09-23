@@ -25,6 +25,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorBillImpl.class);
 
+  @SuppressWarnings("exports")
   public GnucashVendorBillImpl(final GncGncInvoice peer, final GnucashFile gncFile)
   {
     super(peer, gncFile);
@@ -39,7 +40,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
     if ( ! invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT).equals(GnucashGenerInvoice.TYPE_VENDOR) )
       throw new WrongInvoiceTypeException();
     
-    for ( GnucashGenerInvoiceEntry entry : invc.getGenerInvcEntries() )
+    for ( GnucashGenerInvoiceEntry entry : invc.getGenerEntries() )
     {
       addEntry(new GnucashVendorBillEntryImpl(entry));
     }
@@ -90,7 +91,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
   @Override
   public GnucashVendorBillEntry getEntryById(String id) throws WrongInvoiceTypeException
   {
-    return new GnucashVendorBillEntryImpl(getGenerInvcEntryById(id));
+    return new GnucashVendorBillEntryImpl(getGenerEntryById(id));
   }
 
   @Override
@@ -98,7 +99,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
   {
     Collection<GnucashVendorBillEntry> castEntries = new HashSet<GnucashVendorBillEntry>();
     
-    for ( GnucashGenerInvoiceEntry entry : getGenerInvcEntries() )
+    for ( GnucashGenerInvoiceEntry entry : getGenerEntries() )
     {
       if ( entry.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) )
       {
@@ -112,7 +113,7 @@ public class GnucashVendorBillImpl extends GnucashGenerInvoiceImpl
   @Override
   public void addEntry(final GnucashVendorBillEntry entry)
   {
-    addGenerInvcEntry(entry);
+    addGenerEntry(entry);
   }
 
   // -----------------------------------------------------------------

@@ -17,6 +17,7 @@ public class GnucashVendorBillEntryImpl extends GnucashGenerInvoiceEntryImpl
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorBillEntryImpl.class);
 
+  @SuppressWarnings("exports")
   public GnucashVendorBillEntryImpl(
           final GnucashVendorBill invoice,
           final GncV2.GncBook.GncGncEntry peer) 
@@ -24,6 +25,7 @@ public class GnucashVendorBillEntryImpl extends GnucashGenerInvoiceEntryImpl
     super(invoice, peer, true);
   }
 
+  @SuppressWarnings("exports")
   public GnucashVendorBillEntryImpl(
           final GnucashGenerInvoice invoice,
           final GncV2.GncBook.GncGncEntry peer) throws WrongInvoiceTypeException 
