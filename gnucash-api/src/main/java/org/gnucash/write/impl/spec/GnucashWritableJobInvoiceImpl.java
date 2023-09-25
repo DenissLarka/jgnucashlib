@@ -68,7 +68,7 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 
 	    // No, we cannot check that first, because the super() method
 	    // always has to be called first.
-	    if ( ! invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT).equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
+	    if ( ! invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT).equals(GnucashGenerInvoice.TYPE_JOB) )
 	      throw new WrongInvoiceTypeException();
 
 	    // ::TODO
@@ -273,15 +273,15 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 
 	/**
 	 * Called by
-	 * ${@link GnucashWritableJobInvoiceEntryImpl#createInvoiceEntry(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
+	 * ${@link GnucashWritableJobInvoiceEntryImpl#createCustInvoiceEntry(GnucashWritableJobInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
 	 *
 	 * @param entry the entry to add to our internal list of job-invoice-entries
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	protected void addEntry(final GnucashJobInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	protected void addEntry(final GnucashWritableJobInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-		addInvcEntry(entry);
+		addJobEntry(entry);
 	}
 
 	protected void subtractEntry(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
@@ -293,7 +293,7 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 	 * @throws WrongInvoiceTypeException 
 	 */
 	private String getAccountIDToTransferMoneyFrom(final GnucashJobInvoiceEntryImpl entry) throws WrongInvoiceTypeException {
-		return getInvcAccountIDToTransferMoneyFrom(entry);
+		return getInvcAccountIDToTransferMoneyTo(entry);
 	}
 
 	protected String getBillAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException {

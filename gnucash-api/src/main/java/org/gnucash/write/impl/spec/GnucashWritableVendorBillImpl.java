@@ -202,6 +202,8 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	    }
 	}
 
+	// -----------------------------------------------------------
+
 	/**
 	 * create and add a new entry.
 	 * @throws WrongInvoiceTypeException 
@@ -263,13 +265,13 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 
 	/**
 	 * Called by
-	 * ${@link GnucashWritableVendorBillEntryImpl#createInvoiceEntry(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
+	 * ${@link GnucashWritableVendorBillEntryImpl#createVendBillEntry(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
 	 *
 	 * @param entry the entry to add to our internal list of vendor-bill-entries
 	 * @throws WrongInvoiceTypeException 
 	 * @throws NoTaxTableFoundException 
 	 */
-	protected void addEntry(final GnucashVendorBillEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	protected void addEntry(final GnucashWritableVendorBillEntryImpl entry) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
 		addBillEntry(entry);
 	}
@@ -287,7 +289,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	}
 
 	@Override
-	protected String getInvcAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException {
+	protected String getInvcAccountIDToTransferMoneyTo(final GnucashGenerInvoiceEntryImpl entry) throws WrongInvoiceTypeException {
 		throw new WrongInvoiceTypeException();
 	}
 

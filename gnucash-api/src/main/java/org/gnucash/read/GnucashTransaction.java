@@ -18,10 +18,10 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
   // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Transaction.h
   
   // ::MAGIC
-  public static final char TXN_TYPE_NONE  = '\0';
-  public static final char TYPE_INVOICE   = 'I';
-  public static final char TYPE_PAYMENT   = 'P';
-  public static final char TXN_TYPE_LINK  = 'L';
+  public static final char TYPE_NONE    = '\0';
+  public static final char TYPE_INVOICE = 'I';
+  public static final char TYPE_PAYMENT = 'P';
+  public static final char TYPE_LINK    = 'L';
   
   // -----------------------------------------------------------------
 

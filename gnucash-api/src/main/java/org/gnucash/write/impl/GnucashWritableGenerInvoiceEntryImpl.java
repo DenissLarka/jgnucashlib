@@ -11,6 +11,7 @@ import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.IllegalGenerInvoiceEntryActionException;
+import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
@@ -19,7 +20,10 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
+import org.gnucash.write.impl.spec.GnucashWritableCustomerInvoiceImpl;
 import org.gnucash.write.impl.spec.GnucashWritableJobInvoiceEntryImpl;
+import org.gnucash.write.impl.spec.GnucashWritableJobInvoiceImpl;
+import org.gnucash.write.impl.spec.GnucashWritableVendorBillImpl;
 import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
 
 /**
@@ -49,64 +53,56 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     // -----------------------------------------------------------
 
     /**
+     * @throws WrongInvoiceTypeException 
      * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
      */
-    protected static GncV2.GncBook.GncGncEntry createInvoiceEntry(final GnucashWritableGenerInvoiceImpl invoice,
-	    final GnucashAccount account, final FixedPointNumber quantity, final FixedPointNumber price) {
+    protected static GncV2.GncBook.GncGncEntry createCustInvoiceEntry(
+	    final GnucashWritableGenerInvoiceImpl invc, // important: NOT GnucashWritableCustomerInvoiceImpl
+	    final GnucashAccount acct, 
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber price) throws WrongInvoiceTypeException {
+
+	if ( ! invc.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) &&
+		! invc.getType().equals(GnucashGenerInvoice.TYPE_JOB) )
+	    throw new WrongInvoiceTypeException();
 
 	// TODO: keep count-data in file intact <gnc:count-data
 	// cd:type="gnc:GncEntry">18</gnc:count-data>
 
-	if (!invoice.isModifiable()) {
-	    throw new IllegalArgumentException("The given invoice has payments and is" + " thus not modifiable");
+	if (!invc.isModifiable()) {
+	    throw new IllegalArgumentException("The given customer invoice has payments and is" + " thus not modifiable");
 	}
 
-	GnucashWritableFileImpl gnucashFileWritingImpl = (GnucashWritableFileImpl) invoice.getFile();
-	ObjectFactory factory = gnucashFileWritingImpl.getObjectFactory();
+	GnucashWritableFileImpl gcshWFile = (GnucashWritableFileImpl) invc.getFile();
+	ObjectFactory factory = gcshWFile.getObjectFactory();
 
-	GncV2.GncBook.GncGncEntry entry = gnucashFileWritingImpl.createGncGncEntryType();
-
-	{
-	    GncV2.GncBook.GncGncEntry.EntryGuid guid = factory.createGncV2GncBookGncGncEntryEntryGuid();
-	    guid.setType("guid");
-	    guid.setValue((gnucashFileWritingImpl).createGUID());
-	    entry.setEntryGuid(guid);
-	}
-
-	entry.setEntryAction(ACTION_HOURS);
-	{
-	    GncV2.GncBook.GncGncEntry.EntryDate entryDate = factory.createGncV2GncBookGncGncEntryEntryDate();
-	    entryDate.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
-	    entry.setEntryDate(entryDate);
-	}
-	entry.setEntryDescription("no description");
-	{
-	    GncV2.GncBook.GncGncEntry.EntryEntered entered = factory.createGncV2GncBookGncGncEntryEntryEntered();
-	    entered.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
-	    entry.setEntryEntered(entered);
-	}
+	GncV2.GncBook.GncGncEntry entry = createGenerInvoiceEntryCommon(invc, gcshWFile, factory);
+	
 	{
 	    GncV2.GncBook.GncGncEntry.EntryIAcct iacct = factory.createGncV2GncBookGncGncEntryEntryIAcct();
 	    iacct.setType("guid");
-	    iacct.setValue(account.getId());
+	    iacct.setValue(acct.getId());
 	    entry.setEntryIAcct(iacct);
 	}
+	
 	entry.setEntryIDiscHow("PRETAX");
 	entry.setEntryIDiscType("PERCENT");
+	
 	{
 
 	    GncV2.GncBook.GncGncEntry.EntryInvoice inv = factory.createGncV2GncBookGncGncEntryEntryInvoice();
 	    inv.setType("guid");
-	    inv.setValue(invoice.getId());
+	    inv.setValue(invc.getId());
 	    entry.setEntryInvoice(inv);
 	}
+	
 	entry.setEntryIPrice(price.toGnucashString());
 	entry.setEntryITaxable(1);
 	entry.setEntryITaxincluded(0);
+	
 	{
 	    // TODO: use not the first but the default taxtable
-	    GncV2.GncBook.GncGncEntry.EntryITaxtable taxtableref = factory
-		    .createGncV2GncBookGncGncEntryEntryITaxtable();
+	    GncV2.GncBook.GncGncEntry.EntryITaxtable taxtableref = factory.createGncV2GncBookGncGncEntryEntryITaxtable();
 	    taxtableref.setType("guid");
 
 	    GCshTaxTable taxTable = null;
@@ -118,7 +114,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 
 	    // use first tax-table found
 	    if (taxTable == null) {
-		taxTable = invoice.getFile().getTaxTables().iterator().next();
+		taxTable = invc.getFile().getTaxTables().iterator().next();
 	    }
 
 	    /*
@@ -135,13 +131,166 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	entry.setEntryQty(quantity.toGnucashString());
 	entry.setVersion(Const.XML_FORMAT_VERSION);
 
-	invoice.getFile().getRootElement().getGncBook().getBookElements().add(entry);
-	invoice.getFile().setModified(true);
+	invc.getFile().getRootElement().getGncBook().getBookElements().add(entry);
+	invc.getFile().setModified(true);
 
 	return entry;
     }
 
-    // -----------------------------------------------------------
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
+     */
+    protected static GncV2.GncBook.GncGncEntry createVendBillEntry(
+	    final GnucashWritableGenerInvoiceImpl invc, // important: NOT GnucashWritableVendorBillImpl
+	    final GnucashAccount acct, 
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber price) throws WrongInvoiceTypeException {
+
+	if ( ! invc.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) &&
+		! invc.getType().equals(GnucashGenerInvoice.TYPE_JOB) )
+	    throw new WrongInvoiceTypeException();
+
+	// TODO: keep count-data in file intact <gnc:count-data
+	// cd:type="gnc:GncEntry">18</gnc:count-data>
+
+	if (!invc.isModifiable()) {
+	    throw new IllegalArgumentException("The given vendor bill has payments and is" + " thus not modifiable");
+	}
+
+	GnucashWritableFileImpl gcshWFile = (GnucashWritableFileImpl) invc.getFile();
+	ObjectFactory factory = gcshWFile.getObjectFactory();
+
+	GncV2.GncBook.GncGncEntry entry = createGenerInvoiceEntryCommon(invc, gcshWFile, factory);
+		
+	{
+	    GncV2.GncBook.GncGncEntry.EntryBAcct iacct = factory.createGncV2GncBookGncGncEntryEntryBAcct();
+	    iacct.setType("guid");
+	    iacct.setValue(acct.getId());
+	    entry.setEntryBAcct(iacct);
+	}
+
+	{
+
+	    GncV2.GncBook.GncGncEntry.EntryInvoice inv = factory.createGncV2GncBookGncGncEntryEntryInvoice();
+	    inv.setType("guid");
+	    inv.setValue(invc.getId());
+	    entry.setEntryInvoice(inv);
+	}
+	
+	entry.setEntryBPrice(price.toGnucashString());
+	entry.setEntryBTaxable(1);
+	entry.setEntryBTaxincluded(0);
+	
+	{
+	    // TODO: use not the first but the default taxtable
+	    GncV2.GncBook.GncGncEntry.EntryBTaxtable taxtableref = factory.createGncV2GncBookGncGncEntryEntryBTaxtable();
+	    taxtableref.setType("guid");
+
+	    GCshTaxTable taxTable = null;
+	    // ::TODO
+	    // GnucashCustomer customer = invoice.getCustomer();
+	    // if (customer != null) {
+	    // taxTable = customer.getCustomerTaxTable();
+	    // }
+
+	    // use first tax-table found
+	    if (taxTable == null) {
+		taxTable = invc.getFile().getTaxTables().iterator().next();
+	    }
+
+	    /*
+	     * GncV2Type.GncBookType.GncGncTaxTableType taxtable =
+	     * (GncV2Type.GncBookType.GncGncTaxTableType) ((GnucashFileImpl)
+	     * invoice.getFile()).getRootElement().getGncBook().getGncGncTaxTable().get(0);
+	     * 
+	     * taxtableref.setValue(taxtable.getTaxtableGuid().getValue());
+	     */
+	    taxtableref.setValue(taxTable.getId());
+	    entry.setEntryBTaxtable(taxtableref);
+	}
+
+	entry.setEntryQty(quantity.toGnucashString());
+	entry.setVersion(Const.XML_FORMAT_VERSION);
+
+	invc.getFile().getRootElement().getGncBook().getBookElements().add(entry);
+	invc.getFile().setModified(true);
+
+	return entry;
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException 
+     * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
+     */
+    protected static GncV2.GncBook.GncGncEntry createJobInvoiceEntry(
+	    final GnucashWritableGenerInvoiceImpl invc, // important: NOT GnucashWritableJobInvoiceImpl
+	    final GnucashAccount acct, 
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber price) throws WrongInvoiceTypeException {
+	
+	if ( ! invc.getType().equals(GnucashGenerInvoice.TYPE_JOB) )
+	    throw new WrongInvoiceTypeException();
+
+	// TODO: keep count-data in file intact <gnc:count-data
+	// cd:type="gnc:GncEntry">18</gnc:count-data>
+
+	if (!invc.isModifiable()) {
+	    throw new IllegalArgumentException("The given job invoice has payments and is" + " thus not modifiable");
+	}
+	
+	if ( invc.getOwnerType(GnucashGenerInvoice.ReadVariant.VIA_JOB).equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
+	    return createCustInvoiceEntry(invc, acct, quantity, price);
+	else if ( invc.getOwnerType(GnucashGenerInvoice.ReadVariant.VIA_JOB).equals(GnucashGenerInvoice.TYPE_VENDOR) )
+	    return createVendBillEntry(invc, acct, quantity, price);
+	
+	return null; // Compiler happy
+    }
+
+    @SuppressWarnings("unused")
+    private static GncV2.GncBook.GncGncEntry createGenerInvoiceEntryCommon(
+	    final GnucashWritableGenerInvoiceImpl invoice,
+	    final GnucashWritableFileImpl gnucashFileWritingImpl,
+	    final ObjectFactory factory) {
+
+	// TODO: keep count-data in file intact <gnc:count-data
+	// cd:type="gnc:GncEntry">18</gnc:count-data>
+
+	if (!invoice.isModifiable()) {
+	    throw new IllegalArgumentException("The given invoice has payments and is" + " thus not modifiable");
+	}
+
+	GncV2.GncBook.GncGncEntry entry = gnucashFileWritingImpl.createGncGncEntryType();
+
+	{
+	    GncV2.GncBook.GncGncEntry.EntryGuid guid = factory.createGncV2GncBookGncGncEntryEntryGuid();
+	    guid.setType("guid");
+	    guid.setValue((gnucashFileWritingImpl).createGUID());
+	    entry.setEntryGuid(guid);
+	}
+
+	entry.setEntryAction(ACTION_HOURS);
+	
+	{
+	    GncV2.GncBook.GncGncEntry.EntryDate entryDate = factory.createGncV2GncBookGncGncEntryEntryDate();
+	    // ::TODO
+	    entryDate.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
+	    entry.setEntryDate(entryDate);
+	}
+	
+	entry.setEntryDescription("no description");
+	
+	{
+	    GncV2.GncBook.GncGncEntry.EntryEntered entered = factory.createGncV2GncBookGncGncEntryEntryEntered();
+	    // ::TODO
+	    entered.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
+	    entry.setEntryEntered(entered);
+	}
+	
+	return entry;
+    }
+    
+    // ---------------------------------------------------------------
 
     /**
      * @param gnucashFile the file we belong to
@@ -185,9 +334,9 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     public GnucashWritableGenerInvoiceEntryImpl(final GnucashWritableGenerInvoiceImpl invoice,
 	    final GnucashAccount account, final FixedPointNumber quantity, final FixedPointNumber price)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	super(invoice, createInvoiceEntry(invoice, account, quantity, price), true);
+	super(invoice, createCustInvoiceEntry(invoice, account, quantity, price), true);
 
-	invoice.addInvcEntry(this);
+	invoice.addRawGenerEntry(this);
 	this.invoice = invoice;
     }
 
@@ -249,7 +398,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     @Override
     public void setInvcTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && !getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
@@ -269,7 +419,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws NoTaxTableFoundException
      */
     public void setInvcTaxTable(final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && !getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
@@ -300,7 +451,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      */
     public void setBillTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && !getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractBillEntry(this);
@@ -320,7 +472,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws NoTaxTableFoundException
      */
     public void setBillTaxTable(final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && !getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
@@ -400,7 +553,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @see GnucashWritableGenerInvoiceEntry#setInvcPrice(FixedPointNumber)
      */
     public void setInvcPrice(final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && !getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();
 
 	if (!this.getGenerInvoice().isModifiable()) {
@@ -447,7 +601,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     @Override
     public void setBillPrice(final FixedPointNumber price)
 	    throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && !getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();
 
 	if (!this.getGenerInvoice().isModifiable()) {
@@ -526,8 +681,10 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @see GnucashWritableGenerInvoiceEntry#setAction(java.lang.String)
      */
     public void setAction(final String action) {
-	if (action != null && !action.equals(ACTION_JOB) && !action.equals(ACTION_MATERIAL)
-		&& !action.equals(ACTION_HOURS)) {
+	if (action != null && 
+		!action.equals(ACTION_JOB) && 
+		!action.equals(ACTION_MATERIAL) && 
+		!action.equals(ACTION_HOURS)) {
 	    throw new IllegalGenerInvoiceEntryActionException();
 	}
 

@@ -73,9 +73,9 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 		final GnucashAccount account,
 		final FixedPointNumber quantity,
 		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createInvoiceEntry(invoice, account, quantity, price));
+		super(invoice, createJobInvoiceEntry(invoice, account, quantity, price));
 		
-		invoice.addInvcEntry(this);
+		invoice.addJobEntry(this);
 		this.myInvoice = invoice;
 	}
 

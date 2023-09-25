@@ -20,6 +20,23 @@ public interface GCshOwner {
     
     public static final String TYPE_UNSET    = "UNSET";
     
+    // -------------------------------------------
+    // Caution: Do *not* change the following enum -- neither the number of entries
+    // nor their order. Reason: they implicitly define indices (by calling the orginal()
+    // method), and these, in turn, are directly mapped to numeric values in the GnuCash file.
+    // 
+    // Cf. https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/gncOwner.h
+    // -------------------------------------------
+    public enum Type
+    {
+	NONE,
+	UNDEFINED,
+	CUSTOMER,
+	JOB,
+	VENDOR,
+	EMPLOYEE
+    }
+    
     // -----------------------------------------------------------------
   
     public JIType getJIType();

@@ -73,7 +73,7 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 		final GnucashAccount account,
 		final FixedPointNumber quantity,
 		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createInvoiceEntry(invoice, account, quantity, price));
+		super(invoice, createVendBillEntry(invoice, account, quantity, price));
 		
 		invoice.addBillEntry(this);
 		this.myInvoice = invoice;

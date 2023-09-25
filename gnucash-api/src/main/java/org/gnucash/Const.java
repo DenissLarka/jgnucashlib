@@ -7,6 +7,8 @@ public class Const
   
   public static final String STANDARD_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss Z";
 
+  public static final String STANDARD_DATE_FORMAT_BOOK = "yyyy-MM-dd HH:mm:ss";
+
   public static final double DIFF_TOLERANCE = 0.005;
 
 }
