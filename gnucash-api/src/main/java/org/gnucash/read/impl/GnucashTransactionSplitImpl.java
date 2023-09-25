@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
+import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
@@ -185,7 +186,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
     public String getValueFormatted(final Locale locale) {
 
 	NumberFormat cf = NumberFormat.getInstance(locale);
-	if (getTransaction().getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
+	if (getTransaction().getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
 	    cf.setCurrency(Currency.getInstance(getTransaction().getCurrencyID()));
 	} else {
 	    cf = NumberFormat.getNumberInstance(locale);
@@ -250,7 +251,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      * @return the formatted number
      */
     public String getQuantityFormatted(final Locale locale) {
-	if (getTransaction().getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
+	if (getTransaction().getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
 	    return NumberFormat.getNumberInstance(locale).format(getQuantity());
 	}
 

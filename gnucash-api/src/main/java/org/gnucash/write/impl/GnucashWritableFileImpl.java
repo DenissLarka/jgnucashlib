@@ -43,6 +43,7 @@ import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.aux.GCshTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableAccount;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
@@ -51,9 +52,15 @@ import org.gnucash.write.GnucashWritableGenerJob;
 import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.write.GnucashWritableVendor;
+import org.gnucash.write.impl.spec.GnucashWritableCustomerInvoiceImpl;
 import org.gnucash.write.impl.spec.GnucashWritableCustomerJobImpl;
+import org.gnucash.write.impl.spec.GnucashWritableJobInvoiceImpl;
+import org.gnucash.write.impl.spec.GnucashWritableVendorBillImpl;
 import org.gnucash.write.impl.spec.GnucashWritableVendorJobImpl;
+import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
+import org.gnucash.write.spec.GnucashWritableJobInvoice;
+import org.gnucash.write.spec.GnucashWritableVendorBill;
 import org.gnucash.write.spec.GnucashWritableVendorJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1230,34 +1237,36 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 
 	/**
 	 * FOR USE BY EXTENSIONS ONLY!
+	 * @throws WrongInvoiceTypeException 
 	 *
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableGenerInvoice createWritableJobInvoice(
+	public GnucashWritableJobInvoice createWritableJobInvoice(
 			final String invoiceNumber,
 			final GnucashGenerJob job,
-			final GnucashAccount accountToTransferMoneyTo,
-			final LocalDate dueDate) {
+			final GnucashAccount accountToTransferMoneyFromTo,
+			final LocalDate dueDate) throws WrongInvoiceTypeException {
 		GnucashWritableGenerInvoiceImpl retval = new GnucashWritableGenerInvoiceImpl(this,
 				invoiceNumber,
 				job,
-				(GnucashAccountImpl) accountToTransferMoneyTo,
+				(GnucashAccountImpl) accountToTransferMoneyFromTo,
 				dueDate);
 
 		invoiceID2invoice.put(retval.getId(), retval);
-		return retval;
+		return new GnucashWritableJobInvoiceImpl(retval);
 	}
 
 	/**
 	 * FOR USE BY EXTENSIONS ONLY!
+	 * @throws WrongInvoiceTypeException 
 	 *
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableGenerInvoice createWritableCustomerInvoice(
+	public GnucashWritableCustomerInvoice createWritableCustomerInvoice(
 			final String invoiceNumber,
 			final GnucashCustomer cust,
 			final GnucashAccount accountToTransferMoneyTo,
-			final LocalDate dueDate) {
+			final LocalDate dueDate) throws WrongInvoiceTypeException {
 		GnucashWritableGenerInvoiceImpl retval = new GnucashWritableGenerInvoiceImpl(this,
 				invoiceNumber,
 				cust,
@@ -1265,27 +1274,28 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 				dueDate);
 
 		invoiceID2invoice.put(retval.getId(), retval);
-		return retval;
+		return new GnucashWritableCustomerInvoiceImpl(retval);
 	}
 
 	/**
 	 * FOR USE BY EXTENSIONS ONLY!
+	 * @throws WrongInvoiceTypeException 
 	 *
 	 * @see GnucashWritableFile#createWritableTransaction()
 	 */
-	public GnucashWritableGenerInvoice createWritableVendorInvoice(
+	public GnucashWritableVendorBill createWritableVendorBill(
 			final String invoiceNumber,
 			final GnucashVendor vend,
-			final GnucashAccount accountToTransferMoneyTo,
-			final LocalDate dueDate) {
+			final GnucashAccount accountToTransferMoneyFrom,
+			final LocalDate dueDate) throws WrongInvoiceTypeException {
 		GnucashWritableGenerInvoiceImpl retval = new GnucashWritableGenerInvoiceImpl(this,
 				invoiceNumber,
 				vend,
-				(GnucashAccountImpl) accountToTransferMoneyTo,
+				(GnucashAccountImpl) accountToTransferMoneyFrom,
 				dueDate);
 
 		invoiceID2invoice.put(retval.getId(), retval);
-		return retval;
+		return new GnucashWritableVendorBillImpl(retval);
 	}
 
     // ----------------------------

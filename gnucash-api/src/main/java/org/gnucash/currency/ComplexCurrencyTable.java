@@ -185,7 +185,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null currency-id given!");
 		}
 
-		return convertFromBaseCurrency("ISO4217", pValue, pIso4217CurrencyCode);
+		return convertFromBaseCurrency(CurrencyNameSpace.NAMESPACE_CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return convertToBaseCurrency("ISO4217", pValue, pIso4217CurrencyCode);
+		return convertToBaseCurrency(CurrencyNameSpace.NAMESPACE_CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return getConversionFactor("ISO4217", pIso4217CurrencyCode);
+		return getConversionFactor(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -273,9 +273,9 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null conversion-factor given!");
 		}
 
-		setConversionFactor("ISO4217", pIso4217CurrencyCode, pFactor);
+		setConversionFactor(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode, pFactor);
 
-		fireCurrencyTableChanged("ISO4217", pIso4217CurrencyCode, pFactor);
+		fireCurrencyTableChanged(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode, pFactor);
 	}
 
 	/**
@@ -356,7 +356,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	public ComplexCurrencyTable() {
 		super();
 
-		addNameSpace("ISO4217", new SimpleCurrencyTable());
+		addNameSpace(CurrencyNameSpace.NAMESPACE_CURRENCY, new SimpleCurrencyTable());
 	}
 
 	/**

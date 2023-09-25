@@ -12,7 +12,11 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
+import org.gnucash.write.spec.GnucashWritableJobInvoice;
+import org.gnucash.write.spec.GnucashWritableVendorBill;
 import org.gnucash.write.spec.GnucashWritableVendorJob;
 
 /**
@@ -192,23 +196,23 @@ public interface GnucashWritableFile extends GnucashFile, GnucashWritableObject 
 	 * FOR USE BY EXTENSIONS ONLY
 	 * @return a new invoice with no entries that is already added to this file
 	 */
-	GnucashWritableGenerInvoice createWritableJobInvoice(
+	GnucashWritableJobInvoice createWritableJobInvoice(
 		final String invoiceNumber,
 	        final GnucashGenerJob job,
 		final GnucashAccount accountToTransferMoneyTo,
-		final LocalDate dueDate);
+		final LocalDate dueDate) throws WrongInvoiceTypeException;
 
-	GnucashWritableGenerInvoice createWritableCustomerInvoice(
+	GnucashWritableCustomerInvoice createWritableCustomerInvoice(
 		final String invoiceNumber,
 		final GnucashCustomer cust,
 		final GnucashAccount accountToTransferMoneyTo,
-	        final LocalDate dueDate);
+	        final LocalDate dueDate) throws WrongInvoiceTypeException;
 
-	GnucashWritableGenerInvoice createWritableVendorInvoice(
+	GnucashWritableVendorBill createWritableVendorBill(
 		final String invoiceNumber,
 	        final GnucashVendor vend,
 		final GnucashAccount accountToTransferMoneyTo,
-	        final LocalDate dueDate);
+	        final LocalDate dueDate) throws WrongInvoiceTypeException;
 
 	// -----------------------------------------------------------
 

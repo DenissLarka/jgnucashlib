@@ -37,9 +37,12 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashGenerInvoiceImpl.class);
 
   protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
-  protected static final DateFormat        DATE_OPENED_FORMAT_1 = new SimpleDateFormat(Const.STANDARD_DATE_FORMAT);  
   protected static final DateTimeFormatter DATE_OPENED_FORMAT_PRINT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  private static final DateFormat DATE_POSTED_FORMAT = new SimpleDateFormat(Const.STANDARD_DATE_FORMAT);
+  
+  // ::TODO Outdated
+  // Cf. https://stackoverflow.com/questions/10649782/java-cannot-format-given-object-as-a-date
+  protected static final DateFormat        DATE_OPENED_FORMAT_1 = new SimpleDateFormat(Const.STANDARD_DATE_FORMAT);  
+  protected static final DateFormat        DATE_POSTED_FORMAT = new SimpleDateFormat(Const.STANDARD_DATE_FORMAT);
 
   // -----------------------------------------------------------------
 

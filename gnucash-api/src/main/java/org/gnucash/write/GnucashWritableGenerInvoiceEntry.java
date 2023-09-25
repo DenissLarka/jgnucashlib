@@ -42,6 +42,14 @@ public interface GnucashWritableGenerInvoiceEntry extends GnucashGenerInvoiceEnt
 
 	void setBillPriceFormatted(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
 
+	// ------------------------
+
+	void setJobPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+
+	void setJobPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+
+	void setJobPriceFormatted(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+
 	// -----------------------------------------------------------
 
 	void setAction(String a);

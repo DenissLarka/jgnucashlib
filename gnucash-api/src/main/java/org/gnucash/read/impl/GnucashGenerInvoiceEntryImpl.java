@@ -239,6 +239,19 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	myBillTaxtable = aTaxtable;
     }
 
+    protected void setJobTaxTable(final GCshTaxTable aTaxtable)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	
+	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	    throw new WrongInvoiceTypeException();
+
+	GnucashJobInvoice jobInvc = new GnucashJobInvoiceImpl(getGenerInvoice());
+	if (jobInvc.getJobType().equals(GnucashGenerJob.TYPE_CUSTOMER))
+	    setInvcTaxTable(aTaxtable);
+	if (jobInvc.getJobType().equals(GnucashGenerJob.TYPE_VENDOR))
+	    setBillTaxTable(aTaxtable);
+    }
+
     /**
      * @return The taxtable in the gnucash xml-file. It defines what sales-tax-rates
      *         are known.

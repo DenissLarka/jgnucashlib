@@ -2,10 +2,10 @@ package org.gnucash.write.spec;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
-import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
@@ -13,10 +13,18 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  */
 public interface GnucashWritableCustomerInvoice extends GnucashGenerInvoice {
 
-    void setJob(GnucashCustomerJob job) throws WrongInvoiceTypeException;
-
     GnucashWritableCustomerInvoiceEntry getWritableEntryById(String id);
     
+    // ---------------------------------------------------------------
+
+    /**
+     * Will throw an IllegalStateException if there are invoices for this customer.<br/>
+     * 
+     * @param cust the customer to whom we send an invoice to
+     * @throws WrongInvoiceTypeException
+     */
+    void setCustomer(GnucashCustomer cust) throws WrongInvoiceTypeException;
+
     // ---------------------------------------------------------------
 
     GnucashWritableCustomerInvoiceEntry createEntry(

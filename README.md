@@ -46,6 +46,8 @@ Version 1.1 of the library has been tested with GnuCash 5.3 on Linux (locale de_
 
 * Got rid of methods that accept internal IDs as arguments: First, internal IDs are -- well -- internal/internally generated and thus should not be part of an API, and second, GnuCash uses only UUIDs anyway, and there is simply no point in generating these outside (to be fair: for all of these methods, there were wrappers without).
 
+* Renamed some classes to honour naming conventions (e.g., `abcMyObjectWritingxyz` --> `abcWritableMyObjectxyz`).
+
 * Some minor cleaning here and there (e.g., small inconsistencies in date-handling, `toString()`-methods, etc.).
 
 # Planned
@@ -65,7 +67,7 @@ It should go without extra notice, but the following points are of cours subject
 
 * Better test case coverage.
 
-* Configurable values in Const class.
+* Configurable values in `Const` class.
 
 * More macro code (i.e., wrappers for generating specific variants of invoices/bills, say, or for booking a dividend payment from a share).
 

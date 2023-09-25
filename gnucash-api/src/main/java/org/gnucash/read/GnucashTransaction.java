@@ -109,14 +109,14 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
 
     /**
      * @return "ISO4217" for a currency "FUND" or a fond,...
-     * @see {@link GnucashAccount#CURRENCYNAMESPACE_CURRENCY}
-     * @see {@link GnucashAccount#CURRENCYNAMESPACE_FUND}
+     * @see {@link CurrencyNameSpace#NAMESPACE_CURRENCY}
+     * @see {@link GnucashAccount#CURRENCY_NAMESPACE_FUND}
      */
     String getCurrencyNameSpace();
 
     /**
      * The name of the currency in the given namespace
-     * e.g. "EUR" for euro in namespace "ISO4217"= {@link GnucashAccount#CURRENCYNAMESPACE_CURRENCY}
+     * e.g. "EUR" for euro in namespace "ISO4217"= {@link CurrencyNameSpace#NAMESPACE_CURRENCY}
      * @see {@link #getCurrencyNameSpace()}
      */
     String getCurrencyID();

@@ -35,6 +35,7 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GncV2.GncBook.GncGncEntry, GnucashFileImpl)
 	 */
+	@SuppressWarnings("exports")
 	public GnucashWritableCustomerInvoiceEntryImpl(
 		final GncV2.GncBook.GncGncEntry jwsdpPeer, 
 		final GnucashWritableFileImpl file) {
@@ -46,6 +47,7 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
+	@SuppressWarnings("exports")
 	public GnucashWritableCustomerInvoiceEntryImpl(
 		final GnucashWritableCustomerInvoiceImpl invoice,
 		final GncV2.GncBook.GncGncEntry jwsdpPeer) {

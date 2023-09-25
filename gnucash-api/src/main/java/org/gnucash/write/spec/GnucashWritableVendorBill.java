@@ -3,9 +3,9 @@ package org.gnucash.write.spec;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
-import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
@@ -13,10 +13,18 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
  */
 public interface GnucashWritableVendorBill extends GnucashGenerInvoice {
 
-    void setJob(GnucashVendorJob job) throws WrongInvoiceTypeException;
-
     GnucashWritableVendorBillEntry getWritableEntryById(String id);
     
+    // ---------------------------------------------------------------
+
+    /**
+     * Will throw an IllegalStateException if there are bills for this vendor.<br/>
+     * 
+     * @param vend the vendor who sent an invoice to us.
+     * @throws WrongInvoiceTypeException
+     */
+    void setVendor(GnucashVendor vend) throws WrongInvoiceTypeException;
+
     // ---------------------------------------------------------------
 
     GnucashWritableVendorBillEntry createEntry(

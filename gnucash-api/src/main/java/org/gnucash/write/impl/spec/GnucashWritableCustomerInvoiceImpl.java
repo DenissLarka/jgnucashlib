@@ -1,53 +1,32 @@
 package org.gnucash.write.impl.spec;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
 
-import org.gnucash.Const;
-import org.gnucash.generated.GncAccount;
-import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
-import org.gnucash.generated.ObjectFactory;
-import org.gnucash.generated.OwnerId;
-import org.gnucash.generated.Slot;
-import org.gnucash.generated.SlotValue;
-import org.gnucash.generated.SlotsType;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashGenerInvoice;
-import org.gnucash.read.GnucashGenerInvoiceEntry;
+import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
-import org.gnucash.read.IllegalTransactionSplitActionException;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
-import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceEntryImpl;
-import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
-import org.gnucash.write.GnucashWritableFile;
-import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceImpl;
-import org.gnucash.write.impl.GnucashWritableTransactionSplitImpl;
-import org.gnucash.write.impl.GnucashWritableTransactionImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
-
-import jakarta.xml.bind.JAXBElement;
 
 /**
  * TODO write a comment what this type does here
@@ -63,6 +42,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	 * @param file      the file to register under
 	 * @see GnucashGenerInvoiceImpl#GnucashInvoiceImpl(GncV2.GncBook.GncGncInvoice, GnucashFile)
 	 */
+	@SuppressWarnings("exports")
 	public GnucashWritableCustomerInvoiceImpl(final GncV2.GncBook.GncGncInvoice jwsdpPeer, final GnucashFile file) {
 		super(jwsdpPeer, file);
 	}
@@ -83,7 +63,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	 * @param file the file we are associated with.
 	 * @throws WrongInvoiceTypeException 
 	 */
-	protected GnucashWritableCustomerInvoiceImpl(final GnucashWritableGenerInvoiceImpl invc) throws WrongInvoiceTypeException {
+	public GnucashWritableCustomerInvoiceImpl(final GnucashWritableGenerInvoiceImpl invc) throws WrongInvoiceTypeException {
 	    super(invc.getJwsdpPeer(), invc.getFile());
 
 	    // No, we cannot check that first, because the super() method
@@ -119,6 +99,106 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	    } // for trx
 	}
 	
+	// ---------------------------------------------------------------
+
+	    /**
+	     * The gnucash-file is the top-level class to contain everything.
+	     *
+	     * @return the file we are associated with
+	     */
+	    protected GnucashWritableFileImpl getWritingFile() {
+		return (GnucashWritableFileImpl) getFile();
+	    }
+	    
+	    /**
+	     * support for firing PropertyChangeEvents. (gets initialized only if we really
+	     * have listeners)
+	     */
+	    private volatile PropertyChangeSupport myPropertyChange = null;
+
+	    /**
+	     * Returned value may be null if we never had listeners.
+	     *
+	     * @return Our support for firing PropertyChangeEvents
+	     */
+	    protected PropertyChangeSupport getPropertyChangeSupport() {
+		return myPropertyChange;
+	    }
+
+	    /**
+	     * Add a PropertyChangeListener to the listener list. The listener is registered
+	     * for all properties.
+	     *
+	     * @param listener The PropertyChangeListener to be added
+	     */
+	    public final void addPropertyChangeListener(final PropertyChangeListener listener) {
+		if (myPropertyChange == null) {
+		    myPropertyChange = new PropertyChangeSupport(this);
+		}
+		myPropertyChange.addPropertyChangeListener(listener);
+	    }
+
+	    /**
+	     * Add a PropertyChangeListener for a specific property. The listener will be
+	     * invoked only when a call on firePropertyChange names that specific property.
+	     *
+	     * @param propertyName The name of the property to listen on.
+	     * @param listener     The PropertyChangeListener to be added
+	     */
+	    public final void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+		if (myPropertyChange == null) {
+		    myPropertyChange = new PropertyChangeSupport(this);
+		}
+		myPropertyChange.addPropertyChangeListener(propertyName, listener);
+	    }
+
+	    /**
+	     * Remove a PropertyChangeListener for a specific property.
+	     *
+	     * @param propertyName The name of the property that was listened on.
+	     * @param listener     The PropertyChangeListener to be removed
+	     */
+	    public final void removePropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+		if (myPropertyChange != null) {
+		    myPropertyChange.removePropertyChangeListener(propertyName, listener);
+		}
+	    }
+
+	    /**
+	     * Remove a PropertyChangeListener from the listener list. This removes a
+	     * PropertyChangeListener that was registered for all properties.
+	     *
+	     * @param listener The PropertyChangeListener to be removed
+	     */
+	    public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
+		if (myPropertyChange != null) {
+		    myPropertyChange.removePropertyChangeListener(listener);
+		}
+	    }
+
+
+	// ---------------------------------------------------------------
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setCustomer(GnucashCustomer cust) throws WrongInvoiceTypeException {
+	    // ::TODO
+	    Object old = getCustomer();
+	    if (old == cust) {
+		return; // nothing has changed
+	    }
+		
+	    getJwsdpPeer().getInvoiceOwner().getOwnerId().setValue(cust.getId());
+	    getWritingFile().setModified(true);
+
+	    // <<insert code to react further to this change here
+	    PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
+	    if (propertyChangeFirer != null) {
+		propertyChangeFirer.firePropertyChange("customer", old, cust);
+	    }
+	}
+
 	// -----------------------------------------------------------
 
 	/**
@@ -234,6 +314,22 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	public GnucashWritableCustomerInvoiceEntry getWritableEntryById(final String id) {
 		return new GnucashWritableCustomerInvoiceEntryImpl(getGenerEntryById(id));
 	}
+
+	    // ---------------------------------------------------------------
+	    
+	    /**
+	     * {@inheritDoc}
+	     */
+	    public String getCustomerId() {
+	        return getOwnerId();
+	    }
+
+	    /**
+	     * {@inheritDoc}
+	     */
+	    public GnucashCustomer getCustomer() {
+	        return getFile().getCustomerByID(getCustomerId());
+	    }
 
 }
 
