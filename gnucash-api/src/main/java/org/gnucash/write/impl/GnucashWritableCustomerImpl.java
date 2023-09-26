@@ -98,7 +98,7 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 
 		{
 			GncV2.GncBook.GncGncCustomer.CustGuid id = factory.createGncV2GncBookGncGncCustomerCustGuid();
-			id.setType("guid");
+			id.setType(Const.XML_DATA_TYPE_GUID);
 			id.setValue(guid);
 			cust.setCustGuid(id);
 			cust.setCustId(id.getValue());

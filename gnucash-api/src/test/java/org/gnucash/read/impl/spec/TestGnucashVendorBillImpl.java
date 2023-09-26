@@ -23,9 +23,9 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashVendorBillImpl
 {
-  private static GnucashFile            gcshFile = null;
-  private static GnucashGenerInvoice bllGen = null;
-  private static GnucashVendorBill      bllSpec = null;
+  private GnucashFile            gcshFile = null;
+  private GnucashGenerInvoice bllGen = null;
+  private GnucashVendorBill      bllSpec = null;
   
   private static final String BLL_1_ID = TestGnucashGenerInvoiceImpl.INVC_4_ID;
   private static final String BLL_2_ID = TestGnucashGenerInvoiceImpl.INVC_2_ID;

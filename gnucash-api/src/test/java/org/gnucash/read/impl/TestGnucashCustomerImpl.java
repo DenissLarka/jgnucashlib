@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 
 import org.gnucash.ConstTest;
-import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
@@ -16,8 +15,8 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashCustomerImpl
 {
-  private static GnucashFile     gcshFile = null;
-  private static GnucashCustomer cust = null;
+  private GnucashFile     gcshFile = null;
+  private GnucashCustomer cust = null;
   
   public static final String CUST_1_ID = "5d1dd9afa7554553988669830cc1f696";
   public static final String CUST_2_ID = "f44645d2397946bcac90dff68cc03b76";

@@ -18,9 +18,9 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashVendorJobImpl
 {
-  private static GnucashFile        gcshFile = null;
-  private static GnucashGenerJob    jobGener = null;
-  private static GnucashVendorJob   jobSpec = null;
+  private GnucashFile        gcshFile = null;
+  private GnucashGenerJob    jobGener = null;
+  private GnucashVendorJob   jobSpec = null;
   
   private static final String JOB_2_ID = TestGnucashGenerJobImpl.JOB_2_ID;
 

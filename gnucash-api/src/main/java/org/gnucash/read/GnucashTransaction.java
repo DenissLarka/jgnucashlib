@@ -18,10 +18,14 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
   // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Transaction.h
   
   // ::MAGIC
-  public static final char TYPE_NONE    = '\0';
-  public static final char TYPE_INVOICE = 'I';
-  public static final char TYPE_PAYMENT = 'P';
-  public static final char TYPE_LINK    = 'L';
+  // Caution: In theory, these should be chars, not Strings.
+  // However, if we used chars, we would have to convert to Strings
+  // anyway when using them (or else, we have weird errors writing
+  // the GnuCash file).
+  public static final String TYPE_NONE    = "";
+  public static final String TYPE_INVOICE = "I";
+  public static final String TYPE_PAYMENT = "P";
+  public static final String TYPE_LINK    = "L";
   
   // -----------------------------------------------------------------
 

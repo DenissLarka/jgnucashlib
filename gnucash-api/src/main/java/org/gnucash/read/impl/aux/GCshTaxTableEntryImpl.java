@@ -1,5 +1,6 @@
 package org.gnucash.read.impl.aux;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -110,7 +111,7 @@ public class GCshTaxTableEntryImpl implements GCshTaxTableEntry {
 
 	myAccount = account;
 	myAccountID = account.getId();
-	getJwsdpPeer().getTteAcct().setType("guid");
+	getJwsdpPeer().getTteAcct().setType(Const.XML_DATA_TYPE_GUID);
 	getJwsdpPeer().getTteAcct().setValue(account.getId());
     }
 
@@ -134,7 +135,7 @@ public class GCshTaxTableEntryImpl implements GCshTaxTableEntry {
     /*
      * public void setAccountID(final String accountID) { if (accountID == null) {
      * throw new IllegalArgumentException("null 'accountID' given!"); } myAccount =
-     * null; myAccountID = accountID; getJwsdpPeer().getTteAcct().setType("guid");
+     * null; myAccountID = accountID; getJwsdpPeer().getTteAcct().setType(Const.XML_TAG_GUID);
      * getJwsdpPeer().getTteAcct().setValue(accountID); }
      * 
      */

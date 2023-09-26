@@ -350,7 +350,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	}
 
 	if (jwsdpPeer.getEntryITaxtable() != null) {
-	    if (!jwsdpPeer.getEntryITaxtable().getType().equals("guid")) {
+	    if (!jwsdpPeer.getEntryITaxtable().getType().equals(Const.XML_DATA_TYPE_GUID)) {
 		LOGGER.error("Customer invoice entry with id '" + getId() + "' has i-taxtable with type='"
 			+ jwsdpPeer.getEntryITaxtable().getType() + "' != 'guid'");
 	    }
@@ -400,7 +400,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	}
 
 	if (jwsdpPeer.getEntryBTaxtable() != null) {
-	    if (!jwsdpPeer.getEntryBTaxtable().getType().equals("guid")) {
+	    if (!jwsdpPeer.getEntryBTaxtable().getType().equals(Const.XML_DATA_TYPE_GUID)) {
 		LOGGER.error("Vendor bill entry with id '" + getId() + "' has b-taxtable with type='"
 			+ jwsdpPeer.getEntryBTaxtable().getType() + "' != 'guid'");
 	    }

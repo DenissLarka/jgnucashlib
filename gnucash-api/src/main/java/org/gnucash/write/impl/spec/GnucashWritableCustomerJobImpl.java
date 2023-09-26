@@ -1,21 +1,3 @@
-/**
- * GnucashJobWritingImpl.java
- * Created on 11.06.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 11.06.2005 - initial version
- * ...
- */
 package org.gnucash.write.impl.spec;
 
 import java.beans.PropertyChangeListener;
@@ -52,6 +34,7 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
      * @param jwsdpPeer the XML(jaxb)-object we are fronting.
      * @param file      the file we belong to
      */
+    @SuppressWarnings("exports")
     public GnucashWritableCustomerJobImpl(
 	    final GncV2.GncBook.GncGncJob jwsdpPeer, 
 	    final GnucashFile file) {
@@ -64,8 +47,10 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
      */
     public GnucashWritableCustomerJobImpl(
 	    final GnucashWritableFileImpl file, 
-	    final GnucashCustomer owner) {
-	super(createJob(file, file.createGUID(), owner), file);
+	    final GnucashCustomer owner,
+	    final String number, 
+	    final String name) {
+	super(createJob(file, file.createGUID(), owner, number, name), file);
     }
 
     // -----------------------------------------------------------------
@@ -89,8 +74,12 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
      * @param guid     the internal id to use. May be null to generate an ID.
      * @return the jaxb-job
      */
-    private static GncV2.GncBook.GncGncJob createJob(final GnucashWritableFileImpl file, final String guid,
-	    final GnucashCustomer cust) {
+    private static GncV2.GncBook.GncGncJob createJob(
+	    final GnucashWritableFileImpl file, 
+	    final String guid,
+	    final GnucashCustomer cust,
+	    final String number,
+	    final String name) {
 
 	if (file == null) {
 	    throw new IllegalArgumentException("null file given");
@@ -105,13 +94,13 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
 	GncV2.GncBook.GncGncJob job = file.createGncGncJobType();
 
 	job.setJobActive(1);
-	job.setJobId("");
-	job.setJobName("");
+	job.setJobId(number);
+	job.setJobName(name);
 	job.setVersion(Const.XML_FORMAT_VERSION);
 
 	{
 	    GncV2.GncBook.GncGncJob.JobGuid id = factory.createGncV2GncBookGncGncJobJobGuid();
-	    id.setType("guid");
+	    id.setType(Const.XML_DATA_TYPE_GUID);
 	    id.setValue((guid == null ? file.createGUID() : guid));
 	    job.setJobGuid(id);
 	}
@@ -121,7 +110,7 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
 	    owner.setOwnerType(GCshOwner.TYPE_CUSTOMER);
 
 	    OwnerId ownerid = factory.createOwnerId();
-	    ownerid.setType("guid");
+	    ownerid.setType(Const.XML_DATA_TYPE_GUID);
 	    ownerid.setValue(cust.getId());
 
 	    owner.setOwnerId(ownerid);

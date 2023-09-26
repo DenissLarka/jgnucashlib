@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.aux.GCshTaxTable;
@@ -65,7 +66,7 @@ public class GCshTaxTableImpl implements GCshTaxTable {
      *         hirarchy-changes
      */
     public String getId() {
-	assert jwsdpPeer.getTaxtableGuid().getType().equals("guid");
+	assert jwsdpPeer.getTaxtableGuid().getType().equals(Const.XML_DATA_TYPE_GUID);
 
 	String guid = jwsdpPeer.getTaxtableGuid().getValue();
 	if (guid == null) {

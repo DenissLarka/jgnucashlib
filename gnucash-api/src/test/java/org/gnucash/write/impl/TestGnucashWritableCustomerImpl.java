@@ -77,10 +77,10 @@ public class TestGnucashWritableCustomerImpl
     }
     
     URL outFileNameAbsURL = classLoader.getResource(ConstTest.GCSH_FILENAME_IN); // sic
-    System.err.println("Out file name (glob, URL): '" + outFileNameAbsURL + "'");
+//    System.err.println("Out file name (glob, URL): '" + outFileNameAbsURL + "'");
     outFileGlobNameAbs = outFileNameAbsURL.getPath();
     outFileGlobNameAbs = outFileGlobNameAbs.replace(ConstTest.GCSH_FILENAME_IN, ConstTest.GCSH_FILENAME_OUT);
-    System.err.println("Out file name (glob): '" + outFileGlobNameAbs + "'");
+//    System.err.println("Out file name (glob): '" + outFileGlobNameAbs + "'");
     outFileGlob = new File(outFileGlobNameAbs);
   }
 
@@ -94,7 +94,7 @@ public class TestGnucashWritableCustomerImpl
       cust.setName("Frederic Austerlitz");
       
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
-      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test01_1: '" + outFile.getPath() + "'");
+//      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test01_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
       gcshInFile.writeFile(outFile);
@@ -179,7 +179,7 @@ public class TestGnucashWritableCustomerImpl
       cust3.setName("Georgios Panayiotou");
       
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
-      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test02_1: '" + outFile.getPath() + "'");
+      // System.err.println("Outfile for TestGnucashWritableCustomerImpl.test02_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
       gcshInFile.writeFile(outFile);

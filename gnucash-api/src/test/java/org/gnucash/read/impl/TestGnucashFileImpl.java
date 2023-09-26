@@ -13,7 +13,7 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashFileImpl
 {
-  public static GnucashFile    gcshFile = null;
+  private GnucashFile    gcshFile = null;
 
   // -----------------------------------------------------------------
   

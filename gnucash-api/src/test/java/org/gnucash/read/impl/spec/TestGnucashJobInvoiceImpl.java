@@ -3,14 +3,11 @@ package org.gnucash.read.impl.spec;
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.TreeSet;
 
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
-import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.TestGnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashJobInvoice;
@@ -23,9 +20,9 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashJobInvoiceImpl
 {
-  private static GnucashFile         gcshFile = null;
-  private static GnucashGenerInvoice invcGen = null;
-  private static GnucashJobInvoice   invcSpec = null;
+  private GnucashFile         gcshFile = null;
+  private GnucashGenerInvoice invcGen = null;
+  private GnucashJobInvoice   invcSpec = null;
   
   private static final String INVC_3_ID = TestGnucashGenerInvoiceImpl.INVC_3_ID;
   

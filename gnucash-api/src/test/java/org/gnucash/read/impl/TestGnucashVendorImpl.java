@@ -17,8 +17,8 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashVendorImpl
 {
-  private static GnucashFile   gcshFile = null;
-  private static GnucashVendor vend = null;
+  private GnucashFile   gcshFile = null;
+  private GnucashVendor vend = null;
   
   public static final String VEND_1_ID = "087e1a3d43fa4ef9a9bdd4b4797c4231";
   public static final String VEND_2_ID = "4f16fd55c0d64ebe82ffac0bb25fe8f5";

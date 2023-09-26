@@ -2,6 +2,7 @@ package org.gnucash.write.impl;
 
 import java.text.ParseException;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -115,7 +116,7 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		GncTransaction.TrnSplits.TrnSplit split = gnucashFileImpl.createGncTransactionTypeTrnSplitsTypeTrnSplitType();
 		{
 			GncTransaction.TrnSplits.TrnSplit.SplitId id = factory.createGncTransactionTrnSplitsTrnSplitSplitId();
-			id.setType("guid");
+			id.setType(Const.XML_DATA_TYPE_GUID);
 			id.setValue(pSplitID);
 			split.setSplitId(id);
 		}
@@ -126,7 +127,7 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		split.setSplitValue("0/100");
 		{
 			GncTransaction.TrnSplits.TrnSplit.SplitAccount splitaccount = factory.createGncTransactionTrnSplitsTrnSplitSplitAccount();
-			splitaccount.setType("guid");
+			splitaccount.setType(Const.XML_DATA_TYPE_GUID);
 			splitaccount.setValue(account.getId());
 			split.setSplitAccount(splitaccount);
 		}
@@ -157,7 +158,7 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		String old = (getJwsdpPeer().getSplitAccount() == null ? null
 				:
 						getJwsdpPeer().getSplitAccount().getValue());
-		getJwsdpPeer().getSplitAccount().setType("guid");
+		getJwsdpPeer().getSplitAccount().setType(Const.XML_DATA_TYPE_GUID);
 		getJwsdpPeer().getSplitAccount().setValue(account.getId());
 		((GnucashWritableFile) getGnucashFile()).setModified(true);
 
@@ -352,7 +353,7 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 			getJwsdpPeer().setSplitLot(lot);
 		}
 		getJwsdpPeer().getSplitLot().setValue(lotID);
-		getJwsdpPeer().getSplitLot().setType("guid");
+		getJwsdpPeer().getSplitLot().setType(Const.XML_DATA_TYPE_GUID);
 
 		// if we have a lot, and if we are a paying transaction, then check the slots
 		SlotsType slots = getJwsdpPeer().getSplitSlots();

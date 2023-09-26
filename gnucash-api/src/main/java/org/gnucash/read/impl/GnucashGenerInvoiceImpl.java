@@ -904,7 +904,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
     }
 
     protected String getOwnerId_direct() {
-      assert getJwsdpPeer().getInvoiceOwner().getOwnerId().getType().equals("guid");
+      assert getJwsdpPeer().getInvoiceOwner().getOwnerId().getType().equals(Const.XML_DATA_TYPE_GUID);
         return getJwsdpPeer().getInvoiceOwner().getOwnerId().getValue();
     }
 

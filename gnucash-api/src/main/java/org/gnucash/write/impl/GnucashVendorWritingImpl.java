@@ -94,7 +94,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 
 		{
 			GncV2.GncBook.GncGncVendor.VendorGuid id = factory.createGncV2GncBookGncGncVendorVendorGuid();
-			id.setType("guid");
+			id.setType(Const.XML_DATA_TYPE_GUID);
 			id.setValue(guid);
 			vend.setVendorGuid(id);
 			vend.setVendorId(id.getValue());

@@ -1,4 +1,4 @@
-package org.gnucash.write.impl;
+package org.gnucash.write.impl.spec;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -16,10 +16,7 @@ public class TestPackage extends TestCase
   {
     TestSuite suite = new TestSuite();
     
-    suite.addTest(org.gnucash.write.impl.TestGnucashWritableCustomerImpl.suite());
-    suite.addTest(org.gnucash.write.impl.TestGnucashWritableVendorImpl.suite());
-
-    suite.addTest(org.gnucash.write.impl.spec.TestPackage.suite());
+    suite.addTest(org.gnucash.write.impl.spec.TestGnucashWritableCustomerInvoiceImpl.suite());
 
     return suite;
   }

@@ -14,8 +14,8 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashAccountImpl
 {
-  public static GnucashFile    gcshFile = null;
-  public static GnucashAccount acct = null;
+  private GnucashFile    gcshFile = null;
+  private GnucashAccount acct = null;
   
   private static final String ACCT_1_ID = "bbf77a599bd24a3dbfec3dd1d0bb9f5c";
   private static final String ACCT_2_ID = "cc2c4709633943c39293bfd73de88c9b";

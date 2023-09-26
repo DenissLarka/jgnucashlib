@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncJob.JobOwner;
 import org.gnucash.numbers.FixedPointNumber;
@@ -76,7 +77,7 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
      *         hirarchy-changes
      */
     public String getId() {
-	assert jwsdpPeer.getJobGuid().getType().equals("guid");
+	assert jwsdpPeer.getJobGuid().getType().equals(Const.XML_DATA_TYPE_GUID);
 
 	String guid = jwsdpPeer.getJobGuid().getValue();
 	if (guid == null) {
@@ -131,7 +132,7 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
      * {@inheritDoc}
      */
     public String getOwnerId() {
-	assert jwsdpPeer.getJobOwner().getOwnerId().getType().equals("guid");
+	assert jwsdpPeer.getJobOwner().getOwnerId().getType().equals(Const.XML_DATA_TYPE_GUID);
 	return jwsdpPeer.getJobOwner().getOwnerId().getValue();
     }
 

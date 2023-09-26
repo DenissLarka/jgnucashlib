@@ -14,8 +14,8 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashTransactionImpl
 {
-  private static GnucashFile        gcshFile = null;
-  private static GnucashTransaction trx = null;
+  private GnucashFile        gcshFile = null;
+  private GnucashTransaction trx = null;
   
   private static final String TRX_1_ID = "32b216aa73a44137aa5b041ab8739058";
   private static final String TRX_2_ID = "c97032ba41684b2bb5d1391c9d7547e9";

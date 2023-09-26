@@ -39,10 +39,7 @@ import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
-import org.gnucash.read.impl.spec.GnucashCustomerInvoiceEntryImpl;
-import org.gnucash.read.impl.spec.GnucashJobInvoiceEntryImpl;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
-import org.gnucash.read.impl.spec.GnucashVendorBillEntryImpl;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableFile;
@@ -50,8 +47,14 @@ import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
 import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.impl.spec.GnucashWritableCustomerInvoiceEntryImpl;
+import org.gnucash.write.impl.spec.GnucashWritableCustomerInvoiceImpl;
 import org.gnucash.write.impl.spec.GnucashWritableJobInvoiceEntryImpl;
+import org.gnucash.write.impl.spec.GnucashWritableJobInvoiceImpl;
 import org.gnucash.write.impl.spec.GnucashWritableVendorBillEntryImpl;
+import org.gnucash.write.impl.spec.GnucashWritableVendorBillImpl;
+import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
+import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
+import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
 
 import jakarta.xml.bind.JAXBElement;
 
@@ -84,29 +87,43 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
     public GnucashWritableFile getFile() {
 	return (GnucashWritableFile) super.getFile();
     }
+    
+    // ---------------------------------------------------------------
 
     /**
      * @param file the file we are associated with.
      */
-    protected GnucashWritableGenerInvoiceImpl(final GnucashWritableFileImpl file, final String invoiceNumber,
-	    final GnucashGenerJob job, final GnucashAccountImpl accountToTransferMoneyTo, final LocalDate dueDate) {
-	super(createJobInvoice(file, invoiceNumber, job, accountToTransferMoneyTo, dueDate), file);
+    protected GnucashWritableGenerInvoiceImpl(
+	    final GnucashWritableFileImpl file, 
+	    final String number,
+	    final GnucashCustomer cust, 
+	    final GnucashAccountImpl accountToTransferMoneyTo, 
+	    final LocalDate dueDate) {
+	super(createCustomerInvoice(file, number, cust, accountToTransferMoneyTo, dueDate), file);
     }
 
     /**
      * @param file the file we are associated with.
      */
-    protected GnucashWritableGenerInvoiceImpl(final GnucashWritableFileImpl file, final String invoiceNumber,
-	    final GnucashCustomer cust, final GnucashAccountImpl accountToTransferMoneyTo, final LocalDate dueDate) {
-	super(createCustomerInvoice(file, invoiceNumber, cust, accountToTransferMoneyTo, dueDate), file);
+    protected GnucashWritableGenerInvoiceImpl(
+	    final GnucashWritableFileImpl file, 
+	    final String number,
+	    final GnucashVendor vend, 
+	    final GnucashAccountImpl accountToTransferMoneyTo, 
+	    final LocalDate dueDate) {
+	super(createVendorBill(file, number, vend, accountToTransferMoneyTo, dueDate), file);
     }
 
     /**
      * @param file the file we are associated with.
      */
-    protected GnucashWritableGenerInvoiceImpl(final GnucashWritableFileImpl file, final String invoiceNumber,
-	    final GnucashVendor vend, final GnucashAccountImpl accountToTransferMoneyTo, final LocalDate dueDate) {
-	super(createVendorBill(file, invoiceNumber, vend, accountToTransferMoneyTo, dueDate), file);
+    protected GnucashWritableGenerInvoiceImpl(
+	    final GnucashWritableFileImpl file, 
+	    final String number,
+	    final GnucashGenerJob job, 
+	    final GnucashAccountImpl accountToTransferMoneyTo, 
+	    final LocalDate dueDate) {
+	super(createJobInvoice(file, number, job, accountToTransferMoneyTo, dueDate), file);
     }
 
     // ---------------------------------------------------------------
@@ -122,10 +139,35 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	GnucashWritableGenerInvoiceEntryImpl entry = new GnucashWritableGenerInvoiceEntryImpl(this, acct, quantity, singleUnitPrice);
+	
+	GnucashWritableGenerInvoiceEntryImpl entry = new GnucashWritableGenerInvoiceEntryImpl(
+								this, 
+								acct, quantity, singleUnitPrice);
+	
 	return entry;
     }
+    
+    // ----------------------------
 
+    /**
+     * create and add a new entry.
+     * 
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber quantity)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	
+	GnucashWritableCustomerInvoiceEntryImpl entry = new GnucashWritableCustomerInvoiceEntryImpl(
+								new GnucashWritableCustomerInvoiceImpl(this), 
+								acct, quantity, singleUnitPrice);
+	
+	return entry;
+    }
+    
     /**
      * create and add a new entry.<br/>
      *
@@ -133,22 +175,25 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableGenerInvoiceEntry createGenerEntry(
+    public GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable tax)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	GnucashWritableGenerInvoiceEntryImpl entry = new GnucashWritableGenerInvoiceEntryImpl(this, acct, quantity, singleUnitPrice);
-	if (tax == null || tax.getEntries().isEmpty()
-		|| (tax.getEntries().iterator().next()).getAmount().equals(new FixedPointNumber())) {
+	GnucashWritableCustomerInvoiceEntryImpl entry = new GnucashWritableCustomerInvoiceEntryImpl(
+								new GnucashWritableCustomerInvoiceImpl(this), 
+								acct, quantity, singleUnitPrice);
+	if ( tax == null || 
+	     tax.getEntries().isEmpty() || 
+	     tax.getEntries().iterator().next().getAmount().equals(new FixedPointNumber()) ) {
 	    // no taxes
-	    // ::TODO
 	    entry.setInvcTaxable(false);
 	} else {
 	    entry.setInvcTaxTable(tax);
 	}
+	
 	return entry;
     }
 
@@ -159,21 +204,182 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableGenerInvoiceEntry createGenerEntry(
+    public GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final FixedPointNumber tax)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	GnucashWritableGenerInvoiceEntryImpl entry = new GnucashWritableGenerInvoiceEntryImpl(this, acct, quantity, singleUnitPrice);
-	if (tax.equals(new FixedPointNumber())) {
+	GnucashWritableCustomerInvoiceEntryImpl entry = new GnucashWritableCustomerInvoiceEntryImpl(
+								new GnucashWritableCustomerInvoiceImpl(this), 
+								acct, quantity, singleUnitPrice);
+	
+	if ( tax.equals(new FixedPointNumber()) ) {
 	    // no taxes
-	    // ::TODO
 	    entry.setInvcTaxable(false);
 	} else {
 	    // TODO: find taxtable to use for given percentage
 	}
+	
+	return entry;
+    }
+
+    // ----------------------------
+
+    /**
+     * create and add a new entry.
+     * 
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableVendorBillEntry createVendBillEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber quantity)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	
+	GnucashWritableVendorBillEntryImpl entry = new GnucashWritableVendorBillEntryImpl(
+								new GnucashWritableVendorBillImpl(this), 
+								acct, quantity, singleUnitPrice);
+	
+	return entry;
+    }
+    
+    /**
+     * create and add a new entry.<br/>
+     *
+     * @return an entry using the given Tax-Table
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableVendorBillEntry createVendBillEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber quantity, 
+	    final GCshTaxTable tax)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+
+	GnucashWritableVendorBillEntryImpl entry = new GnucashWritableVendorBillEntryImpl(
+								new GnucashWritableVendorBillImpl(this), 
+								acct, quantity, singleUnitPrice);
+	
+	if ( tax == null || 
+	     tax.getEntries().isEmpty() || 
+	     tax.getEntries().iterator().next().getAmount().equals(new FixedPointNumber()) ) {
+	    // no taxes
+	    entry.setBillTaxable(false);
+	} else {
+	    entry.setBillTaxTable(tax);
+	}
+	
+	return entry;
+    }
+
+    /**
+     * create and add a new entry.<br/>
+     * The entry will use the accounts of the SKR03.
+     * 
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableVendorBillEntry createVendBillEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber tax)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+
+	GnucashWritableVendorBillEntryImpl entry = new GnucashWritableVendorBillEntryImpl(
+								new GnucashWritableVendorBillImpl(this), 
+								acct, quantity, singleUnitPrice);
+	
+	if ( tax.equals(new FixedPointNumber()) ) {
+	    // no taxes
+	    entry.setBillTaxable(false);
+	} else {
+	    // TODO: find taxtable to use for given percentage
+	}
+	
+	return entry;
+    }
+
+    // ----------------------------
+
+    /**
+     * create and add a new entry.
+     * 
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableJobInvoiceEntry createJobInvcEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber quantity)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	
+	GnucashWritableJobInvoiceEntryImpl entry = new GnucashWritableJobInvoiceEntryImpl(
+								new GnucashWritableJobInvoiceImpl(this), 
+								acct, quantity, singleUnitPrice);
+	
+	return entry;
+    }
+    
+    /**
+     * create and add a new entry.<br/>
+     *
+     * @return an entry using the given Tax-Table
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableJobInvoiceEntry createJobInvcEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber quantity, 
+	    final GCshTaxTable tax)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+
+	GnucashWritableJobInvoiceEntryImpl entry = new GnucashWritableJobInvoiceEntryImpl(
+								new GnucashWritableJobInvoiceImpl(this), 
+								acct, quantity, singleUnitPrice);
+
+	if ( tax == null || 
+	     tax.getEntries().isEmpty() || 
+	     tax.getEntries().iterator().next().getAmount().equals(new FixedPointNumber()) ) {
+	    // no taxes
+	    entry.setJobTaxable(false);
+	} else {
+	    entry.setJobTaxTable(tax);
+	}
+	
+	return entry;
+    }
+
+    /**
+     * create and add a new entry.<br/>
+     * The entry will use the accounts of the SKR03.
+     * 
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableJobInvoiceEntry createJobInvcEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber tax)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+
+	GnucashWritableJobInvoiceEntryImpl entry = new GnucashWritableJobInvoiceEntryImpl(
+								new GnucashWritableJobInvoiceImpl(this), 
+								acct, quantity, singleUnitPrice);
+	
+	if ( tax.equals(new FixedPointNumber()) ) {
+	    // no taxes
+	    entry.setJobTaxable(false);
+	} else {
+	    // TODO: find taxtable to use for given percentage
+	}
+	
 	return entry;
     }
 
@@ -192,89 +398,100 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final String number, 
 	    final GnucashCustomer cust, 
 	    final GnucashAccountImpl accountToTransferMoneyTo,
-	    final LocalDate dueDate) {
+	    final LocalDate postDate) {
 
-	ObjectFactory factory = file.getObjectFactory();
-	String invoiceguid = file.createGUID();
+	ObjectFactory fact = file.getObjectFactory();
+	String invcGUID = file.createGUID();
 
 	GncV2.GncBook.GncGncInvoice invc = file.createGncGncInvoiceType();
-	invc.setInvoiceActive(1); // TODO: is this correct?
-	invc.setInvoiceBillingId(number);
-	
+
+	// GUID
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = factory.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
+	    GncV2.GncBook.GncGncInvoice.InvoiceGuid invcRef = fact.createGncV2GncBookGncGncInvoiceInvoiceGuid();
+	    invcRef.setType(Const.XML_DATA_TYPE_GUID);
+	    invcRef.setValue(invcGUID);
+	    invc.setInvoiceGuid(invcRef);
+	}
+	
+	invc.setInvoiceId(number);
+	invc.setInvoiceBillingId(number); // ::TODO ::CHECK
+	invc.setInvoiceActive(1); // TODO: is this correct?
+	
+	// currency
+	{
+	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = fact.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
 	    currency.setCmdtySpace(CurrencyNameSpace.NAMESPACE_CURRENCY);
 	    invc.setInvoiceCurrency(currency);
 	}
 	
+	// date opened
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceGuid invoiceref = factory.createGncV2GncBookGncGncInvoiceInvoiceGuid();
-	    invoiceref.setType("guid");
-	    invoiceref.setValue(invoiceguid);
-	    invc.setInvoiceGuid(invoiceref);
-	}
-	
-	invc.setInvoiceId(number);
-	
-	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceOpened opened = factory.createGncV2GncBookGncGncInvoiceInvoiceOpened();
+	    GncV2.GncBook.GncGncInvoice.InvoiceOpened opened = fact.createGncV2GncBookGncGncInvoiceInvoiceOpened();
 	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    opened.setTsDate(dateTimeStr);
 	    invc.setInvoiceOpened(opened);
 	}
 	
+	// owner (customer)
 	{
 
-	    GncV2.GncBook.GncGncInvoice.InvoiceOwner custRef = factory.createGncV2GncBookGncGncInvoiceInvoiceOwner();
+	    GncV2.GncBook.GncGncInvoice.InvoiceOwner custRef = fact.createGncV2GncBookGncGncInvoiceInvoiceOwner();
 	    custRef.setOwnerType(TYPE_CUSTOMER);
 	    custRef.setVersion(Const.XML_FORMAT_VERSION);
 	    {
-		OwnerId ownerIdRef = factory.createOwnerId();
-		ownerIdRef.setType("guid");
+		OwnerId ownerIdRef = fact.createOwnerId();
+		ownerIdRef.setType(Const.XML_DATA_TYPE_GUID);
 		ownerIdRef.setValue(cust.getId());
 		custRef.setOwnerId(ownerIdRef);
 	    }
 	    invc.setInvoiceOwner(custRef);
 	}
 	
+	// post account
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postacc = factory.createGncV2GncBookGncGncInvoiceInvoicePostacc();
-	    postacc.setType("guid");
-	    postacc.setValue(accountToTransferMoneyTo.getId());
-	    invc.setInvoicePostacc(postacc);
+	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postAcct = fact.createGncV2GncBookGncGncInvoiceInvoicePostacc();
+	    postAcct.setType(Const.XML_DATA_TYPE_GUID);
+	    postAcct.setValue(accountToTransferMoneyTo.getId());
+	    invc.setInvoicePostacc(postAcct);
 	}
 	
+	// date posted
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePosted posted = factory.createGncV2GncBookGncGncInvoiceInvoicePosted();
+	    GncV2.GncBook.GncGncInvoice.InvoicePosted posted = fact.createGncV2GncBookGncGncInvoiceInvoicePosted();
 	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    posted.setTsDate(dateTimeStr);
 	    invc.setInvoicePosted(posted);
 	}
 	
+	// post lot
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePostlot lotref = factory.createGncV2GncBookGncGncInvoiceInvoicePostlot();
-	    lotref.setType("guid");
+	    GncV2.GncBook.GncGncInvoice.InvoicePostlot postLotRef = fact.createGncV2GncBookGncGncInvoiceInvoicePostlot();
+	    postLotRef.setType(Const.XML_DATA_TYPE_GUID);
 
-	    GncAccount.ActLots.GncLot newlot = createCustomerLot(file, factory, invoiceguid, 
-		                                                 accountToTransferMoneyTo, cust);
-
-	    lotref.setValue(newlot.getLotId().getValue());
-	    invc.setInvoicePostlot(lotref);
+	    GncAccount.ActLots.GncLot newLot = createInvcPostLot_Customer(file, fact, invcGUID, 
+		                                                          accountToTransferMoneyTo, cust);
+	    postLotRef.setValue(newLot.getLotId().getValue());
+	    
+	    invc.setInvoicePostlot(postLotRef);
 	}
 	
+	// post transaction
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn transactionref = factory.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
-	    transactionref.setType("guid");
-	    transactionref.setValue(createPostTransaction(file, factory, invoiceguid, dueDate).getId());
+	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn postTrxRef = fact.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
+	    postTrxRef.setType(Const.XML_DATA_TYPE_GUID);
+	    
+	    String newTrxID = createPostTransaction(file, fact, invcGUID, postDate).getId();
+	    postTrxRef.setValue(newTrxID);
 
-	    invc.setInvoicePosttxn(transactionref);
+	    invc.setInvoicePosttxn(postTrxRef);
 	}
 	
 	invc.setVersion(Const.XML_FORMAT_VERSION);
 
 	file.getRootElement().getGncBook().getBookElements().add(invc);
 	file.setModified(true);
+	
 	return invc;
     }
 
@@ -293,88 +510,100 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final String number, 
 	    final GnucashVendor vend, 
 	    final GnucashAccountImpl accountToTransferMoneyFrom,
-	    final LocalDate dueDate) {
+	    final LocalDate postDate) {
 
-	ObjectFactory factory = file.getObjectFactory();
-	String invoiceguid = file.createGUID();
+	ObjectFactory fact = file.getObjectFactory();
+	String invcGUID = file.createGUID();
 
 	GncV2.GncBook.GncGncInvoice invc = file.createGncGncInvoiceType();
-	invc.setInvoiceActive(1); // TODO: is this correct?
-	invc.setInvoiceBillingId(number);
-	
+
+	// GUID
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = factory.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
+	    GncV2.GncBook.GncGncInvoice.InvoiceGuid invcRef = fact.createGncV2GncBookGncGncInvoiceInvoiceGuid();
+	    invcRef.setType(Const.XML_DATA_TYPE_GUID);
+	    invcRef.setValue(invcGUID);
+	    invc.setInvoiceGuid(invcRef);
+	}
+	
+	invc.setInvoiceId(number);
+	invc.setInvoiceBillingId(number); // ::TODO ::CHECK
+	invc.setInvoiceActive(1); // TODO: is this correct?
+	
+	// currency
+	{
+	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = fact.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
 	    currency.setCmdtySpace(CurrencyNameSpace.NAMESPACE_CURRENCY);
 	    invc.setInvoiceCurrency(currency);
 	}
 	
+	// date opened
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceGuid invoiceref = factory.createGncV2GncBookGncGncInvoiceInvoiceGuid();
-	    invoiceref.setType("guid");
-	    invoiceref.setValue(invoiceguid);
-	    invc.setInvoiceGuid(invoiceref);
-	}
-	
-	invc.setInvoiceId(number);
-	
-	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceOpened opened = factory.createGncV2GncBookGncGncInvoiceInvoiceOpened();
+	    GncV2.GncBook.GncGncInvoice.InvoiceOpened opened = fact.createGncV2GncBookGncGncInvoiceInvoiceOpened();
 	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    opened.setTsDate(dateTimeStr);
 	    invc.setInvoiceOpened(opened);
 	}
 	
+	// owner (vendor)
 	{
 
-	    GncV2.GncBook.GncGncInvoice.InvoiceOwner custRef = factory.createGncV2GncBookGncGncInvoiceInvoiceOwner();
-	    custRef.setOwnerType(TYPE_CUSTOMER);
-	    custRef.setVersion(Const.XML_FORMAT_VERSION);
+	    GncV2.GncBook.GncGncInvoice.InvoiceOwner vendRef = fact.createGncV2GncBookGncGncInvoiceInvoiceOwner();
+	    vendRef.setOwnerType(TYPE_VENDOR);
+	    vendRef.setVersion(Const.XML_FORMAT_VERSION);
 	    {
-		OwnerId ownerIdRef = factory.createOwnerId();
-		ownerIdRef.setType("guid");
+		OwnerId ownerIdRef = fact.createOwnerId();
+		ownerIdRef.setType(Const.XML_DATA_TYPE_GUID);
 		ownerIdRef.setValue(vend.getId());
-		custRef.setOwnerId(ownerIdRef);
+		vendRef.setOwnerId(ownerIdRef);
 	    }
-	    invc.setInvoiceOwner(custRef);
+	    invc.setInvoiceOwner(vendRef);
 	}
 	
+	// post account
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postacc = factory.createGncV2GncBookGncGncInvoiceInvoicePostacc();
-	    postacc.setType("guid");
-	    postacc.setValue(accountToTransferMoneyFrom.getId());
-	    invc.setInvoicePostacc(postacc);
+	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postAcct = fact.createGncV2GncBookGncGncInvoiceInvoicePostacc();
+	    postAcct.setType(Const.XML_DATA_TYPE_GUID);
+	    postAcct.setValue(accountToTransferMoneyFrom.getId());
+	    invc.setInvoicePostacc(postAcct);
 	}
 	
+	// date posted
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePosted posted = factory.createGncV2GncBookGncGncInvoiceInvoicePosted();
+	    GncV2.GncBook.GncGncInvoice.InvoicePosted posted = fact.createGncV2GncBookGncGncInvoiceInvoicePosted();
 	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    posted.setTsDate(dateTimeStr);
 	    invc.setInvoicePosted(posted);
 	}
 	
+	// post lot
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePostlot lotref = factory.createGncV2GncBookGncGncInvoiceInvoicePostlot();
-	    lotref.setType("guid");
+	    GncV2.GncBook.GncGncInvoice.InvoicePostlot postLotRef = fact.createGncV2GncBookGncGncInvoiceInvoicePostlot();
+	    postLotRef.setType(Const.XML_DATA_TYPE_GUID);
 
-	    GncAccount.ActLots.GncLot newlot = createVendorLot(file, factory, invoiceguid, 
-		                                               accountToTransferMoneyFrom, vend);
+	    GncAccount.ActLots.GncLot newLot = createBillPostLot_Vendor(file, fact, invcGUID, 
+		                                                        accountToTransferMoneyFrom, vend);
 
-	    lotref.setValue(newlot.getLotId().getValue());
-	    invc.setInvoicePostlot(lotref);
+	    postLotRef.setValue(newLot.getLotId().getValue());
+	    invc.setInvoicePostlot(postLotRef);
 	}
-	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn transactionref = factory.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
-	    transactionref.setType("guid");
-	    transactionref.setValue(createPostTransaction(file, factory, invoiceguid, dueDate).getId());
 
-	    invc.setInvoicePosttxn(transactionref);
+	// post transaction
+	{
+	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn postTrxRef = fact.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
+	    postTrxRef.setType(Const.XML_DATA_TYPE_GUID);
+	    
+	    String newTrxID = createPostTransaction(file, fact, invcGUID, postDate).getId();
+	    postTrxRef.setValue(newTrxID);
+
+	    invc.setInvoicePosttxn(postTrxRef);
 	}
 	
 	invc.setVersion(Const.XML_FORMAT_VERSION);
 
 	file.getRootElement().getGncBook().getBookElements().add(invc);
 	file.setModified(true);
+	
 	return invc;
     }
 
@@ -391,89 +620,100 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final String number, 
 	    final GnucashGenerJob job, 
 	    final GnucashAccountImpl accountToTransferMoneyTo,
-	    final LocalDate dueDate) {
+	    final LocalDate postDate) {
 
-	ObjectFactory factory = file.getObjectFactory();
-	String invoiceguid = file.createGUID();
+	ObjectFactory fact = file.getObjectFactory();
+	String invcGUID = file.createGUID();
 
 	GncV2.GncBook.GncGncInvoice invc = file.createGncGncInvoiceType();
-	invc.setInvoiceActive(1); // TODO: is this correct?
-	invc.setInvoiceBillingId(number);
-	
+
+	// GUID
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = factory.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
+	    GncV2.GncBook.GncGncInvoice.InvoiceGuid invcRef = fact.createGncV2GncBookGncGncInvoiceInvoiceGuid();
+	    invcRef.setType(Const.XML_DATA_TYPE_GUID);
+	    invcRef.setValue(invcGUID);
+	    invc.setInvoiceGuid(invcRef);
+	}
+	
+	invc.setInvoiceId(number);
+	invc.setInvoiceBillingId(number); // ::TODO ::CHECK
+	invc.setInvoiceActive(1); // TODO: is this correct?
+	
+	// currency
+	{
+	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = fact.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
 	    currency.setCmdtySpace(CurrencyNameSpace.NAMESPACE_CURRENCY);
 	    invc.setInvoiceCurrency(currency);
 	}
-	
+
+	// date opened
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceGuid invoiceref = factory.createGncV2GncBookGncGncInvoiceInvoiceGuid();
-	    invoiceref.setType("guid");
-	    invoiceref.setValue(invoiceguid);
-	    invc.setInvoiceGuid(invoiceref);
-	}
-	
-	invc.setInvoiceId(number);
-	
-	{
-	    GncV2.GncBook.GncGncInvoice.InvoiceOpened opened = factory.createGncV2GncBookGncGncInvoiceInvoiceOpened();
+	    GncV2.GncBook.GncGncInvoice.InvoiceOpened opened = fact.createGncV2GncBookGncGncInvoiceInvoiceOpened();
 	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    opened.setTsDate(dateTimeStr);
 	    invc.setInvoiceOpened(opened);
 	}
 	
+	// owner (job)
 	{
 
-	    GncV2.GncBook.GncGncInvoice.InvoiceOwner jobref = factory.createGncV2GncBookGncGncInvoiceInvoiceOwner();
-	    jobref.setOwnerType(TYPE_JOB);
-	    jobref.setVersion(Const.XML_FORMAT_VERSION);
+	    GncV2.GncBook.GncGncInvoice.InvoiceOwner jobRef = fact.createGncV2GncBookGncGncInvoiceInvoiceOwner();
+	    jobRef.setOwnerType(TYPE_JOB);
+	    jobRef.setVersion(Const.XML_FORMAT_VERSION);
 	    {
-		OwnerId ownerIdRef = factory.createOwnerId();
-		ownerIdRef.setType("guid");
+		OwnerId ownerIdRef = fact.createOwnerId();
+		ownerIdRef.setType(Const.XML_DATA_TYPE_GUID);
 		ownerIdRef.setValue(job.getId());
-		jobref.setOwnerId(ownerIdRef);
+		jobRef.setOwnerId(ownerIdRef);
 	    }
-	    invc.setInvoiceOwner(jobref);
+	    invc.setInvoiceOwner(jobRef);
 	}
 	
+	// post account
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postacc = factory.createGncV2GncBookGncGncInvoiceInvoicePostacc();
-	    postacc.setType("guid");
-	    postacc.setValue(accountToTransferMoneyTo.getId());
-	    invc.setInvoicePostacc(postacc);
+	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postAcct = fact.createGncV2GncBookGncGncInvoiceInvoicePostacc();
+	    postAcct.setType(Const.XML_DATA_TYPE_GUID);
+	    postAcct.setValue(accountToTransferMoneyTo.getId());
+	    invc.setInvoicePostacc(postAcct);
 	}
 	
+	// date posted
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePosted posted = factory.createGncV2GncBookGncGncInvoiceInvoicePosted();
+	    GncV2.GncBook.GncGncInvoice.InvoicePosted posted = fact.createGncV2GncBookGncGncInvoiceInvoicePosted();
 	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    posted.setTsDate(dateTimeStr);
 	    invc.setInvoicePosted(posted);
 	}
 	
+	// post lot
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePostlot lotref = factory.createGncV2GncBookGncGncInvoiceInvoicePostlot();
-	    lotref.setType("guid");
+	    GncV2.GncBook.GncGncInvoice.InvoicePostlot postLotRef = fact.createGncV2GncBookGncGncInvoiceInvoicePostlot();
+	    postLotRef.setType(Const.XML_DATA_TYPE_GUID);
 
-	    GncAccount.ActLots.GncLot newlot = createJobLot(file, factory, invoiceguid, 
-		                                            accountToTransferMoneyTo, job);
+	    GncAccount.ActLots.GncLot newLot = createInvcPostLot_Job(file, fact, invcGUID, 
+		                                                     accountToTransferMoneyTo, job);
 
-	    lotref.setValue(newlot.getLotId().getValue());
-	    invc.setInvoicePostlot(lotref);
+	    postLotRef.setValue(newLot.getLotId().getValue());
+	    invc.setInvoicePostlot(postLotRef);
 	}
 	
+	// post transaction
 	{
-	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn transactionref = factory.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
-	    transactionref.setType("guid");
-	    transactionref.setValue(createPostTransaction(file, factory, invoiceguid, dueDate).getId());
+	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn postTrxRef = fact.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
+	    postTrxRef.setType(Const.XML_DATA_TYPE_GUID);
+	    
+	    String newTrxID = createPostTransaction(file, fact, invcGUID, postDate).getId();
+	    postTrxRef.setValue(newTrxID);
 
-	    invc.setInvoicePosttxn(transactionref);
+	    invc.setInvoicePosttxn(postTrxRef);
 	}
 	
 	invc.setVersion(Const.XML_FORMAT_VERSION);
 
 	file.getRootElement().getGncBook().getBookElements().add(invc);
 	file.setModified(true);
+	
 	return invc;
     }
     
@@ -483,19 +723,21 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
      * @see #GnucashInvoiceWritingImpl(GnucashWritableFileImpl, String, String,
      *      GnucashGenerJob, GnucashAccountImpl, Date)
      */
-    private static GnucashTransactionImpl createPostTransaction(final GnucashWritableFileImpl file,
-	    final ObjectFactory factory, final String invoiceID, final LocalDate dueDate) {
-	GnucashTransactionImpl postTransaction = new GnucashWritableTransactionImpl(file);
+    private static GnucashTransactionImpl createPostTransaction(
+	    final GnucashWritableFileImpl file,
+	    final ObjectFactory factory, 
+	    final String invcID, 
+	    final LocalDate dueDate) {
+	GnucashTransactionImpl postTrx = new GnucashWritableTransactionImpl(file);
 
-	SlotsType slots = postTransaction.getJwsdpPeer().getTrnSlots();
+	SlotsType slots = postTrx.getJwsdpPeer().getTrnSlots();
 
 	if (slots == null) {
 	    slots = factory.createSlotsType();
-	    postTransaction.getJwsdpPeer().setTrnSlots(slots);
+	    postTrx.getJwsdpPeer().setTrnSlots(slots);
 	}
 
 	// add trans-txn-type -slot
-
 	{
 	    Slot slot = factory.createSlot();
 	    SlotValue value = factory.createSlotValue();
@@ -508,7 +750,6 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	}
 
 	// add trans-date-due -slot
-
 	{
 	    Slot slot = factory.createSlot();
 	    SlotValue value = factory.createSlotValue();
@@ -533,8 +774,8 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 		SlotValue subvalue = factory.createSlotValue();
 
 		subslot.setSlotKey("invoice-guid");
-		subvalue.setType("guid");
-		subvalue.getContent().add(invoiceID);
+		subvalue.setType(Const.XML_DATA_TYPE_GUID);
+		subvalue.getContent().add(invcID);
 		subslot.setSlotValue(subvalue);
 
 		value.getContent().add(subslot);
@@ -544,91 +785,121 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    slots.getSlot().add(slot);
 	}
 
-	return postTransaction;
+	return postTrx;
     }
 
     // ---------------------------------------------------------------
 
-    private static GncAccount.ActLots.GncLot createCustomerLot(final GnucashWritableFileImpl file,
-	    final ObjectFactory factory, final String invoiceID, final GnucashAccountImpl accountToTransferMoneyTo,
+    private static GncAccount.ActLots.GncLot createInvcPostLot_Customer(
+	    final GnucashWritableFileImpl file,
+	    final ObjectFactory factory, 
+	    final String invoiceID, 
+	    final GnucashAccountImpl accountToTransferMoneyTo,
 	    final GnucashCustomer cust) {
-	return createGenerLot(file, factory, invoiceID, accountToTransferMoneyTo, 
-                              GCshOwner.Type.CUSTOMER, cust.getId());
+	return createInvcPostLot_Gener(file, factory, invoiceID, accountToTransferMoneyTo, 
+                                       GCshOwner.Type.CUSTOMER, cust.getId());
     }
 
-    private static GncAccount.ActLots.GncLot createVendorLot(final GnucashWritableFileImpl file,
-	    final ObjectFactory factory, final String invoiceID, final GnucashAccountImpl accountToTransferMoneyFrom,
+    private static GncAccount.ActLots.GncLot createBillPostLot_Vendor(
+	    final GnucashWritableFileImpl file,
+	    final ObjectFactory factory, 
+	    final String invoiceID, 
+	    final GnucashAccountImpl accountToTransferMoneyFrom,
 	    final GnucashVendor vend) {
-	return createGenerLot(file, factory, invoiceID, accountToTransferMoneyFrom, 
-		              GCshOwner.Type.VENDOR, vend.getId());
+	return createInvcPostLot_Gener(file, factory, invoiceID, accountToTransferMoneyFrom, 
+		                       GCshOwner.Type.VENDOR, vend.getId());
     }
 
-    private static GncAccount.ActLots.GncLot createJobLot(final GnucashWritableFileImpl file,
-	    final ObjectFactory factory, final String invoiceID, final GnucashAccountImpl accountToTransferMoneyFromTo,
+    private static GncAccount.ActLots.GncLot createInvcPostLot_Job(
+	    final GnucashWritableFileImpl file,
+	    final ObjectFactory factory, 
+	    final String invoiceID, 
+	    final GnucashAccountImpl accountToTransferMoneyFromTo,
 	    final GnucashGenerJob job) {
-	return createGenerLot(file, factory, invoiceID, accountToTransferMoneyFromTo, 
-                              GCshOwner.Type.JOB, job.getId());
+	return createInvcPostLot_Gener(file, factory, invoiceID, accountToTransferMoneyFromTo, 
+                                       GCshOwner.Type.JOB, job.getId());
     }
+    
+    // ----------------------------
 
-    private static GncAccount.ActLots.GncLot createGenerLot(final GnucashWritableFileImpl file,
-	    final ObjectFactory factory, final String invoiceID, final GnucashAccountImpl accountToTransferMoneyFromTo,
-	    final GCshOwner.Type ownerType, final String ownerID) {
+    private static GncAccount.ActLots.GncLot createInvcPostLot_Gener(
+	    final GnucashWritableFileImpl file,
+	    final ObjectFactory factory, 
+	    final String invoiceID, 
+	    final GnucashAccountImpl accountToTransferMoneyFromTo,
+	    final GCshOwner.Type ownerType, 
+	    final String ownerID) {
 
-	GncAccount.ActLots lots = accountToTransferMoneyFromTo.getJwsdpPeer().getActLots();
-	if (lots == null) {
-	    lots = factory.createGncAccountActLots();
-	    accountToTransferMoneyFromTo.getJwsdpPeer().setActLots(lots);
+	GncAccount.ActLots acctLots = accountToTransferMoneyFromTo.getJwsdpPeer().getActLots();
+	if (acctLots == null) {
+	    acctLots = factory.createGncAccountActLots();
+	    accountToTransferMoneyFromTo.getJwsdpPeer().setActLots(acctLots);
 	}
 
-	GncAccount.ActLots.GncLot newlot = factory.createGncAccountActLotsGncLot();
+	GncAccount.ActLots.GncLot newLot = factory.createGncAccountActLotsGncLot();
 	{
 	    GncAccount.ActLots.GncLot.LotId id = factory.createGncAccountActLotsGncLotLotId();
-	    id.setType("guid");
+	    id.setType(Const.XML_DATA_TYPE_GUID);
 	    id.setValue(file.createGUID());
-	    newlot.setLotId(id);
+	    newLot.setLotId(id);
 	}
-	newlot.setVersion(Const.XML_FORMAT_VERSION);
+	newLot.setVersion(Const.XML_FORMAT_VERSION);
 
+	// 2) Add slots to the lot (no, that no typo!)
 	{
 	    SlotsType slots = factory.createSlotsType();
-	    newlot.setLotSlots(slots);
+	    newLot.setLotSlots(slots);
 	}
 
-	// add owner-slot (vendor)
+	// 2.1) add owner-slot (customer/vendor/job)
+	// BEGIN ALT ALT ALT
+//	{
+//	    Slot slot = factory.createSlot();
+//	    SlotValue value = factory.createSlotValue();
+//	    slot.setSlotKey("gncInvoice"); // "gncOwner"
+//	    value.setType("frame");
+//	    {
+//		Slot subslot = factory.createSlot();
+//		SlotValue subvalue = factory.createSlotValue();
+//
+//		subslot.setSlotKey("owner-type");
+//		subvalue.setType("integer");
+//		subvalue.getContent().add(ownerType.ordinal());
+//		subslot.setSlotValue(subvalue);
+//
+//		value.getContent().add(subslot);
+//	    }
+//
+//	    {
+//		Slot subslot = factory.createSlot();
+//		SlotValue subvalue = factory.createSlotValue();
+//
+//		subslot.setSlotKey("owner-guid");
+//		subvalue.setType(Const.XML_TAG_GUID);
+//		subvalue.getContent().add(ownerID);
+//		subslot.setSlotValue(subvalue);
+//
+//		value.getContent().add(subslot);
+//	    }
+//
+//	    slot.setSlotValue(value);
+//	    newLot.getLotSlots().getSlot().add(slot);
+//	}
+	// END ALT ALT ALT
+	
+	// 2.1) add title-slot
 	{
 	    Slot slot = factory.createSlot();
 	    SlotValue value = factory.createSlotValue();
-	    slot.setSlotKey("gncOwner");
-	    value.setType("frame");
-	    {
-		Slot subslot = factory.createSlot();
-		SlotValue subvalue = factory.createSlotValue();
-
-		subslot.setSlotKey("owner-type");
-		subvalue.setType("integer");
-		subvalue.getContent().add(ownerType.ordinal());
-		subslot.setSlotValue(subvalue);
-
-		value.getContent().add(subslot);
-	    }
-
-	    {
-		Slot subslot = factory.createSlot();
-		SlotValue subvalue = factory.createSlotValue();
-
-		subslot.setSlotKey("owner-guid");
-		subvalue.setType("guid");
-		subvalue.getContent().add(ownerID);
-		subslot.setSlotValue(subvalue);
-
-		value.getContent().add(subslot);
-	    }
-
+	    slot.setSlotKey("title");
+	    value.setType(Const.XML_DATA_TYPE_STRING);
+	    value.getContent().add("Rechnung xyz"); // ::TODO
+	    
 	    slot.setSlotValue(value);
-	    newlot.getLotSlots().getSlot().add(slot);
+	    newLot.getLotSlots().getSlot().add(slot);
 	}
-	
-	// add invoice-slot
+
+	// 2.2) add invoice-slot
 	{
 	    Slot slot = factory.createSlot();
 	    SlotValue value = factory.createSlotValue();
@@ -639,7 +910,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 		SlotValue subvalue = factory.createSlotValue();
 
 		subslot.setSlotKey("invoice-guid");
-		subvalue.setType("guid");
+		subvalue.setType(Const.XML_DATA_TYPE_GUID);
 		subvalue.getContent().add(invoiceID);
 		subslot.setSlotValue(subvalue);
 
@@ -647,12 +918,12 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    }
 
 	    slot.setSlotValue(value);
-	    newlot.getLotSlots().getSlot().add(slot);
+	    newLot.getLotSlots().getSlot().add(slot);
 	}
 
-	lots.getGncLot().add(newlot);
+	acctLots.getGncLot().add(newLot);
 
-	return newlot;
+	return newLot;
     }
 
     // ---------------------------------------------------------------

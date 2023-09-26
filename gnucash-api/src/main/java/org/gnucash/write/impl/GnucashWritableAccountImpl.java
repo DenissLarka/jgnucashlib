@@ -117,7 +117,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 
 		{
 			GncAccount.ActId guid = factory.createGncAccountActId();
-			guid.setType("guid");
+			guid.setType(Const.XML_DATA_TYPE_GUID);
 			guid.setValue(accountguid);
 			account.setActId(guid);
 		}
@@ -461,7 +461,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		if (parent == null) {
 			parent = ((GnucashWritableFileImpl) getWritableGnucashFile())
 					.getObjectFactory().createGncAccountActParent();
-			parent.setType("guid");
+			parent.setType(Const.XML_DATA_TYPE_GUID);
 			parent.setValue(parentAccount.getId());
 			getJwsdpPeer().setActParent(parent);
 

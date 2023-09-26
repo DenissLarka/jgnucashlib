@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
+import org.gnucash.Const;
 import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
@@ -130,7 +131,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      * @see GnucashTransactionSplit#getAccountID()
      */
     public String getAccountID() {
-	assert jwsdpPeer.getSplitAccount().getType().equals("guid");
+	assert jwsdpPeer.getSplitAccount().getType().equals(Const.XML_DATA_TYPE_GUID);
 	String id = jwsdpPeer.getSplitAccount().getValue();
 	assert id != null;
 	return id;

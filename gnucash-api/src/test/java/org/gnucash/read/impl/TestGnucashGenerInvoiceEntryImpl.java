@@ -9,14 +9,15 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashGenerInvoiceEntryImpl
 {
-  private static GnucashFile              gcshFile = null;
-  private static GnucashGenerInvoiceEntry invcEntr = null;
+  private GnucashFile              gcshFile = null;
+  private GnucashGenerInvoiceEntry invcEntr = null;
   
   private static final String INVCENTR_1_ID = "513589a11391496cbb8d025fc1e87eaa";
   private static final String INVCENTR_2_ID = "0041b8d397f04ae4a2e9e3c7f991c4ec";

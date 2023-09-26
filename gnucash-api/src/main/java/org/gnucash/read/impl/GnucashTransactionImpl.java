@@ -271,7 +271,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 		continue;
 	    }
 
-	    if (!subSlot.getSlotValue().getType().equals("guid")) {
+	    if (!subSlot.getSlotValue().getType().equals(Const.XML_DATA_TYPE_GUID)) {
 		continue;
 	    }
 
