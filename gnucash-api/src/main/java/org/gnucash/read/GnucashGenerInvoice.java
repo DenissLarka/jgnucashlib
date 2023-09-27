@@ -357,18 +357,16 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
 
   // ---------------------------------------------------------------
 
-  // ::TODO
-//  /**
-//   * @return the id of the {@link GnucashAccount} the payment is made to.
-//   */
-//  String getIncomeExpensesAccountId();
-
   /**
    * @return the id of the {@link GnucashAccount} the payment is made to.
    */
-  String getReceivablePayableAccountId();
+  String getPostAccountId();
+  
+  String getPostTransactionId();
 
   // ---------------------------------------------------------------
+
+  GnucashAccount getPostAccount();
 
   /**
    * @return the transaction that transferes the money from the customer to the

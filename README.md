@@ -4,7 +4,7 @@ A Java-library for manipulating the XML file-format of the GnuCash open
 source accounting software. Usable to automate accounting-tasks, taxes.
 
 # Compatibility
-Version 1.1 of the library has been tested with GnuCash 5.3 on Linux (locale de_DE) and OpenJDK 18.0.
+Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (locale de_DE) and OpenJDK 18.0.
 
 **Caution:** Will not work on other locales (for details, cf. below).
 

@@ -6,21 +6,17 @@ import static org.junit.Assert.assertNotEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.FileUtils;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.TestGnucashCustomerImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
@@ -28,7 +24,6 @@ import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -53,8 +48,6 @@ public class TestGnucashWritableCustomerInvoiceImpl
 
     private GnucashWritableFileImpl gcshInFile = null;
     private GnucashFileImpl         gcshOutFile = null;
-    private String outFileGlobNameAbs = null;
-    private File outFileGlob = null;
 
     private GnucashCustomer cust1 = null;
     private GnucashAccount  incomeAcct = null;
@@ -107,13 +100,6 @@ public class TestGnucashWritableCustomerInvoiceImpl
       exc.printStackTrace();
     }
     
-    URL outFileNameAbsURL = classLoader.getResource(ConstTest.GCSH_FILENAME_IN); // sic
-//    System.err.println("Out file name (glob, URL): '" + outFileNameAbsURL + "'");
-    outFileGlobNameAbs = outFileNameAbsURL.getPath();
-    outFileGlobNameAbs = outFileGlobNameAbs.replace(ConstTest.GCSH_FILENAME_IN, ConstTest.GCSH_FILENAME_OUT);
-//    System.err.println("Out file name (glob): '" + outFileGlobNameAbs + "'");
-    outFileGlob = new File(outFileGlobNameAbs);
-    
     // ----------------------------
     
     cust1 = gcshInFile.getCustomerByID(CUST_1_ID);
@@ -126,11 +112,13 @@ public class TestGnucashWritableCustomerInvoiceImpl
   @Test
   public void test01() throws Exception
   {
-      LocalDate dueDate = LocalDate.of(2023, 8, 2);
+      LocalDate postDate = LocalDate.of(2023, 8, 1);
+      LocalDate openedDate = LocalDate.of(2023, 8, 3);
+      LocalDate dueDate = LocalDate.of(2023, 8, 10);
       GnucashWritableCustomerInvoice invc = gcshInFile.createWritableCustomerInvoice("19327", 
 	      							cust1, 
 	      							incomeAcct, receivableAcct, 
-	      							dueDate);
+	      							openedDate, postDate, dueDate);
       
 //      GnucashWritableCustomerInvoiceEntry entr = invc.createEntry(acct2, 
 //                                                                  new FixedPointNumber(12), 
@@ -141,7 +129,6 @@ public class TestGnucashWritableCustomerInvoiceImpl
 //      System.out.println("New Invoice ID (1): " + newInvcID);
       
       assertEquals("19327", invc.getNumber());
-      assertEquals(RECEIVABLE_ACCT_ID, invc.getReceivablePayableAccountId());
 
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
 //      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test01_1: '" + outFile.getPath() + "'");
@@ -149,16 +136,24 @@ public class TestGnucashWritableCustomerInvoiceImpl
                         // and the GnuCash file writer does not like that.
       gcshInFile.writeFile(outFile);
       
-//      // copy file
-//      if ( outFileGlob.exists() )
-//	  FileUtils.delete(outFileGlob);
-//      FileUtils.copyFile(outFile, outFileGlob);
-      
       // test01_2();
       test01_3(outFile, newInvcID);
       test01_4(outFile, newInvcID);
+      
+      // post invoice
+      invc.post(incomeAcct, receivableAcct, postDate, dueDate);
+      outFile.delete();
+      gcshInFile.writeFile(outFile);
+      
+      test01_5(outFile, newInvcID);
   }
 
+  private void test01_2(File outFile, String newInvcID) throws ParserConfigurationException, SAXException, IOException 
+  {
+      // ::TODO
+      // Check if generated XML file is valid
+  }
+  
   private void test01_3(File outFile, String newInvcID) throws ParserConfigurationException, SAXException, IOException 
   {
       //    assertNotEquals(null, outFileGlob);
@@ -188,6 +183,7 @@ public class TestGnucashWritableCustomerInvoiceImpl
       assertEquals(newInvcID, locNewInvcID);
   }
 
+  // Before post
   private void test01_4(File outFile, String newInvcID) throws Exception
   {
 //      assertNotEquals(null, outFileGlob);
@@ -202,11 +198,29 @@ public class TestGnucashWritableCustomerInvoiceImpl
       assertNotEquals(null, invcSpec);
       
       assertEquals("19327", invcSpec.getNumber());
-      assertEquals(RECEIVABLE_ACCT_ID, invcSpec.getReceivablePayableAccountId());
+      assertEquals(null, invcSpec.getPostAccountId());      
+      assertEquals(null, invcSpec.getPostTransactionId());
+  }
+
+  // After post
+  private void test01_5(File outFile, String newInvcID) throws Exception
+  {
+//      assertNotEquals(null, outFileGlob);
+//      assertEquals(true, outFileGlob.exists());
+
+      gcshOutFile = new GnucashFileImpl(outFile);
       
-      String postTrxID = invcSpec.getPostTransaction().getId();
-      assertNotEquals(null, postTrxID);
-      GnucashTransaction postTrx = gcshOutFile.getTransactionByID(postTrxID);
+//      System.out.println("New Invoice ID (3): " + newInvcID);
+      GnucashGenerInvoice invcGener = gcshOutFile.getGenerInvoiceByID(newInvcID);
+      assertNotEquals(null, invcGener);
+      GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGener);
+      assertNotEquals(null, invcSpec);
+      
+      assertEquals("19327", invcSpec.getNumber());
+      assertEquals(RECEIVABLE_ACCT_ID, invcSpec.getPostAccountId());
+      
+      assertNotEquals(null, invcSpec.getPostTransactionId());
+      GnucashTransaction postTrx = gcshOutFile.getTransactionByID(invcSpec.getPostTransactionId());
       assertNotEquals(null, postTrx);
       assertEquals(2, postTrx.getSplits().size());
       String postTrxFirstSpltId = postTrx.getFirstSplit().getId();

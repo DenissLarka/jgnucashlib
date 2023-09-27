@@ -210,20 +210,45 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getReceivablePayableAccountId() {
+	public String getPostAccountId() {
+	    try {
 		return jwsdpPeer.getInvoicePostacc().getValue();
+	    } catch ( NullPointerException exc ) {
+		return null;
+	    }
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getPostTransactionId() {
+	    try {
+		return jwsdpPeer.getInvoicePosttxn().getValue();
+	    } catch ( NullPointerException exc ) {
+		return null;
+	    }
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public GnucashAccount getPostAccount() {
+		if (getPostAccountId() == null) {
+			return null;
+		}
+		return file.getAccountByID(getPostAccountId());
+	}
+	
 	/**
 	 * @return the transaction that transferes the money from the customer to
 	 *         the account for money you are to get and the one you owe the
 	 *         taxes.
 	 */
 	public GnucashTransaction getPostTransaction() {
-		if (jwsdpPeer.getInvoicePosttxn() == null) {
-			return null; //unposted invoices have no postlot
+		if (getPostTransactionId() == null) {
+			return null;
 		}
-		return file.getTransactionByID(jwsdpPeer.getInvoicePosttxn().getValue());
+		return file.getTransactionByID(getPostTransactionId());
 	}
 	
   // -----------------------------------------------------------------

@@ -792,17 +792,20 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final GnucashCustomer cust,
 	    final GnucashAccount incomeAcct,
 	    final GnucashAccount receivableAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException {
 	if (cust == null) {
 	    throw new IllegalArgumentException("null customer given");
 	}
 
-	GnucashWritableCustomerInvoice retval = new GnucashWritableCustomerInvoiceImpl(
-							this, 
-							number, cust,
-							(GnucashAccountImpl) incomeAcct, 
-							(GnucashAccountImpl) receivableAcct, 
-							dueDate);
+	GnucashWritableCustomerInvoice retval = 
+		new GnucashWritableCustomerInvoiceImpl(
+			this, 
+			number, cust,
+			(GnucashAccountImpl) incomeAcct, 
+			(GnucashAccountImpl) receivableAcct, 
+			openedDate, postDate, dueDate);
 
 	invoiceID2invoice.put(retval.getId(), retval);
 	return retval;
@@ -820,17 +823,20 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final GnucashVendor vend,
 	    final GnucashAccount expensesAcct,
 	    final GnucashAccount payableAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException {
 	if (vend == null) {
 	    throw new IllegalArgumentException("null vendor given");
 	}
 
-	GnucashWritableVendorBill retval = new GnucashWritableVendorBillImpl(
-							this, 
-							number, vend,
-							(GnucashAccountImpl) expensesAcct, 
-							(GnucashAccountImpl) payableAcct, 
-							dueDate);
+	GnucashWritableVendorBill retval = 
+		new GnucashWritableVendorBillImpl(
+			this, 
+			number, vend,
+			(GnucashAccountImpl) expensesAcct, 
+			(GnucashAccountImpl) payableAcct, 
+			openedDate, postDate, dueDate);
 
 	invoiceID2invoice.put(retval.getId(), retval);
 	return retval;
@@ -848,18 +854,21 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final GnucashGenerJob job,
 	    final GnucashAccount incExpAcct,
 	    final GnucashAccount recvblPayblAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate)
 	    throws WrongInvoiceTypeException {
 	if (job == null) {
 	    throw new IllegalArgumentException("null job given");
 	}
 
-	GnucashWritableJobInvoice retval = new GnucashWritableJobInvoiceImpl(
-							this, 
-							number, job,
-							(GnucashAccountImpl) incExpAcct, 
-							(GnucashAccountImpl) recvblPayblAcct, 
-							dueDate);
+	GnucashWritableJobInvoice retval = 
+		new GnucashWritableJobInvoiceImpl(
+			this, 
+			number, job,
+			(GnucashAccountImpl) incExpAcct, 
+			(GnucashAccountImpl) recvblPayblAcct, 
+			openedDate, postDate, dueDate);
 
 	invoiceID2invoice.put(retval.getId(), retval);
 	return retval;

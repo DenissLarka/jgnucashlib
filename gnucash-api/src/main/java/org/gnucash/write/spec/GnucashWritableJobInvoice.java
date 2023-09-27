@@ -1,10 +1,13 @@
 package org.gnucash.write.spec;
 
+import java.time.LocalDate;
+
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashVendorJob;
@@ -63,4 +66,12 @@ public interface GnucashWritableJobInvoice extends GnucashGenerInvoice {
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable tax)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+
+    // ---------------------------------------------------------------
+    
+    void post(final GnucashAccount incExpAcct,
+	      final GnucashAccount recvblPayablAcct,
+	      final LocalDate postDate,
+	      final LocalDate dueDate);
+
 }

@@ -58,11 +58,14 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	    final GnucashVendor vend, 
 	    final GnucashAccountImpl expensesAcct,
 	    final GnucashAccountImpl payableAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) {
-	super(createVendorBill(file, 
-		               number, vend, 
+	super(createVendorBill_int(file, 
+		               number, vend,
+		               false, // <-- caution!
 		               expensesAcct, payableAcct, 
-		               dueDate), 
+		               openedDate, postDate, dueDate), 
               file);
     }
 
@@ -332,6 +335,20 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      */
     public GnucashVendor getVendor() {
 	return getFile().getVendorByID(getVendorId());
+    }
+
+    // ---------------------------------------------------------------
+
+    @Override
+    public void post(final GnucashAccount expensesAcct, 
+	             final GnucashAccount payablAcct, 
+	             final LocalDate postDate, 
+	             final LocalDate dueDate) {
+	postVendorBill(
+		getFile(), 
+		this, getVendor(), 
+		expensesAcct, payablAcct, 
+		postDate, dueDate);
     }
 
 }

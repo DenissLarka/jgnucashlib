@@ -217,6 +217,8 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashCustomer cust,
 	    final GnucashAccount incomeAcct,
 	    final GnucashAccount receivableAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException;
 
     /**
@@ -229,6 +231,8 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashVendor vend,
 	    final GnucashAccount expensesAcct,
 	    final GnucashAccount payableAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException;
 
     /**
@@ -241,6 +245,8 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashGenerJob job,
 	    final GnucashAccount incExpAcct,
 	    final GnucashAccount recvblPayblAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException;
 
     // -----------------------------------------------------------

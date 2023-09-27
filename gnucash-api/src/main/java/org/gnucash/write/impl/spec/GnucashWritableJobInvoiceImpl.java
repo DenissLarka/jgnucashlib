@@ -58,11 +58,14 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 	    final GnucashGenerJob job, 
 	    final GnucashAccountImpl incExpAcct,
 	    final GnucashAccountImpl recvblPayblAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) {
-	super(createJobInvoice(file, 
-		               number, job, 
+	super(createJobInvoice_int(file, 
+		               number, job,
+		               false, // <-- caution!
 		               incExpAcct, recvblPayblAcct, 
-		               dueDate), 
+		               openedDate, postDate, dueDate), 
 	      file);
     }
 
@@ -334,6 +337,20 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      */
     public GnucashGenerJob getJob() {
 	return getFile().getGenerJobByID(getJobId());
+    }
+
+    // ---------------------------------------------------------------
+
+    @Override
+    public void post(final GnucashAccount incExpAcct, 
+	             final GnucashAccount recvblPayablAcct, 
+	             final LocalDate postDate,
+		     final LocalDate dueDate) {
+	postJobInvoice(
+		getFile(), 
+		this, getJob(), 
+		incExpAcct, recvblPayablAcct, 
+		postDate, dueDate);
     }
 
 }

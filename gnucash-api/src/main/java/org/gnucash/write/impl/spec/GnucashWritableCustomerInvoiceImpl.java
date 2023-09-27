@@ -21,6 +21,7 @@ import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceEntryImpl;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceImpl;
@@ -58,11 +59,14 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	    final GnucashCustomer cust, 
 	    final GnucashAccountImpl incomeAcct,
 	    final GnucashAccountImpl receivableAcct,
+	    final LocalDate openedDate,
+	    final LocalDate postDate,
 	    final LocalDate dueDate) {
-	super(createCustomerInvoice(file, 
-		                    number, cust, 
+	super(createCustomerInvoice_int(file, 
+		                    number, cust,
+		                    false, // <-- caution!
 		        	    incomeAcct, receivableAcct,
-		                    dueDate), 
+		                    openedDate, postDate, dueDate), 
               file);
     }
 
@@ -334,6 +338,20 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
      */
     public GnucashCustomer getCustomer() {
 	return getFile().getCustomerByID(getCustomerId());
+    }
+
+    // ---------------------------------------------------------------
+
+    @Override
+    public void post(final GnucashAccount incomeAcct, 
+	             final GnucashAccount receivableAcct, 
+	             final LocalDate postDate,
+		     final LocalDate dueDate) {
+	postCustomerInvoice(
+		getFile(), 
+		this, getCustomer(), 
+		incomeAcct, receivableAcct, 
+		postDate, dueDate);
     }
 
 }
