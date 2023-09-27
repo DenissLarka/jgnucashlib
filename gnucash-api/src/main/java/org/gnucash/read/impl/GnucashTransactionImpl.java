@@ -350,16 +350,25 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     }
 
     /**
+     * @throws SplitNotFoundException 
      * @see GnucashTransaction#getFirstSplit()
      */
-    public GnucashTransactionSplit getFirstSplit() {
-	return getSplits().iterator().next();
+    public GnucashTransactionSplit getFirstSplit() throws SplitNotFoundException {
+	if ( getSplits().size() == 0 )
+	    throw new SplitNotFoundException();
+	
+	Iterator<GnucashTransactionSplit> iter = getSplits().iterator();
+	return iter.next();
     }
 
     /**
+     * @throws SplitNotFoundException 
      * @see GnucashTransaction#getSecondSplit()
      */
-    public GnucashTransactionSplit getSecondSplit() {
+    public GnucashTransactionSplit getSecondSplit() throws SplitNotFoundException {
+	if ( getSplits().size() <= 1 )
+	    throw new SplitNotFoundException();
+	
 	Iterator<GnucashTransactionSplit> iter = getSplits().iterator();
 	iter.next();
 	return iter.next();
@@ -495,7 +504,11 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	// ::TODO: That only works in simple cases --
 	// need a more generic approach
 	buffer.append(" amount: ");
-	buffer.append(getFirstSplit().getValueFormatted());
+	try {
+	    buffer.append(getFirstSplit().getValueFormatted());
+	} catch (SplitNotFoundException e) {
+	    buffer.append("ERROR");
+	}
 
 	buffer.append(" description: '");
 	buffer.append(getDescription() + "'");

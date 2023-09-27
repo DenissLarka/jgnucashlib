@@ -56,10 +56,13 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	    final GnucashWritableFileImpl file, 
 	    final String number,
 	    final GnucashVendor vend, 
-	    final GnucashAccountImpl accountToTransferMoneyFrom, 
+	    final GnucashAccountImpl expensesAcct,
+	    final GnucashAccountImpl payableAcct,
 	    final LocalDate dueDate) {
-	super(createVendorBill(file, number, vend, 
-		               accountToTransferMoneyFrom, dueDate), 
+	super(createVendorBill(file, 
+		               number, vend, 
+		               expensesAcct, payableAcct, 
+		               dueDate), 
               file);
     }
 

@@ -37,7 +37,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashGenerInvoiceImpl.class);
 
   protected static final DateTimeFormatter DATE_OPENED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
-  protected static final DateTimeFormatter DATE_OPENED_FORMAT_BOOK = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT_BOOK);
+  protected static final DateTimeFormatter DATE_OPENED_FORMAT_BOOK = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
   protected static final DateTimeFormatter DATE_OPENED_FORMAT_PRINT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   
   // ::TODO Outdated
@@ -210,7 +210,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getAccountIDToTransferMoneyTo() {
+	public String getReceivablePayableAccountId() {
 		return jwsdpPeer.getInvoicePostacc().getValue();
 	}
 

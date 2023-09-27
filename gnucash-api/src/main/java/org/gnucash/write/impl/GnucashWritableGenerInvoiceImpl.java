@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -46,6 +47,7 @@ import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
 import org.gnucash.write.GnucashWritableTransaction;
+import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.write.impl.spec.GnucashWritableCustomerInvoiceEntryImpl;
 import org.gnucash.write.impl.spec.GnucashWritableCustomerInvoiceImpl;
 import org.gnucash.write.impl.spec.GnucashWritableJobInvoiceEntryImpl;
@@ -97,9 +99,14 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final GnucashWritableFileImpl file, 
 	    final String number,
 	    final GnucashCustomer cust, 
-	    final GnucashAccountImpl accountToTransferMoneyTo, 
+	    final GnucashAccountImpl incomeAcct,
+	    final GnucashAccountImpl receivableAcct,
 	    final LocalDate dueDate) {
-	super(createCustomerInvoice(file, number, cust, accountToTransferMoneyTo, dueDate), file);
+	super(createCustomerInvoice(file, 
+		                    number, cust, 
+		                    incomeAcct, receivableAcct, 
+		                    dueDate),
+	      file);
     }
 
     /**
@@ -109,9 +116,14 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final GnucashWritableFileImpl file, 
 	    final String number,
 	    final GnucashVendor vend, 
-	    final GnucashAccountImpl accountToTransferMoneyTo, 
+	    final GnucashAccountImpl expensesAcct,
+	    final GnucashAccountImpl payableAcct,
 	    final LocalDate dueDate) {
-	super(createVendorBill(file, number, vend, accountToTransferMoneyTo, dueDate), file);
+	super(createVendorBill(file, 
+		               number, vend, 
+		               expensesAcct, payableAcct, 
+		               dueDate),
+	      file);
     }
 
     /**
@@ -121,9 +133,14 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final GnucashWritableFileImpl file, 
 	    final String number,
 	    final GnucashGenerJob job, 
-	    final GnucashAccountImpl accountToTransferMoneyTo, 
+	    final GnucashAccountImpl incExpAcct,
+	    final GnucashAccountImpl payblRecvblAcct,
 	    final LocalDate dueDate) {
-	super(createJobInvoice(file, number, job, accountToTransferMoneyTo, dueDate), file);
+	super(createJobInvoice(file, 
+		               number, job, 
+			       incExpAcct, payblRecvblAcct, 
+			       dueDate),
+	      file);
     }
 
     // ---------------------------------------------------------------
@@ -397,7 +414,8 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final GnucashWritableFileImpl file,
 	    final String number, 
 	    final GnucashCustomer cust, 
-	    final GnucashAccountImpl accountToTransferMoneyTo,
+	    final GnucashAccountImpl incomeAcct,
+	    final GnucashAccountImpl receivableAcct,
 	    final LocalDate postDate) {
 
 	ObjectFactory fact = file.getObjectFactory();
@@ -428,7 +446,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	// date opened
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoiceOpened opened = fact.createGncV2GncBookGncGncInvoiceInvoiceOpened();
-	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
+	    String dateTimeStr = ZonedDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    opened.setTsDate(dateTimeStr);
 	    invc.setInvoiceOpened(opened);
 	}
@@ -452,14 +470,14 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postAcct = fact.createGncV2GncBookGncGncInvoiceInvoicePostacc();
 	    postAcct.setType(Const.XML_DATA_TYPE_GUID);
-	    postAcct.setValue(accountToTransferMoneyTo.getId());
+	    postAcct.setValue(receivableAcct.getId());
 	    invc.setInvoicePostacc(postAcct);
 	}
 	
 	// date posted
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoicePosted posted = fact.createGncV2GncBookGncGncInvoiceInvoicePosted();
-	    String dateTimeStr = LocalDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
+	    String dateTimeStr = ZonedDateTime.now().format(DATE_OPENED_FORMAT_BOOK);
 	    posted.setTsDate(dateTimeStr);
 	    invc.setInvoicePosted(posted);
 	}
@@ -470,7 +488,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    postLotRef.setType(Const.XML_DATA_TYPE_GUID);
 
 	    GncAccount.ActLots.GncLot newLot = createInvcPostLot_Customer(file, fact, invcGUID, 
-		                                                          accountToTransferMoneyTo, cust);
+		                                                          receivableAcct, cust);
 	    postLotRef.setValue(newLot.getLotId().getValue());
 	    
 	    invc.setInvoicePostlot(postLotRef);
@@ -481,8 +499,15 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn postTrxRef = fact.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
 	    postTrxRef.setType(Const.XML_DATA_TYPE_GUID);
 	    
-	    String newTrxID = createPostTransaction(file, fact, invcGUID, postDate).getId();
-	    postTrxRef.setValue(newTrxID);
+	    
+	    GnucashWritableTransaction postTrx = createPostTransaction(file, fact, 
+		    					invcGUID,
+		    					receivableAcct, incomeAcct,
+		    					new FixedPointNumber(1), // ::TODO
+		    					new FixedPointNumber(1), // ::TODO
+		    					postDate);
+	    String postTrxID = postTrx.getId();
+	    postTrxRef.setValue(postTrxID);
 
 	    invc.setInvoicePosttxn(postTrxRef);
 	}
@@ -509,7 +534,8 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final GnucashWritableFileImpl file,
 	    final String number, 
 	    final GnucashVendor vend, 
-	    final GnucashAccountImpl accountToTransferMoneyFrom,
+	    final GnucashAccountImpl expensesAcct,
+	    final GnucashAccountImpl payableAcct,
 	    final LocalDate postDate) {
 
 	ObjectFactory fact = file.getObjectFactory();
@@ -564,7 +590,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postAcct = fact.createGncV2GncBookGncGncInvoiceInvoicePostacc();
 	    postAcct.setType(Const.XML_DATA_TYPE_GUID);
-	    postAcct.setValue(accountToTransferMoneyFrom.getId());
+	    postAcct.setValue(payableAcct.getId());
 	    invc.setInvoicePostacc(postAcct);
 	}
 	
@@ -581,8 +607,9 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    GncV2.GncBook.GncGncInvoice.InvoicePostlot postLotRef = fact.createGncV2GncBookGncGncInvoiceInvoicePostlot();
 	    postLotRef.setType(Const.XML_DATA_TYPE_GUID);
 
-	    GncAccount.ActLots.GncLot newLot = createBillPostLot_Vendor(file, fact, invcGUID, 
-		                                                        accountToTransferMoneyFrom, vend);
+	    GncAccount.ActLots.GncLot newLot = createBillPostLot_Vendor(file, fact, 
+		    					invcGUID, 
+		    					payableAcct, vend);
 
 	    postLotRef.setValue(newLot.getLotId().getValue());
 	    invc.setInvoicePostlot(postLotRef);
@@ -593,8 +620,14 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn postTrxRef = fact.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
 	    postTrxRef.setType(Const.XML_DATA_TYPE_GUID);
 	    
-	    String newTrxID = createPostTransaction(file, fact, invcGUID, postDate).getId();
-	    postTrxRef.setValue(newTrxID);
+	    GnucashWritableTransaction postTrx = createPostTransaction(file, fact, 
+		    					invcGUID, 
+		    					payableAcct, expensesAcct,
+		    					new FixedPointNumber(1), // ::TODO
+		    					new FixedPointNumber(1), // ::TODO
+		    					postDate);
+	    String postTrxID = postTrx.getId();
+	    postTrxRef.setValue(postTrxID);
 
 	    invc.setInvoicePosttxn(postTrxRef);
 	}
@@ -619,7 +652,8 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    final GnucashWritableFileImpl file,
 	    final String number, 
 	    final GnucashGenerJob job, 
-	    final GnucashAccountImpl accountToTransferMoneyTo,
+	    final GnucashAccountImpl incExpAcct,
+	    final GnucashAccountImpl recvblPayblAcct,
 	    final LocalDate postDate) {
 
 	ObjectFactory fact = file.getObjectFactory();
@@ -674,7 +708,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoicePostacc postAcct = fact.createGncV2GncBookGncGncInvoiceInvoicePostacc();
 	    postAcct.setType(Const.XML_DATA_TYPE_GUID);
-	    postAcct.setValue(accountToTransferMoneyTo.getId());
+	    postAcct.setValue(recvblPayblAcct.getId());
 	    invc.setInvoicePostacc(postAcct);
 	}
 	
@@ -692,7 +726,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    postLotRef.setType(Const.XML_DATA_TYPE_GUID);
 
 	    GncAccount.ActLots.GncLot newLot = createInvcPostLot_Job(file, fact, invcGUID, 
-		                                                     accountToTransferMoneyTo, job);
+		    recvblPayblAcct, job);
 
 	    postLotRef.setValue(newLot.getLotId().getValue());
 	    invc.setInvoicePostlot(postLotRef);
@@ -703,8 +737,14 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    GncV2.GncBook.GncGncInvoice.InvoicePosttxn postTrxRef = fact.createGncV2GncBookGncGncInvoiceInvoicePosttxn();
 	    postTrxRef.setType(Const.XML_DATA_TYPE_GUID);
 	    
-	    String newTrxID = createPostTransaction(file, fact, invcGUID, postDate).getId();
-	    postTrxRef.setValue(newTrxID);
+	    GnucashWritableTransaction postTrx = createPostTransaction(file, fact, 
+		    					invcGUID,
+		    					incExpAcct, recvblPayblAcct,
+		    					new FixedPointNumber(1), // ::TODO
+		    					new FixedPointNumber(1), // ::TODO
+		    					postDate);
+	    String postTrxID = postTrx.getId();
+	    postTrxRef.setValue(postTrxID);
 
 	    invc.setInvoicePosttxn(postTrxRef);
 	}
@@ -723,12 +763,24 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
      * @see #GnucashInvoiceWritingImpl(GnucashWritableFileImpl, String, String,
      *      GnucashGenerJob, GnucashAccountImpl, Date)
      */
-    private static GnucashTransactionImpl createPostTransaction(
+    private static GnucashWritableTransaction createPostTransaction(
 	    final GnucashWritableFileImpl file,
 	    final ObjectFactory factory, 
-	    final String invcID, 
+	    final String invcID,
+	    final GnucashAccount fromAcct, // income/expense account 
+	    final GnucashAccount toAcct,   // receivable/payable account
+	    final FixedPointNumber amount,
+	    final FixedPointNumber quantity,
 	    final LocalDate dueDate) {
-	GnucashTransactionImpl postTrx = new GnucashWritableTransactionImpl(file);
+	GnucashWritableTransaction postTrx = file.createWritableTransaction();
+
+	GnucashWritableTransactionSplit split1 = postTrx.createWritingSplit(fromAcct);
+	split1.setValue(amount.negate());
+	split1.setQuantity(quantity.negate());
+	    
+	GnucashWritableTransactionSplit split2 = postTrx.createWritingSplit(toAcct);
+	split2.setValue(amount);
+	split2.setQuantity(quantity);
 
 	SlotsType slots = postTrx.getJwsdpPeer().getTrnSlots();
 
@@ -755,7 +807,9 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    SlotValue value = factory.createSlotValue();
 	    slot.setSlotKey("trans-date-due");
 	    value.setType("timespec");
-	    LocalDateTime dueDateTime = LocalDateTime.of(dueDate, LocalTime.MIN);
+	    ZonedDateTime dueDateTime = ZonedDateTime.of(
+		    LocalDateTime.of(dueDate, LocalTime.MIN),
+		    ZoneId.systemDefault());
 	    String dueDateTimeStr = dueDateTime.format(DATE_OPENED_FORMAT_BOOK);
 	    JAXBElement<String> tsDate = factory.createTsDate(dueDateTimeStr);
 	    value.getContent().add(tsDate);
@@ -1293,7 +1347,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	// update transaction-split that transferes the sum incl. taxes from the
 	// incomeAccount
 	// (e.g. "Umsatzerl�se 19%")
-	String accountToTransferMoneyTo = getAccountIDToTransferMoneyTo();
+	String accountToTransferMoneyTo = getReceivablePayableAccountId();
 	boolean postTransactionSumUpdated = false;
 
 	System.err.println(

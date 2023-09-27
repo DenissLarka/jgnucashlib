@@ -212,22 +212,35 @@ public interface GnucashWritableFile extends GnucashFile,
      * 
      * @return a new invoice with no entries that is already added to this file
      */
-    GnucashWritableJobInvoice createWritableJobInvoice(
-	    final String invoiceNumber, 
-	    final GnucashGenerJob job,
-	    final GnucashAccount accountToTransferMoneyTo, 
-	    final LocalDate dueDate) throws WrongInvoiceTypeException;
-
     GnucashWritableCustomerInvoice createWritableCustomerInvoice(
 	    final String invoiceNumber, 
 	    final GnucashCustomer cust,
-	    final GnucashAccount accountToTransferMoneyTo, 
+	    final GnucashAccount incomeAcct,
+	    final GnucashAccount receivableAcct,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException;
 
+    /**
+     * FOR USE BY EXTENSIONS ONLY
+     * 
+     * @return a new invoice with no entries that is already added to this file
+     */
     GnucashWritableVendorBill createWritableVendorBill(
 	    final String invoiceNumber, 
 	    final GnucashVendor vend,
-	    final GnucashAccount accountToTransferMoneyTo, 
+	    final GnucashAccount expensesAcct,
+	    final GnucashAccount payableAcct,
+	    final LocalDate dueDate) throws WrongInvoiceTypeException;
+
+    /**
+     * FOR USE BY EXTENSIONS ONLY
+     * 
+     * @return a new invoice with no entries that is already added to this file
+     */
+    GnucashWritableJobInvoice createWritableJobInvoice(
+	    final String invoiceNumber, 
+	    final GnucashGenerJob job,
+	    final GnucashAccount incExpAcct,
+	    final GnucashAccount recvblPayblAcct,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException;
 
     // -----------------------------------------------------------

@@ -56,10 +56,13 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 	    final GnucashWritableFileImpl file, 
 	    final String number,
 	    final GnucashGenerJob job, 
-	    final GnucashAccountImpl accountToTransferMoneyFromTo, 
+	    final GnucashAccountImpl incExpAcct,
+	    final GnucashAccountImpl recvblPayblAcct,
 	    final LocalDate dueDate) {
-	super(createJobInvoice(file, number, job, 
-		               accountToTransferMoneyFromTo, dueDate), 
+	super(createJobInvoice(file, 
+		               number, job, 
+		               incExpAcct, recvblPayblAcct, 
+		               dueDate), 
 	      file);
     }
 

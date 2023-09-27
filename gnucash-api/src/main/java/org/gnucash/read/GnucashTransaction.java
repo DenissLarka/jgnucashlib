@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.impl.SplitNotFoundException;
 
 /**
  * It is comparable and sorts primarily on the date the transaction happened
@@ -73,13 +74,15 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
     /**
      *
      * @return the first split of this transaction or null.
+     * @throws SplitNotFoundException 
      */
-    GnucashTransactionSplit getFirstSplit();
+    GnucashTransactionSplit getFirstSplit() throws SplitNotFoundException;
 
     /**
      * @return the second split of this transaction or null.
+     * @throws SplitNotFoundException 
      */
-    GnucashTransactionSplit getSecondSplit();
+    GnucashTransactionSplit getSecondSplit() throws SplitNotFoundException;
 
     /**
      *

@@ -56,10 +56,13 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	    final GnucashWritableFileImpl file, 
 	    final String number,
 	    final GnucashCustomer cust, 
-	    final GnucashAccountImpl accountToTransferMoneyTo, 
+	    final GnucashAccountImpl incomeAcct,
+	    final GnucashAccountImpl receivableAcct,
 	    final LocalDate dueDate) {
-	super(createCustomerInvoice(file, number, cust, 
-		                    accountToTransferMoneyTo, dueDate), 
+	super(createCustomerInvoice(file, 
+		                    number, cust, 
+		        	    incomeAcct, receivableAcct,
+		                    dueDate), 
               file);
     }
 

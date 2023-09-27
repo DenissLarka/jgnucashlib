@@ -7,6 +7,7 @@ import java.util.Collection;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.impl.SplitNotFoundException;
 
 /**
  * Transaction that can be modified.<br/>
@@ -55,12 +56,12 @@ public interface GnucashWritableTransaction extends GnucashTransaction {
     /**
      * @see GnucashTransaction#getFirstSplit()
      */
-    GnucashWritableTransactionSplit getWritingFirstSplit();
+    GnucashWritableTransactionSplit getWritingFirstSplit() throws SplitNotFoundException;
 
     /**
      * @see GnucashTransaction#getSecondSplit()
      */
-    GnucashWritableTransactionSplit getWritingSecondSplit();
+    GnucashWritableTransactionSplit getWritingSecondSplit() throws SplitNotFoundException;
 
     /**
      * @see GnucashTransaction#getSplitByID(String)
@@ -71,12 +72,12 @@ public interface GnucashWritableTransaction extends GnucashTransaction {
      *
      * @return the first split of this transaction or null.
      */
-    GnucashWritableTransactionSplit getFirstSplit();
+    GnucashWritableTransactionSplit getFirstSplit() throws SplitNotFoundException;
 
     /**
      * @return the second split of this transaction or null.
      */
-    GnucashWritableTransactionSplit getSecondSplit();
+    GnucashWritableTransactionSplit getSecondSplit() throws SplitNotFoundException;
 
     /**
      * @see GnucashTransaction#getSplits()

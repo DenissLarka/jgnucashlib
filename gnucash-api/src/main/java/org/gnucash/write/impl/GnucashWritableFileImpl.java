@@ -315,12 +315,13 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 
 	    setModified(false);
 	} catch (JAXBException e) {
-	    e.printStackTrace();
 	    LOGGER.error(e.getMessage(), e);
 	}
 	finally {
 	    writer.close();
 	}
+	
+	out.close();
 	
 	lastWriteTime = Math.max(file.lastModified(), System.currentTimeMillis());
     }
@@ -788,7 +789,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     public GnucashWritableCustomerInvoice createWritableCustomerInvoice(
 	    final String number, 
 	    final GnucashCustomer cust,
-	    final GnucashAccount accountToTransferMoneyTo, 
+	    final GnucashAccount incomeAcct,
+	    final GnucashAccount receivableAcct,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException {
 	if (cust == null) {
 	    throw new IllegalArgumentException("null customer given");
@@ -797,7 +799,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	GnucashWritableCustomerInvoice retval = new GnucashWritableCustomerInvoiceImpl(
 							this, 
 							number, cust,
-							(GnucashAccountImpl) accountToTransferMoneyTo, 
+							(GnucashAccountImpl) incomeAcct, 
+							(GnucashAccountImpl) receivableAcct, 
 							dueDate);
 
 	invoiceID2invoice.put(retval.getId(), retval);
@@ -814,7 +817,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     public GnucashWritableVendorBill createWritableVendorBill(
 	    final String number, 
 	    final GnucashVendor vend,
-	    final GnucashAccount accountToTransferMoneyFrom, 
+	    final GnucashAccount expensesAcct,
+	    final GnucashAccount payableAcct,
 	    final LocalDate dueDate) throws WrongInvoiceTypeException {
 	if (vend == null) {
 	    throw new IllegalArgumentException("null vendor given");
@@ -823,7 +827,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	GnucashWritableVendorBill retval = new GnucashWritableVendorBillImpl(
 							this, 
 							number, vend,
-							(GnucashAccountImpl) accountToTransferMoneyFrom, 
+							(GnucashAccountImpl) expensesAcct, 
+							(GnucashAccountImpl) payableAcct, 
 							dueDate);
 
 	invoiceID2invoice.put(retval.getId(), retval);
@@ -840,7 +845,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     public GnucashWritableJobInvoice createWritableJobInvoice(
 	    final String number, 
 	    final GnucashGenerJob job,
-	    final GnucashAccount accountToTransferMoneyFromTo, 
+	    final GnucashAccount incExpAcct,
+	    final GnucashAccount recvblPayblAcct,
 	    final LocalDate dueDate)
 	    throws WrongInvoiceTypeException {
 	if (job == null) {
@@ -850,7 +856,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	GnucashWritableJobInvoice retval = new GnucashWritableJobInvoiceImpl(
 							this, 
 							number, job,
-							(GnucashAccountImpl) accountToTransferMoneyFromTo, 
+							(GnucashAccountImpl) incExpAcct, 
+							(GnucashAccountImpl) recvblPayblAcct, 
 							dueDate);
 
 	invoiceID2invoice.put(retval.getId(), retval);

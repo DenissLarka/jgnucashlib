@@ -14,6 +14,7 @@ import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.GnucashTransactionSplitImpl;
+import org.gnucash.read.impl.SplitNotFoundException;
 import org.gnucash.write.GnucashWritableObject;
 import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
@@ -202,17 +203,18 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
     }
 
     /**
+     * @throws SplitNotFoundException 
      * @see GnucashWritableTransaction#getWritingFirstSplit()
      */
     @Override
-    public GnucashWritableTransactionSplit getFirstSplit() {
+    public GnucashWritableTransactionSplit getFirstSplit() throws SplitNotFoundException {
 	return (GnucashWritableTransactionSplit) super.getFirstSplit();
     }
 
     /**
      * @see GnucashWritableTransaction#getWritingFirstSplit()
      */
-    public GnucashWritableTransactionSplit getWritingFirstSplit() {
+    public GnucashWritableTransactionSplit getWritingFirstSplit() throws SplitNotFoundException {
 	return (GnucashWritableTransactionSplit) super.getFirstSplit();
     }
 
@@ -220,14 +222,14 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
      * @see GnucashWritableTransaction#getWritingSecondSplit()
      */
     @Override
-    public GnucashWritableTransactionSplit getSecondSplit() {
+    public GnucashWritableTransactionSplit getSecondSplit()  throws SplitNotFoundException {
 	return (GnucashWritableTransactionSplit) super.getSecondSplit();
     }
 
     /**
      * @see GnucashWritableTransaction#getWritingSecondSplit()
      */
-    public GnucashWritableTransactionSplit getWritingSecondSplit() {
+    public GnucashWritableTransactionSplit getWritingSecondSplit()  throws SplitNotFoundException {
 	return (GnucashWritableTransactionSplit) super.getSecondSplit();
     }
 
