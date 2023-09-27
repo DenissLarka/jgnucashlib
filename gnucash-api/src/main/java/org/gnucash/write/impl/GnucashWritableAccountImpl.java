@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -111,7 +112,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		{
 			GncAccount.ActCommodity currency = factory.createGncAccountActCommodity();
 			currency.setCmdtyId(file.getDefaultCurrencyID());
-			currency.setCmdtySpace("ISO4217");
+			currency.setCmdtySpace(CurrencyNameSpace.NAMESPACE_CURRENCY);
 			account.setActCommodity(currency);
 		}
 

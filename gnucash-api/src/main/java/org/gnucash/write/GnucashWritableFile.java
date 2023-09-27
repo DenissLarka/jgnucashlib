@@ -141,7 +141,7 @@ public interface GnucashWritableFile extends GnucashFile,
      * Add a new currency.<br/>
      * If the currency already exists, add a new price-quote for it.
      * 
-     * @param pCmdtySpace        the namespace (e.g. "GOODS" or "ISO4217")
+     * @param pCmdtySpace        the namespace (e.g. "GOODS" or "CURRENCY")
      * @param pCmdtyId           the currency-name
      * @param conversionFactor   the conversion-factor from the base-currency (EUR).
      * @param pCmdtyNameFraction number of decimal-places after the comma

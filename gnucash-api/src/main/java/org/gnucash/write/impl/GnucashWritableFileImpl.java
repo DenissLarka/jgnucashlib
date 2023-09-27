@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import java.util.zip.GZIPOutputStream;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
@@ -697,7 +698,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * Add a new currency.<br/>
      * If the currency already exists, add a new price-quote for it.
      *
-     * @param pCmdtySpace        the namespace (e.g. "GOODS" or "ISO4217")
+     * @param pCmdtySpace        the namespace (e.g. "GOODS" or "CURRENCY")
      * @param pCmdtyId           the currency-name
      * @param conversionFactor   the conversion-factor from the base-currency (EUR).
      * @param pCmdtyNameFraction number of decimal-places after the comma
@@ -736,7 +737,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 
 	GncV2.GncBook.GncPricedb.Price.PriceCurrency baseCurrency = getObjectFactory()
 		.createGncV2GncBookGncPricedbPricePriceCurrency();
-	baseCurrency.setCmdtySpace("ISO4217");
+	baseCurrency.setCmdtySpace(CurrencyNameSpace.NAMESPACE_CURRENCY);
 	baseCurrency.setCmdtyId(getDefaultCurrencyID());
 
 	GncV2.GncBook.GncPricedb.Price newQuote = getObjectFactory().createGncV2GncBookGncPricedbPrice();

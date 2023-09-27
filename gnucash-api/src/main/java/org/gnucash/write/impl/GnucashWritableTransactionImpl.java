@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashAccount;
@@ -165,7 +166,7 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
 	{
 	    GncTransaction.TrnCurrency currency = factory.createGncTransactionTrnCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
-	    currency.setCmdtySpace("ISO4217");
+	    currency.setCmdtySpace(CurrencyNameSpace.NAMESPACE_CURRENCY);
 	    transaction.setTrnCurrency(currency);
 	}
 
