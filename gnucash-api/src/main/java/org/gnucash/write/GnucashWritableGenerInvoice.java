@@ -1,6 +1,6 @@
 package org.gnucash.write;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -57,11 +57,11 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 
     // -----------------------------------------------------------
 
-    void setDatePosted(LocalDateTime d);
+    void setDatePosted(LocalDate d);
 
     void setDatePosted(String d) throws java.text.ParseException;
 
-    void setDateOpened(LocalDateTime d);
+    void setDateOpened(LocalDate d);
 
     void setDateOpened(String d) throws java.text.ParseException;
 

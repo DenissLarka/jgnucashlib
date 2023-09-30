@@ -1,6 +1,8 @@
 package org.gnucash.write.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -298,9 +300,9 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
     /**
      * @see GnucashWritableTransaction#setDatePosted(LocalDateTime)
      */
-    public void setDatePosted(final ZonedDateTime datePosted) {
-	this.datePosted = datePosted;
-	getJwsdpPeer().getTrnDatePosted().setTsDate(DATE_ENTERED_FORMAT.format(datePosted));
+    public void setDatePosted(final LocalDate datePosted) {
+	this.datePosted = ZonedDateTime.of(datePosted, LocalTime.MIN, ZoneId.systemDefault());
+	getJwsdpPeer().getTrnDatePosted().setTsDate(DATE_ENTERED_FORMAT.format(this.datePosted));
 	getWritingFile().setModified(true);
     }
 
@@ -325,9 +327,9 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
     }
 
     /**
-     * @see GnucashWritableTransaction#setTransactionNumber(java.lang.String)
+     * @see GnucashWritableTransaction#setNumber(java.lang.String)
      */
-    public void setTransactionNumber(final String tnum) {
+    public void setNumber(final String tnum) {
 	if (tnum == null) {
 	    throw new IllegalArgumentException(
 		    "null transaction-number given! Please use the empty string instead of null for an empty "
@@ -348,11 +350,6 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
     @Override
     public void setDateEntered(LocalDateTime dateEntered) {
 	setDateEntered(dateEntered.atZone(ZoneId.systemDefault()));
-    }
-
-    @Override
-    public void setDatePosted(LocalDateTime datePosted) {
-	setDatePosted(datePosted.atZone(ZoneId.systemDefault()));
     }
 
 }

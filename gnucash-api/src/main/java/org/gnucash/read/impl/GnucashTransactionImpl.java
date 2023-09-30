@@ -403,8 +403,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     /**
      * @see GnucashTransaction#getDateEntered()
      */
-    protected static final DateTimeFormatter DATE_ENTERED_FORMAT = DateTimeFormatter
-	    .ofPattern(Const.STANDARD_DATE_FORMAT);
+    protected static final DateTimeFormatter DATE_ENTERED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
 
     /**
      * @see GnucashTransaction#getDateEntered()

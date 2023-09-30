@@ -17,6 +17,7 @@ import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceEntryImpl;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashVendorJob;
@@ -51,6 +52,7 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 
     /**
      * @param file the file we are associated with.
+     * @throws WrongOwnerTypeException 
      */
     public GnucashWritableJobInvoiceImpl(
 	    final GnucashWritableFileImpl file, 
@@ -60,12 +62,12 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 	    final GnucashAccountImpl recvblPayblAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) {
+	    final LocalDate dueDate) throws WrongOwnerTypeException {
 	super(createJobInvoice_int(file, 
-		               number, job,
-		               false, // <-- caution!
-		               incExpAcct, recvblPayblAcct, 
-		               openedDate, postDate, dueDate), 
+		                   number, job,
+		                   false, // <-- caution!
+		                   incExpAcct, recvblPayblAcct, 
+		                   openedDate, postDate, dueDate), 
 	      file);
     }
 
@@ -224,7 +226,9 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableJobInvoiceEntry createEntry(final GnucashAccount acct, final FixedPointNumber singleUnitPrice,
+    public GnucashWritableJobInvoiceEntry createEntry(
+	    final GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableJobInvoiceEntry entry = createJobInvcEntry(acct, singleUnitPrice, quantity);
 	return entry;
@@ -237,8 +241,11 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableJobInvoiceEntry createEntry(final GnucashAccount acct, final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, final GCshTaxTable tax)
+    public GnucashWritableJobInvoiceEntry createEntry(
+	    final GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity, 
+	    final GCshTaxTable tax)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableJobInvoiceEntry entry = createJobInvcEntry(acct, singleUnitPrice, quantity, tax);
 	return entry;
@@ -273,7 +280,7 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
 
     /**
      * Called by
-     * ${@link GnucashWritableJobInvoiceEntryImpl#createCustInvoiceEntry(GnucashWritableJobInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
+     * ${@link GnucashWritableJobInvoiceEntryImpl#createCustInvoiceEntry_int(GnucashWritableJobInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
      *
      * @param entry the entry to add to our internal list of job-invoice-entries
      * @throws WrongInvoiceTypeException
@@ -345,7 +352,7 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
     public void post(final GnucashAccount incExpAcct, 
 	             final GnucashAccount recvblPayablAcct, 
 	             final LocalDate postDate,
-		     final LocalDate dueDate) {
+		     final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException {
 	postJobInvoice(
 		getFile(), 
 		this, getJob(), 

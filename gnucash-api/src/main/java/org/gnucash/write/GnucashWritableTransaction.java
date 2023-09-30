@@ -1,6 +1,7 @@
 package org.gnucash.write;
 
 import java.beans.PropertyChangeListener;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -41,17 +42,17 @@ public interface GnucashWritableTransaction extends GnucashTransaction {
      *                    entered into the system
      * @see {@link #setDatePosted(LocalDateTime)}
      */
-    void setDateEntered(final LocalDateTime dateEntered);
+    void setDateEntered(final LocalDateTime dateEntered); // sic, not LocalDate
 
     /**
      * @param datePosted the day (time is ignored) that the money was transfered
      * @see {@link #setDateEntered(LocalDateTime)}
      */
-    void setDatePosted(final LocalDateTime datePosted);
+    void setDatePosted(final LocalDate datePosted);
 
     void setDescription(final String desc);
 
-    void setTransactionNumber(String string);
+    void setNumber(String string);
 
     /**
      * @see GnucashTransaction#getFirstSplit()

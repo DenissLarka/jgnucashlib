@@ -12,6 +12,7 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
@@ -211,6 +212,7 @@ public interface GnucashWritableFile extends GnucashFile,
      * FOR USE BY EXTENSIONS ONLY
      * 
      * @return a new invoice with no entries that is already added to this file
+     * @throws WrongOwnerTypeException 
      */
     GnucashWritableCustomerInvoice createWritableCustomerInvoice(
 	    final String invoiceNumber, 
@@ -219,7 +221,7 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashAccount receivableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException;
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
 
     /**
      * FOR USE BY EXTENSIONS ONLY
@@ -233,7 +235,7 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashAccount payableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException;
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
 
     /**
      * FOR USE BY EXTENSIONS ONLY
@@ -247,7 +249,7 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashAccount recvblPayblAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException;
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
 
     // -----------------------------------------------------------
 

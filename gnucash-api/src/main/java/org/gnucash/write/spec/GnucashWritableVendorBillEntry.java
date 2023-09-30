@@ -1,16 +1,16 @@
 package org.gnucash.write.spec;
 
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
 import org.gnucash.write.GnucashWritableObject;
 
 /**
  * Invoice-Entry that can be modified.
  */
-public interface GnucashWritableVendorBillEntry extends GnucashGenerInvoiceEntry, 
+public interface GnucashWritableVendorBillEntry extends GnucashWritableGenerInvoiceEntry, 
                                                         GnucashWritableObject 
 {
 

@@ -82,7 +82,9 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @param peer    the JWSDP-Object we are wrapping.
      */
     @SuppressWarnings("exports")
-    public GnucashGenerInvoiceEntryImpl(final GnucashGenerInvoice invoice, final GncV2.GncBook.GncGncEntry peer,
+    public GnucashGenerInvoiceEntryImpl(
+	    final GnucashGenerInvoice invoice, 
+	    final GncV2.GncBook.GncGncEntry peer,
 	    final boolean addEntryToInvoice) {
 	super((peer.getEntrySlots() == null) ? new ObjectFactory().createSlotsType() : peer.getEntrySlots(),
 		invoice.getFile());
@@ -109,7 +111,9 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see #jwsdpPeer
      */
     @SuppressWarnings("exports")
-    public GnucashGenerInvoiceEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) {
+    public GnucashGenerInvoiceEntryImpl(
+	    final GncV2.GncBook.GncGncEntry peer, 
+	    final GnucashFileImpl gncFile) {
 	super((peer.getEntrySlots() == null) ? new ObjectFactory().createSlotsType() : peer.getEntrySlots(), gncFile);
 
 	if (peer.getEntrySlots() == null) {

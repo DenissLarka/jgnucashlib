@@ -4,19 +4,19 @@ import java.time.LocalDate;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.GnucashWritableGenerInvoice;
 
 /**
  * Job invoice that can be modified if isModifiable() returns true
  */
-public interface GnucashWritableJobInvoice extends GnucashGenerInvoice {
+public interface GnucashWritableJobInvoice extends GnucashWritableGenerInvoice {
 
     GnucashWritableJobInvoiceEntry getWritableEntryById(String id);
     
@@ -72,6 +72,6 @@ public interface GnucashWritableJobInvoice extends GnucashGenerInvoice {
     void post(final GnucashAccount incExpAcct,
 	      final GnucashAccount recvblPayablAcct,
 	      final LocalDate postDate,
-	      final LocalDate dueDate);
+	      final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
 
 }

@@ -43,17 +43,17 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	/**
-	 * @param invoice   tne invoice this entry shall belong to
+	 * @param invc   tne invoice this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableVendorBillEntryImpl(
-		final GnucashWritableCustomerInvoiceImpl invoice,
+		final GnucashWritableCustomerInvoiceImpl invc,
 		final GncV2.GncBook.GncGncEntry jwsdpPeer) {
-		super(invoice, jwsdpPeer);
+		super(invc, jwsdpPeer);
 		
-		this.myInvoice = invoice;
+		this.myInvoice = invc;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	 * (It has the taxtable of the customer with a fallback
 	 * to the first taxtable found assigned)
 	 *
-	 * @param invoice  the invoice to add this split to
+	 * @param bll  the invoice to add this split to
 	 * @param account  the income-account the money comes from
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
@@ -69,14 +69,17 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	 * @throws NoTaxTableFoundException 
 	 */
 	public GnucashWritableVendorBillEntryImpl(
-		final GnucashWritableVendorBillImpl invoice,
+		final GnucashWritableVendorBillImpl bll,
 		final GnucashAccount account,
 		final FixedPointNumber quantity,
 		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-		super(invoice, createVendBillEntry(invoice, account, quantity, price));
+		super(bll, 
+		      createVendBillEntry_int(bll, account, quantity, price));
 		
-		invoice.addBillEntry(this);
-		this.myInvoice = invoice;
+		// Caution: Call addBillEntry one level above now
+		// (GnucashWritableVendorBillImpl.createVendBillEntry)
+		// invc.addBillEntry(this);
+		this.myInvoice = bll;
 	}
 
 	public GnucashWritableVendorBillEntryImpl(final GnucashGenerInvoiceEntry entry) {

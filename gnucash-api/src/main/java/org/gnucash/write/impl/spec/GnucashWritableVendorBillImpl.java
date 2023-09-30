@@ -18,6 +18,7 @@ import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashVendorBillEntryImpl;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -51,6 +52,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 
     /**
      * @param file the file we are associated with.
+     * @throws WrongOwnerTypeException 
      */
     public GnucashWritableVendorBillImpl(
 	    final GnucashWritableFileImpl file, 
@@ -60,12 +62,12 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	    final GnucashAccountImpl payableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) {
+	    final LocalDate dueDate) throws WrongOwnerTypeException {
 	super(createVendorBill_int(file, 
-		               number, vend,
-		               false, // <-- caution!
-		               expensesAcct, payableAcct, 
-		               openedDate, postDate, dueDate), 
+		                   number, vend,
+		                   false, // <-- caution!
+		                   expensesAcct, payableAcct, 
+		                   openedDate, postDate, dueDate), 
               file);
     }
 
@@ -213,7 +215,9 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableVendorBillEntry createEntry(final GnucashAccount acct, final FixedPointNumber singleUnitPrice,
+    public GnucashWritableVendorBillEntry createEntry(
+	    final GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, singleUnitPrice, quantity);
 	return entry;
@@ -226,8 +230,11 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableVendorBillEntry createEntry(final GnucashAccount acct, final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, final GCshTaxTable tax)
+    public GnucashWritableVendorBillEntry createEntry(
+	    final GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity, 
+	    final GCshTaxTable tax)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, singleUnitPrice, quantity, tax);
 	return entry;
@@ -240,8 +247,11 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableVendorBillEntry createEntry(final GnucashAccount acct, final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, final FixedPointNumber tax)
+    public GnucashWritableVendorBillEntry createEntry(
+	    final GnucashAccount acct, 
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber tax)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, singleUnitPrice, quantity, tax);
 	return entry;
@@ -262,7 +272,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 
     /**
      * Called by
-     * ${@link GnucashWritableVendorBillEntryImpl#createVendBillEntry(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
+     * ${@link GnucashWritableVendorBillEntryImpl#createVendBillEntry_int(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
      *
      * @param entry the entry to add to our internal list of vendor-bill-entries
      * @throws WrongInvoiceTypeException
@@ -343,7 +353,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
     public void post(final GnucashAccount expensesAcct, 
 	             final GnucashAccount payablAcct, 
 	             final LocalDate postDate, 
-	             final LocalDate dueDate) {
+	             final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException {
 	postVendorBill(
 		getFile(), 
 		this, getVendor(), 

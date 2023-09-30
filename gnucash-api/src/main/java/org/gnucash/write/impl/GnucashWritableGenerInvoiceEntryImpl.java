@@ -52,14 +52,14 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws WrongInvoiceTypeException 
      * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
      */
-    protected static GncV2.GncBook.GncGncEntry createCustInvoiceEntry(
+    protected static GncV2.GncBook.GncGncEntry createCustInvoiceEntry_int(
 	    final GnucashWritableGenerInvoiceImpl invc, // important: NOT GnucashWritableCustomerInvoiceImpl
 	    final GnucashAccount acct, 
 	    final FixedPointNumber quantity, 
 	    final FixedPointNumber price) throws WrongInvoiceTypeException {
 
 	if ( ! invc.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) &&
-		! invc.getType().equals(GnucashGenerInvoice.TYPE_JOB) )
+	     ! invc.getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	// TODO: keep count-data in file intact <gnc:count-data
@@ -137,14 +137,14 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws WrongInvoiceTypeException 
      * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
      */
-    protected static GncV2.GncBook.GncGncEntry createVendBillEntry(
+    protected static GncV2.GncBook.GncGncEntry createVendBillEntry_int(
 	    final GnucashWritableGenerInvoiceImpl invc, // important: NOT GnucashWritableVendorBillImpl
 	    final GnucashAccount acct, 
 	    final FixedPointNumber quantity, 
 	    final FixedPointNumber price) throws WrongInvoiceTypeException {
 
 	if ( ! invc.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) &&
-		! invc.getType().equals(GnucashGenerInvoice.TYPE_JOB) )
+	     ! invc.getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	// TODO: keep count-data in file intact <gnc:count-data
@@ -219,7 +219,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws WrongInvoiceTypeException 
      * @see {@link #GnucashInvoiceEntryWritingImpl(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}
      */
-    protected static GncV2.GncBook.GncGncEntry createJobInvoiceEntry(
+    protected static GncV2.GncBook.GncGncEntry createJobInvoiceEntry_int(
 	    final GnucashWritableGenerInvoiceImpl invc, // important: NOT GnucashWritableJobInvoiceImpl
 	    final GnucashAccount acct, 
 	    final FixedPointNumber quantity, 
@@ -236,9 +236,9 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	}
 	
 	if ( invc.getOwnerType(GnucashGenerInvoice.ReadVariant.VIA_JOB).equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
-	    return createCustInvoiceEntry(invc, acct, quantity, price);
+	    return createCustInvoiceEntry_int(invc, acct, quantity, price);
 	else if ( invc.getOwnerType(GnucashGenerInvoice.ReadVariant.VIA_JOB).equals(GnucashGenerInvoice.TYPE_VENDOR) )
-	    return createVendBillEntry(invc, acct, quantity, price);
+	    return createVendBillEntry_int(invc, acct, quantity, price);
 	
 	return null; // Compiler happy
     }
@@ -295,7 +295,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      *      GnucashFileImpl)
      */
     @SuppressWarnings("exports")
-    public GnucashWritableGenerInvoiceEntryImpl(final GncV2.GncBook.GncGncEntry jwsdpPeer,
+    public GnucashWritableGenerInvoiceEntryImpl(
+	    final GncV2.GncBook.GncGncEntry jwsdpPeer,
 	    final GnucashWritableFileImpl gnucashFile) {
 	super(jwsdpPeer, gnucashFile);
     }
@@ -307,7 +308,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      *      GncV2.GncBook.GncGncEntry)
      */
     @SuppressWarnings("exports")
-    public GnucashWritableGenerInvoiceEntryImpl(final GnucashWritableGenerInvoiceImpl invoice,
+    public GnucashWritableGenerInvoiceEntryImpl(
+	    final GnucashWritableGenerInvoiceImpl invoice,
 	    final GncV2.GncBook.GncGncEntry jwsdpPeer) {
 	super(invoice, jwsdpPeer, true);
 
@@ -327,10 +329,13 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public GnucashWritableGenerInvoiceEntryImpl(final GnucashWritableGenerInvoiceImpl invoice,
-	    final GnucashAccount account, final FixedPointNumber quantity, final FixedPointNumber price)
+    public GnucashWritableGenerInvoiceEntryImpl(
+	    final GnucashWritableGenerInvoiceImpl invoice,
+	    final GnucashAccount account, 
+	    final FixedPointNumber quantity, 
+	    final FixedPointNumber price)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	super(invoice, createCustInvoiceEntry(invoice, account, quantity, price), true);
+	super(invoice, createCustInvoiceEntry_int(invoice, account, quantity, price), true);
 
 	invoice.addRawGenerEntry(this);
 	this.invoice = invoice;

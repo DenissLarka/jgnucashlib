@@ -42,6 +42,7 @@ import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.aux.GCshTaxTableImpl;
+import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableAccount;
@@ -784,7 +785,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * FOR USE BY EXTENSIONS ONLY!
      * 
      * @throws WrongInvoiceTypeException
-     *
+     * @throws WrongOwnerTypeException 
+     * @throws  
      * @see GnucashWritableFile#createWritableTransaction()
      */
     public GnucashWritableCustomerInvoice createWritableCustomerInvoice(
@@ -794,7 +796,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final GnucashAccount receivableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException {
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException {
 	if (cust == null) {
 	    throw new IllegalArgumentException("null customer given");
 	}
@@ -815,6 +817,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * FOR USE BY EXTENSIONS ONLY!
      * 
      * @throws WrongInvoiceTypeException
+     * @throws WrongOwnerTypeException 
      *
      * @see GnucashWritableFile#createWritableTransaction()
      */
@@ -825,7 +828,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final GnucashAccount payableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException {
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException {
 	if (vend == null) {
 	    throw new IllegalArgumentException("null vendor given");
 	}
@@ -846,6 +849,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * FOR USE BY EXTENSIONS ONLY!
      * 
      * @throws WrongInvoiceTypeException
+     * @throws WrongOwnerTypeException 
      *
      * @see GnucashWritableFile#createWritableTransaction()
      */
@@ -857,7 +861,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
 	    final LocalDate dueDate)
-	    throws WrongInvoiceTypeException {
+	    throws WrongInvoiceTypeException, WrongOwnerTypeException {
 	if (job == null) {
 	    throw new IllegalArgumentException("null job given");
 	}
