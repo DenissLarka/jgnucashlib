@@ -43,26 +43,26 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	/**
-	 * @param invc   tne invoice this entry shall belong to
+	 * @param bll   tne invoice this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableVendorBillEntryImpl(
-		final GnucashWritableCustomerInvoiceImpl invc,
+		final GnucashWritableVendorBillImpl bll,
 		final GncV2.GncBook.GncGncEntry jwsdpPeer) {
-		super(invc, jwsdpPeer);
+		super(bll, jwsdpPeer);
 		
-		this.myInvoice = invc;
+		this.myInvoice = bll;
 	}
 
 	/**
 	 * Create a taxable invoiceEntry.
-	 * (It has the taxtable of the customer with a fallback
+	 * (It has the taxtable of the vendor with a fallback
 	 * to the first taxtable found assigned)
 	 *
-	 * @param bll  the invoice to add this split to
-	 * @param account  the income-account the money comes from
+	 * @param bll  the vendor bill to add this split to
+	 * @param account  the expenses-account the money comes from
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
 	 * @throws WrongInvoiceTypeException 
@@ -78,7 +78,7 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 		
 		// Caution: Call addBillEntry one level above now
 		// (GnucashWritableVendorBillImpl.createVendBillEntry)
-		// invc.addBillEntry(this);
+		// bll.addBillEntry(this);
 		this.myInvoice = bll;
 	}
 

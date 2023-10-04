@@ -3,6 +3,8 @@ package org.gnucash.write.impl.spec;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
@@ -11,7 +13,6 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
-import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.aux.GCshTaxTable;
@@ -21,7 +22,6 @@ import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceEntryImpl;
-import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
@@ -67,7 +67,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	super(createCustomerInvoice_int(file, 
 		                        number, cust,
 		                        false, // <-- caution!
-		        	        incomeAcct, receivableAcct,
+			                incomeAcct, receivableAcct,
 		                        openedDate, postDate, dueDate), 
               file);
     }
@@ -86,13 +86,25 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	if (!invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT).equals(GnucashGenerInvoice.TYPE_CUSTOMER))
 	    throw new WrongInvoiceTypeException();
 
-	// ::TODO
+	// Caution: In the following two loops, we may *not* iterate directly over
+	// invc.getGenerEntries(), because else, we will produce a ConcurrentModificationException.
+	// (It only works if the invoice has one single entry.)
+	// Hence the indirection via the redundant "entries" hash set.
+	Collection<GnucashGenerInvoiceEntry> entries = new HashSet<GnucashGenerInvoiceEntry>();
 	for ( GnucashGenerInvoiceEntry entry : invc.getGenerEntries() ) {
-	    System.err.println("zzz1");
+	    entries.add(entry);
+	}
+	for ( GnucashGenerInvoiceEntry entry : entries ) {
 	    addEntry(new GnucashWritableCustomerInvoiceEntryImpl(entry));
 	}
 
-	for (GnucashTransaction trx : invc.getPayingTransactions()) {
+	// Caution: Indirection via a redundant "trxs" hash set. 
+	// Same reason as above.
+	Collection<GnucashTransaction> trxs = new HashSet<GnucashTransaction>();
+	for ( GnucashTransaction trx : invc.getPayingTransactions() ) {
+	    trxs.add(trx);
+	}
+	for ( GnucashTransaction trx : trxs ) {
 	    for (GnucashTransactionSplit splt : trx.getSplits()) {
 		String lot = splt.getLotID();
 		if (lot != null) {
@@ -195,8 +207,8 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
      */
     public void setCustomer(GnucashCustomer cust) throws WrongInvoiceTypeException {
 	// ::TODO
-	Object old = getCustomer();
-	if (old == cust) {
+	GnucashCustomer oldCust = getCustomer();
+	if (oldCust == cust) {
 	    return; // nothing has changed
 	}
 
@@ -206,7 +218,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	// <<insert code to react further to this change here
 	PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 	if (propertyChangeFirer != null) {
-	    propertyChangeFirer.firePropertyChange("customer", old, cust);
+	    propertyChangeFirer.firePropertyChange("customer", oldCust, cust);
 	}
     }
 
@@ -220,9 +232,8 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
      */
     public GnucashWritableCustomerInvoiceEntry createEntry(
 	    final GnucashAccount acct,
-	    final FixedPointNumber singleUnitPrice, 
-	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, singleUnitPrice, quantity);
 	return entry;
     }
@@ -236,10 +247,9 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
      */
     public GnucashWritableCustomerInvoiceEntry createEntry(
 	    final GnucashAccount acct,
-	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final GCshTaxTable tax)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, singleUnitPrice, quantity, tax);
 	return entry;
     }
@@ -253,10 +263,9 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
      */
     public GnucashWritableCustomerInvoiceEntry createEntry(
 	    final GnucashAccount acct,
-	    final FixedPointNumber singleUnitPrice, 
+	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final FixedPointNumber tax)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, singleUnitPrice, quantity, tax);
 	return entry;
     }
@@ -278,8 +287,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
      * Called by
      * ${@link GnucashWritableCustomerInvoiceEntryImpl#createCustInvoiceEntry_int(GnucashWritableGenerInvoiceImpl, GnucashAccount, FixedPointNumber, FixedPointNumber)}.
      *
-     * @param entry the entry to add to our internal list of
-     *              customer-invoice-entries
+     * @param entry the entry to add to our internal list of customer-invoice-entries
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
@@ -303,7 +311,14 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	return getInvcAccountIDToTransferMoneyTo(entry);
     }
 
+    @Override
     protected String getBillAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry)
+	    throws WrongInvoiceTypeException {
+	throw new WrongInvoiceTypeException();
+    }
+
+    @Override
+    protected String getJobAccountIDToTransferMoneyFromTo(final GnucashGenerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
 	throw new WrongInvoiceTypeException();
     }
@@ -318,14 +333,6 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	    throw new IllegalStateException(
 		    "this customer invoice is NOT changable because there are already payment for it made!");
 	}
-    }
-
-    /**
-     * @throws WrongInvoiceTypeException
-     * @see GnucashWritableGenerInvoice#setGenerJob(GnucashGenerJob)
-     */
-    public void setJob(final GnucashCustomerJob job) throws WrongInvoiceTypeException {
-	setGenerJob(job);
     }
 
     /**

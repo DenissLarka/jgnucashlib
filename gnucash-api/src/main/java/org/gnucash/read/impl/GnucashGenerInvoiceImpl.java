@@ -838,15 +838,15 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	 */
 	public ZonedDateTime getDateOpened() {
 		if (dateOpened == null) {
-			String s = getJwsdpPeer().getInvoiceOpened().getTsDate();
+			String dateStr = getJwsdpPeer().getInvoiceOpened().getTsDate();
 			try {
 				//"2001-09-18 00:00:00 +0200"
-				dateOpened = ZonedDateTime.parse(s, DATE_OPENED_FORMAT);
+				dateOpened = ZonedDateTime.parse(dateStr, DATE_OPENED_FORMAT);
 			}
 			catch (Exception e) {
 				IllegalStateException ex = new IllegalStateException(
 						"unparsable date '"
-								+ s
+								+ dateStr
 								+ "' in invoice!");
 				ex.initCause(e);
 				throw ex;
@@ -887,23 +887,20 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
 	 * {@inheritDoc}
 	 */
 	public ZonedDateTime getDatePosted() {
-		if (datePosted == null) {
-			String s = getJwsdpPeer().getInvoiceOpened().getTsDate();
-			try {
-				//"2001-09-18 00:00:00 +0200"
-				datePosted = ZonedDateTime.parse(s, DATE_OPENED_FORMAT);
-			}
-			catch (Exception e) {
-				IllegalStateException ex = new IllegalStateException(
-						"unparsable date '"
-								+ s
-								+ "' in invoice!");
-				ex.initCause(e);
-				throw ex;
-			}
-
+	    if (datePosted == null) {
+		String dateStr = getJwsdpPeer().getInvoiceOpened().getTsDate();
+		try {
+		    // "2001-09-18 00:00:00 +0200"
+		    datePosted = ZonedDateTime.parse(dateStr, DATE_OPENED_FORMAT);
+		} catch (Exception e) {
+		    IllegalStateException ex = new IllegalStateException(
+			    "unparsable date '" + dateStr + "' in invoice entry!");
+		    ex.initCause(e);
+		    throw ex;
 		}
-		return datePosted;
+
+	    }
+	    return datePosted;
 	}
 
 	/**

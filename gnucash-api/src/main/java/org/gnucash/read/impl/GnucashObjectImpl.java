@@ -81,8 +81,8 @@ public class GnucashObjectImpl implements GnucashObject {
 	    throw new IllegalArgumentException("null 'slots' given!");
 	}
 
-	Object old = mySlots;
-	if (old == slots) {
+	SlotsType oldSlots = mySlots;
+	if (oldSlots == slots) {
 	    return; // nothing has changed
 	}
 	// ::TODO Check with equals as well
@@ -106,7 +106,7 @@ public class GnucashObjectImpl implements GnucashObject {
 	// <<insert code to react further to this change here
 	PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 	if (propertyChangeFirer != null) {
-	    propertyChangeFirer.firePropertyChange("slots", old, slots);
+	    propertyChangeFirer.firePropertyChange("slots", oldSlots, slots);
 	}
     }
 

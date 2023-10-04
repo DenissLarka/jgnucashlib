@@ -14,25 +14,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.impl.TestGnucashCustomerImpl;
 import org.gnucash.read.impl.TestGnucashGenerJobImpl;
-import org.gnucash.read.impl.TestGnucashVendorImpl;
-import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
-import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
-import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashJobInvoice;
-import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
-import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableJobInvoice;
-import org.gnucash.write.spec.GnucashWritableVendorBill;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,30 +35,23 @@ import org.xml.sax.SAXException;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestGnucashWritableCustomerInvoiceImpl
+public class TestGnucashWritableJobInvoiceImpl
 {
-    private static final String CUST_1_ID = TestGnucashCustomerImpl.CUST_1_ID;
-    private static final String CUST_2_ID = TestGnucashCustomerImpl.CUST_2_ID;
-    private static final String CUST_3_ID = TestGnucashCustomerImpl.CUST_3_ID;
-
-    private static final String VEND_1_ID = TestGnucashVendorImpl.VEND_1_ID;
-    private static final String VEND_2_ID = TestGnucashVendorImpl.VEND_2_ID;
-    private static final String VEND_3_ID = TestGnucashVendorImpl.VEND_3_ID;
-
     private static final String JOB_1_ID  = TestGnucashGenerJobImpl.JOB_1_ID;
     private static final String JOB_2_ID  = TestGnucashGenerJobImpl.JOB_2_ID;
 
     private static final String INCOME_ACCT_ID     = "fed745c4da5c49ebb0fde0f47222b35b"; // Root Account::Erträge::Sonstiges
+    private static final String EXPENSES_ACCT_ID   = "xxx"; // xxx
     private static final String RECEIVABLE_ACCT_ID = "7e223ee2260d4ba28e8e9e19ce291f43"; // Root Account::Aktiva::Forderungen::Unfug_Quatsch
+    private static final String PAYABLE_ACCT_ID    = "xxx"; // xxx
     
     // ----------------------------
 
     private GnucashWritableFileImpl gcshInFile = null;
     private GnucashFileImpl         gcshOutFile = null;
 
-    private GnucashCustomer cust1 = null;
-    private GnucashVendor   vend1 = null;
     private GnucashGenerJob job1 = null;
+    private GnucashGenerJob job2 = null;
     
     private GnucashAccount  incomeAcct = null;
     private GnucashAccount  expensesAcct = null;
@@ -92,7 +75,7 @@ public class TestGnucashWritableCustomerInvoiceImpl
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestGnucashWritableCustomerInvoiceImpl.class);  
+    return new JUnit4TestAdapter(TestGnucashWritableJobInvoiceImpl.class);  
   }
   
   @Before
@@ -124,10 +107,13 @@ public class TestGnucashWritableCustomerInvoiceImpl
     
     // ----------------------------
     
-    cust1 = gcshInFile.getCustomerByID(CUST_1_ID);
+    job1  = gcshInFile.getGenerJobByID(JOB_1_ID);
+    job2  = gcshInFile.getGenerJobByID(JOB_2_ID);
     
     incomeAcct     = gcshInFile.getAccountByID(INCOME_ACCT_ID);
+    expensesAcct   = gcshInFile.getAccountByID(EXPENSES_ACCT_ID);
     receivableAcct = gcshInFile.getAccountByID(RECEIVABLE_ACCT_ID);
+    payableAcct    = gcshInFile.getAccountByID(PAYABLE_ACCT_ID);
   }
 
   // -----------------------------------------------------------------
@@ -138,8 +124,8 @@ public class TestGnucashWritableCustomerInvoiceImpl
       LocalDate postDate = LocalDate.of(2023, 8, 1);
       LocalDate openedDate = LocalDate.of(2023, 8, 3);
       LocalDate dueDate = LocalDate.of(2023, 8, 10);
-      GnucashWritableCustomerInvoice invc = gcshInFile.createWritableCustomerInvoice("19327", 
-	      							cust1, 
+      GnucashWritableJobInvoice invc = gcshInFile.createWritableJobInvoice("19327", 
+	      							job1, 
 	      							incomeAcct, receivableAcct, 
 	      							openedDate, postDate, dueDate);
       
@@ -219,7 +205,7 @@ public class TestGnucashWritableCustomerInvoiceImpl
 //      System.out.println("New Invoice ID (3): " + newInvcID);
       GnucashGenerInvoice invcGener = gcshOutFile.getGenerInvoiceByID(newInvcID);
       assertNotEquals(null, invcGener);
-      GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGener);
+      GnucashJobInvoice invcSpec = new GnucashJobInvoiceImpl(invcGener);
       assertNotEquals(null, invcSpec);
       
       assertEquals("19327", invcSpec.getNumber());
@@ -238,7 +224,7 @@ public class TestGnucashWritableCustomerInvoiceImpl
 //      System.out.println("New Invoice ID (3): " + newInvcID);
       GnucashGenerInvoice invcGener = gcshOutFile.getGenerInvoiceByID(newInvcID);
       assertNotEquals(null, invcGener);
-      GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGener);
+      GnucashJobInvoice invcSpec = new GnucashJobInvoiceImpl(invcGener);
       assertNotEquals(null, invcSpec);
       
       assertEquals("19327", invcSpec.getNumber());

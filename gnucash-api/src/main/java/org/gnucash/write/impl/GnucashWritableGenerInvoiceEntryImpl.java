@@ -1,6 +1,11 @@
 package org.gnucash.write.impl;
 
 import java.beans.PropertyChangeSupport;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.gnucash.Const;
@@ -66,7 +71,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	// cd:type="gnc:GncEntry">18</gnc:count-data>
 
 	if (!invc.isModifiable()) {
-	    throw new IllegalArgumentException("The given customer invoice has payments and is" + " thus not modifiable");
+	    throw new IllegalArgumentException("The given customer invoice has payments and is thus not modifiable");
 	}
 
 	GnucashWritableFileImpl gcshWFile = (GnucashWritableFileImpl) invc.getFile();
@@ -105,7 +110,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	    // ::TODO
 	    // GnucashCustomer customer = invoice.getCustomer();
 	    // if (customer != null) {
-	    // taxTable = customer.getCustomerTaxTable();
+	    // taxTable = customer.getTaxTable();
 	    // }
 
 	    // use first tax-table found
@@ -151,7 +156,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	// cd:type="gnc:GncEntry">18</gnc:count-data>
 
 	if (!invc.isModifiable()) {
-	    throw new IllegalArgumentException("The given vendor bill has payments and is" + " thus not modifiable");
+	    throw new IllegalArgumentException("The given vendor bill has payments and is thus not modifiable");
 	}
 
 	GnucashWritableFileImpl gcshWFile = (GnucashWritableFileImpl) invc.getFile();
@@ -168,10 +173,10 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 
 	{
 
-	    GncV2.GncBook.GncGncEntry.EntryInvoice inv = factory.createGncV2GncBookGncGncEntryEntryInvoice();
-	    inv.setType(Const.XML_DATA_TYPE_GUID);
-	    inv.setValue(invc.getId());
-	    entry.setEntryInvoice(inv);
+	    GncV2.GncBook.GncGncEntry.EntryBill bll = factory.createGncV2GncBookGncGncEntryEntryBill();
+	    bll.setType(Const.XML_DATA_TYPE_GUID);
+	    bll.setValue(invc.getId());
+	    entry.setEntryBill(bll);
 	}
 	
 	entry.setEntryBPrice(price.toGnucashString());
@@ -185,9 +190,9 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 
 	    GCshTaxTable taxTable = null;
 	    // ::TODO
-	    // GnucashCustomer customer = invoice.getCustomer();
-	    // if (customer != null) {
-	    // taxTable = customer.getCustomerTaxTable();
+	    // GnucashVendor vend = invoice.getVendor();
+	    // if (vend != null) {
+	    // taxTable = vend.getTaxTable();
 	    // }
 
 	    // use first tax-table found
@@ -232,7 +237,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	// cd:type="gnc:GncEntry">18</gnc:count-data>
 
 	if (!invc.isModifiable()) {
-	    throw new IllegalArgumentException("The given job invoice has payments and is" + " thus not modifiable");
+	    throw new IllegalArgumentException("The given job invoice has payments and is thus not modifiable");
 	}
 	
 	if ( invc.getOwnerType(GnucashGenerInvoice.ReadVariant.VIA_JOB).equals(GnucashGenerInvoice.TYPE_CUSTOMER) )
@@ -368,24 +373,45 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     }
 
     /**
-     * Set the description-text.
-     *
-     * @param desc the new description
+     * {@inheritDoc}
      */
-    public void setDescription(final String desc) {
-	if (desc == null) {
+    public void setDate(final LocalDate date) {
+	if (date == null) {
+	    throw new IllegalArgumentException(
+		    "null date given!");
+	}
+	if (!this.getGenerInvoice().isModifiable()) {
+	    throw new IllegalStateException("This Invoice has payments and is not modifiable!");
+	}
+	ZonedDateTime oldDate = getDate();
+	ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(date, LocalTime.MIN),
+						  ZoneId.systemDefault());
+	String dateTimeStr = dateTime.format(DATE_FORMAT_BOOK);
+	getJwsdpPeer().getEntryDate().setTsDate(dateTimeStr);
+
+	PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
+	if (propertyChangeSupport != null) {
+	    propertyChangeSupport.firePropertyChange("date", oldDate, date);
+	}
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDescription(final String descr) {
+	if (descr == null) {
 	    throw new IllegalArgumentException(
 		    "null description given! Please use the empty string instead of null for an empty description");
 	}
 	if (!this.getGenerInvoice().isModifiable()) {
 	    throw new IllegalStateException("This Invoice has payments and is not modifiable!");
 	}
-	Object old = getDescription();
-	getJwsdpPeer().setEntryDescription(desc);
+	String oldDescr = getDescription();
+	getJwsdpPeer().setEntryDescription(descr);
 
 	PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 	if (propertyChangeSupport != null) {
-	    propertyChangeSupport.firePropertyChange("description", old, desc);
+	    propertyChangeSupport.firePropertyChange("description", oldDescr, descr);
 	}
     }
 
@@ -554,15 +580,15 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @see GnucashWritableGenerInvoiceEntry#setInvcPrice(FixedPointNumber)
      */
     public void setInvcPrice(final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	if (!this.getGenerInvoice().isModifiable()) {
 	    throw new IllegalStateException("This customer invoice has payments and is not modifiable!");
 	}
 
-	Object old = getInvcPrice();
+	FixedPointNumber oldPrice = getInvcPrice();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
 	getJwsdpPeer().setEntryIPrice(price.toGnucashString());
@@ -570,7 +596,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 
 	PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 	if (propertyChangeSupport != null) {
-	    propertyChangeSupport.firePropertyChange("price", old, price);
+	    propertyChangeSupport.firePropertyChange("price", oldPrice, price);
 	}
 
     }
@@ -602,15 +628,15 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     @Override
     public void setBillPrice(final FixedPointNumber price)
 	    throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	if (!this.getGenerInvoice().isModifiable()) {
 	    throw new IllegalStateException("This vendor bill has payments and is not modifiable!");
 	}
 
-	Object old = getBillPrice();
+	FixedPointNumber oldPrice = getBillPrice();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractBillEntry(this);
 	getJwsdpPeer().setEntryBPrice(price.toGnucashString());
@@ -618,7 +644,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 
 	PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 	if (propertyChangeSupport != null) {
-	    propertyChangeSupport.firePropertyChange("price", old, price);
+	    propertyChangeSupport.firePropertyChange("price", oldPrice, price);
 	}
 
     }
@@ -640,7 +666,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     public void setJobPrice(final String n)
 	    throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashWritableJobInvoiceEntry jobInvcEntr = new GnucashWritableJobInvoiceEntryImpl(this);
@@ -660,7 +686,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     public void setJobPrice(final FixedPointNumber price)
 	    throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashWritableJobInvoiceEntry jobInvcEntr = new GnucashWritableJobInvoiceEntryImpl(this);
@@ -693,12 +719,12 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	    throw new IllegalStateException("This Invoice has payments and is not modifiable!");
 	}
 
-	Object old = getAction();
+	String oldAction = getAction();
 	getJwsdpPeer().setEntryAction(action);
 
 	PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 	if (propertyChangeSupport != null) {
-	    propertyChangeSupport.firePropertyChange("action", old, action);
+	    propertyChangeSupport.firePropertyChange("action", oldAction, action);
 	}
 
     }
@@ -732,21 +758,21 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws NoTaxTableFoundException
      * @see GnucashWritableGenerInvoiceEntry#setQuantity(FixedPointNumber)
      */
-    public void setQuantity(final FixedPointNumber quantity)
+    public void setQuantity(final FixedPointNumber qty)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	if (!this.getGenerInvoice().isModifiable()) {
 	    throw new IllegalStateException("This Invoice has payments and is not modifiable!");
 	}
 
-	Object old = getQuantity();
+	FixedPointNumber oldQty = getQuantity();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
-	getJwsdpPeer().setEntryQty(quantity.toGnucashString());
+	getJwsdpPeer().setEntryQty(qty.toGnucashString());
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addInvcEntry(this);
 
 	PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 	if (propertyChangeSupport != null) {
-	    propertyChangeSupport.firePropertyChange("quantity", old, quantity);
+	    propertyChangeSupport.firePropertyChange("quantity", oldQty, qty);
 	}
 
     }

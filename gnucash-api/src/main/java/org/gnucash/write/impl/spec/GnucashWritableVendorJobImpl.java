@@ -167,8 +167,8 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 	    throw new IllegalArgumentException("null 'vendor' given!");
 	}
 
-	Object old = getVendor();
-	if (old == vend) {
+	GnucashVendor oldVend = getVendor();
+	if (oldVend == vend) {
 	    return; // nothing has changed
 	}
 	getJwsdpPeer().getJobOwner().getOwnerId().setValue(vend.getId());
@@ -176,7 +176,7 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 	// <<insert code to react further to this change here
 	PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 	if (propertyChangeFirer != null) {
-	    propertyChangeFirer.firePropertyChange("vendor", old, vend);
+	    propertyChangeFirer.firePropertyChange("vendor", oldVend, vend);
 	}
     }
 
@@ -193,8 +193,8 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 		    "another job (id='" + otherJob.getId() + "' already exists with given jobNumber '" + jobId + "')");
 	}
 
-	Object old = getJwsdpPeer().getJobId();
-	if (old == jobId) {
+	String oldJobId = getJwsdpPeer().getJobId();
+	if (oldJobId == jobId) {
 	    return; // nothing has changed
 	}
 	getJwsdpPeer().setJobId(jobId);
@@ -202,7 +202,7 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 	// <<insert code to react further to this change here
 	PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 	if (propertyChangeFirer != null) {
-	    propertyChangeFirer.firePropertyChange("jobId", old, jobId);
+	    propertyChangeFirer.firePropertyChange("jobId", oldJobId, jobId);
 	}
 
     }
@@ -215,8 +215,8 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 	    throw new IllegalArgumentException("null or empty job-name given!");
 	}
 
-	Object old = getJwsdpPeer().getJobName();
-	if (old == jobName) {
+	String oldJobName = getJwsdpPeer().getJobName();
+	if (oldJobName == jobName) {
 	    return; // nothing has changed
 	}
 	getJwsdpPeer().setJobName(jobName);
@@ -224,7 +224,7 @@ public class GnucashWritableVendorJobImpl extends GnucashVendorJobImpl
 	// <<insert code to react further to this change here
 	PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 	if (propertyChangeFirer != null) {
-	    propertyChangeFirer.firePropertyChange("jobName", old, jobName);
+	    propertyChangeFirer.firePropertyChange("jobName", oldJobName, jobName);
 	}
     }
 

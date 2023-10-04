@@ -3,6 +3,9 @@ package org.gnucash.read.impl;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
@@ -31,6 +34,29 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(GnucashGenerInvoiceEntryImpl.class);
 
+    protected static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
+    protected static final DateTimeFormatter DATE_FORMAT_BOOK = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
+    protected static final DateTimeFormatter DATE_FORMAT_PRINT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    /**
+     * Format of the JWSDP-Field for the entry-date.
+     */
+    protected static final DateFormat ENTRY_DATE_FORMAT = new SimpleDateFormat(Const.STANDARD_DATE_FORMAT);
+
+    // ------------------------------
+
+    /**
+     * the JWSDP-object we are facading.
+     */
+    protected final GncV2.GncBook.GncGncEntry jwsdpPeer;
+
+    // ------------------------------
+
+    /**
+     * @see GnucashGenerInvoice#getDateOpened()
+     */
+    protected ZonedDateTime date;
+
     /**
      * The taxtable in the gnucash xml-file. It defines what sales-tax-rates are
      * known.
@@ -39,6 +65,12 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
     private GCshTaxTable myBillTaxtable;
 
     // ----------------------------
+
+    /**
+     * @see #getDateOpenedFormatted()
+     * @see #getDatePostedFormatted()
+     */
+    private DateFormat dateFormat = null;
 
     /**
      * The numberFormat to use for non-currency-numbers for default-formating.<br/>
@@ -55,23 +87,6 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see #getPercentFormat()
      */
     private NumberFormat percentFormat = null;
-
-    // -----------------------------------------------------------------
-
-    /**
-     * Our logger for debug- and error-ourput.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(GnucashGenerInvoiceEntryImpl.class);
-
-    /**
-     * Format of the JWSDP-Field for the entry-date.
-     */
-    protected static final DateFormat ENTRY_DATE_FORMAT = new SimpleDateFormat(Const.STANDARD_DATE_FORMAT);
-
-    /**
-     * the JWSDP-object we are facading.
-     */
-    protected final GncV2.GncBook.GncGncEntry jwsdpPeer;
 
     // ---------------------------------------------------------------
 
@@ -183,7 +198,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	}
 
 	if (entrInvc == null && entrBill == null) {
-	    LOG.error("file contains an invoice-entry with GUID=" + getId()
+	    LOGGER.error("file contains an invoice-entry with GUID=" + getId()
 		    + " without an invoice-element (customer) AND " + "without a bill-element (vendor)");
 	    return "ERROR";
 	} else if (entrInvc != null && entrBill == null) {
@@ -191,7 +206,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	} else if (entrInvc == null && entrBill != null) {
 	    return entrBill.getValue();
 	} else if (entrInvc != null && entrBill != null) {
-	    LOG.error("file contains an invoice-entry with GUID=" + getId()
+	    LOGGER.error("file contains an invoice-entry with GUID=" + getId()
 		    + " with BOTH an invoice-element (customer) and " + "a bill-element (vendor)");
 	    return "ERROR";
 	}
@@ -263,8 +278,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @throws WrongInvoiceTypeException
      */
     public GCshTaxTable getInvcTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	if (myInvcTaxtable == null) {
@@ -276,13 +291,15 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	    String taxTableId = taxTableEntry.getValue();
 	    if (taxTableId == null) {
 		System.err.println(
-			"Customer invoice with id '" + getId() + "' is i-taxable but has empty id for the i-taxtable");
+			"Customer invoice with id '" + getId() + 
+			"' is i-taxable but has empty id for the i-taxtable");
 		return null;
 	    }
 	    myInvcTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
 
 	    if (myInvcTaxtable == null) {
-		System.err.println("Customer invoice with id '" + getId() + "' is i-taxable but has an unknown "
+		System.err.println("Customer invoice with id '" + getId() + 
+			"' is i-taxable but has an unknown "
 			+ "i-taxtable-id '" + taxTableId + "'!");
 	    }
 	} // myInvcTaxtable == null
@@ -297,8 +314,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @throws WrongInvoiceTypeException
      */
     public GCshTaxTable getBillTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	if (myBillTaxtable == null) {
@@ -309,14 +326,15 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
 	    String taxTableId = taxTableEntry.getValue();
 	    if (taxTableId == null) {
-		System.err.println(
-			"Vendor bill with id '" + getId() + "' is b-taxable but has empty id for the b-taxtable");
+		System.err.println("Vendor bill with id '" + getId() + 
+			"' is b-taxable but has empty id for the b-taxtable");
 		return null;
 	    }
 	    myBillTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
 
 	    if (myBillTaxtable == null) {
-		System.err.println("Vendor bill with id '" + getId() + "' is b-taxable but has an unknown "
+		System.err.println("Vendor bill with id '" + getId() + 
+			"' is b-taxable but has an unknown "
 			+ "b-taxtable-id '" + taxTableId + "'!");
 	    }
 	} // myBillTaxtable == null
@@ -325,7 +343,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
     }
 
     public GCshTaxTable getJobTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashJobInvoice jobInvc = new GnucashJobInvoiceImpl(getGenerInvoice());
@@ -345,8 +363,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      */
     public FixedPointNumber getInvcApplicableTaxPercent() throws WrongInvoiceTypeException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	if (!isInvcTaxable()) {
@@ -355,7 +373,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
 	if (jwsdpPeer.getEntryITaxtable() != null) {
 	    if (!jwsdpPeer.getEntryITaxtable().getType().equals(Const.XML_DATA_TYPE_GUID)) {
-		LOGGER.error("Customer invoice entry with id '" + getId() + "' has i-taxtable with type='"
+		LOGGER.error("Customer invoice entry with id '" + getId() + 
+			"' has i-taxtable with type='"
 			+ jwsdpPeer.getEntryITaxtable().getType() + "' != 'guid'");
 	    }
 	}
@@ -370,14 +389,16 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	}
 
 	if (taxtable == null) {
-	    LOGGER.error("Customer invoice entry with id '" + getId() + "' is taxable but has an unknown i-taxtable! "
+	    LOGGER.error("Customer invoice entry with id '" + getId() + 
+		    "' is taxable but has an unknown i-taxtable! "
 		    + "Assuming 19%");
 	    return new FixedPointNumber("1900000/10000000");
 	}
 
 	GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
 	if (!taxTableEntry.getType().equals(GCshTaxTableEntry.TYPE_PERCENT)) {
-	    LOGGER.error("Customer invoice entry with id '" + getId() + "' is taxable but has a i-taxtable "
+	    LOGGER.error("Customer invoice entry with id '" + getId() + 
+		    "' is taxable but has a i-taxtable "
 		    + "that is not in percent but in '" + taxTableEntry.getType() + "'! Assuming 19%");
 	    return new FixedPointNumber("1900000/10000000");
 	}
@@ -395,8 +416,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      */
     public FixedPointNumber getBillApplicableTaxPercent() throws WrongInvoiceTypeException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	if (!isBillTaxable()) {
@@ -420,14 +441,16 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	}
 
 	if (taxtable == null) {
-	    LOGGER.error("Vendor bill entry with id '" + getId() + "' is taxable but has an unknown b-taxtable! "
+	    LOGGER.error("Vendor bill entry with id '" + getId() + 
+		    "' is taxable but has an unknown b-taxtable! "
 		    + "Assuming 19%");
 	    return new FixedPointNumber("1900000/10000000");
 	}
 
 	GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
 	if (!taxTableEntry.getType().equals(GCshTaxTableEntry.TYPE_PERCENT)) {
-	    LOGGER.error("Vendor bill entry with id '" + getId() + "' is taxable but has a b-taxtable "
+	    LOGGER.error("Vendor bill entry with id '" + getId() + 
+		    "' is taxable but has a b-taxtable "
 		    + "that is not in percent but in '" + taxTableEntry.getType() + "'! Assuming 19%");
 	    return new FixedPointNumber("1900000/10000000");
 	}
@@ -441,7 +464,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
     public FixedPointNumber getJobApplicableTaxPercent() throws WrongInvoiceTypeException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashJobInvoice jobInvc = new GnucashJobInvoiceImpl(getGenerInvoice());
@@ -497,8 +520,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see GnucashGenerInvoiceEntry#getInvcPrice()
      */
     public FixedPointNumber getInvcPrice() throws WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	return new FixedPointNumber(jwsdpPeer.getEntryIPrice());
@@ -508,8 +531,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see GnucashGenerInvoiceEntry#getInvcPrice()
      */
     public FixedPointNumber getBillPrice() throws WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	return new FixedPointNumber(jwsdpPeer.getEntryBPrice());
@@ -519,7 +542,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see GnucashGenerInvoiceEntry#getInvcPrice()
      */
     public FixedPointNumber getJobPrice() throws WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashJobInvoice jobInvc = new GnucashJobInvoiceImpl(getGenerInvoice());
@@ -831,6 +854,52 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	return getNumberFormat().format(getQuantity());
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ZonedDateTime getDate() {
+	if (date == null) {
+	    String dateStr = getJwsdpPeer().getEntryDate().getTsDate();
+	    try {
+		// "2001-09-18 00:00:00 +0200"
+		date = ZonedDateTime.parse(dateStr, DATE_FORMAT);
+	    } catch (Exception e) {
+		IllegalStateException ex = new IllegalStateException("unparsable date '" + dateStr + "' in invoice!");
+		ex.initCause(e);
+		throw ex;
+	    }
+
+	}
+	return date;
+    }
+
+	/**
+	 * @see #getDateOpenedFormatted()
+	 * @see #getDatePostedFormatted()
+	 * @return the Dateformat to use.
+	 */
+	protected DateFormat getDateFormat() {
+		if ( dateFormat == null ) {
+		    if ( ((GnucashGenerInvoiceImpl) getGenerInvoice()).getDateFormat() != null ) {
+			dateFormat = ((GnucashGenerInvoiceImpl) getGenerInvoice()).getDateFormat();
+		    }
+		    else {
+			dateFormat = DateFormat.getDateInstance();
+		    }
+		}
+
+		return dateFormat;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDateFormatted() {
+	return getDateFormat().format(getDate());
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -897,13 +966,13 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	    }
 
 	    if (otherEntr != this) {
-		LOG.error("Duplicate invoice-entry-id!! " + otherEntr.getId() + " and " + getId());
+		LOGGER.error("Duplicate invoice-entry-id!! " + otherEntr.getId() + " and " + getId());
 	    }
 
 	    return 0;
 
 	} catch (Exception e) {
-	    LOG.error("error comparing", e);
+	    LOGGER.error("error comparing", e);
 	    return 0;
 	}
     }
@@ -930,6 +999,13 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 //      //      buffer.append(invoice==null?"null":invc.getName());
 	buffer.append(" description: '");
 	buffer.append(getDescription() + "'");
+	buffer.append(" date: ");
+	try {
+	    buffer.append(getDate().toLocalDate().format(DATE_FORMAT_PRINT));
+	}
+	catch (Exception e) {
+	    buffer.append(getDate().toLocalDate().toString());
+	}
 	buffer.append(" action: '");
 	buffer.append(getAction() + "'");
 	buffer.append(" price: ");

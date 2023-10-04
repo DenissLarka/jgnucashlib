@@ -41,6 +41,7 @@ import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
+import org.gnucash.read.impl.GnucashVendorImpl;
 import org.gnucash.read.impl.aux.GCshTaxTableImpl;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
@@ -539,13 +540,13 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     /**
      * This overridden method creates the writable version of the returned object.
      *
-     * @param jwsdpInvoiceEntry the xml-object to represent in the entry.
+     * @param jwsdpInvcEntr the xml-object to represent in the entry.
      * @return a new invoice-entry, already registred with this file.
      * @see GnucashFileImpl#createGenerInvoiceEntry(GncV2.GncBook.GncGncEntry)
      */
     @Override
-    protected GnucashGenerInvoiceEntry createGenerInvoiceEntry(final GncV2.GncBook.GncGncEntry jwsdpInvoiceEntry) {
-	GnucashGenerInvoiceEntry entry = new GnucashWritableGenerInvoiceEntryImpl(jwsdpInvoiceEntry, this);
+    protected GnucashGenerInvoiceEntry createGenerInvoiceEntry(final GncV2.GncBook.GncGncEntry jwsdpInvcEntr) {
+	GnucashGenerInvoiceEntry entry = new GnucashWritableGenerInvoiceEntryImpl(jwsdpInvcEntr, this);
 	return entry;
     }
 
@@ -555,22 +556,35 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * @see GnucashFileImpl#createGenerJob(GncV2.GncBook.GncGncJob)
      */
     @Override
-    protected GnucashCustomerJobImpl createGenerJob(final GncV2.GncBook.GncGncJob jwsdpjob) {
-	GnucashCustomerJobImpl job = new GnucashWritableCustomerJobImpl(jwsdpjob, this);
+    protected GnucashCustomerJobImpl createGenerJob(final GncV2.GncBook.GncGncJob jwsdpJob) {
+	GnucashCustomerJobImpl job = new GnucashWritableCustomerJobImpl(jwsdpJob, this);
 	return job;
     }
 
     /**
      * This overridden method creates the writable version of the returned object.
      *
-     * @param jwsdpCustomer the jwsdp-object the customer shall wrap
+     * @param jwsdpCust the jwsdp-object the customer shall wrap
      * @return the new customer
      * @see GnucashFileImpl#createCustomer(GncV2.GncBook.GncGncCustomer)
      */
     @Override
-    protected GnucashCustomerImpl createCustomer(final GncV2.GncBook.GncGncCustomer jwsdpCustomer) {
-	GnucashCustomerImpl customer = new GnucashWritableCustomerImpl(jwsdpCustomer, this);
-	return customer;
+    protected GnucashCustomerImpl createCustomer(final GncV2.GncBook.GncGncCustomer jwsdpCust) {
+	GnucashCustomerImpl cust = new GnucashWritableCustomerImpl(jwsdpCust, this);
+	return cust;
+    }
+
+    /**
+     * This overridden method creates the writable version of the returned object.
+     *
+     * @param jwsdpCust the jwsdp-object the customer shall wrap
+     * @return the new customer
+     * @see GnucashFileImpl#createCustomer(GncV2.GncBook.GncGncCustomer)
+     */
+    @Override
+    protected GnucashVendorImpl createVendor(final GncV2.GncBook.GncGncVendor jwsdpVend) {
+	GnucashVendorImpl vend = new GnucashWritableVendorImpl(jwsdpVend, this);
+	return vend;
     }
 
     /**
@@ -579,8 +593,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * @see GnucashFileImpl#createTransaction(GncTransaction)
      */
     @Override
-    protected GnucashTransactionImpl createTransaction(final GncTransaction jwsdpTransaction) {
-	GnucashTransactionImpl account = new GnucashWritableTransactionImpl(jwsdpTransaction, this);
+    protected GnucashTransactionImpl createTransaction(final GncTransaction jwsdpTrx) {
+	GnucashTransactionImpl account = new GnucashWritableTransactionImpl(jwsdpTrx, this);
 	return account;
     }
 
@@ -904,7 +918,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * @see GnucashWritableFile#createWritableCustomer()
      */
     public GnucashWritableVendor createWritableVendor() {
-	GnucashVendorWritingImpl vend = new GnucashVendorWritingImpl(this);
+	GnucashWritableVendorImpl vend = new GnucashWritableVendorImpl(this);
 	super.vendorID2vendor.put(vend.getId(), vend);
 	return vend;
     }
@@ -914,7 +928,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      */
     public void removeVendor(final GnucashWritableVendor impl) {
 	vendorID2vendor.remove(impl.getId());
-	getRootElement().getGncBook().getBookElements().remove(((GnucashVendorWritingImpl) impl).getJwsdpPeer());
+	getRootElement().getGncBook().getBookElements().remove(((GnucashWritableVendorImpl) impl).getJwsdpPeer());
 	setModified(true);
     }
 

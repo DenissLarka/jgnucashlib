@@ -172,13 +172,13 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	 * @see GnucashWritableCustomer#setNumber(java.lang.String)
 	 */
 	public void setNumber(final String number) {
-		Object old = getNumber();
+		String oldNumber = getNumber();
 		getJwsdpPeer().setCustId(number);
 		getGnucashFile().setModified(true);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
-			propertyChangeSupport.firePropertyChange("customerNumber", old, number);
+			propertyChangeSupport.firePropertyChange("customerNumber", oldNumber, number);
 		}
 	}
 
@@ -186,13 +186,13 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	 * @see GnucashWritableCustomer#setDiscount(java.lang.String)
 	 */
 	public void setDiscount(final String discount) {
-		Object old = getDiscount();
+		String oldDiscount = getDiscount();
 		getJwsdpPeer().setCustDiscount(discount);
 		getGnucashFile().setModified(true);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
-			propertyChangeSupport.firePropertyChange("discount", old, discount);
+			propertyChangeSupport.firePropertyChange("discount", oldDiscount, discount);
 		}
 	}
 
@@ -201,13 +201,13 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	 * @see GnucashWritableCustomer#setNotes(String)
 	 */
 	public void setNotes(final String notes) {
-		Object old = getNotes();
+		String oldNotes = getNotes();
 		getJwsdpPeer().setCustNotes(notes);
 		getGnucashFile().setModified(true);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
-			propertyChangeSupport.firePropertyChange("notes", old, notes);
+			propertyChangeSupport.firePropertyChange("notes", oldNotes, notes);
 		}
 	}
 
@@ -215,19 +215,20 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	 * @see GnucashWritableCustomer#setName(java.lang.String)
 	 */
 	public void setName(final String name) {
-		Object old = getName();
+		String oldName = getName();
 		getJwsdpPeer().setCustName(name);
 		getGnucashFile().setModified(true);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
-			propertyChangeSupport.firePropertyChange("name", old, name);
+			propertyChangeSupport.firePropertyChange("name", oldName, name);
 		}
 	}
 
 	/**
 	 * @see GnucashCustomer#getAddress()
 	 */
+	@SuppressWarnings("exports")
 	@Override
 	public GCshWritableAddress getAddress() {
 		return getWritableAddress();
@@ -236,6 +237,7 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	/**
 	 * @see GnucashCustomer#getShippingAddress()
 	 */
+	@SuppressWarnings("exports")
 	@Override
 	public GCshWritableAddress getShippingAddress() {
 		return getWritableShippingAddress();
@@ -244,6 +246,7 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	/**
 	 * @see GnucashWritableCustomer#getWritableAddress()
 	 */
+	@SuppressWarnings("exports")
 	public GCshWritableAddress getWritableAddress() {
 		return new GCshWritableAddressImpl(getJwsdpPeer().getCustAddr());
 	}
@@ -251,6 +254,7 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	/**
 	 * @see GnucashWritableCustomer#getWritableShippingAddress()
 	 */
+	@SuppressWarnings("exports")
 	public GCshWritableAddress getWritableShippingAddress() {
 		return new GCshWritableAddressImpl(getJwsdpPeer().getCustShipaddr());
 	}

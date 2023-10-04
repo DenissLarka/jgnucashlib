@@ -3,13 +3,15 @@ package org.gnucash.write.impl.spec;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
-import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
@@ -20,7 +22,6 @@ import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashVendorBillEntryImpl;
-import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
@@ -66,7 +67,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	super(createVendorBill_int(file, 
 		                   number, vend,
 		                   false, // <-- caution!
-		                   expensesAcct, payableAcct, 
+		                   expensesAcct, payableAcct,
 		                   openedDate, postDate, dueDate), 
               file);
     }
@@ -74,22 +75,35 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
     /**
      * @param file the file we are associated with.
      * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException 
      */
-    public GnucashWritableVendorBillImpl(final GnucashWritableGenerInvoiceImpl invc) throws WrongInvoiceTypeException {
+    public GnucashWritableVendorBillImpl(final GnucashWritableGenerInvoiceImpl invc) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	super(invc.getJwsdpPeer(), invc.getFile());
 
 	// No, we cannot check that first, because the super() method
 	// always has to be called first.
-	if (!invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT).equals(GnucashGenerInvoice.TYPE_CUSTOMER))
+	if (!invc.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT).equals(GnucashGenerInvoice.TYPE_VENDOR))
 	    throw new WrongInvoiceTypeException();
 
-	// ::TODO
-//	    for ( GnucashGenerInvoiceEntry entry : invc.getGenerEntries() )
-//	    {
-//	      addEntry(new GnucashWritableCustomerInvoiceEntryImpl(entry));
-//	    }
+	// Caution: In the following two loops, we may *not* iterate directly over
+	// invc.getGenerEntries(), because else, we will produce a ConcurrentModificationException.
+	// (It only works if the invoice has one single entry.)
+	// Hence the indirection via the redundant "entries" hash set.
+	Collection<GnucashGenerInvoiceEntry> entries = new HashSet<GnucashGenerInvoiceEntry>();
+	for ( GnucashGenerInvoiceEntry entry : invc.getGenerEntries() ) {
+	    entries.add(entry);
+	}
+	for ( GnucashGenerInvoiceEntry entry : entries ) {
+	    addEntry(new GnucashWritableVendorBillEntryImpl(entry));
+	}
 
-	for (GnucashTransaction trx : invc.getPayingTransactions()) {
+	// Caution: Indirection via a redundant "trxs" hash set. 
+	// Same reason as above.
+	Collection<GnucashTransaction> trxs = new HashSet<GnucashTransaction>();
+	for ( GnucashTransaction trx : invc.getPayingTransactions() ) {
+	    trxs.add(trx);
+	}
+	for ( GnucashTransaction trx : trxs ) {
 	    for (GnucashTransactionSplit splt : trx.getSplits()) {
 		String lot = splt.getLotID();
 		if (lot != null) {
@@ -192,8 +206,8 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      */
     public void setVendor(GnucashVendor vend) throws WrongInvoiceTypeException {
 	// ::TODO
-	Object old = getVendor();
-	if (old == vend) {
+	GnucashVendor oldVend = getVendor();
+	if (oldVend == vend) {
 	    return; // nothing has changed
 	}
 
@@ -203,7 +217,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	// <<insert code to react further to this change here
 	PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 	if (propertyChangeFirer != null) {
-	    propertyChangeFirer.firePropertyChange("vendor", old, vend);
+	    propertyChangeFirer.firePropertyChange("vendor", oldVend, vend);
 	}
     }
 
@@ -216,7 +230,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * @throws NoTaxTableFoundException
      */
     public GnucashWritableVendorBillEntry createEntry(
-	    final GnucashAccount acct, 
+	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, singleUnitPrice, quantity);
@@ -231,11 +245,10 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * @throws NoTaxTableFoundException
      */
     public GnucashWritableVendorBillEntry createEntry(
-	    final GnucashAccount acct, 
+	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final GCshTaxTable tax)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, singleUnitPrice, quantity, tax);
 	return entry;
     }
@@ -251,8 +264,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	    final GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final FixedPointNumber tax)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, singleUnitPrice, quantity, tax);
 	return entry;
     }
@@ -304,6 +316,12 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	throw new WrongInvoiceTypeException();
     }
 
+    @Override
+    protected String getJobAccountIDToTransferMoneyFromTo(final GnucashGenerInvoiceEntryImpl entry)
+	    throws WrongInvoiceTypeException {
+	throw new WrongInvoiceTypeException();
+    }
+
     /**
      * Throw an IllegalStateException if we are not modifiable.
      *
@@ -314,14 +332,6 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 	    throw new IllegalStateException(
 		    "this vendor bill is NOT changable because there are already payment for it made!");
 	}
-    }
-
-    /**
-     * @throws WrongInvoiceTypeException
-     * @see GnucashWritableGenerInvoice#setGenerJob(GnucashGenerJob)
-     */
-    public void setJob(final GnucashVendorJob job) throws WrongInvoiceTypeException {
-	setGenerJob(job);
     }
 
     /**

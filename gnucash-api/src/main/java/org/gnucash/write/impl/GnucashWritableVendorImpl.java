@@ -17,13 +17,13 @@ import org.gnucash.write.impl.aux.GCshWritableAddressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashVendorWritingImpl extends GnucashVendorImpl 
+public class GnucashWritableVendorImpl extends GnucashVendorImpl 
                                       implements GnucashWritableVendor 
 {
 	/**
 	 * Automatically created logger for debug and error-output.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashVendorWritingImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableVendorImpl.class);
 
 	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
@@ -43,7 +43,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @param file      the file we belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 */
-	protected GnucashVendorWritingImpl(
+	protected GnucashWritableVendorImpl(
 		final GncV2.GncBook.GncGncVendor jwsdpPeer, 
 		final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
@@ -55,7 +55,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @param file the file we belong to
 	 * @param id   the ID we shall have
 	 */
-	protected GnucashVendorWritingImpl(final GnucashWritableFileImpl file) {
+	protected GnucashWritableVendorImpl(final GnucashWritableFileImpl file) {
 		super(createVendor(file, file.createGUID()), file);
 	}
 
@@ -154,13 +154,13 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @see GnucashWritableVendor#setNumber(java.lang.String)
 	 */
 	public void setNumber(final String number) {
-		Object old = getNumber();
+	    String oldNumber = getNumber();
 		getJwsdpPeer().setVendorId(number);
 		getGnucashFile().setModified(true);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
-			propertyChangeSupport.firePropertyChange("VendorNumber", old, number);
+			propertyChangeSupport.firePropertyChange("VendorNumber", oldNumber, number);
 		}
 	}
 
@@ -168,19 +168,20 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	 * @see GnucashWritableVendor#setName(java.lang.String)
 	 */
 	public void setName(final String name) {
-		Object old = getName();
+	    String oldName = getName();
 		getJwsdpPeer().setVendorName(name);
 		getGnucashFile().setModified(true);
 
 		PropertyChangeSupport propertyChangeSupport = getPropertyChangeSupport();
 		if (propertyChangeSupport != null) {
-			propertyChangeSupport.firePropertyChange("name", old, name);
+			propertyChangeSupport.firePropertyChange("name", oldName, name);
 		}
 	}
 
 	/**
 	 * @see GnucashVendor#getAddress()
 	 */
+	@SuppressWarnings("exports")
 	@Override
 	public GCshWritableAddress getAddress() {
 		return getWritableAddress();
@@ -189,6 +190,7 @@ public class GnucashVendorWritingImpl extends GnucashVendorImpl
 	/**
 	 * @see GnucashWritableVendor#getWritableAddress()
 	 */
+	@SuppressWarnings("exports")
 	public GCshWritableAddress getWritableAddress() {
 		return new GCshWritableAddressImpl(getJwsdpPeer().getVendorAddr());
 	}

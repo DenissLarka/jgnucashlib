@@ -205,16 +205,15 @@ public class GnucashWritableObjectImpl implements GnucashWritableObject {
 			throw new IllegalArgumentException("null 'gnucashObject' given!");
 		}
 
-		Object old = this.gnucashObject;
-		if (old == gnucashObject) {
+		GnucashObjectImpl oldObj = this.gnucashObject;
+		if (oldObj == gnucashObject) {
 			return; // nothing has changed
 		}
 		this.gnucashObject = gnucashObject;
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("gnucashObject", old,
-					gnucashObject);
+			propertyChangeFirer.firePropertyChange("gnucashObject", oldObj, gnucashObject);
 		}
 	}
 

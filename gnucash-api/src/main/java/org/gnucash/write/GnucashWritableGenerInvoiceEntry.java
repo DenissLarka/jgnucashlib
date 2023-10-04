@@ -1,5 +1,7 @@
 package org.gnucash.write;
 
+import java.time.LocalDate;
+
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashObject;
@@ -19,12 +21,14 @@ public interface GnucashWritableGenerInvoiceEntry extends GnucashGenerInvoiceEnt
      */
     GnucashWritableGenerInvoice getGenerInvoice();
 
+    void setDate(final LocalDate date);
+
     /**
      * Set the description-text.
      *
      * @param desc the new description
      */
-    void setDescription(String desc);
+    void setDescription(final String desc);
 
     // -----------------------------------------------------------
 

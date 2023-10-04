@@ -1,5 +1,8 @@
 package org.gnucash.read;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshTaxTable;
@@ -135,6 +138,16 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
    *         ${@link #getAction()}.
    */
   String getQuantityFormatted();
+
+  /**
+   * @return the user-defined date
+   */
+  ZonedDateTime getDate();
+
+  /**
+   * @return the user-defined date
+   */
+  String getDateFormatted();
 
   /**
    * @return the user-defined description for this object (may contain multiple

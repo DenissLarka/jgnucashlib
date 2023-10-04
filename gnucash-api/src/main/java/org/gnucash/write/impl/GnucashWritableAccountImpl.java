@@ -216,8 +216,8 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			throw new IllegalArgumentException("null or empty name given!");
 		}
 
-		Object old = getJwsdpPeer().getActName();
-		if (old == name) {
+		String oldName = getJwsdpPeer().getActName();
+		if (oldName == name) {
 			return; // nothing has changed
 		}
 		this.getJwsdpPeer().setActName(name);
@@ -225,7 +225,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("name", old, name);
+			propertyChangeFirer.firePropertyChange("name", oldName, name);
 		}
 	}
 
@@ -237,8 +237,8 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			throw new IllegalArgumentException("null or empty code given!");
 		}
 
-		Object old = getJwsdpPeer().getActCode();
-		if (old == code) {
+		String oldCode = getJwsdpPeer().getActCode();
+		if (oldCode == code) {
 			return; // nothing has changed
 		}
 		this.getJwsdpPeer().setActCode(code);
@@ -246,7 +246,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("code", old, code);
+			propertyChangeFirer.firePropertyChange("code", oldCode, code);
 		}
 	}
 
@@ -260,8 +260,8 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			throw new IllegalArgumentException("null or empty currencyID given!");
 		}
 
-		Object old = getJwsdpPeer().getActCommodity().getCmdtyId();
-		if (old == currencyID) {
+		String oldCurrencyId = getJwsdpPeer().getActCommodity().getCmdtyId();
+		if (oldCurrencyId == currencyID) {
 			return; // nothing has changed
 		}
 		this.getJwsdpPeer().getActCommodity().setCmdtyId(currencyID);
@@ -269,29 +269,29 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("currencyID", old, currencyID);
+			propertyChangeFirer.firePropertyChange("currencyID", oldCurrencyId, currencyID);
 		}
 	}
 
 	/**
-	 * @param currencyNameSpace the new namespace
+	 * @param currNameSpace the new namespace
 	 * @see {@link GnucashAccount#getCurrencyNameSpace()}
 	 */
-	public void setCurrencyNameSpace(final String currencyNameSpace) {
-		if (currencyNameSpace == null) {
+	public void setCurrencyNameSpace(final String currNameSpace) {
+		if (currNameSpace == null) {
 			throw new IllegalArgumentException("null or empty currencyNameSpace given!");
 		}
 
-		Object old = getJwsdpPeer().getActCommodity().getCmdtySpace();
-		if (old == currencyNameSpace) {
+		String oldCurrNameSpace = getJwsdpPeer().getActCommodity().getCmdtySpace();
+		if (oldCurrNameSpace == currNameSpace) {
 			return; // nothing has changed
 		}
-		this.getJwsdpPeer().getActCommodity().setCmdtySpace(currencyNameSpace);
+		this.getJwsdpPeer().getActCommodity().setCmdtySpace(currNameSpace);
 		setIsModified();
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("currencyNameSpace", old, currencyNameSpace);
+			propertyChangeFirer.firePropertyChange("currencyNameSpace", oldCurrNameSpace, currNameSpace);
 		}
 	}
 
@@ -388,21 +388,21 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 	/**
 	 * @see GnucashWritableAccount#setName(java.lang.String)
 	 */
-	public void setDescription(final String description) {
-		if (description == null) {
+	public void setDescription(final String descr) {
+		if (descr == null) {
 			throw new IllegalArgumentException("null or empty description given!");
 		}
 
-		Object old = getJwsdpPeer().getActDescription();
-		if (old == description) {
+		String oldDescr = getJwsdpPeer().getActDescription();
+		if (oldDescr == descr) {
 			return; // nothing has changed
 		}
-		getJwsdpPeer().setActDescription(description);
+		getJwsdpPeer().setActDescription(descr);
 		setIsModified();
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("description", old, description);
+			propertyChangeFirer.firePropertyChange("description", oldDescr, descr);
 		}
 	}
 
@@ -414,8 +414,8 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			throw new IllegalArgumentException("null type given!");
 		}
 
-		Object old = getJwsdpPeer().getActDescription();
-		if (old == type) {
+		String oldType = getJwsdpPeer().getActDescription();
+		if (oldType == type) {
 			return; // nothing has changed
 		}
 		getJwsdpPeer().setActType(type);
@@ -423,7 +423,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("type", old, type);
+			propertyChangeFirer.firePropertyChange("type", oldType, type);
 		}
 	}
 
@@ -441,41 +441,41 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 	/**
 	 * @see GnucashWritableAccount#setParentAccount(GnucashAccount)
 	 */
-	public void setParentAccount(final GnucashAccount parentAccount) {
+	public void setParentAccount(final GnucashAccount prntAcct) {
 
-		if (parentAccount == null) {
+		if (prntAcct == null) {
 			this.getJwsdpPeer().setActParent(null);
 			return;
 		}
 
-		if (parentAccount == this) {
+		if (prntAcct == this) {
 			throw new IllegalArgumentException("I cannot be my own parent!");
 		}
 
 		// check if newparent is a child-account recusively
-		if (isChildAccountRecursive(parentAccount)) {
+		if (isChildAccountRecursive(prntAcct)) {
 			throw new IllegalArgumentException("I cannot be my own (grand-)parent!");
 		}
 
-		Object old = null;
+		GnucashAccount oldPrntAcct = null;
 		GncAccount.ActParent parent = getJwsdpPeer().getActParent();
 		if (parent == null) {
 			parent = ((GnucashWritableFileImpl) getWritableGnucashFile())
 					.getObjectFactory().createGncAccountActParent();
 			parent.setType(Const.XML_DATA_TYPE_GUID);
-			parent.setValue(parentAccount.getId());
+			parent.setValue(prntAcct.getId());
 			getJwsdpPeer().setActParent(parent);
 
 		} else {
-			old = getParentAccount();
-			parent.setValue(parentAccount.getId());
+			oldPrntAcct = getParentAccount();
+			parent.setValue(prntAcct.getId());
 		}
 		setIsModified();
 
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("parentAccount", old, parentAccount);
+			propertyChangeFirer.firePropertyChange("parentAccount", oldPrntAcct, prntAcct);
 		}
 	}
 

@@ -38,6 +38,7 @@ public class GnucashVendorBillEntryImpl extends GnucashGenerInvoiceEntryImpl
       throw new WrongInvoiceTypeException();
   }
 
+  @SuppressWarnings("exports")
   public GnucashVendorBillEntryImpl(final GncV2.GncBook.GncGncEntry peer, final GnucashFileImpl gncFile) 
   {
     super(peer, gncFile);
@@ -134,6 +135,13 @@ public class GnucashVendorBillEntryImpl extends GnucashGenerInvoiceEntryImpl
     //      buffer.append(invoice==null?"null":bill.getName());
     buffer.append(" description: '");
     buffer.append(getDescription() + "'");
+    buffer.append(" date: ");
+    try {
+	buffer.append(getDate().toLocalDate().format(DATE_FORMAT_PRINT));
+    }
+    catch (Exception e) {
+	buffer.append(getDate().toLocalDate().toString());
+    }
     buffer.append(" action: '");
     buffer.append(getAction() + "'");
     buffer.append(" price: ");
@@ -150,4 +158,5 @@ public class GnucashVendorBillEntryImpl extends GnucashGenerInvoiceEntryImpl
     buffer.append("]");
     return buffer.toString();
   }
+
 }

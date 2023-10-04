@@ -43,17 +43,17 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	/**
-	 * @param bll   tne invoice this entry shall belong to
+	 * @param invc   tne invoice this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableJobInvoiceEntryImpl(
-		final GnucashWritableJobInvoiceImpl bll,
+		final GnucashWritableJobInvoiceImpl invc,
 		final GncV2.GncBook.GncGncEntry jwsdpPeer) {
-		super(bll, jwsdpPeer);
+		super(invc, jwsdpPeer);
 		
-		this.myInvoice = bll;
+		this.myInvoice = invc;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 	 * (It has the taxtable of the job with a fallback
 	 * to the first taxtable found assigned)
 	 *
-	 * @param invc  the invoice to add this split to
+	 * @param invc  the job invoice to add this split to
 	 * @param account  the income-account the money comes from
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
@@ -78,7 +78,7 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 		
 		// Caution: Call addJobEntry one level above now
 		// (GnucashWritableJobInvoiceImpl.createJobInvcEntry)
-		// bll.addJobEntry(this);
+		// invc.addJobEntry(this);
 		this.myInvoice = invc;
 	}
 

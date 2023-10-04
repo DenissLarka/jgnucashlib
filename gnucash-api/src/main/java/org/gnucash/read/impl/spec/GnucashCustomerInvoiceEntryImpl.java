@@ -123,6 +123,13 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImp
     //      buffer.append(invoice==null?"null":invoice.getName());
     buffer.append(" description: '");
     buffer.append(getDescription() + "'");
+    buffer.append(" date: ");
+    try {
+	buffer.append(getDate().toLocalDate().format(DATE_FORMAT_PRINT));
+    }
+    catch (Exception e) {
+	buffer.append(getDate().toLocalDate().toString());
+    }
     buffer.append(" action: '");
     buffer.append(getAction() + "'");
     buffer.append(" price: ");
@@ -139,4 +146,5 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImp
     buffer.append("]");
     return buffer.toString();
   }
+
 }
