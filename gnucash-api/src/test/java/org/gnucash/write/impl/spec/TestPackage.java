@@ -20,6 +20,9 @@ public class TestPackage extends TestCase
     suite.addTest(org.gnucash.write.impl.spec.TestGnucashWritableVendorBillImpl.suite());
     suite.addTest(org.gnucash.write.impl.spec.TestGnucashWritableJobInvoiceImpl.suite());
 
+    suite.addTest(org.gnucash.write.impl.spec.TestGnucashWritableCustomerJobImpl.suite());
+    suite.addTest(org.gnucash.write.impl.spec.TestGnucashWritableVendorJobImpl.suite());
+
     return suite;
   }
 }

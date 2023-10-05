@@ -67,13 +67,9 @@ public class TestGnucashWritableCustomerInvoiceImpl
     private GnucashFileImpl         gcshOutFile = null;
 
     private GnucashCustomer cust1 = null;
-    private GnucashVendor   vend1 = null;
-    private GnucashGenerJob job1 = null;
     
     private GnucashAccount  incomeAcct = null;
-    private GnucashAccount  expensesAcct = null;
     private GnucashAccount  receivableAcct = null;
-    private GnucashAccount  payableAcct = null;
     
     // ----------------------------
 
