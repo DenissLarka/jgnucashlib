@@ -41,8 +41,8 @@ public class TestGnucashWritableVendorBillImpl
     private static final String VEND_2_ID = TestGnucashVendorImpl.VEND_2_ID;
     private static final String VEND_3_ID = TestGnucashVendorImpl.VEND_3_ID;
 
-    private static final String EXPENSES_ACCT_ID   = "xxx"; // xxx
-    private static final String PAYABLE_ACCT_ID    = "xxx"; // xxx
+    static final String EXPENSES_ACCT_ID   = "7d4c7bf08901493ab346cc24595fdb97"; // Root Account:Aufwendungen:Sonstiges
+    static final String PAYABLE_ACCT_ID    = "55711b4e6f564709bf880f292448237a"; // Root Account:Fremdkapital:Lieferanten:sonstige    
     
     // ----------------------------
 

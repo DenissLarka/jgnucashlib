@@ -40,10 +40,10 @@ public class TestGnucashWritableJobInvoiceImpl
     private static final String JOB_1_ID  = TestGnucashGenerJobImpl.JOB_1_ID;
     private static final String JOB_2_ID  = TestGnucashGenerJobImpl.JOB_2_ID;
 
-    private static final String INCOME_ACCT_ID     = "fed745c4da5c49ebb0fde0f47222b35b"; // Root Account::Erträge::Sonstiges
-    private static final String EXPENSES_ACCT_ID   = "xxx"; // xxx
-    private static final String RECEIVABLE_ACCT_ID = "7e223ee2260d4ba28e8e9e19ce291f43"; // Root Account::Aktiva::Forderungen::Unfug_Quatsch
-    private static final String PAYABLE_ACCT_ID    = "xxx"; // xxx
+    private static final String INCOME_ACCT_ID     = TestGnucashWritableCustomerInvoiceImpl.INCOME_ACCT_ID;
+    private static final String EXPENSES_ACCT_ID   = TestGnucashWritableVendorBillImpl.EXPENSES_ACCT_ID;
+    private static final String RECEIVABLE_ACCT_ID = TestGnucashWritableCustomerInvoiceImpl.RECEIVABLE_ACCT_ID;
+    private static final String PAYABLE_ACCT_ID    = TestGnucashWritableVendorBillImpl.PAYABLE_ACCT_ID;
     
     // ----------------------------
 

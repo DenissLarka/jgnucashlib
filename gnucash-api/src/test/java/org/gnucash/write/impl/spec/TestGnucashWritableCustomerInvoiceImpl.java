@@ -58,8 +58,8 @@ public class TestGnucashWritableCustomerInvoiceImpl
     private static final String JOB_1_ID  = TestGnucashGenerJobImpl.JOB_1_ID;
     private static final String JOB_2_ID  = TestGnucashGenerJobImpl.JOB_2_ID;
 
-    private static final String INCOME_ACCT_ID     = "fed745c4da5c49ebb0fde0f47222b35b"; // Root Account::Erträge::Sonstiges
-    private static final String RECEIVABLE_ACCT_ID = "7e223ee2260d4ba28e8e9e19ce291f43"; // Root Account::Aktiva::Forderungen::Unfug_Quatsch
+    static final String INCOME_ACCT_ID     = "fed745c4da5c49ebb0fde0f47222b35b"; // Root Account::Erträge::Sonstiges
+    static final String RECEIVABLE_ACCT_ID = "7e223ee2260d4ba28e8e9e19ce291f43"; // Root Account::Aktiva::Forderungen::Unfug_Quatsch
     
     // ----------------------------
 
