@@ -3,7 +3,6 @@ package org.gnucash.read.impl.aux;
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;

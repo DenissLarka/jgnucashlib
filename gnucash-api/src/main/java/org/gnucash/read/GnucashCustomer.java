@@ -8,6 +8,7 @@ import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
+import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 //TODO: model taxes and implement getTaxTable
@@ -81,7 +82,6 @@ public interface GnucashCustomer extends GnucashObject {
      */
     String getOutstandingValueFormatted(Locale l);
 
-    
     /**
      * The gnucash-file is the top-level class to contain everything.
      * @return the file we are associated with
@@ -95,8 +95,9 @@ public interface GnucashCustomer extends GnucashObject {
 
     /**
      * @return the UNMODIFIABLE collection of jobs that have this customer associated with them.
+     * @throws WrongInvoiceTypeException 
      */
-    Collection<GnucashCustomerJob> getJobs();
+    Collection<GnucashCustomerJob> getJobs() throws WrongInvoiceTypeException;
 
     /**
      *
@@ -134,11 +135,15 @@ public interface GnucashCustomer extends GnucashObject {
     
     // ----------------------------
 
-    Collection<GnucashCustomerInvoice> getInvoices() throws WrongInvoiceTypeException;
+    Collection<GnucashGenerInvoice>    getInvoices() throws WrongInvoiceTypeException;
     
-    Collection<GnucashCustomerInvoice> getPaidInvoices() throws WrongInvoiceTypeException;
+    Collection<GnucashCustomerInvoice> getPaidInvoices_direct() throws WrongInvoiceTypeException;
     
-    Collection<GnucashCustomerInvoice> getUnpaidInvoices() throws WrongInvoiceTypeException;
+    Collection<GnucashJobInvoice>      getPaidInvoices_viaAllJobs() throws WrongInvoiceTypeException;
+    
+    Collection<GnucashCustomerInvoice> getUnpaidInvoices_direct() throws WrongInvoiceTypeException;
+    
+    Collection<GnucashJobInvoice>      getUnpaidInvoices_viaAllJobs() throws WrongInvoiceTypeException;
     
     // ----------------------------
     

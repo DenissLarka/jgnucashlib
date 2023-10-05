@@ -11,10 +11,15 @@ import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.impl.aux.GCshAddressImpl;
+import org.gnucash.read.impl.spec.GnucashVendorJobImpl;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
+import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.SpecInvoiceCommon;
@@ -69,16 +74,18 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
     /**
      * @return the jobs that have this vendor associated with them.
-     * @see GnucashVendor#getJobs()
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashVendor#getGenerJobs()
      */
-    public java.util.Collection<GnucashVendorJob> getJobs() {
+    public java.util.Collection<GnucashVendorJob> getJobs() throws WrongInvoiceTypeException {
 
 	List<GnucashVendorJob> retval = new LinkedList<GnucashVendorJob>();
 
-	for (GnucashGenerJob job : getGnucashFile().getJobs()) {
-	    if (job instanceof GnucashVendorJob) {
-		if (((GnucashVendorJob) job).getVendorId().equals(getId())) {
-		    retval.add((GnucashVendorJob) job);
+	for ( GnucashGenerJob jobGener : getGnucashFile().getGenerJobs() ) {
+	    if ( jobGener.getOwnerType().equals(GCshOwner.TYPE_VENDOR) ) {
+		GnucashVendorJob jobSpec = new GnucashVendorJobImpl(jobGener);
+		if ( jobSpec.getVendorId().equals(getId()) ) {
+		    retval.add(jobSpec);
 		}
 	    }
 	}
@@ -94,7 +101,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
      * @throws WrongInvoiceTypeException
      */
     public int getNofOpenBills() throws WrongInvoiceTypeException {
-	return getGnucashFile().getUnpaidBillsForVendor(this).size();
+	return getGnucashFile().getUnpaidBillsForVendor_direct(this).size();
     }
 
     /**
@@ -104,7 +111,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	FixedPointNumber retval = new FixedPointNumber();
 
 	try {
-	    for (GnucashVendorBill bllSpec : getPaidBills()) {
+	    for (GnucashVendorBill bllSpec : getPaidBills_direct()) {
 //		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
 //		      GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
 		GnucashVendor vend = bllSpec.getVendor();
@@ -154,7 +161,7 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	FixedPointNumber retval = new FixedPointNumber();
 
 	try {
-	    for (GnucashVendorBill bllSpec : getUnpaidBills()) {
+	    for (GnucashVendorBill bllSpec : getUnpaidBills_direct()) {
 //            if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
 //              GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
 		GnucashVendor vend = bllSpec.getVendor();
@@ -230,18 +237,38 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     // -----------------------------------------------------------------
 
     @Override
-    public Collection<GnucashVendorBill> getBills() throws WrongInvoiceTypeException {
-	return file.getBillsForVendor(this);
+    public Collection<GnucashGenerInvoice> getBills() throws WrongInvoiceTypeException {
+	Collection<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
+
+	for ( GnucashVendorBill invc : file.getBillsForVendor_direct(this) ) {
+	    retval.add(invc);
+	}
+	
+	for ( GnucashJobInvoice invc : file.getBillsForVendor_viaAllJobs(this) ) {
+	    retval.add(invc);
+	}
+	
+	return retval;
     }
 
     @Override
-    public Collection<GnucashVendorBill> getPaidBills() throws WrongInvoiceTypeException {
-	return file.getPaidBillsForVendor(this);
+    public Collection<GnucashVendorBill> getPaidBills_direct() throws WrongInvoiceTypeException {
+	return file.getPaidBillsForVendor_direct(this);
     }
 
     @Override
-    public Collection<GnucashVendorBill> getUnpaidBills() throws WrongInvoiceTypeException {
-	return file.getUnpaidBillsForVendor(this);
+    public Collection<GnucashJobInvoice> getPaidBills_viaAllJobs() throws WrongInvoiceTypeException {
+	return file.getPaidBillsForVendor_viaAllJobs(this);
+    }
+
+    @Override
+    public Collection<GnucashVendorBill> getUnpaidBills_direct() throws WrongInvoiceTypeException {
+	return file.getUnpaidBillsForVendor_direct(this);
+    }
+
+    @Override
+    public Collection<GnucashJobInvoice> getUnpaidBills_viaAllJobs() throws WrongInvoiceTypeException {
+	return file.getUnpaidBillsForVendor_viaAllJobs(this);
     }
 
     // -----------------------------------------------------------------

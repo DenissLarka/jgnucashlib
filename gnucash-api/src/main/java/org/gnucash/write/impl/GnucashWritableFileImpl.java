@@ -622,7 +622,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      */
     public Collection<GnucashWritableGenerJob> getWritableJobs() {
 
-	Collection<GnucashGenerJob> jobs = getJobs();
+	Collection<GnucashGenerJob> jobs = getGenerJobs();
 	if (jobs == null) {
 	    throw new IllegalStateException("getJobs() returned null");
 	}

@@ -103,15 +103,15 @@ public class TestGnucashVendorImpl
     vend = gcshFile.getVendorByID(VEND_1_ID);
     
     assertEquals(1, vend.getNofOpenBills());
-    assertEquals(1, vend.getUnpaidBills().size());
-    assertEquals(1, vend.getPaidBills().size());
+    assertEquals(1, vend.getUnpaidBills_direct().size());
+    assertEquals(1, vend.getPaidBills_direct().size());
     
-    LinkedList<GnucashVendorBill> bllList = (LinkedList<GnucashVendorBill>) vend.getUnpaidBills();
+    LinkedList<GnucashVendorBill> bllList = (LinkedList<GnucashVendorBill>) vend.getUnpaidBills_direct();
     Collections.sort(bllList);
     assertEquals("4eb0dc387c3f4daba57b11b2a657d8a4", 
                  ((GnucashVendorBill) bllList.toArray()[0]).getId() );
 
-    bllList = (LinkedList<GnucashVendorBill>) vend.getPaidBills();
+    bllList = (LinkedList<GnucashVendorBill>) vend.getPaidBills_direct();
     Collections.sort(bllList);
     assertEquals("286fc2651a7848038a23bb7d065c8b67", 
                  ((GnucashVendorBill) bllList.toArray()[0]).getId() );
@@ -122,7 +122,7 @@ public class TestGnucashVendorImpl
   {
     vend = gcshFile.getVendorByID(VEND_2_ID);
     
-    assertEquals(0, vend.getUnpaidBills().size());
+    assertEquals(0, vend.getUnpaidBills_direct().size());
 //    assertEquals("[GnucashVendorBillImpl: id: 4eb0dc387c3f4daba57b11b2a657d8a4 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: '1730-383/2' description: 'Sie wissen schon: Gefälligkeiten, ne?' #entries: 1 date-opened: 2023-08-31]", 
 //                 vend.getUnpaidInvoices().toArray()[0].toString());
 //    assertEquals("[GnucashVendorBillImpl: id: 286fc2651a7848038a23bb7d065c8b67 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: null description: 'Dat isjamaol eine schöne jepflejgte Reschnung!' #entries: 1 date-opened: 2023-08-30]", 
@@ -134,7 +134,7 @@ public class TestGnucashVendorImpl
   {
     vend = gcshFile.getVendorByID(VEND_3_ID);
     
-    assertEquals(0, vend.getUnpaidBills().size());
+    assertEquals(0, vend.getUnpaidBills_direct().size());
 //    assertEquals("[GnucashVendorBillImpl: id: 4eb0dc387c3f4daba57b11b2a657d8a4 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: '1730-383/2' description: 'Sie wissen schon: Gefälligkeiten, ne?' #entries: 1 date-opened: 2023-08-31]", 
 //                 vend.getUnpaidInvoices().toArray()[0].toString());
 //    assertEquals("[GnucashVendorBillImpl: id: 286fc2651a7848038a23bb7d065c8b67 vendor-id (dir.): 087e1a3d43fa4ef9a9bdd4b4797c4231 bill-number: null description: 'Dat isjamaol eine schöne jepflejgte Reschnung!' #entries: 1 date-opened: 2023-08-30]", 

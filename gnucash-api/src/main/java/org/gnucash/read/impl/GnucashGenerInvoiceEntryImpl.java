@@ -3,7 +3,6 @@ package org.gnucash.read.impl;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -21,8 +20,8 @@ import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.aux.GCshTaxTableEntry;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
-import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.read.spec.GnucashJobInvoice;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

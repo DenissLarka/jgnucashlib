@@ -6,6 +6,7 @@ import java.util.Locale;
 import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -67,7 +68,6 @@ public interface GnucashVendor extends GnucashObject {
      */
     String getOutstandingValueFormatted(Locale l) throws WrongInvoiceTypeException;
 
-
     /**
      * The gnucash-file is the top-level class to contain everything.
      * @return the file we are associated with
@@ -81,8 +81,9 @@ public interface GnucashVendor extends GnucashObject {
 
     /**
      * @return the UNMODIFIABLE collection of jobs that have this vendor associated with them.
+     * @throws WrongInvoiceTypeException 
      */
-    Collection<GnucashVendorJob> getJobs();
+    Collection<GnucashVendorJob> getJobs() throws WrongInvoiceTypeException;
 
     /**
      *
@@ -103,11 +104,15 @@ public interface GnucashVendor extends GnucashObject {
 
     // ----------------------------
 
-    Collection<GnucashVendorBill> getBills() throws WrongInvoiceTypeException;
+    Collection<GnucashGenerInvoice> getBills() throws WrongInvoiceTypeException;
     
-    Collection<GnucashVendorBill> getPaidBills() throws WrongInvoiceTypeException;
+    Collection<GnucashVendorBill>   getPaidBills_direct() throws WrongInvoiceTypeException;
     
-    Collection<GnucashVendorBill> getUnpaidBills() throws WrongInvoiceTypeException;
+    Collection<GnucashJobInvoice>   getPaidBills_viaAllJobs() throws WrongInvoiceTypeException;
+    
+    Collection<GnucashVendorBill>   getUnpaidBills_direct() throws WrongInvoiceTypeException;
+    
+    Collection<GnucashJobInvoice>   getUnpaidBills_viaAllJobs() throws WrongInvoiceTypeException;
     
     // ----------------------------
     

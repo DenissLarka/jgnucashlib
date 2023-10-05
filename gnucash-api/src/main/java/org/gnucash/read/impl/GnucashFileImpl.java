@@ -46,12 +46,14 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.aux.GCshTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
+import org.gnucash.read.impl.spec.GnucashVendorJobImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashJobInvoice;
@@ -485,9 +487,9 @@ public class GnucashFileImpl implements GnucashFile {
 
     /**
      * @throws WrongInvoiceTypeException
-     * @see GnucashFile#getUnpaidInvoicesForCustomer(GnucashCustomer)
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
      */
-    public Collection<GnucashCustomerInvoice> getInvoicesForCustomer(final GnucashCustomer cust)
+    public Collection<GnucashCustomerInvoice> getInvoicesForCustomer_direct(final GnucashCustomer cust)
 	    throws WrongInvoiceTypeException {
 	Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
 
@@ -508,9 +510,26 @@ public class GnucashFileImpl implements GnucashFile {
 
     /**
      * @throws WrongInvoiceTypeException
-     * @see GnucashFile#getUnpaidInvoicesForCustomer(GnucashCustomer)
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
      */
-    public Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer(final GnucashCustomer cust)
+    public Collection<GnucashJobInvoice> getInvoicesForCustomer_viaAllJobs(final GnucashCustomer cust)
+	    throws WrongInvoiceTypeException {
+	Collection<GnucashJobInvoice> retval = new LinkedList<GnucashJobInvoice>();
+
+	for ( GnucashCustomerJob job : cust.getJobs() ) {
+	    for ( GnucashJobInvoice jobInvc : job.getInvoices() ) {
+		retval.add(jobInvc);
+	    }
+	}
+
+	return retval;
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
+     */
+    public Collection<GnucashCustomerInvoice> getPaidInvoicesForCustomer_direct(final GnucashCustomer cust)
 	    throws WrongInvoiceTypeException {
 	Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
 
@@ -521,7 +540,7 @@ public class GnucashFileImpl implements GnucashFile {
 		} catch (WrongInvoiceTypeException e) {
 		    // This really should not happen, one can almost
 		    // throw a fatal log here.
-		    LOGGER.error("getPaidInvoicesForCustomer: Cannot instantiate GnucashCustomerInvoiceImpl");
+		    LOGGER.error("getPaidInvoicesForCustomer_direct: Cannot instantiate GnucashCustomerInvoiceImpl");
 		}
 	    }
 	}
@@ -531,9 +550,26 @@ public class GnucashFileImpl implements GnucashFile {
 
     /**
      * @throws WrongInvoiceTypeException
-     * @see GnucashFile#getUnpaidInvoicesForCustomer(GnucashCustomer)
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
      */
-    public Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer(final GnucashCustomer cust)
+    public Collection<GnucashJobInvoice> getPaidInvoicesForCustomer_viaAllJobs(final GnucashCustomer cust)
+	    throws WrongInvoiceTypeException {
+	Collection<GnucashJobInvoice> retval = new LinkedList<GnucashJobInvoice>();
+
+	for ( GnucashCustomerJob job : cust.getJobs() ) {
+	    for ( GnucashJobInvoice jobInvc : job.getPaidInvoices() ) {
+		retval.add(jobInvc);
+	    }
+	}
+
+	return retval;
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
+     */
+    public Collection<GnucashCustomerInvoice> getUnpaidInvoicesForCustomer_direct(final GnucashCustomer cust)
 	    throws WrongInvoiceTypeException {
 	Collection<GnucashCustomerInvoice> retval = new LinkedList<GnucashCustomerInvoice>();
 
@@ -544,8 +580,25 @@ public class GnucashFileImpl implements GnucashFile {
 		} catch (WrongInvoiceTypeException e) {
 		    // This really should not happen, one can almost
 		    // throw a fatal log here.
-		    LOGGER.error("getUnpaidInvoicesForCustomer: Cannot instantiate GnucashCustomerInvoiceImpl");
+		    LOGGER.error("getUnpaidInvoicesForCustomer_direct: Cannot instantiate GnucashCustomerInvoiceImpl");
 		}
+	    }
+	}
+
+	return retval;
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
+     */
+    public Collection<GnucashJobInvoice> getUnpaidInvoicesForCustomer_viaAllJobs(final GnucashCustomer cust)
+	    throws WrongInvoiceTypeException {
+	Collection<GnucashJobInvoice> retval = new LinkedList<GnucashJobInvoice>();
+
+	for ( GnucashCustomerJob job : cust.getJobs() ) {
+	    for ( GnucashJobInvoice jobInvc : job.getUnpaidInvoices() ) {
+		retval.add(jobInvc);
 	    }
 	}
 
@@ -558,7 +611,7 @@ public class GnucashFileImpl implements GnucashFile {
      * @throws WrongInvoiceTypeException
      * @see GnucashFile#getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    public Collection<GnucashVendorBill> getBillsForVendor(final GnucashVendor vend)
+    public Collection<GnucashVendorBill> getBillsForVendor_direct(final GnucashVendor vend)
 	    throws WrongInvoiceTypeException {
 	Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
 
@@ -579,9 +632,26 @@ public class GnucashFileImpl implements GnucashFile {
 
     /**
      * @throws WrongInvoiceTypeException
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
+     */
+    public Collection<GnucashJobInvoice> getBillsForVendor_viaAllJobs(final GnucashVendor vend)
+	    throws WrongInvoiceTypeException {
+	Collection<GnucashJobInvoice> retval = new LinkedList<GnucashJobInvoice>();
+
+	for ( GnucashVendorJob job : vend.getJobs() ) {
+	    for ( GnucashJobInvoice jobInvc : job.getInvoices() ) {
+		retval.add(jobInvc);
+	    }
+	}
+
+	return retval;
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException
      * @see GnucashFile#getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    public Collection<GnucashVendorBill> getPaidBillsForVendor(final GnucashVendor vend)
+    public Collection<GnucashVendorBill> getPaidBillsForVendor_direct(final GnucashVendor vend)
 	    throws WrongInvoiceTypeException {
 	Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
 
@@ -592,8 +662,25 @@ public class GnucashFileImpl implements GnucashFile {
 		} catch (WrongInvoiceTypeException e) {
 		    // This really should not happen, one can almost
 		    // throw a fatal log here.
-		    LOGGER.error("getPaidBillsForVendor: Cannot instantiate GnucashVendorBillImpl");
+		    LOGGER.error("getPaidBillsForVendor_direct: Cannot instantiate GnucashVendorBillImpl");
 		}
+	    }
+	}
+
+	return retval;
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
+     */
+    public Collection<GnucashJobInvoice> getPaidBillsForVendor_viaAllJobs(final GnucashVendor vend)
+	    throws WrongInvoiceTypeException {
+	Collection<GnucashJobInvoice> retval = new LinkedList<GnucashJobInvoice>();
+
+	for ( GnucashVendorJob job : vend.getJobs() ) {
+	    for ( GnucashJobInvoice jobInvc : job.getPaidInvoices() ) {
+		retval.add(jobInvc);
 	    }
 	}
 
@@ -604,7 +691,7 @@ public class GnucashFileImpl implements GnucashFile {
      * @throws WrongInvoiceTypeException
      * @see GnucashFile#getUnpaidBillsForVendor_viaJob(GnucashVendor)
      */
-    public Collection<GnucashVendorBill> getUnpaidBillsForVendor(final GnucashVendor vend)
+    public Collection<GnucashVendorBill> getUnpaidBillsForVendor_direct(final GnucashVendor vend)
 	    throws WrongInvoiceTypeException {
 	Collection<GnucashVendorBill> retval = new LinkedList<GnucashVendorBill>();
 
@@ -615,8 +702,25 @@ public class GnucashFileImpl implements GnucashFile {
 		} catch (WrongInvoiceTypeException e) {
 		    // This really should not happen, one can almost
 		    // throw a fatal log here.
-		    LOGGER.error("getUnpaidBillsForVendor: Cannot instantiate GnucashVendorBillImpl");
+		    LOGGER.error("getUnpaidBillsForVendor_direct: Cannot instantiate GnucashVendorBillImpl");
 		}
+	    }
+	}
+
+	return retval;
+    }
+
+    /**
+     * @throws WrongInvoiceTypeException
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
+     */
+    public Collection<GnucashJobInvoice> getUnpaidBillsForVendor_viaAllJobs(final GnucashVendor vend)
+	    throws WrongInvoiceTypeException {
+	Collection<GnucashJobInvoice> retval = new LinkedList<GnucashJobInvoice>();
+
+	for ( GnucashVendorJob job : vend.getJobs() ) {
+	    for ( GnucashJobInvoice jobInvc : job.getUnpaidInvoices() ) {
+		retval.add(jobInvc);
 	    }
 	}
 
@@ -627,7 +731,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     /**
      * @throws WrongInvoiceTypeException
-     * @see GnucashFile#getUnpaidInvoicesForCustomer(GnucashCustomer)
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
      */
     public Collection<GnucashJobInvoice> getInvoicesForJob(final GnucashGenerJob job)
 	    throws WrongInvoiceTypeException {
@@ -650,7 +754,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     /**
      * @throws WrongInvoiceTypeException
-     * @see GnucashFile#getUnpaidInvoicesForCustomer(GnucashCustomer)
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
      */
     public Collection<GnucashJobInvoice> getPaidInvoicesForJob(final GnucashGenerJob job)
 	    throws WrongInvoiceTypeException {
@@ -673,7 +777,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     /**
      * @throws WrongInvoiceTypeException
-     * @see GnucashFile#getUnpaidInvoicesForCustomer(GnucashCustomer)
+     * @see GnucashFile#getUnpaidInvoicesForCustomer_direct(GnucashCustomer)
      */
     public Collection<GnucashJobInvoice> getUnpaidInvoicesForJob(final GnucashGenerJob job)
 	    throws WrongInvoiceTypeException {
@@ -1684,9 +1788,9 @@ public class GnucashFileImpl implements GnucashFile {
     }
 
     /**
-     * @see GnucashFile#getJobs()
+     * @see GnucashFile#getGenerJobs()
      */
-    public Collection<GnucashGenerJob> getJobs() {
+    public Collection<GnucashGenerJob> getGenerJobs() {
 	if (jobID2job == null) {
 	    throw new IllegalStateException("no root-element loaded");
 	}

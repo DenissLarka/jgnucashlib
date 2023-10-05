@@ -60,4 +60,32 @@ public class GnucashCustomerJobImpl extends GnucashGenerJobImpl
         return file.getCustomerByID(getCustomerId());
     }
 
+    // -----------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("[GnucashCustomerJobImpl:");
+	buffer.append(" id: ");
+	buffer.append(getId());
+	
+	buffer.append(" number: ");
+	buffer.append(getNumber());
+	
+	buffer.append(" name: '");
+	buffer.append(getName() + "'");
+	
+	buffer.append(" customer-id: ");
+	buffer.append(getCustomerId());
+	
+	buffer.append(" is-active: ");
+	buffer.append(isActive());
+	
+	buffer.append("]");
+	return buffer.toString();
+    }
+
 }

@@ -18,7 +18,9 @@ public interface GCshBillTerms {
 	public String getDescription();
 	public boolean isInvisible();
 	
+	@SuppressWarnings("exports")
 	public BilltermProximo getProximo();
+	@SuppressWarnings("exports")
 	public BilltermDays getDays();
 	
 	public String getParentId();

@@ -252,4 +252,35 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
 	return jwsdpPeer.getJobOwner();
     }
 
+    // -----------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("[GnucashGenerJobImpl:");
+	buffer.append(" id: ");
+	buffer.append(getId());
+	
+	buffer.append(" number: ");
+	buffer.append(getNumber());
+	
+	buffer.append(" name: '");
+	buffer.append(getName() + "'");
+	
+	buffer.append(" owner-type: ");
+	buffer.append(getOwnerType());
+	
+	buffer.append(" cust/vend-id: ");
+	buffer.append(getOwnerId());
+	
+	buffer.append(" is-active: ");
+	buffer.append(isActive());
+	
+	buffer.append("]");
+	return buffer.toString();
+    }
+
 }

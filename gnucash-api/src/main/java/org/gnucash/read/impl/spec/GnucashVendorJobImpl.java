@@ -59,4 +59,32 @@ public class GnucashVendorJobImpl extends GnucashGenerJobImpl
         return file.getVendorByID(getVendorId());
     }
 
+    // -----------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("[GnucashVendorJobImpl:");
+	buffer.append(" id: ");
+	buffer.append(getId());
+	
+	buffer.append(" number: ");
+	buffer.append(getNumber());
+	
+	buffer.append(" name: '");
+	buffer.append(getName() + "'");
+	
+	buffer.append(" vendor-id: ");
+	buffer.append(getVendorId());
+	
+	buffer.append(" is-active: ");
+	buffer.append(isActive());
+	
+	buffer.append("]");
+	return buffer.toString();
+    }
+
 }
