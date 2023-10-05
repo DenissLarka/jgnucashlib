@@ -222,7 +222,7 @@
 <gnc:count-data cd:type="gnc:GncEntry">12</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncInvoice">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncTaxTable">2</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncTaxTable">5</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncVendor">3</gnc:count-data>
 <gnc:commodity version="2.0.0">
   <cmdty:space>CURRENCY</cmdty:space>
@@ -3016,7 +3016,7 @@
 </gnc:GncJob>
 <gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">3c9690f9f31b4cd0baa936048b833c06</taxtable:guid>
-  <taxtable:name>UStd_Std</taxtable:name>
+  <taxtable:name>DE_USt_Std</taxtable:name>
   <taxtable:refcount>4</taxtable:refcount>
   <taxtable:invisible>0</taxtable:invisible>
   <taxtable:child type="guid">cba6011c826f426fbc4a1a72c3d6c8ee</taxtable:child>
@@ -3029,8 +3029,21 @@
   </taxtable:entries>
 </gnc:GncTaxTable>
 <gnc:GncTaxTable version="2.0.0">
+  <taxtable:guid type="guid">c518af53a93c4a5cb3e2161b7b358e68</taxtable:guid>
+  <taxtable:name>DE_USt_red</taxtable:name>
+  <taxtable:refcount>0</taxtable:refcount>
+  <taxtable:invisible>0</taxtable:invisible>
+  <taxtable:entries>
+    <gnc:GncTaxTableEntry>
+      <tte:acct type="guid">1a5b06dada56466197edbd15e64fd425</tte:acct>
+      <tte:amount>700000/100000</tte:amount>
+      <tte:type>PERCENT</tte:type>
+    </gnc:GncTaxTableEntry>
+  </taxtable:entries>
+</gnc:GncTaxTable>
+<gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">cba6011c826f426fbc4a1a72c3d6c8ee</taxtable:guid>
-  <taxtable:name>UStd_Std</taxtable:name>
+  <taxtable:name>USt_Std</taxtable:name>
   <taxtable:refcount>0</taxtable:refcount>
   <taxtable:invisible>1</taxtable:invisible>
   <taxtable:parent type="guid">3c9690f9f31b4cd0baa936048b833c06</taxtable:parent>
@@ -3038,6 +3051,32 @@
     <gnc:GncTaxTableEntry>
       <tte:acct type="guid">1a5b06dada56466197edbd15e64fd425</tte:acct>
       <tte:amount>1900000/100000</tte:amount>
+      <tte:type>PERCENT</tte:type>
+    </gnc:GncTaxTableEntry>
+  </taxtable:entries>
+</gnc:GncTaxTable>
+<gnc:GncTaxTable version="2.0.0">
+  <taxtable:guid type="guid">de4c17d1eb0e4f088ba73d4c697032f0</taxtable:guid>
+  <taxtable:name>FR_USt_Std</taxtable:name>
+  <taxtable:refcount>0</taxtable:refcount>
+  <taxtable:invisible>0</taxtable:invisible>
+  <taxtable:entries>
+    <gnc:GncTaxTableEntry>
+      <tte:acct type="guid">1a5b06dada56466197edbd15e64fd425</tte:acct>
+      <tte:amount>2000000/100000</tte:amount>
+      <tte:type>PERCENT</tte:type>
+    </gnc:GncTaxTableEntry>
+  </taxtable:entries>
+</gnc:GncTaxTable>
+<gnc:GncTaxTable version="2.0.0">
+  <taxtable:guid type="guid">e279d5cc81204f1bb6cf672ef3357c0c</taxtable:guid>
+  <taxtable:name>FR_USt_red</taxtable:name>
+  <taxtable:refcount>0</taxtable:refcount>
+  <taxtable:invisible>0</taxtable:invisible>
+  <taxtable:entries>
+    <gnc:GncTaxTableEntry>
+      <tte:acct type="guid">1a5b06dada56466197edbd15e64fd425</tte:acct>
+      <tte:amount>1000000/100000</tte:amount>
       <tte:type>PERCENT</tte:type>
     </gnc:GncTaxTableEntry>
   </taxtable:entries>
