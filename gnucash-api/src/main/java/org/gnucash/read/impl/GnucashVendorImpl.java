@@ -107,7 +107,19 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     /**
      * @return the net sum of payments for invoices to this client
      */
-    public FixedPointNumber getExpensesGenerated() {
+    public FixedPointNumber getExpensesGenerated(GnucashGenerInvoice.ReadVariant readVar) {
+	if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
+	    return getExpensesGenerated_direct();
+	else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB )
+	    return getExpensesGenerated_viaAllJobs();
+	
+	return null; // Compiler happy
+    }
+
+    /**
+     * @return the net sum of payments for invoices to this client
+     */
+    public FixedPointNumber getExpensesGenerated_direct() {
 	FixedPointNumber retval = new FixedPointNumber();
 
 	try {
@@ -121,7 +133,30 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 //            } // if invc type
 	    } // for
 	} catch (WrongInvoiceTypeException e) {
-	    LOGGER.error("getIncomeGenerated: Serious error");
+	    LOGGER.error("getExpensesGenerated_direct: Serious error");
+	}
+
+	return retval;
+    }
+
+    /**
+     * @return the net sum of payments for invoices to this client
+     */
+    public FixedPointNumber getExpensesGenerated_viaAllJobs() {
+	FixedPointNumber retval = new FixedPointNumber();
+
+	try {
+	    for (GnucashJobInvoice bllSpec : getPaidBills_viaAllJobs()) {
+//		    if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
+//		      GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
+		GnucashVendor vend = bllSpec.getVendor();
+		if (vend.getId().equals(this.getId())) {
+		    retval.add(((SpecInvoiceCommon) bllSpec).getAmountWithoutTaxes());
+		}
+//            } // if invc type
+	    } // for
+	} catch (WrongInvoiceTypeException e) {
+	    LOGGER.error("getExpensesGenerated_viaAllJobs: Serious error");
 	}
 
 	return retval;
@@ -139,8 +174,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
      * @return formatted acording to the current locale's currency-format
      * @see #getExpensesGenerated()
      */
-    public String getExpensesGeneratedFormatted() {
-	return getCurrencyFormat().format(getExpensesGenerated());
+    public String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar) {
+	return getCurrencyFormat().format(getExpensesGenerated(readVar));
 
     }
 
@@ -149,15 +184,28 @@ public class GnucashVendorImpl extends GnucashObjectImpl
      * @return formatted acording to the given locale's currency-format
      * @see #getExpensesGenerated()
      */
-    public String getExpensesGeneratedFormatted(final Locale l) {
-	return NumberFormat.getCurrencyInstance(l).format(getExpensesGenerated());
+    public String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) {
+	return NumberFormat.getCurrencyInstance(l).format(getExpensesGenerated(readVar));
     }
 
     /**
      * @return the sum of left to pay Unpaid invoiced
      * @throws WrongInvoiceTypeException
      */
-    public FixedPointNumber getOutstandingValue() throws WrongInvoiceTypeException {
+    public FixedPointNumber getOutstandingValue(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException {
+	if ( readVar == GnucashGenerInvoice.ReadVariant.DIRECT )
+	    return getOutstandingValue_direct();
+	else if ( readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB )
+	    return getOutstandingValue_viaAllJobs();
+	
+	return null; // Compiler happy
+    }
+
+    /**
+     * @return the sum of left to pay Unpaid invoiced
+     * @throws WrongInvoiceTypeException
+     */
+    public FixedPointNumber getOutstandingValue_direct() throws WrongInvoiceTypeException {
 	FixedPointNumber retval = new FixedPointNumber();
 
 	try {
@@ -171,7 +219,31 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 //            } // if invc type
 	    } // for
 	} catch (WrongInvoiceTypeException e) {
-	    LOGGER.error("getOutstandingValue: Serious error");
+	    LOGGER.error("getOutstandingValue_direct: Serious error");
+	}
+
+	return retval;
+    }
+
+    /**
+     * @return the sum of left to pay Unpaid invoiced
+     * @throws WrongInvoiceTypeException
+     */
+    public FixedPointNumber getOutstandingValue_viaAllJobs() throws WrongInvoiceTypeException {
+	FixedPointNumber retval = new FixedPointNumber();
+
+	try {
+	    for (GnucashJobInvoice bllSpec : getUnpaidBills_viaAllJobs()) {
+//            if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_VENDOR) ) {
+//              GnucashVendorBill bllSpec = new GnucashVendorBillImpl(invcGen); 
+		GnucashVendor vend = bllSpec.getVendor();
+		if (vend.getId().equals(this.getId())) {
+		    retval.add(((SpecInvoiceCommon) bllSpec).getAmountUnpaidWithTaxes());
+		}
+//            } // if invc type
+	    } // for
+	} catch (WrongInvoiceTypeException e) {
+	    LOGGER.error("getOutstandingValue_viaAllJobs: Serious error");
 	}
 
 	return retval;
@@ -181,8 +253,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
      * @return Formatted acording to the current locale's currency-format
      * @see #getOutstandingValue()
      */
-    public String getOutstandingValueFormatted() throws WrongInvoiceTypeException {
-	return getCurrencyFormat().format(getOutstandingValue());
+    public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar) throws WrongInvoiceTypeException {
+	return getCurrencyFormat().format(getOutstandingValue(readVar));
     }
 
     /**
@@ -190,8 +262,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
      * @see #getOutstandingValue() Formatted acording to the given locale's
      *      currency-format
      */
-    public String getOutstandingValueFormatted(final Locale l) throws WrongInvoiceTypeException {
-	return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue());
+    public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) throws WrongInvoiceTypeException {
+	return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue(readVar));
     }
 
     /**

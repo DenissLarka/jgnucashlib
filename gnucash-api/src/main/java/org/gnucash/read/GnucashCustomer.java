@@ -45,34 +45,58 @@ public interface GnucashCustomer extends GnucashObject {
      * @return the sum of payments for invoices to this client
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getIncomeGenerated();
+    FixedPointNumber getIncomeGenerated(GnucashGenerInvoice.ReadVariant readVar);
+
+    /**
+     * @return the sum of payments for invoices to this client
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getIncomeGenerated_direct();
+
+    /**
+     * @return the sum of payments for invoices to this client
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getIncomeGenerated_viaAllJobs();
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getIncomeGenerated()
      * Formatted acording to the current locale's currency-format
      */
-    String getIncomeGeneratedFormatted();
+    String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar);
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getIncomeGenerated()
      * Formatted acording to the given locale's currency-format
      */
-    String getIncomeGeneratedFormatted(Locale l);
+    String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
 
     /**
      * @return the sum of left to pay Unpaid invoiced
      * @throws WrongInvoiceTypeException 
      */
-    FixedPointNumber getOutstandingValue();
+    FixedPointNumber getOutstandingValue(GnucashGenerInvoice.ReadVariant readVar);
+
+    /**
+     * @return the sum of left to pay Unpaid invoiced
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getOutstandingValue_direct();
+
+    /**
+     * @return the sum of left to pay Unpaid invoiced
+     * @throws WrongInvoiceTypeException 
+     */
+    FixedPointNumber getOutstandingValue_viaAllJobs();
 
     /**
      * @throws WrongInvoiceTypeException 
      * @see #getOutstandingValue()
      * Formatted acording to the current locale's currency-format
      */
-    String getOutstandingValueFormatted();
+    String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar);
 
     /**
      *
@@ -80,7 +104,7 @@ public interface GnucashCustomer extends GnucashObject {
      * @see #getOutstandingValue()
      * Formatted acording to the given locale's currency-format
      */
-    String getOutstandingValueFormatted(Locale l);
+    String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
 
     /**
      * The gnucash-file is the top-level class to contain everything.
