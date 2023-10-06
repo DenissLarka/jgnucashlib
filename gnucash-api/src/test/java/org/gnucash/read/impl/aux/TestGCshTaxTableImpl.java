@@ -96,10 +96,11 @@ public class TestGCshTaxTableImpl
   }
 
   @Test
-  public void test02_1() throws Exception
+  public void test02_1_1() throws Exception
   {
       taxTab = gcshFile.getTaxTableByID(TAXTABLE_DE_1_1_ID);
       
+      assertEquals(TAXTABLE_DE_1_1_ID, taxTab.getId());
       assertEquals("DE_USt_Std", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
@@ -110,10 +111,26 @@ public class TestGCshTaxTableImpl
   }
 
   @Test
-  public void test02_2() throws Exception
+  public void test02_1_2() throws Exception
+  {
+      taxTab = gcshFile.getTaxTableByName("DE_USt_Std");
+      
+      assertEquals(TAXTABLE_DE_1_1_ID, taxTab.getId());
+      assertEquals("DE_USt_Std", taxTab.getName());
+      assertEquals(null, taxTab.getParentID());
+
+      assertEquals(1, taxTab.getEntries().size());
+      assertEquals(19.0, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAmount().doubleValue(), ConstTest.DIFF_TOLERANCE );
+      assertEquals(GCshTaxTableEntry.TYPE_PERCENT, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getType() );
+      assertEquals(TAX_ACCT_ID, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAccountID() );
+  }
+
+  @Test
+  public void test02_2_1() throws Exception
   {
       taxTab = gcshFile.getTaxTableByID(TAXTABLE_DE_1_2_ID);
       
+      assertEquals(TAXTABLE_DE_1_2_ID, taxTab.getId());
       assertEquals("USt_Std", taxTab.getName()); // sic, old name w/o prefix "DE_"
       assertEquals(TAXTABLE_DE_1_1_ID, taxTab.getParentID());
 
@@ -124,10 +141,26 @@ public class TestGCshTaxTableImpl
   }
 
   @Test
-  public void test03() throws Exception
+  public void test02_2_2() throws Exception
+  {
+      taxTab = gcshFile.getTaxTableByName("USt_Std");
+      
+      assertEquals(TAXTABLE_DE_1_2_ID, taxTab.getId());
+      assertEquals("USt_Std", taxTab.getName()); // sic, old name w/o prefix "DE_"
+      assertEquals(TAXTABLE_DE_1_1_ID, taxTab.getParentID());
+
+      assertEquals(1, taxTab.getEntries().size());
+      assertEquals(19.0, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAmount().doubleValue(), ConstTest.DIFF_TOLERANCE );
+      assertEquals(GCshTaxTableEntry.TYPE_PERCENT, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getType() );
+      assertEquals(TAX_ACCT_ID, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAccountID() );
+  }
+
+  @Test
+  public void test03_1() throws Exception
   {
       taxTab = gcshFile.getTaxTableByID(TAXTABLE_DE_2_ID);
       
+      assertEquals(TAXTABLE_DE_2_ID, taxTab.getId());
       assertEquals("DE_USt_red", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
@@ -137,12 +170,27 @@ public class TestGCshTaxTableImpl
       assertEquals(TAX_ACCT_ID, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAccountID() );
   }
 
+  @Test
+  public void test03_2() throws Exception
+  {
+      taxTab = gcshFile.getTaxTableByName("DE_USt_red");
+      
+      assertEquals(TAXTABLE_DE_2_ID, taxTab.getId());
+      assertEquals("DE_USt_red", taxTab.getName());
+      assertEquals(null, taxTab.getParentID());
+
+      assertEquals(1, taxTab.getEntries().size());
+      assertEquals(7.0, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAmount().doubleValue(), ConstTest.DIFF_TOLERANCE );
+      assertEquals(GCshTaxTableEntry.TYPE_PERCENT, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getType() );
+      assertEquals(TAX_ACCT_ID, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAccountID() );
+  }
 
   @Test
-  public void test04() throws Exception
+  public void test04_1() throws Exception
   {
       taxTab = gcshFile.getTaxTableByID(TAXTABLE_FR_1_ID);
       
+      assertEquals(TAXTABLE_FR_1_ID, taxTab.getId());
       assertEquals("FR_USt_Std", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
@@ -153,10 +201,41 @@ public class TestGCshTaxTableImpl
   }
 
   @Test
-  public void test05() throws Exception
+  public void test04_2() throws Exception
+  {
+      taxTab = gcshFile.getTaxTableByName("FR_USt_Std");
+      
+      assertEquals(TAXTABLE_FR_1_ID, taxTab.getId());
+      assertEquals("FR_USt_Std", taxTab.getName());
+      assertEquals(null, taxTab.getParentID());
+
+      assertEquals(1, taxTab.getEntries().size());
+      assertEquals(20.0, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAmount().doubleValue(), ConstTest.DIFF_TOLERANCE );
+      assertEquals(GCshTaxTableEntry.TYPE_PERCENT, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getType() );
+      assertEquals(TAX_ACCT_ID, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAccountID() );
+  }
+
+  @Test
+  public void test05_1() throws Exception
   {
       taxTab = gcshFile.getTaxTableByID(TAXTABLE_FR_2_ID);
       
+      assertEquals(TAXTABLE_FR_2_ID, taxTab.getId());
+      assertEquals("FR_USt_red", taxTab.getName());
+      assertEquals(null, taxTab.getParentID());
+
+      assertEquals(1, taxTab.getEntries().size());
+      assertEquals(10.0, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAmount().doubleValue(), ConstTest.DIFF_TOLERANCE );
+      assertEquals(GCshTaxTableEntry.TYPE_PERCENT, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getType() );
+      assertEquals(TAX_ACCT_ID, ((GCshTaxTableEntry) taxTab.getEntries().toArray()[0]).getAccountID() );
+  }
+
+  @Test
+  public void test05_2() throws Exception
+  {
+      taxTab = gcshFile.getTaxTableByName("FR_USt_red");
+      
+      assertEquals(TAXTABLE_FR_2_ID, taxTab.getId());
       assertEquals("FR_USt_red", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
