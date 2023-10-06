@@ -9,6 +9,7 @@ module gnucash.api {
 	
 	exports org.gnucash.currency;
 	exports org.gnucash.numbers;
+	
 	exports org.gnucash.read;
 	exports org.gnucash.read.aux;
 	exports org.gnucash.read.spec;

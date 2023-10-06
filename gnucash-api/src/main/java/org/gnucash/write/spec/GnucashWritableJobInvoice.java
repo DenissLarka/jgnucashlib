@@ -57,14 +57,14 @@ public interface GnucashWritableJobInvoice extends GnucashWritableGenerInvoice {
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final FixedPointNumber tax)
+	    final String taxTabName)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
     GnucashWritableJobInvoiceEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final GCshTaxTable tax)
+	    final GCshTaxTable taxTab)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
     // ---------------------------------------------------------------

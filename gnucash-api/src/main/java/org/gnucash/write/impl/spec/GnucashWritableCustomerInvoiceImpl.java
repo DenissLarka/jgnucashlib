@@ -234,23 +234,8 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, singleUnitPrice, quantity);
-	return entry;
-    }
-
-    /**
-     * create and add a new entry.<br/>
-     *
-     * @return an entry using the given Tax-Table
-     * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
-     */
-    public GnucashWritableCustomerInvoiceEntry createEntry(
-	    final GnucashAccount acct,
-	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, 
-	    final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, singleUnitPrice, quantity, tax);
+	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, 
+		                                                        singleUnitPrice, quantity);
 	return entry;
     }
 
@@ -265,8 +250,28 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final FixedPointNumber tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, singleUnitPrice, quantity, tax);
+	    final String taxTabName) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, 
+		                                                        singleUnitPrice, quantity, 
+		                                                        taxTabName);
+	return entry;
+    }
+
+    /**
+     * create and add a new entry.<br/>
+     *
+     * @return an entry using the given Tax-Table
+     * @throws WrongInvoiceTypeException
+     * @throws NoTaxTableFoundException
+     */
+    public GnucashWritableCustomerInvoiceEntry createEntry(
+	    final GnucashAccount acct,
+	    final FixedPointNumber singleUnitPrice,
+	    final FixedPointNumber quantity, 
+	    final GCshTaxTable taxTab) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	GnucashWritableCustomerInvoiceEntry entry = createCustInvcEntry(acct, 
+		                                                        singleUnitPrice, quantity, 
+		                                                        taxTab);
 	return entry;
     }
 

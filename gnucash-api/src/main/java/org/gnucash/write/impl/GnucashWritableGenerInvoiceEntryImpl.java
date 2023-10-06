@@ -425,8 +425,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
     @Override
     public void setInvcTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
@@ -445,24 +445,25 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public void setInvcTaxTable(final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+    public void setInvcTaxTable(final GCshTaxTable taxTab) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
 
-	super.setInvcTaxTable(tax);
-	if (tax == null) {
+	super.setInvcTaxTable(taxTab);
+	if (taxTab == null) {
 	    getJwsdpPeer().setEntryITaxable(0);
 	} else {
 	    getJwsdpPeer().setEntryITaxable(1);
 	    if (getJwsdpPeer().getEntryITaxtable() == null) {
-		getJwsdpPeer().setEntryITaxtable(((GnucashWritableFileImpl) getGenerInvoice().getFile())
-			.getObjectFactory().createGncV2GncBookGncGncEntryEntryITaxtable());
-		getJwsdpPeer().getEntryITaxtable().setValue(Const.XML_DATA_TYPE_GUID);
+		getJwsdpPeer().setEntryITaxtable(
+			((GnucashWritableFileImpl) getGenerInvoice().getFile())
+				.getObjectFactory().createGncV2GncBookGncGncEntryEntryITaxtable());
+		getJwsdpPeer().getEntryITaxtable().setType(Const.XML_DATA_TYPE_GUID);
 	    }
-	    getJwsdpPeer().getEntryITaxtable().setValue(tax.getId());
+	    getJwsdpPeer().getEntryITaxtable().setValue(taxTab.getId());
 	}
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addInvcEntry(this);
@@ -478,8 +479,8 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      */
     public void setBillTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractBillEntry(this);
@@ -498,24 +499,25 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public void setBillTaxTable(final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+    public void setBillTaxTable(final GCshTaxTable taxTab) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
-	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractInvcEntry(this);
+	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).subtractBillEntry(this);
 
-	super.setBillTaxTable(tax);
-	if (tax == null) {
+	super.setBillTaxTable(taxTab);
+	if (taxTab == null) {
 	    getJwsdpPeer().setEntryBTaxable(0);
 	} else {
 	    getJwsdpPeer().setEntryBTaxable(1);
 	    if (getJwsdpPeer().getEntryBTaxtable() == null) {
-		getJwsdpPeer().setEntryBTaxtable(((GnucashWritableFileImpl) getGenerInvoice().getFile())
-			.getObjectFactory().createGncV2GncBookGncGncEntryEntryBTaxtable());
-		getJwsdpPeer().getEntryBTaxtable().setValue(Const.XML_DATA_TYPE_GUID);
+		getJwsdpPeer().setEntryBTaxtable(
+			((GnucashWritableFileImpl) getGenerInvoice().getFile())
+				.getObjectFactory().createGncV2GncBookGncGncEntryEntryBTaxtable());
+		getJwsdpPeer().getEntryBTaxtable().setType(Const.XML_DATA_TYPE_GUID);
 	    }
-	    getJwsdpPeer().getEntryBTaxtable().setValue(tax.getId());
+	    getJwsdpPeer().getEntryBTaxtable().setValue(taxTab.getId());
 	}
 
 	((GnucashWritableGenerInvoiceImpl) getGenerInvoice()).addBillEntry(this);
@@ -531,7 +533,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      */
     public void setJobTaxable(final boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashWritableJobInvoiceEntry jobInvcEntr = new GnucashWritableJobInvoiceEntryImpl(this);
@@ -548,16 +550,16 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
      */
-    public void setJobTaxTable(final GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+    public void setJobTaxTable(final GCshTaxTable taxTab) throws WrongInvoiceTypeException, NoTaxTableFoundException {
 
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashWritableJobInvoiceEntry jobInvcEntr = new GnucashWritableJobInvoiceEntryImpl(this);
 	if (jobInvcEntr.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER))
-	    setInvcTaxTable(tax);
+	    setInvcTaxTable(taxTab);
 	if (jobInvcEntr.getType().equals(GnucashGenerInvoice.TYPE_VENDOR))
-	    setBillTaxTable(tax);
+	    setBillTaxTable(taxTab);
 
     }
 

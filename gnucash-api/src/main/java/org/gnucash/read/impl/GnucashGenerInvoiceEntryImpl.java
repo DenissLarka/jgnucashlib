@@ -795,8 +795,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see GnucashGenerInvoiceEntry#isInvcTaxable()
      */
     public boolean isInvcTaxable() throws WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	return (jwsdpPeer.getEntryITaxable() == 1);
@@ -807,8 +807,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see GnucashGenerInvoiceEntry#isInvcTaxable()
      */
     public boolean isBillTaxable() throws WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
-		!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
+	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	return (jwsdpPeer.getEntryBTaxable() == 1);
@@ -819,7 +819,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @see GnucashGenerInvoiceEntry#isInvcTaxable()
      */
     public boolean isJobTaxable() throws WrongInvoiceTypeException {
-	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
+	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
 	GnucashJobInvoice jobInvc = new GnucashJobInvoiceImpl(getGenerInvoice());

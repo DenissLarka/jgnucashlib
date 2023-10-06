@@ -46,14 +46,12 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.aux.GCshTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashVendorBillImpl;
-import org.gnucash.read.impl.spec.GnucashVendorJobImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashJobInvoice;
@@ -147,6 +145,24 @@ public class GnucashFileImpl implements GnucashFile {
 	    getTaxTables();
 	}
 	return taxTablesById.get(id);
+    }
+
+    /**
+     * @param id id of a taxtable
+     * @return the identified taxtable or null
+     */
+    public GCshTaxTable getTaxTableByName(final String name) {
+	if (taxTablesById == null) {
+	    getTaxTables();
+	}
+	
+	for (GCshTaxTable taxTab : taxTablesById.values()) {
+	    if (taxTab.getName().equals(name)) {
+		return taxTab;
+	    }
+	}
+
+	return null;
     }
 
     /**

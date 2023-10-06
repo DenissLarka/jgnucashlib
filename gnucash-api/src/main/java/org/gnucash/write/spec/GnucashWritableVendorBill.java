@@ -39,14 +39,14 @@ public interface GnucashWritableVendorBill extends GnucashWritableGenerInvoice {
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final FixedPointNumber tax)
+	    final String taxTabName)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
     GnucashWritableVendorBillEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final GCshTaxTable tax)
+	    final GCshTaxTable taxTab)
 	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
 
     // ---------------------------------------------------------------
