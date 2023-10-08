@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 public class GnucashWritableAccountImpl extends GnucashAccountImpl 
                                         implements GnucashWritableAccount 
 {
-
 	/**
 	 * Our logger for debug- and error-ourput.
 	 */

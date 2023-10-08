@@ -22,6 +22,12 @@ import org.slf4j.LoggerFactory;
 public class GnucashWritableObjectImpl implements GnucashWritableObject {
 
 	/**
+	 * Automatically created logger for debug and error-output.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableObjectImpl.class);
+
+
+	/**
 	 *
 	 */
 	private GnucashObjectImpl gnucashObject;
@@ -85,11 +91,6 @@ public class GnucashWritableObjectImpl implements GnucashWritableObject {
 
 		getFile().setModified(true);
 	}
-
-	/**
-	 * Automatically created logger for debug and error-output.
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableObjectImpl.class);
 
 	//------------------------ support for propertyChangeListeners ------------------
 

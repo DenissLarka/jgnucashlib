@@ -108,7 +108,7 @@ public class GnucashVendorBillEntryImpl extends GnucashGenerInvoiceEntryImpl
   public String getInvcPriceFormatted() throws WrongInvoiceTypeException {
     throw new WrongInvoiceTypeException();
   }
-  
+
   // ------------------------------
 
   @Override

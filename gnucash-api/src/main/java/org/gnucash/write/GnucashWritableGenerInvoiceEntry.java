@@ -8,6 +8,7 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.impl.UnknownInvoiceTypeException;
 
 /**
  * Invoice-Entry that can be modified.
@@ -48,12 +49,12 @@ public interface GnucashWritableGenerInvoiceEntry extends GnucashGenerInvoiceEnt
 
     // ------------------------
 
-    void setJobPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setJobPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 
-    void setJobPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setJobPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException, NumberFormatException, UnknownInvoiceTypeException;
 
     void setJobPriceFormatted(String price)
-	    throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 
     // -----------------------------------------------------------
 

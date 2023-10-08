@@ -15,6 +15,8 @@ import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceEntryImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Additional supported properties for PropertyChangeListeners:
@@ -29,6 +31,7 @@ import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
 public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGenerInvoiceEntryImpl 
                                                      implements GnucashWritableCustomerInvoiceEntry
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableCustomerInvoiceEntryImpl.class);
 
 	/**
 	 * @param file      the file we belong to
@@ -43,7 +46,7 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 	}
 
 	/**
-	 * @param invc   tne invoice this entry shall belong to
+	 * @param invc   tne customer invoice this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
@@ -58,8 +61,8 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 
 	/**
 	 * Create a taxable invoiceEntry.
-	 * (It has the taxtable of the customer with a fallback
-	 * to the first taxtable found assigned)
+	 * (It has the tax table of the customer with a fallback
+	 * to the first tax table found assigned)
 	 *
 	 * @param invc  the invoice to add this split to
 	 * @param account  the income-account the money comes from

@@ -109,6 +109,18 @@ public class GnucashCustomerInvoiceEntryImpl extends GnucashGenerInvoiceEntryImp
     throw new WrongInvoiceTypeException();
   }
 
+  // ------------------------------
+
+  @Override
+  public FixedPointNumber getJobPrice() throws WrongInvoiceTypeException {
+    throw new WrongInvoiceTypeException();
+  }
+
+  @Override
+  public String getJobPriceFormatted() throws WrongInvoiceTypeException {
+    throw new WrongInvoiceTypeException();
+  }
+
   // ---------------------------------------------------------------
 
   public String toString() {

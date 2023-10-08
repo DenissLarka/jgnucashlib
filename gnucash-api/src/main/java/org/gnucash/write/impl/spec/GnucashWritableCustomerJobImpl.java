@@ -15,6 +15,8 @@ import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Modifiable version of a Job implemented.<br/>
@@ -30,6 +32,8 @@ import org.gnucash.write.spec.GnucashWritableCustomerJob;
 public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl 
                                             implements GnucashWritableCustomerJob 
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableCustomerJobImpl.class);
+
     /**
      * @param jwsdpPeer the XML(jaxb)-object we are fronting.
      * @param file      the file we belong to

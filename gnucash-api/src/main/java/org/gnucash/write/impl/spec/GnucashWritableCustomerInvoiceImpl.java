@@ -28,6 +28,8 @@ import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO write a comment what this type does here
@@ -35,6 +37,7 @@ import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
 public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvoiceImpl 
                                                 implements GnucashWritableCustomerInvoice 
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableCustomerInvoiceImpl.class);
 
     /**
      * Create an editable invoice facading an existing JWSDP-peer.
@@ -69,7 +72,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
 		                        false, // <-- caution!
 			                incomeAcct, receivableAcct,
 		                        openedDate, postDate, dueDate), 
-              file);
+	      file);
     }
 
     /**
@@ -313,17 +316,17 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
      */
     private String getAccountIDToTransferMoneyFrom(final GnucashCustomerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
-	return getInvcAccountIDToTransferMoneyTo(entry);
+	return getInvcPostAccountID(entry);
     }
 
     @Override
-    protected String getBillAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry)
+    protected String getBillPostAccountID(final GnucashGenerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
 	throw new WrongInvoiceTypeException();
     }
 
     @Override
-    protected String getJobAccountIDToTransferMoneyFromTo(final GnucashGenerInvoiceEntryImpl entry)
+    protected String getJobPostAccountID(final GnucashGenerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
 	throw new WrongInvoiceTypeException();
     }

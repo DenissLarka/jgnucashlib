@@ -3,10 +3,15 @@ package org.gnucash.write.impl;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * replaces ':' in tag-names and attribute-names by '_'
  */
 class NamespaceAdderWriter extends Writer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceAdderWriter.class);
 
     /**
      * @param input where to write to

@@ -28,6 +28,8 @@ import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceImpl;
 import org.gnucash.write.spec.GnucashWritableVendorBill;
 import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO write a comment what this type does here
@@ -35,6 +37,7 @@ import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
 public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceImpl 
                                            implements GnucashWritableVendorBill
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableVendorBillImpl.class);
 
     /**
      * Create an editable invoice facading an existing JWSDP-peer.
@@ -69,7 +72,7 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 		                   false, // <-- caution!
 		                   expensesAcct, payableAcct,
 		                   openedDate, postDate, dueDate), 
-              file);
+	      file);
     }
 
     /**
@@ -77,7 +80,8 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException 
      */
-    public GnucashWritableVendorBillImpl(final GnucashWritableGenerInvoiceImpl invc) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+    public GnucashWritableVendorBillImpl(final GnucashWritableGenerInvoiceImpl invc)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	super(invc.getJwsdpPeer(), invc.getFile());
 
 	// No, we cannot check that first, because the super() method
@@ -312,17 +316,17 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      */
     private String getAccountIDToTransferMoneyFrom(final GnucashVendorBillEntryImpl entry)
 	    throws WrongInvoiceTypeException {
-	return getBillAccountIDToTransferMoneyFrom(entry);
+	return getBillPostAccountID(entry);
     }
 
     @Override
-    protected String getInvcAccountIDToTransferMoneyTo(final GnucashGenerInvoiceEntryImpl entry)
+    protected String getInvcPostAccountID(final GnucashGenerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
 	throw new WrongInvoiceTypeException();
     }
 
     @Override
-    protected String getJobAccountIDToTransferMoneyFromTo(final GnucashGenerInvoiceEntryImpl entry)
+    protected String getJobPostAccountID(final GnucashGenerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
 	throw new WrongInvoiceTypeException();
     }

@@ -18,6 +18,8 @@ import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
 import org.gnucash.write.GnucashWritableTransaction;
 import org.gnucash.write.GnucashWritableTransactionSplit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Transaction-Split that can be newly created or removed from it's transaction.
@@ -25,8 +27,9 @@ import org.gnucash.write.GnucashWritableTransactionSplit;
 public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplitImpl 
                                                  implements GnucashWritableTransactionSplit 
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableTransactionSplitImpl.class);
 
-	/**
+    	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
 	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);

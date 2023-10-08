@@ -14,6 +14,7 @@ import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.aux.WrongOwnerJITypeException;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.impl.UnknownInvoiceTypeException;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
 import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
 import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
@@ -202,12 +203,13 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * 
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
+     * @throws UnknownInvoiceTypeException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -215,13 +217,14 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * 
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
+     * @throws UnknownInvoiceTypeException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -229,11 +232,12 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
+     * @throws UnknownInvoiceTypeException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 }

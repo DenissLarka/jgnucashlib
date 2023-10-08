@@ -7,11 +7,15 @@ import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sorter for the elements in a Gnc:Book.
  */
 public class BookElementsSorter implements Comparator<Object> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookElementsSorter.class);
 
 	/**
 	 * {@inheritDoc}

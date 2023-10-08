@@ -12,6 +12,7 @@ import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoice;
+import org.gnucash.write.impl.UnknownInvoiceTypeException;
 
 /**
  * Job invoice that can be modified if isModifiable() returns true
@@ -51,21 +52,21 @@ public interface GnucashWritableJobInvoice extends GnucashWritableGenerInvoice {
     GnucashWritableJobInvoiceEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 
     GnucashWritableJobInvoiceEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 
     GnucashWritableJobInvoiceEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
 
     // ---------------------------------------------------------------
     

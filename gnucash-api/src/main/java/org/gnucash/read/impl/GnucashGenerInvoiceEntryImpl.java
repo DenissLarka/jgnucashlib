@@ -22,6 +22,7 @@ import org.gnucash.read.aux.GCshTaxTableEntry;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.impl.UnknownInvoiceTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -258,7 +259,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
     }
 
     protected void setJobTaxTable(final GCshTaxTable aTaxtable)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
 	
 	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();

@@ -940,6 +940,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
     
     // ----------------------------
 
+    @Override
     public String getOwnerType(ReadVariant readVar) throws WrongInvoiceTypeException {
 	      if ( readVar == ReadVariant.DIRECT )
 	        return getOwnerType_direct();

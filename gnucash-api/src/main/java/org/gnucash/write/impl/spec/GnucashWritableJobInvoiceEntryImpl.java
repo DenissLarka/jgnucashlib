@@ -14,7 +14,10 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceEntryImpl;
+import org.gnucash.write.impl.UnknownInvoiceTypeException;
 import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Additional supported properties for PropertyChangeListeners:
@@ -29,6 +32,7 @@ import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
 public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvoiceEntryImpl 
                                                 implements GnucashWritableJobInvoiceEntry
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableJobInvoiceEntryImpl.class);
 
 	/**
 	 * @param file      the file we belong to
@@ -43,7 +47,7 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	/**
-	 * @param invc   tne invoice this entry shall belong to
+	 * @param invc   tne job invoice this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
@@ -58,11 +62,11 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 
 	/**
 	 * Create a taxable invoiceEntry.
-	 * (It has the taxtable of the job with a fallback
-	 * to the first taxtable found assigned)
+	 * (It has the tax table of the job with a fallback
+	 * to the first tax table found assigned)
 	 *
 	 * @param invc  the job invoice to add this split to
-	 * @param account  the income-account the money comes from
+	 * @param account  the income/expenses-account the money comes from
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
 	 * @throws WrongInvoiceTypeException 
@@ -108,24 +112,24 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 
 	@Override
 	public void setTaxable(boolean val)
-		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
 	    setJobTaxable(val);
 	}
 
 	@Override
 	public void setTaxTable(GCshTaxTable taxTab)
-		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
 	    setJobTaxTable(taxTab);
 	}
 
 	@Override
 	public void setPrice(String price)
-		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
 	    setJobPrice(price);
 	}
 
 	@Override
-	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException, NumberFormatException, UnknownInvoiceTypeException {
 	    setJobPrice(price);
 	}
 

@@ -28,8 +28,11 @@ import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoice;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceImpl;
+import org.gnucash.write.impl.UnknownInvoiceTypeException;
 import org.gnucash.write.spec.GnucashWritableJobInvoice;
 import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO write a comment what this type does here
@@ -37,6 +40,7 @@ import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
 public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceImpl 
                                            implements GnucashWritableJobInvoice 
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableJobInvoiceImpl.class);
 
     /**
      * Create an editable invoice facading an existing JWSDP-peer.
@@ -79,7 +83,8 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException 
      */
-    public GnucashWritableJobInvoiceImpl(final GnucashWritableGenerInvoiceImpl invc) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+    public GnucashWritableJobInvoiceImpl(final GnucashWritableGenerInvoiceImpl invc)
+	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
 	super(invc.getJwsdpPeer(), invc.getFile());
 
 	// No, we cannot check that first, because the super() method
@@ -241,11 +246,12 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      * 
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
+     * @throws UnknownInvoiceTypeException 
      */
     public GnucashWritableJobInvoiceEntry createEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
 	GnucashWritableJobInvoiceEntry entry = createJobInvcEntry(acct, 
 		                                                  singleUnitPrice, quantity);
 	return entry;
@@ -257,12 +263,13 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      * 
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
+     * @throws UnknownInvoiceTypeException 
      */
     public GnucashWritableJobInvoiceEntry createEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final String taxTabName) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final String taxTabName) throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
 	GnucashWritableJobInvoiceEntry entry = createJobInvcEntry(acct, 
 		                                                  singleUnitPrice, quantity, 
 		                                                  taxTabName);
@@ -275,12 +282,13 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
      * @throws NoTaxTableFoundException
+     * @throws UnknownInvoiceTypeException 
      */
     public GnucashWritableJobInvoiceEntry createEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final GCshTaxTable taxTab) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final GCshTaxTable taxTab) throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
 	GnucashWritableJobInvoiceEntry entry = createJobInvcEntry(acct, 
 		                                                  singleUnitPrice, quantity, 
 		                                                  taxTab);
@@ -325,19 +333,19 @@ public class GnucashWritableJobInvoiceImpl extends GnucashWritableGenerInvoiceIm
      */
     private String getAccountIDToTransferMoneyFrom(final GnucashJobInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
-	return getJobAccountIDToTransferMoneyFromTo(entry);
+	return getJobPostAccountID(entry);
     }
 
     /*
      * CAUTION!
     @Override
-    protected String getInvcAccountIDToTransferMoneyTo(final GnucashGenerInvoiceEntryImpl entry)
+    protected String getInvcPostAccountID(final GnucashGenerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
 	throw new WrongInvoiceTypeException();
     }
 
     @Override
-    protected String getBillAccountIDToTransferMoneyFrom(final GnucashGenerInvoiceEntryImpl entry)
+    protected String getBillPostAccountID(final GnucashGenerInvoiceEntryImpl entry)
 	    throws WrongInvoiceTypeException {
 	throw new WrongInvoiceTypeException();
     }

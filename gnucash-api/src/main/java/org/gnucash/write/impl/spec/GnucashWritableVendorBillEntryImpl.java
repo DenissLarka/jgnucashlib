@@ -15,6 +15,8 @@ import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.GnucashWritableGenerInvoiceEntryImpl;
 import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Additional supported properties for PropertyChangeListeners:
@@ -29,6 +31,7 @@ import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
 public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvoiceEntryImpl 
                                                 implements GnucashWritableVendorBillEntry
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableVendorBillEntryImpl.class);
 
 	/**
 	 * @param file      the file we belong to
@@ -43,7 +46,7 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	/**
-	 * @param bll   tne invoice this entry shall belong to
+	 * @param bll   tne vendor bill this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
@@ -58,8 +61,8 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 
 	/**
 	 * Create a taxable invoiceEntry.
-	 * (It has the taxtable of the vendor with a fallback
-	 * to the first taxtable found assigned)
+	 * (It has the tax table of the vendor with a fallback
+	 * to the first tax table found assigned)
 	 *
 	 * @param bll  the vendor bill to add this split to
 	 * @param account  the expenses-account the money comes from

@@ -64,6 +64,8 @@ import org.gnucash.write.spec.GnucashWritableCustomerJob;
 import org.gnucash.write.spec.GnucashWritableJobInvoice;
 import org.gnucash.write.spec.GnucashWritableVendorBill;
 import org.gnucash.write.spec.GnucashWritableVendorJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -76,6 +78,8 @@ import jakarta.xml.bind.Marshaller;
 public class GnucashWritableFileImpl extends GnucashFileImpl 
                                      implements GnucashWritableFile 
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableFileImpl.class);
+
     // ::MAGIC
     private static final int    HEX      = 16;
     private static final String CODEPAGE = "UTF-8";
