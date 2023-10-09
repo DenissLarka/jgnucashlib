@@ -99,7 +99,7 @@ public class TestGCshBillTermsImpl
       BilltermDays btDays = bllTrm.getDays();
       assertEquals(Integer.valueOf(5), btDays.getBtDaysDueDays());
       assertEquals(null, btDays.getBtDaysDiscDays());
-      // assertEquals(null, btDays.getBtDaysDiscount()); // ::TODO
+      assertEquals(null, btDays.getBtDaysDiscount());
   }
 
   @Test
@@ -117,7 +117,7 @@ public class TestGCshBillTermsImpl
       BilltermDays btDays = bllTrm.getDays();
       assertEquals(Integer.valueOf(5), btDays.getBtDaysDueDays());
       assertEquals(null, btDays.getBtDaysDiscDays());
-      // assertEquals(null, btDays.getBtDaysDiscount()); // ::TODO
+      assertEquals(null, btDays.getBtDaysDiscount());
   }
 
   @Test
@@ -135,7 +135,7 @@ public class TestGCshBillTermsImpl
       BilltermDays btDays = bllTrm.getDays();
       assertEquals(Integer.valueOf(30), btDays.getBtDaysDueDays());
       assertEquals(Integer.valueOf(10), btDays.getBtDaysDiscDays());
-      // assertEquals("3", btDays.getBtDaysDiscount()); // ::TODO
+      assertEquals("300000/100000", btDays.getBtDaysDiscount());
   }
 
   @Test
@@ -153,7 +153,7 @@ public class TestGCshBillTermsImpl
       BilltermDays btDays = bllTrm.getDays();
       assertEquals(Integer.valueOf(30), btDays.getBtDaysDueDays());
       assertEquals(Integer.valueOf(10), btDays.getBtDaysDiscDays());
-      // assertEquals("3", btDays.getBtDaysDiscount()); // ::TODO
+      assertEquals("300000/100000", btDays.getBtDaysDiscount());
   }
 
   @Test
@@ -171,7 +171,7 @@ public class TestGCshBillTermsImpl
       BilltermProximo btProx = bllTrm.getProximo();
       assertEquals(Integer.valueOf(15), btProx.getBtProxDueDay());
       assertEquals(Integer.valueOf(3), btProx.getBtProxDiscDay());
-      // assertEquals("2", btProx.getBtProxDiscount()); // ::TODO
+      assertEquals("200000/100000", btProx.getBtProxDiscount());
   }
 
   @Test
@@ -189,6 +189,6 @@ public class TestGCshBillTermsImpl
       BilltermProximo btProx = bllTrm.getProximo();
       assertEquals(Integer.valueOf(15), btProx.getBtProxDueDay());
       assertEquals(Integer.valueOf(3), btProx.getBtProxDiscDay());
-      // assertEquals("2", btProx.getBtProxDiscount()); // ::TODO
+      assertEquals("200000/100000", btProx.getBtProxDiscount());
   }
 }

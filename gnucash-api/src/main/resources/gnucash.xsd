@@ -396,6 +396,7 @@
 								<xs:sequence>
 									<xs:element name="bt-days_due-days" type="xs:int" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="bt-days_disc-days" type="xs:int" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="bt-days_discount" type="xs:string" minOccurs="0" maxOccurs="1"/>
 								</xs:sequence>
 							</xs:complexType>
 						</xs:element>
@@ -405,6 +406,7 @@
 									<xs:element name="bt-prox_due-day" type="xs:int" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="bt-prox_disc-day" type="xs:int" minOccurs="0" maxOccurs="1"/>
 									<xs:element name="bt-prox_cutoff-day" type="xs:int" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="bt-prox_discount" type="xs:string" minOccurs="0" maxOccurs="1"/>
 								</xs:sequence>
 							</xs:complexType>
 						</xs:element>
