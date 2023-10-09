@@ -42,6 +42,16 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 */
 	void setAccount(GnucashAccount account);
 
+	/**
+	 * For invoice payment transactions: One of the splits
+	 * contains a reference to the account lot which in turn
+	 * references the invoice.
+	 * 
+	 * @param accountId the new account to give this
+	 *        money to/take it from.
+	 */
+	void setLotID(final String accountId);
+
 
 	/**
 	 * If the currencies of transaction and account match, this also does
@@ -95,7 +105,7 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 * @param action null, or one of the ACTION_xyz values defined
 	 * @throws IllegalTransactionSplitActionException 
 	 */
-	void setSplitAction(String action) throws IllegalTransactionSplitActionException;
+	void setAction(String action) throws IllegalTransactionSplitActionException;
 
 
 	/**

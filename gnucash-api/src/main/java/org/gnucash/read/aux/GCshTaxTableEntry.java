@@ -8,6 +8,7 @@ public interface GCshTaxTableEntry {
     /**
      * @see ${@link #getType()}
      */
+    public static final String TYPE_VALUE   = "VALUE";
     public static final String TYPE_PERCENT = "PERCENT";
     
     // ---------------------------------------------------------------

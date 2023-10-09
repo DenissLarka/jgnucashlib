@@ -324,7 +324,7 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 * @param action null, or one of the defined ACTION_xyz values
 	 * @throws IllegalTransactionSplitActionException 
 	 */
-	public void setSplitAction(final String action) throws IllegalTransactionSplitActionException {
+	public void setAction(final String action) throws IllegalTransactionSplitActionException {
 //		if ( action != null &&
 //             ! action.equals(ACTION_PAYMENT) &&
 //             ! action.equals(ACTION_INVOICE) &&
@@ -347,8 +347,8 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 
 	public void setLotID(final String lotID) {
 
-		GnucashWritableTransactionImpl transaction = (GnucashWritableTransactionImpl) getTransaction();
-		GnucashWritableFileImpl writingFile = transaction.getWritingFile();
+		GnucashWritableTransactionImpl trx = (GnucashWritableTransactionImpl) getTransaction();
+		GnucashWritableFileImpl writingFile = trx.getWritingFile();
 		ObjectFactory factory = writingFile.getObjectFactory();
 
 		if (getJwsdpPeer().getSplitLot() == null) {
@@ -359,20 +359,24 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		getJwsdpPeer().getSplitLot().setType(Const.XML_DATA_TYPE_GUID);
 
 		// if we have a lot, and if we are a paying transaction, then check the slots
-		SlotsType slots = getJwsdpPeer().getSplitSlots();
-		if (slots == null) {
-			slots = factory.createSlotsType();
-			getJwsdpPeer().setSplitSlots(slots);
-		}
-		if (slots.getSlot() == null) {
-			Slot slot = factory.createSlot();
-			slot.setSlotKey("trans-txn-type");
-			SlotValue value = factory.createSlotValue();
-			value.setType("string");
-			value.getContent().add(GnucashTransaction.TYPE_PAYMENT);
-			slot.setSlotValue(value);
-			slots.getSlot().add(slot);
-		}
+		// ::TODO ::CHECK
+		// 09.10.2023: This code, in the current setting, generates wrong
+		// output (a closing split slot tag without an opening one, and 
+                // we don't (always?) need a split slot anyway.
+//		SlotsType slots = getJwsdpPeer().getSplitSlots();
+//		if (slots == null) {
+//			slots = factory.createSlotsType();
+//			getJwsdpPeer().setSplitSlots(slots);
+//		}
+//		if (slots.getSlot() == null) {
+//			Slot slot = factory.createSlot();
+//			slot.setSlotKey("trans-txn-type");
+//			SlotValue value = factory.createSlotValue();
+//			value.setType("string");
+//			value.getContent().add(GnucashTransaction.TYPE_PAYMENT);
+//			slot.setSlotValue(value);
+//			slots.getSlot().add(slot);
+//		}
 
 	}
 
