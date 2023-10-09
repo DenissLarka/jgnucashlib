@@ -1,6 +1,6 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DenissLarka_gnucash&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DenissLarka_gnucash)
 
-A Java-library for manipulating the XML file-format of the GnuCash open
+A Java-library for manipulating the XML file format of the GnuCash open
 source accounting software. Usable to automate accounting-tasks, taxes.
 
 # Compatibility
@@ -36,15 +36,15 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 
 * Improved exception handling/actual working of code with real-life data (not fundamentally different, but rather small repair work -- the code partially did not work in the above-mentioned environment).
 
-* JUnit-based set of regression test cases (with test data in dedicated test GnuCash file). This alone greatly gives more security and peace of mind when using the library, let alone learning how to actually use the library.
+* JUnit-based set of regression test cases (with test data in dedicated test GnuCash file). This alone greatly improves security and peace of mind both for users and developers, let alone learning how to actually use the library (in lack of a documentation, simply look into the test cases to understand how to use the lib).
 
 * Enhanced type safety and compile-time checks -- both were not always as strict as possible.
 
-* (Partially) got rid of overly specific code (e.g., there were methods that only make sense when using the German standard SKR03/SRK04 chart of accounts, or the 19% VAT (originally, until 2006, 16%, which still was in the code)).
+* (Partially) got rid of overly specific and/or obsolete code (e.g., there were methods that only make sense when using the German standard SKR03/04 chart of accounts, or the 19% VAT (originally, until 2006, 16%, which you still could find in the code)).
 
 * Got rid of some redundancies here and there, introduced class `Const` for that (which in turn contains hard-coded values).
 
-* Got rid of methods that accept internal IDs as arguments: First, internal IDs are -- well -- internal/internally generated and thus should not be part of an API, and second, GnuCash uses only UUIDs anyway, and there is simply no point in generating these outside (to be fair: for all of these methods, there were wrappers without).
+* Got rid of (public) methods that accept internal IDs as arguments: First, internal IDs are -- well -- internal/internally generated and thus should not be part of an API, and second, GnuCash uses only UUIDs anyway, and there is simply no point in generating these outside (to be fair: for all of these methods, there were wrappers without).
 
 * Renamed some classes to honour naming conventions (e.g., `abcMyObjectWritingxyz` --> `abcWritableMyObjectxyz`).
 
@@ -59,9 +59,13 @@ It should go without extra notice, but the following points are of cours subject
 
 * Classes for employees and employee vouchers.
 
+* Invoices and bills: Support more variants, such as choosing the terms of payment or the "tax included" flag for entries.
+
 * Generalizing tax-law-specific code (e.g., the 19% VAT in Germany that you will see here and there in the code).
 
 * Generalizing (technically) locale-specific code (e.g., GnuCash stores certain interal XML-tags with locale-specific values for transaction splits' actions). Currently, all this is too tightly tied to the German locale (de_DE).
+
+* Get rid of ugly code redundancies here and there, esp. in the class `Gnucash(Writable)GenerInvoiceImpl`.
 
 * Even more type safety (e.g., possibly wrapper type for internally-used UUIDs).
 
@@ -74,6 +78,8 @@ It should go without extra notice, but the following points are of cours subject
 * Possibly taking over other original code from Marcus Wolschon (there are two more packages).
 
 * Set of command-line tools for basic handling of reading/writing activities.
+
+* Last not least: Provide user documentation and/or more examples.
 
 # Acknowlegdgements
 Special thanks to: 
