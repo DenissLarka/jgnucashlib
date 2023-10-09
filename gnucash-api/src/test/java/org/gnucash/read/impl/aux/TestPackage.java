@@ -16,6 +16,7 @@ public class TestPackage extends TestCase
   {
     TestSuite suite = new TestSuite();
     
+    suite.addTest(org.gnucash.read.impl.aux.TestGCshBillTermsImpl.suite());
     suite.addTest(org.gnucash.read.impl.aux.TestGCshTaxTableImpl.suite());
 
     return suite;

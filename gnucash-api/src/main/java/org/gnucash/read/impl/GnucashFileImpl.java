@@ -46,8 +46,12 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.aux.GCshBillTerms;
 import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.aux.GCshVendorTerms;
+import org.gnucash.read.impl.aux.GCshBillTermsImpl;
 import org.gnucash.read.impl.aux.GCshTaxTableImpl;
+import org.gnucash.read.impl.aux.GCshVendorTermsImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
@@ -137,19 +141,20 @@ public class GnucashFileImpl implements GnucashFile {
     protected Map<String, GCshTaxTable> taxTablesById = null;
 
     /**
-     * @param id id of a taxtable
-     * @return the identified taxtable or null
+     * @param id ID of a tax table
+     * @return the identified tax table or null
      */
     public GCshTaxTable getTaxTableByID(final String id) {
 	if (taxTablesById == null) {
 	    getTaxTables();
 	}
+	
 	return taxTablesById.get(id);
     }
 
     /**
-     * @param id id of a taxtable
-     * @return the identified taxtable or null
+     * @param name Name of a tax table
+     * @return the identified tax table or null
      */
     public GCshTaxTable getTaxTableByName(final String name) {
 	if (taxTablesById == null) {
@@ -171,7 +176,6 @@ public class GnucashFileImpl implements GnucashFile {
      */
     public Collection<GCshTaxTable> getTaxTables() {
 	if (taxTablesById == null) {
-
 	    taxTablesById = new HashMap<String, GCshTaxTable>();
 
 	    List<Object> bookElements = this.getRootElement().getGncBook().getBookElements();
@@ -180,58 +184,117 @@ public class GnucashFileImpl implements GnucashFile {
 		    continue;
 		}
 		GncV2.GncBook.GncGncTaxTable jwsdpPeer = (GncV2.GncBook.GncGncTaxTable) bookElement;
-		GCshTaxTableImpl gnucashTaxTable = new GCshTaxTableImpl(jwsdpPeer, this);
-		taxTablesById.put(gnucashTaxTable.getId(), gnucashTaxTable);
+		GCshTaxTableImpl taxTab = new GCshTaxTableImpl(jwsdpPeer, this);
+		taxTablesById.put(taxTab.getId(), taxTab);
 	    }
 	}
 
 	return taxTablesById.values();
     }
 
-    // ----------------------------
-
+//    // ----------------------------
+//
 //    /**
 //     * Filles lazy in getVendorTerms() .
 //     *
 //     * @see #getVendorTerms()
 //     */
-//    protected Map<String, GnucashVendorTerms> vendorTermsByID = null;
+//    protected Map<String, GCshVendorTerms> vendorTermsByID = null;
 //
 //    /**
 //     * @param id id of a vendor terms item
 //     * @return the identified vendor terms item or null
 //     */
-//    public GnucashVendorTerms getVendorTermsByID(final String id) {
-//        if (vendorTermsByVendID == null) {
+//    public GCshVendorTerms getVendorTermsByID(final String id) {
+//        if (vendorTermsByID == null) {
 //            getVendorTerms();
 //        }
 //        
-//        return vendorTermsByVendID.get(id);
+//        return vendorTermsByID.get(id);
 //    }
 //
 //    /**
 //     * @return all TaxTables defined in the book
 //     * @link GnucashTaxTable
 //     */
-//    @SuppressWarnings("unchecked")
-//    public Collection<GnucashVendorTerms> getVendorTerms() {
-//        if (vendorTermsByVendID == null) {
+//    public Collection<GCshVendorTerms> getVendorTerms() {
+//        if (vendorTermsByID == null) {
+//            vendorTermsByID = new HashMap<String, GCshVendorTerms>();
 //
-//          vendorTermsByVendID = new HashMap<String, GnucashVendorTerms>();
-//
-//            List bookElements = this.getRootElement().getGncBook().getBookElements();
+//            List<Object> bookElements = this.getRootElement().getGncBook().getBookElements();
 //            for (Object bookElement : bookElements) {
 //                if (!(bookElement instanceof GncV2.GncBook.GncGncVendor.VendorTerms)) {
 //                    continue;
 //                }
 //                GncV2.GncBook.GncGncVendor.VendorTerms jwsdpPeer = (GncV2.GncBook.GncGncVendor.VendorTerms) bookElement;
-//                GnucashVendorTermsImpl gnucashVendorTerms = new GnucashVendorTermsImpl(jwsdpPeer, this);
-//                vendorTermsByVendID.put(gnucashVendorTerms.get, gnucashVendorTerms);
+//                GCshVendorTermsImpl vendTerms = new GCshVendorTermsImpl(jwsdpPeer, this);
+//                vendorTermsByID.put(vendTerms.getId(), vendTerms);
 //            }
 //        }
 //
-//        return vendorTermsByVendID.values();
+//        return vendorTermsByID.values();
 //    }
+//
+    // ----------------------------
+
+    /**
+     * Filles lazy in getBillTerms() .
+     *
+     * @see #getVendorTerms()
+     */
+    protected Map<String, GCshBillTerms> billTermsByID = null;
+
+    /**
+     * @param id ID of a bill terms item
+     * @return the identified bill terms item or null
+     */
+    public GCshBillTerms getBillTermsByID(final String id) {
+        if (billTermsByID == null) {
+            getBillTerms();
+        }
+        
+        return billTermsByID.get(id);
+    }
+
+    /**
+     * @param name Name of a bill terms item
+     * @return the identified bill-terms item or null
+     */
+    public GCshBillTerms getBillTermsByName(final String name) {
+	if (billTermsByID == null) {
+	    getBillTerms();
+	}
+	
+	for (GCshBillTerms billTerms : billTermsByID.values()) {
+	    if (billTerms.getName().equals(name)) {
+		return billTerms;
+	    }
+	}
+
+	return null;
+    }
+
+    /**
+     * @return all TaxTables defined in the book
+     * @link GnucashTaxTable
+     */
+    public Collection<GCshBillTerms> getBillTerms() {
+        if (billTermsByID == null) {
+            billTermsByID = new HashMap<String, GCshBillTerms>();
+
+            List<Object> bookElements = this.getRootElement().getGncBook().getBookElements();
+            for (Object bookElement : bookElements) {
+                if (!(bookElement instanceof GncV2.GncBook.GncGncBillTerm)) {
+                    continue;
+                }
+                GncV2.GncBook.GncGncBillTerm jwsdpPeer = (GncV2.GncBook.GncGncBillTerm) bookElement;
+                GCshBillTermsImpl billTerms = new GCshBillTermsImpl(jwsdpPeer, this);
+                billTermsByID.put(billTerms.getId(), billTerms);
+            }
+        }
+
+        return billTermsByID.values();
+    }
 
     // ---------------------------------------------------------------
 

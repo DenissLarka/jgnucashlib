@@ -4,9 +4,13 @@ import org.gnucash.read.GnucashFile;
 
 public interface GCshCustomerTerms {
 
-  GnucashFile getFile();
+    GnucashFile getFile();
 
-  String getType();
+    // -----------------------------------------------------------
 
-  String getValue();
+    // public String getId();
+
+    public String getType();
+
+    public String getValue();
 }

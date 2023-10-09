@@ -217,7 +217,7 @@
 <gnc:count-data cd:type="account">92</gnc:count-data>
 <gnc:count-data cd:type="transaction">11</gnc:count-data>
 <gnc:count-data cd:type="price">6</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncBillTerm">1</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncBillTerm">3</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncCustomer">3</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncEntry">12</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncInvoice">6</gnc:count-data>
@@ -2537,12 +2537,36 @@
 <gnc:GncBillTerm version="2.0.0">
   <billterm:guid type="guid">599bfe3ab5b84a73bf3acabc5abd5bc7</billterm:guid>
   <billterm:name>sofort</billterm:name>
-  <billterm:desc>Test 1</billterm:desc>
+  <billterm:desc>5 Tage netto</billterm:desc>
   <billterm:refcount>1</billterm:refcount>
   <billterm:invisible>0</billterm:invisible>
   <billterm:days>
     <bt-days:due-days>5</bt-days:due-days>
   </billterm:days>
+</gnc:GncBillTerm>
+<gnc:GncBillTerm version="2.0.0">
+  <billterm:guid type="guid">f4310c65486a47a5a787348b7de6ca40</billterm:guid>
+  <billterm:name>30-10-3</billterm:name>
+  <billterm:desc>30 Tage netto / 10 Tage Skonto 3%</billterm:desc>
+  <billterm:refcount>0</billterm:refcount>
+  <billterm:invisible>0</billterm:invisible>
+  <billterm:days>
+    <bt-days:due-days>30</bt-days:due-days>
+    <bt-days:disc-days>10</bt-days:disc-days>
+    <bt-days:discount>300000/100000</bt-days:discount>
+  </billterm:days>
+</gnc:GncBillTerm>
+<gnc:GncBillTerm version="2.0.0">
+  <billterm:guid type="guid">f65a46140da94c81a4e1e3c0aa38c32b</billterm:guid>
+  <billterm:name>nächster-monat-mitte</billterm:name>
+  <billterm:desc>Fällig am 15. des nächsten Monats. 2% Skonto bei Zahlung bis zum 3.</billterm:desc>
+  <billterm:refcount>0</billterm:refcount>
+  <billterm:invisible>0</billterm:invisible>
+  <billterm:proximo>
+    <bt-prox:due-day>15</bt-prox:due-day>
+    <bt-prox:disc-day>3</bt-prox:disc-day>
+    <bt-prox:discount>200000/100000</bt-prox:discount>
+  </billterm:proximo>
 </gnc:GncBillTerm>
 <gnc:GncCustomer version="2.0.0">
   <cust:guid type="guid">1d2081e8a10e4d5e9312d9fff17d470d</cust:guid>

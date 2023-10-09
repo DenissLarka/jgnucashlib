@@ -8,22 +8,41 @@ import org.gnucash.read.GnucashFile;
 
 public interface GCshBillTerms {
 
-	GnucashFile getFile();
+    public enum Type {
+	DAYS,
+	PROXIMO
+    }
 
-	// -----------------------------------------------------------
+    // -----------------------------------------------------------
 
-	public String getId();
-	public int getRefcount();
-	public String getName();
-	public String getDescription();
-	public boolean isInvisible();
-	
-	@SuppressWarnings("exports")
-	public BilltermProximo getProximo();
-	@SuppressWarnings("exports")
-	public BilltermDays getDays();
-	
-	public String getParentId();
-	public List<String> getChildren();
+    GnucashFile getFile();
+
+    // -----------------------------------------------------------
+
+    public String getId();
+
+    public int getRefcount();
+
+    public String getName();
+
+    public String getDescription();
+
+    public boolean isInvisible();
+    
+    // ----------------------------
+    
+    public Type getType() throws BillTermsTypeException;
+
+    @SuppressWarnings("exports")
+    public BilltermDays getDays();
+
+    @SuppressWarnings("exports")
+    public BilltermProximo getProximo();
+
+    // ----------------------------
+    
+    public String getParentId();
+
+    public List<String> getChildren();
 
 }
