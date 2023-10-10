@@ -27,6 +27,10 @@ public class TestGCshTaxTableImpl
   public  static final String TAXTABLE_FR_1_ID   = "de4c17d1eb0e4f088ba73d4c697032f0"; // FR_USt_Std
   private static final String TAXTABLE_FR_2_ID   = "e279d5cc81204f1bb6cf672ef3357c0c"; // FR_USt_red
     
+  // UK
+  public  static final String TAXTABLE_UK_1_ID   = "0bc4e576896a4fb4a2779dcf310f82f1"; // UK_VAT_Std
+  private static final String TAXTABLE_UK_2_ID   = "9d33a0082d9241ac89aa8e907f30d1db"; // UK_VAT_red
+    
   private static final String TAX_ACCT_ID        = "1a5b06dada56466197edbd15e64fd425"; // Root Account::Fremdkapital::Steuerverbindl
 
   private GnucashFile  gcshFile = null;
@@ -80,19 +84,18 @@ public class TestGCshTaxTableImpl
   {
       Collection<GCshTaxTable> taxTableList = gcshFile.getTaxTables();
       
-      assertEquals(5, taxTableList.size());
+      assertEquals(7, taxTableList.size());
 
       // ::TODO: Sort array for predictability
       Object[] taxTableArr = taxTableList.toArray();
       
-      // funny, this parent/child relationship full of redundancies...
-      assertEquals(TAXTABLE_DE_1_1_ID, ((GCshTaxTable) taxTableArr[1]).getId());
-      assertEquals(TAXTABLE_DE_1_2_ID, ((GCshTaxTable) taxTableArr[4]).getId());
-      
-      // Here, it's what you would expect:
-      assertEquals(TAXTABLE_DE_2_ID, ((GCshTaxTable) taxTableArr[2]).getId());
-      assertEquals(TAXTABLE_FR_1_ID, ((GCshTaxTable) taxTableArr[3]).getId());
-      assertEquals(TAXTABLE_FR_2_ID, ((GCshTaxTable) taxTableArr[0]).getId());
+      assertEquals(TAXTABLE_UK_2_ID,   ((GCshTaxTable) taxTableArr[0]).getId());
+      assertEquals(TAXTABLE_FR_2_ID,   ((GCshTaxTable) taxTableArr[1]).getId());
+      assertEquals(TAXTABLE_DE_1_1_ID, ((GCshTaxTable) taxTableArr[2]).getId());
+      assertEquals(TAXTABLE_UK_1_ID,   ((GCshTaxTable) taxTableArr[3]).getId());
+      assertEquals(TAXTABLE_DE_2_ID,   ((GCshTaxTable) taxTableArr[4]).getId());
+      assertEquals(TAXTABLE_FR_1_ID,   ((GCshTaxTable) taxTableArr[5]).getId());
+      assertEquals(TAXTABLE_DE_1_2_ID, ((GCshTaxTable) taxTableArr[6]).getId());
   }
 
   @Test

@@ -345,6 +345,21 @@
 							</xs:complexType>
 						</xs:element>
 						<xs:element name="vendor_use-tt" type="xs:int"/>
+						<xs:element name="vendor_taxtable" minOccurs="0" maxOccurs="1">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="type" use="required">
+											<xs:simpleType>
+												<xs:restriction base="xs:NMTOKEN">
+													<xs:enumeration value="guid"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:attribute>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
 					</xs:sequence>
 					<xs:attribute name="version" type="xs:string" use="required"/>
 				</xs:complexType>

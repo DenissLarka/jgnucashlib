@@ -16,6 +16,7 @@ import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.aux.GCshOwner;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.aux.GCshAddressImpl;
 import org.gnucash.read.impl.spec.GnucashVendorJobImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
@@ -38,9 +39,12 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     private final GncV2.GncBook.GncGncVendor jwsdpPeer;
 
     /**
-     * The file we belong to.
+     * The currencyFormat to use for default-formating.<br/>
+     * Please access only using {@link #getCurrencyFormat()}.
+     *
+     * @see #getCurrencyFormat()
      */
-    private final GnucashFile file;
+    private NumberFormat currencyFormat = null;
 
     // ---------------------------------------------------------------
 
@@ -51,8 +55,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     protected GnucashVendorImpl(final GncV2.GncBook.GncGncVendor peer, final GnucashFile gncFile) {
 	super(new ObjectFactory().createSlotsType(), gncFile);
 
+        // ::TODO: Slots
 	jwsdpPeer = peer;
-	file = gncFile;
     }
 
     // ---------------------------------------------------------------
@@ -65,6 +69,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	return jwsdpPeer;
     }
 
+    // ---------------------------------------------------------------
+
     /**
      * {@inheritDoc}
      */
@@ -73,25 +79,65 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     }
 
     /**
-     * @return the jobs that have this vendor associated with them.
-     * @throws WrongInvoiceTypeException 
-     * @see GnucashVendor#getGenerJobs()
+     * {@inheritDoc}
      */
-    public java.util.Collection<GnucashVendorJob> getJobs() throws WrongInvoiceTypeException {
+    public String getNumber() {
+	return jwsdpPeer.getVendorId();
+    }
 
-	List<GnucashVendorJob> retval = new LinkedList<GnucashVendorJob>();
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+	return jwsdpPeer.getVendorName();
+    }
 
-	for ( GnucashGenerJob jobGener : getGnucashFile().getGenerJobs() ) {
-	    if ( jobGener.getOwnerType().equals(GCshOwner.TYPE_VENDOR) ) {
-		GnucashVendorJob jobSpec = new GnucashVendorJobImpl(jobGener);
-		if ( jobSpec.getVendorId().equals(getId()) ) {
-		    retval.add(jobSpec);
-		}
-	    }
+    /**
+     * {@inheritDoc}
+     */
+    public GCshAddress getAddress() {
+	return new GCshAddressImpl(jwsdpPeer.getVendorAddr());
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * @return the currency-format to use if no locale is given.
+     */
+    protected NumberFormat getCurrencyFormat() {
+	if (currencyFormat == null) {
+	    currencyFormat = NumberFormat.getCurrencyInstance();
 	}
 
-	return retval;
+	return currencyFormat;
     }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getTaxTableID() {
+	GncV2.GncBook.GncGncVendor.VendorTaxtable vendTaxtable = jwsdpPeer.getVendorTaxtable();
+	if (vendTaxtable == null) {
+	    return null;
+	}
+
+	return vendTaxtable.getValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public GCshTaxTable getTaxTable() {
+	String id = getTaxTableID();
+	if (id == null) {
+	    return null;
+	}
+	return getGnucashFile().getTaxTableByID(id);
+    }
+
+    // ---------------------------------------------------------------
 
     /**
      * date is not checked so invoiced that have entered payments in the future are
@@ -103,6 +149,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     public int getNofOpenBills() throws WrongInvoiceTypeException {
 	return getGnucashFile().getUnpaidBillsForVendor_direct(this).size();
     }
+
+    // -------------------------------------
 
     /**
      * @return the net sum of payments for invoices to this client
@@ -163,14 +211,6 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     }
 
     /**
-     * The currencyFormat to use for default-formating.<br/>
-     * Please access only using {@link #getCurrencyFormat()}.
-     *
-     * @see #getCurrencyFormat()
-     */
-    private NumberFormat currencyFormat = null;
-
-    /**
      * @return formatted acording to the current locale's currency-format
      * @see #getExpensesGenerated()
      */
@@ -187,6 +227,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     public String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) {
 	return NumberFormat.getCurrencyInstance(l).format(getExpensesGenerated(readVar));
     }
+
+    // -------------------------------------
 
     /**
      * @return the sum of left to pay Unpaid invoiced
@@ -266,44 +308,27 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue(readVar));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public String getNumber() {
-	return jwsdpPeer.getVendorId();
-    }
+    // -----------------------------------------------------------------
 
     /**
-     * {@inheritDoc}
+     * @return the jobs that have this vendor associated with them.
+     * @throws WrongInvoiceTypeException 
+     * @see GnucashVendor#getGenerJobs()
      */
-    @SuppressWarnings("exports")
-    public VendorTerms getVendorTerms() {
-	return jwsdpPeer.getVendorTerms();
-    }
+    public java.util.Collection<GnucashVendorJob> getJobs() throws WrongInvoiceTypeException {
 
-    /**
-     * {@inheritDoc}
-     */
-    public String getName() {
-	return jwsdpPeer.getVendorName();
-    }
+	List<GnucashVendorJob> retval = new LinkedList<GnucashVendorJob>();
 
-    /**
-     * {@inheritDoc}
-     */
-    public GCshAddress getAddress() {
-	return new GCshAddressImpl(jwsdpPeer.getVendorAddr());
-    }
-
-    /**
-     * @return the currency-format to use if no locale is given.
-     */
-    protected NumberFormat getCurrencyFormat() {
-	if (currencyFormat == null) {
-	    currencyFormat = NumberFormat.getCurrencyInstance();
+	for ( GnucashGenerJob jobGener : getGnucashFile().getGenerJobs() ) {
+	    if ( jobGener.getOwnerType().equals(GCshOwner.TYPE_VENDOR) ) {
+		GnucashVendorJob jobSpec = new GnucashVendorJobImpl(jobGener);
+		if ( jobSpec.getVendorId().equals(getId()) ) {
+		    retval.add(jobSpec);
+		}
+	    }
 	}
 
-	return currencyFormat;
+	return retval;
     }
 
     // -----------------------------------------------------------------
@@ -312,11 +337,11 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     public Collection<GnucashGenerInvoice> getBills() throws WrongInvoiceTypeException {
 	Collection<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
 
-	for ( GnucashVendorBill invc : file.getBillsForVendor_direct(this) ) {
+	for ( GnucashVendorBill invc : getGnucashFile().getBillsForVendor_direct(this) ) {
 	    retval.add(invc);
 	}
 	
-	for ( GnucashJobInvoice invc : file.getBillsForVendor_viaAllJobs(this) ) {
+	for ( GnucashJobInvoice invc : getGnucashFile().getBillsForVendor_viaAllJobs(this) ) {
 	    retval.add(invc);
 	}
 	
@@ -325,22 +350,22 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 
     @Override
     public Collection<GnucashVendorBill> getPaidBills_direct() throws WrongInvoiceTypeException {
-	return file.getPaidBillsForVendor_direct(this);
+	return getGnucashFile().getPaidBillsForVendor_direct(this);
     }
 
     @Override
     public Collection<GnucashJobInvoice> getPaidBills_viaAllJobs() throws WrongInvoiceTypeException {
-	return file.getPaidBillsForVendor_viaAllJobs(this);
+	return getGnucashFile().getPaidBillsForVendor_viaAllJobs(this);
     }
 
     @Override
     public Collection<GnucashVendorBill> getUnpaidBills_direct() throws WrongInvoiceTypeException {
-	return file.getUnpaidBillsForVendor_direct(this);
+	return getGnucashFile().getUnpaidBillsForVendor_direct(this);
     }
 
     @Override
     public Collection<GnucashJobInvoice> getUnpaidBills_viaAllJobs() throws WrongInvoiceTypeException {
-	return file.getUnpaidBillsForVendor_viaAllJobs(this);
+	return getGnucashFile().getUnpaidBillsForVendor_viaAllJobs(this);
     }
 
     // -----------------------------------------------------------------

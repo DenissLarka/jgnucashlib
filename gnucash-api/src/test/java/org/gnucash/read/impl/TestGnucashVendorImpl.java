@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.impl.aux.TestGCshTaxTableImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,8 @@ public class TestGnucashVendorImpl
   public static final String VEND_1_ID = "087e1a3d43fa4ef9a9bdd4b4797c4231";
   public static final String VEND_2_ID = "4f16fd55c0d64ebe82ffac0bb25fe8f5";
   public static final String VEND_3_ID = "bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7";
+
+  private static final String TAXTABLE_UK_1_ID   = TestGCshTaxTableImpl.TAXTABLE_UK_1_ID;
 
   // -----------------------------------------------------------------
   
@@ -75,6 +78,8 @@ public class TestGnucashVendorImpl
     assertEquals(VEND_1_ID, vend.getId());
     assertEquals("000001", vend.getNumber());
     assertEquals("Lieferfanto AG", vend.getName());
+
+    assertEquals(null, vend.getTaxTableID());
   }
 
   @Test
@@ -85,6 +90,8 @@ public class TestGnucashVendorImpl
     assertEquals(VEND_2_ID, vend.getId());
     assertEquals("000002", vend.getNumber());
     assertEquals("Super Suppliers Corp.", vend.getName());
+
+    assertEquals(TAXTABLE_UK_1_ID, vend.getTaxTableID());
   }
 
   @Test
@@ -95,6 +102,8 @@ public class TestGnucashVendorImpl
     assertEquals(VEND_3_ID, vend.getId());
     assertEquals("000003", vend.getNumber());
     assertEquals("Achetez Chez Nous S.A.", vend.getName());
+
+    assertEquals(null, vend.getTaxTableID());
   }
 
   @Test

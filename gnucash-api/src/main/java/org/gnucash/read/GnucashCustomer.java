@@ -11,16 +11,70 @@ import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
-//TODO: model taxes and implement getTaxTable
-
 /**
- * A customer that can issue jobs, get invoices sent to
- * him/her/it and pay them.
+ * A customer that can issue jobs and receive invoices by us
+ * (and hopefully pay them).
  *
- * @see GnucashGenerJob
- * @see GnucashGenerInvoice
+ * @see GnucashCustomerJob
+ * @see GnucashCustomerInvoice
  */
 public interface GnucashCustomer extends GnucashObject {
+
+    /**
+     * The gnucash-file is the top-level class to contain everything.
+     * 
+     * @return the file we are associated with
+     */
+    GnucashFile getGnucashFile();
+
+    // ------------------------------------------------------------
+
+    /**
+     * @return the unique-id to identify this object with across name- and
+     *         hirarchy-changes
+     */
+    String getId();
+
+    /**
+     *
+     * @return the user-assigned number of this customer (may contain non-digits)
+     */
+    String getNumber();
+
+    /**
+     *
+     * @return the name of the customer
+     */
+    String getName();
+
+    /**
+     * @return the address including the name
+     */
+    GCshAddress getAddress();
+
+    /**
+     * @return the shipping-address including the name
+     */
+    GCshAddress getShippingAddress();
+
+    /**
+     *
+     * @return The customer-specific discount
+     */
+    FixedPointNumber getDiscount();
+
+    /**
+     *
+     * @return the customer-specific credit
+     */
+    FixedPointNumber getCredit();
+
+    /**
+     * @return user-defined notes about the customer (may be null)
+     */
+    String getNotes();
+
+    // ------------------------------------------------------------
 
     /**
      * The id of the prefered taxtable to use with this customer (may be null).
@@ -36,6 +90,8 @@ public interface GnucashCustomer extends GnucashObject {
      */
     GCshTaxTable getTaxTable();
 
+    // ------------------------------------------------------------
+
     /**
      * Date is not checked so invoiced that have entered payments in the future are
      * considered Paid.
@@ -44,6 +100,8 @@ public interface GnucashCustomer extends GnucashObject {
      * @throws WrongInvoiceTypeException
      */
     int getNofOpenInvoices() throws WrongInvoiceTypeException;
+
+    // -------------------------------------
 
     /**
      * @return the sum of payments for invoices to this client
@@ -76,6 +134,8 @@ public interface GnucashCustomer extends GnucashObject {
      *      currency-format
      */
     String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
+
+    // -------------------------------------
 
     /**
      * @return the sum of left to pay Unpaid invoiced
@@ -110,18 +170,7 @@ public interface GnucashCustomer extends GnucashObject {
      */
     String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
 
-    /**
-     * The gnucash-file is the top-level class to contain everything.
-     * 
-     * @return the file we are associated with
-     */
-    GnucashFile getGnucashFile();
-
-    /**
-     * @return the unique-id to identify this object with across name- and
-     *         hirarchy-changes
-     */
-    String getId();
+    // ------------------------------------------------------------
 
     /**
      * @return the UNMODIFIABLE collection of jobs that have this customer associated 
@@ -130,46 +179,7 @@ public interface GnucashCustomer extends GnucashObject {
      */
     Collection<GnucashCustomerJob> getJobs() throws WrongInvoiceTypeException;
 
-    /**
-     *
-     * @return the user-assigned number of this customer (may contain non-digits)
-     */
-    String getNumber();
-
-    /**
-     *
-     * @return The customer-specific discount
-     */
-    FixedPointNumber getDiscount();
-
-    /**
-     *
-     * @return the customer-specific credit
-     */
-    FixedPointNumber getCredit();
-
-    /**
-     * @return user-defined notes about the customer (may be null)
-     */
-    String getNotes();
-
-    /**
-     *
-     * @return the name of the customer
-     */
-    String getName();
-
-    /**
-     * @return the address including the name
-     */
-    GCshAddress getAddress();
-
-    /**
-     * @return the shipping-address including the name
-     */
-    GCshAddress getShippingAddress();
-
-    // ----------------------------
+    // ------------------------------------------------------------
 
     Collection<GnucashGenerInvoice>    getInvoices() throws WrongInvoiceTypeException;
 
@@ -181,7 +191,7 @@ public interface GnucashCustomer extends GnucashObject {
 
     Collection<GnucashJobInvoice>      getUnpaidInvoices_viaAllJobs() throws WrongInvoiceTypeException;
 
-    // ----------------------------
+    // ------------------------------------------------------------
 
     public static int getHighestNumber(GnucashCustomer cust) {
 	return cust.getGnucashFile().getHighestCustomerNumber();

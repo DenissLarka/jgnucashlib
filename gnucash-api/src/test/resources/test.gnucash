@@ -222,7 +222,7 @@
 <gnc:count-data cd:type="gnc:GncEntry">12</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncInvoice">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
-<gnc:count-data cd:type="gnc:GncTaxTable">5</gnc:count-data>
+<gnc:count-data cd:type="gnc:GncTaxTable">7</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncVendor">3</gnc:count-data>
 <gnc:commodity version="2.0.0">
   <cmdty:space>CURRENCY</cmdty:space>
@@ -2548,7 +2548,7 @@
   <billterm:guid type="guid">f4310c65486a47a5a787348b7de6ca40</billterm:guid>
   <billterm:name>30-10-3</billterm:name>
   <billterm:desc>30 Tage netto / 10 Tage Skonto 3%</billterm:desc>
-  <billterm:refcount>0</billterm:refcount>
+  <billterm:refcount>1</billterm:refcount>
   <billterm:invisible>0</billterm:invisible>
   <billterm:days>
     <bt-days:due-days>30</bt-days:due-days>
@@ -3040,6 +3040,19 @@
   <job:active>1</job:active>
 </gnc:GncJob>
 <gnc:GncTaxTable version="2.0.0">
+  <taxtable:guid type="guid">0bc4e576896a4fb4a2779dcf310f82f1</taxtable:guid>
+  <taxtable:name>UK_VAT_Std</taxtable:name>
+  <taxtable:refcount>1</taxtable:refcount>
+  <taxtable:invisible>0</taxtable:invisible>
+  <taxtable:entries>
+    <gnc:GncTaxTableEntry>
+      <tte:acct type="guid">1a5b06dada56466197edbd15e64fd425</tte:acct>
+      <tte:amount>2000000/100000</tte:amount>
+      <tte:type>PERCENT</tte:type>
+    </gnc:GncTaxTableEntry>
+  </taxtable:entries>
+</gnc:GncTaxTable>
+<gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">3c9690f9f31b4cd0baa936048b833c06</taxtable:guid>
   <taxtable:name>DE_USt_Std</taxtable:name>
   <taxtable:refcount>4</taxtable:refcount>
@@ -3049,6 +3062,19 @@
     <gnc:GncTaxTableEntry>
       <tte:acct type="guid">1a5b06dada56466197edbd15e64fd425</tte:acct>
       <tte:amount>1900000/100000</tte:amount>
+      <tte:type>PERCENT</tte:type>
+    </gnc:GncTaxTableEntry>
+  </taxtable:entries>
+</gnc:GncTaxTable>
+<gnc:GncTaxTable version="2.0.0">
+  <taxtable:guid type="guid">9d33a0082d9241ac89aa8e907f30d1db</taxtable:guid>
+  <taxtable:name>UK_VAT_red</taxtable:name>
+  <taxtable:refcount>0</taxtable:refcount>
+  <taxtable:invisible>0</taxtable:invisible>
+  <taxtable:entries>
+    <gnc:GncTaxTableEntry>
+      <tte:acct type="guid">1a5b06dada56466197edbd15e64fd425</tte:acct>
+      <tte:amount>500000/100000</tte:amount>
       <tte:type>PERCENT</tte:type>
     </gnc:GncTaxTableEntry>
   </taxtable:entries>
@@ -3149,13 +3175,15 @@
     <cmdty:space>CURRENCY</cmdty:space>
     <cmdty:id>EUR</cmdty:id>
   </vendor:currency>
-  <vendor:use-tt>0</vendor:use-tt>
+  <vendor:use-tt>1</vendor:use-tt>
+  <vendor:taxtable type="guid">0bc4e576896a4fb4a2779dcf310f82f1</vendor:taxtable>
 </gnc:GncVendor>
 <gnc:GncVendor version="2.0.0">
   <vendor:guid type="guid">bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7</vendor:guid>
   <vendor:name>Achetez Chez Nous S.A.</vendor:name>
   <vendor:id>000003</vendor:id>
   <vendor:addr version="2.0.0"/>
+  <vendor:terms type="guid">f4310c65486a47a5a787348b7de6ca40</vendor:terms>
   <vendor:taxincluded>USEGLOBAL</vendor:taxincluded>
   <vendor:active>1</vendor:active>
   <vendor:currency>

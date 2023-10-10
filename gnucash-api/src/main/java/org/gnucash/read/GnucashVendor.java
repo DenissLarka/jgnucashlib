@@ -3,23 +3,72 @@ package org.gnucash.read;
 import java.util.Collection;
 import java.util.Locale;
 
-import org.gnucash.generated.GncV2.GncBook.GncGncVendor.VendorTerms;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
+/**
+ * A vendor that can issue jobs and send bills paid by us
+ * (and hopefully pay them).
+ *
+ * @see GnucashVendorJob
+ * @see GnucashVendorBill
+ */
 public interface GnucashVendor extends GnucashObject {
 
     /**
-     * The prefered taxtable to use with this vendor (may be null).
+     * The gnucash-file is the top-level class to contain everything.
      * 
-     * @see {@link #getVendorTaxTableID()}
+     * @return the file we are associated with
      */
-    @SuppressWarnings("exports")
-    VendorTerms getVendorTerms();
+    GnucashFile getGnucashFile();
+
+    // ------------------------------------------------------------
+
+    /**
+     * @return the unique-id to identify this object with across name- and
+     *         hirarchy-changes
+     */
+    String getId();
+
+    /**
+     *
+     * @return the user-assigned number of this vendor (may contain non-digits)
+     */
+    String getNumber();
+
+    /**
+     *
+     * @return the name of the vendor
+     */
+    String getName();
+
+    /**
+     * @return the address including the name
+     */
+    GCshAddress getAddress();
+
+    // ------------------------------------------------------------
+
+    /**
+     * The id of the prefered taxtable to use with this customer (may be null).
+     * 
+     * @see {@link #getTaxTable()}
+     */
+    String getTaxTableID();
+
+    /**
+     * The prefered taxtable to use with this customer (may be null).
+     * 
+     * @see {@link #getTaxTableID()}
+     */
+    GCshTaxTable getTaxTable();
+
+    // ------------------------------------------------------------
 
     /**
      * Date is not checked so invoiced that have entered payments in the future are
@@ -29,6 +78,8 @@ public interface GnucashVendor extends GnucashObject {
      * @throws WrongInvoiceTypeException
      */
     int getNofOpenBills() throws WrongInvoiceTypeException;
+
+    // -------------------------------------
 
     /**
      * @return the sum of payments for invoices to this client
@@ -61,6 +112,8 @@ public interface GnucashVendor extends GnucashObject {
      *      currency-format
      */
     String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
+
+    // -------------------------------------
 
     /**
      * @return the sum of left to pay Unpaid invoiced
@@ -95,18 +148,7 @@ public interface GnucashVendor extends GnucashObject {
      */
     String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l) throws WrongInvoiceTypeException;
 
-    /**
-     * The gnucash-file is the top-level class to contain everything.
-     * 
-     * @return the file we are associated with
-     */
-    GnucashFile getGnucashFile();
-
-    /**
-     * @return the unique-id to identify this object with across name- and
-     *         hirarchy-changes
-     */
-    String getId();
+    // ------------------------------------------------------------
 
     /**
      * @return the UNMODIFIABLE collection of jobs that have this vendor associated
@@ -115,24 +157,7 @@ public interface GnucashVendor extends GnucashObject {
      */
     Collection<GnucashVendorJob> getJobs() throws WrongInvoiceTypeException;
 
-    /**
-     *
-     * @return the user-assigned number of this vendor (may contain non-digits)
-     */
-    String getNumber();
-
-    /**
-     *
-     * @return the name of the vendor
-     */
-    String getName();
-
-    /**
-     * @return the address including the name
-     */
-    GCshAddress getAddress();
-
-    // ----------------------------
+    // ------------------------------------------------------------
 
     Collection<GnucashGenerInvoice> getBills() throws WrongInvoiceTypeException;
 
@@ -144,7 +169,7 @@ public interface GnucashVendor extends GnucashObject {
 
     Collection<GnucashJobInvoice>   getUnpaidBills_viaAllJobs() throws WrongInvoiceTypeException;
 
-    // ----------------------------
+    // ------------------------------------------------------------
 
     public static int getHighestNumber(GnucashVendor vend) {
 	return vend.getGnucashFile().getHighestVendorNumber();
