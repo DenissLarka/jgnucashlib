@@ -24,7 +24,7 @@ public class TestGCshTaxTableImpl
   private static final String TAXTABLE_DE_2_ID   = "c518af53a93c4a5cb3e2161b7b358e68"; // DE_USt_red
     
   // FR
-  private static final String TAXTABLE_FR_1_ID   = "de4c17d1eb0e4f088ba73d4c697032f0"; // FR_USt_Std
+  public  static final String TAXTABLE_FR_1_ID   = "de4c17d1eb0e4f088ba73d4c697032f0"; // FR_USt_Std
   private static final String TAXTABLE_FR_2_ID   = "e279d5cc81204f1bb6cf672ef3357c0c"; // FR_USt_red
     
   private static final String TAX_ACCT_ID        = "1a5b06dada56466197edbd15e64fd425"; // Root Account::Fremdkapital::Steuerverbindl

@@ -309,7 +309,7 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
     /**
      * {@inheritDoc}
      */
-    public String getCustomerTaxTableID() {
+    public String getTaxTableID() {
 	GncV2.GncBook.GncGncCustomer.CustTaxtable custTaxtable = jwsdpPeer.getCustTaxtable();
 	if (custTaxtable == null) {
 	    return null;
@@ -320,8 +320,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
     /**
      * {@inheritDoc}
      */
-    public GCshTaxTable getCustomerTaxTable() {
-	String id = getCustomerTaxTableID();
+    public GCshTaxTable getTaxTable() {
+	String id = getTaxTableID();
 	if (id == null) {
 	    return null;
 	}

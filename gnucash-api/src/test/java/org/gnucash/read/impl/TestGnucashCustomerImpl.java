@@ -7,6 +7,8 @@ import java.io.InputStream;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.aux.GCshTaxTableEntry;
+import org.gnucash.read.impl.aux.TestGCshTaxTableImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,8 @@ public class TestGnucashCustomerImpl
   public static final String CUST_1_ID = "5d1dd9afa7554553988669830cc1f696"; // Unfug und Quatsch GmbH
   public static final String CUST_2_ID = "f44645d2397946bcac90dff68cc03b76"; // Is That So Ltd.
   public static final String CUST_3_ID = "1d2081e8a10e4d5e9312d9fff17d470d"; // N'importe Quoi S.A.
+
+  private static final String TAXTABLE_FR_1_ID   = TestGCshTaxTableImpl.TAXTABLE_FR_1_ID;
 
   // -----------------------------------------------------------------
   
@@ -76,6 +80,8 @@ public class TestGnucashCustomerImpl
 
     assertEquals(0.0, cust.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(0.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
+
+    assertEquals(null, cust.getTaxTableID());
   }
 
   @Test
@@ -89,6 +95,8 @@ public class TestGnucashCustomerImpl
 
     assertEquals(3.0, cust.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(2000.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
+
+    assertEquals(null, cust.getTaxTableID());
   }
 
   @Test
@@ -102,6 +110,11 @@ public class TestGnucashCustomerImpl
 
     assertEquals(0.0, cust.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
     assertEquals(0.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
+
+    assertEquals(TAXTABLE_FR_1_ID, cust.getTaxTableID());
+    assertEquals("FR_USt_Std", cust.getTaxTable().getName());
+    assertEquals(1, cust.getTaxTable().getEntries().size());
+    // etc., cf. class TestGCshTaxTableImpl
   }
 
   @Test

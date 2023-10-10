@@ -25,16 +25,16 @@ public interface GnucashCustomer extends GnucashObject {
     /**
      * The id of the prefered taxtable to use with this customer (may be null).
      * 
-     * @see {@link #getCustomerTaxTable()}
+     * @see {@link #getTaxTable()}
      */
-    String getCustomerTaxTableID();
+    String getTaxTableID();
 
     /**
      * The prefered taxtable to use with this customer (may be null).
      * 
-     * @see {@link #getCustomerTaxTableID()}
+     * @see {@link #getTaxTableID()}
      */
-    GCshTaxTable getCustomerTaxTable();
+    GCshTaxTable getTaxTable();
 
     /**
      * Date is not checked so invoiced that have entered payments in the future are
