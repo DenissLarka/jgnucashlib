@@ -288,7 +288,7 @@ public class GnucashFileImpl implements GnucashFile {
                     continue;
                 }
                 GncV2.GncBook.GncGncBillTerm jwsdpPeer = (GncV2.GncBook.GncGncBillTerm) bookElement;
-                GCshBillTermsImpl billTerms = new GCshBillTermsImpl(jwsdpPeer, this);
+                GCshBillTermsImpl billTerms = new GCshBillTermsImpl(jwsdpPeer);
                 billTermsByID.put(billTerms.getId(), billTerms);
             }
         }

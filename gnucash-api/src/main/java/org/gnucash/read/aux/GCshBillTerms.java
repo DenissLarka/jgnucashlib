@@ -2,20 +2,12 @@ package org.gnucash.read.aux;
 
 import java.util.List;
 
-import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermDays;
-import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermProximo;
-import org.gnucash.read.GnucashFile;
-
 public interface GCshBillTerms {
 
     public enum Type {
 	DAYS,
 	PROXIMO
     }
-
-    // -----------------------------------------------------------
-
-    GnucashFile getFile();
 
     // -----------------------------------------------------------
 
@@ -33,11 +25,9 @@ public interface GCshBillTerms {
     
     public Type getType() throws BillTermsTypeException;
 
-    @SuppressWarnings("exports")
-    public BilltermDays getDays();
+    public GCshBillTermsDays getDays();
 
-    @SuppressWarnings("exports")
-    public BilltermProximo getProximo();
+    public GCshBillTermsProximo getProximo();
 
     // ----------------------------
     

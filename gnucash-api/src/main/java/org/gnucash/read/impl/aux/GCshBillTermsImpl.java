@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermChild;
-import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermDays;
-import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermProximo;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.aux.BillTermsTypeException;
 import org.gnucash.read.aux.GCshBillTerms;
+import org.gnucash.read.aux.GCshBillTermsDays;
+import org.gnucash.read.aux.GCshBillTermsProximo;
+import org.gnucash.read.impl.SplitNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,10 +23,7 @@ public class GCshBillTermsImpl implements GCshBillTerms {
      */
     private final GncV2.GncBook.GncGncBillTerm jwsdpPeer;
 
-    /**
-     * The file we belong to.
-     */
-    private final GnucashFile file;
+    // ---------------------------------------------------------------
 
     /**
      * @param peer the JWSDP-object we are facading.
@@ -33,20 +31,10 @@ public class GCshBillTermsImpl implements GCshBillTerms {
      * @param gncFile the file to register under
      */
     @SuppressWarnings("exports")
-    public GCshBillTermsImpl(final GncV2.GncBook.GncGncBillTerm peer, final GnucashFile gncFile) {
+    public GCshBillTermsImpl(final GncV2.GncBook.GncGncBillTerm peer) {
 	super();
 
 	jwsdpPeer = peer;
-	file = gncFile;
-    }
-
-    /**
-     * The gnucash-file is the top-level class to contain everything.
-     * 
-     * @return the file we are associated with
-     */
-    public GnucashFile getFile() {
-	return file;
     }
 
     /**
@@ -94,14 +82,20 @@ public class GCshBillTermsImpl implements GCshBillTerms {
 	    throw new BillTermsTypeException();
     }
 
-    @SuppressWarnings("exports")
-    public BilltermDays getDays() {
-	return jwsdpPeer.getBilltermDays();
+    public GCshBillTermsDays getDays() {
+	if ( jwsdpPeer.getBilltermDays() == null )
+	    return null;
+	
+	GCshBillTermsDays days = new GCshBillTermsDaysImpl(jwsdpPeer.getBilltermDays());
+	return days;
     }
 
-    @SuppressWarnings("exports")
-    public BilltermProximo getProximo() {
-	return jwsdpPeer.getBilltermProximo();
+    public GCshBillTermsProximo getProximo() {
+	if ( jwsdpPeer.getBilltermProximo() == null )
+	    return null;
+	
+	GCshBillTermsProximo prox = new GCshBillTermsProximoImpl(jwsdpPeer.getBilltermProximo());
+	return prox;
     }
 
     // ------------------------
@@ -127,4 +121,42 @@ public class GCshBillTermsImpl implements GCshBillTerms {
 	return result;
     }
 
+    // ---------------------------------------------------------------
+    
+    @Override
+    public String toString() {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("[GCshBillTermsImpl:");
+
+	buffer.append(" id: ");
+	buffer.append(getId());
+
+	buffer.append(" type: ");
+	try {
+	    buffer.append(getType());
+	} catch (BillTermsTypeException e) {
+	    buffer.append("ERROR");
+	}
+
+	buffer.append(" name: '");
+	buffer.append(getName() + "'");
+
+	buffer.append(" description: '");
+	buffer.append(getDescription() + "'");
+
+	try {
+	    if ( getType() == Type.DAYS ) {
+		buffer.append(" " + getDays());
+	    } else if ( getType() == Type.PROXIMO ) {
+		buffer.append(" " + getProximo());
+	    }
+	} catch ( Exception exc ) {
+	    buffer.append("ERROR");
+	}
+
+	buffer.append("]");
+
+	return buffer.toString();
+    }
+    
 }

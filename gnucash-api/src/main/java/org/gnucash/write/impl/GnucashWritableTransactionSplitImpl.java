@@ -34,21 +34,8 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 */
 	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
 
-	/**
-	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
-	 */
-	public void setUserDefinedAttribute(final String name, final String value) {
-		helper.setUserDefinedAttribute(name, value);
-	}
-
-	/**
-	 * @see GnucashTransactionSplitImpl#getTransaction()
-	 */
-	@Override
-	public GnucashWritableTransaction getTransaction() {
-		return (GnucashWritableTransaction) super.getTransaction();
-	}
-
+	// -----------------------------------------------------------
+	
 	/**
 	 * @param jwsdpPeer   the JWSDP-object we are facading.
 	 * @param transaction the transaction we belong to
@@ -82,6 +69,27 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		// GnucashTransactionSplitWritingImpl.this);
 
 		transaction.addSplit(this);
+	}
+
+	public GnucashWritableTransactionSplitImpl(GnucashTransactionSplit split) {
+	    super(split.getJwsdpPeer(), split.getTransaction());
+	}
+
+	// -----------------------------------------------------------
+	
+	/**
+	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
+	 */
+	public void setUserDefinedAttribute(final String name, final String value) {
+		helper.setUserDefinedAttribute(name, value);
+	}
+
+	/**
+	 * @see GnucashTransactionSplitImpl#getTransaction()
+	 */
+	@Override
+	public GnucashWritableTransaction getTransaction() {
+		return (GnucashWritableTransaction) super.getTransaction();
 	}
 
 	/**

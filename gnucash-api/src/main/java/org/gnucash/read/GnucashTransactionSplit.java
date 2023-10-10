@@ -3,6 +3,7 @@ package org.gnucash.read;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 
 /**
@@ -55,6 +56,18 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
 //  public static final String SPLIT_CORR_ACCT_CODE     = "corr-acct-code";
   
   // -----------------------------------------------------------------
+
+  @SuppressWarnings("exports")
+  GncTransaction.TrnSplits.TrnSplit getJwsdpPeer();
+
+  /**
+   * The gnucash-file is the top-level class to contain everything.
+   * @return the file we are associated with
+   */
+  GnucashFile getGnucashFile();
+  
+  // -----------------------------------------------------------------
+
 
     /**
      *

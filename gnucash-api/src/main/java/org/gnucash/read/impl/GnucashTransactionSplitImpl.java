@@ -10,6 +10,7 @@ import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
@@ -43,7 +44,9 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      * @see #myTransaction
      */
     @SuppressWarnings("exports")
-    public GnucashTransactionSplitImpl(final GncTransaction.TrnSplits.TrnSplit peer, final GnucashTransaction trx) {
+    public GnucashTransactionSplitImpl(
+	    final GncTransaction.TrnSplits.TrnSplit peer, 
+	    final GnucashTransaction trx) {
 	super((peer.getSplitSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getSplitSlots(),
 		trx.getGnucashFile());
 
@@ -78,6 +81,27 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
     // ---------------------------------------------------------------
 
     /**
+     * @return the JWSDP-object we are facading.
+     */
+    @SuppressWarnings("exports")
+    public GncTransaction.TrnSplits.TrnSplit getJwsdpPeer() {
+	return jwsdpPeer;
+    }
+
+    /**
+     * @param newPeer the JWSDP-object we are facading.
+     */
+    protected void setJwsdpPeer(final GncTransaction.TrnSplits.TrnSplit newPeer) {
+	if (newPeer == null) {
+	    throw new IllegalArgumentException("null not allowed for field this.jwsdpPeer");
+	}
+
+	jwsdpPeer = newPeer;
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
      * @return the lot-id that identifies this transaction to belong to an invoice
      *         with that lot-id.
      */
@@ -99,25 +123,6 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	}
 
 	return getJwsdpPeer().getSplitAction();
-    }
-
-    /**
-     * @return the JWSDP-object we are facading.
-     */
-    @SuppressWarnings("exports")
-    public GncTransaction.TrnSplits.TrnSplit getJwsdpPeer() {
-	return jwsdpPeer;
-    }
-
-    /**
-     * @param newPeer the JWSDP-object we are facading.
-     */
-    protected void setJwsdpPeer(final GncTransaction.TrnSplits.TrnSplit newPeer) {
-	if (newPeer == null) {
-	    throw new IllegalArgumentException("null not allowed for field this.jwsdpPeer");
-	}
-
-	jwsdpPeer = newPeer;
     }
 
     /**

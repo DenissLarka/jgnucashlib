@@ -3,11 +3,12 @@ package org.gnucash.write;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.List;
 
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.SplitNotFoundException;
 
 /**
@@ -83,7 +84,7 @@ public interface GnucashWritableTransaction extends GnucashTransaction {
     /**
      * @see GnucashTransaction#getSplits()
      */
-    Collection<? extends GnucashWritableTransactionSplit> getWritingSplits();
+    List<GnucashWritableTransactionSplit> getWritingSplits();
 
     /**
      * Create a new split, already atached to this transaction.

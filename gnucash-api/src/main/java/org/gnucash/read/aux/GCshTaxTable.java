@@ -2,10 +2,7 @@ package org.gnucash.read.aux;
 
 import java.util.Collection;
 
-import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
-import org.gnucash.read.GnucashFile;
 
 
 
@@ -15,11 +12,6 @@ import org.gnucash.read.GnucashFile;
  */
 
 public interface GCshTaxTable {
-    /**
-     * The gnucash-file is the top-level class to contain everything.
-     * @return the file we are associated with
-     */
-    GnucashFile getFile();
 
     /**
      * @return the unique-id to identify this object with across name- and hirarchy-changes

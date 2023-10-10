@@ -63,8 +63,6 @@ public interface GnucashFile extends GnucashObject {
      */
     Collection<GCshTaxTable> getTaxTables();
 
-    // ----------------------------
-
     // ---------------------------------------------------------------
 
     /**

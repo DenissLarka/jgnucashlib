@@ -1,15 +1,16 @@
 package org.gnucash.read.impl.aux;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.InputStream;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;
-import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermDays;
-import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermProximo;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.aux.GCshBillTerms;
+import org.gnucash.read.aux.GCshBillTermsDays;
+import org.gnucash.read.aux.GCshBillTermsProximo;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +89,8 @@ public class TestGCshBillTermsImpl
   public void test02_1_1() throws Exception
   {
       bllTrm = gcshFile.getBillTermsByID(BLLTRM_1_ID);
+      assertNotEquals(null, bllTrm);
+      // System.err.println(bllTrm);
       
       assertEquals(BLLTRM_1_ID, bllTrm.getId());
       assertEquals("sofort", bllTrm.getName());
@@ -96,16 +99,20 @@ public class TestGCshBillTermsImpl
       assertEquals(null, bllTrm.getParentId());
       assertEquals(0, bllTrm.getChildren().size());
 
-      BilltermDays btDays = bllTrm.getDays();
-      assertEquals(Integer.valueOf(5), btDays.getBtDaysDueDays());
-      assertEquals(null, btDays.getBtDaysDiscDays());
-      assertEquals(null, btDays.getBtDaysDiscount());
+      GCshBillTermsDays btDays = bllTrm.getDays();
+      assertNotEquals(null, btDays);
+
+      assertEquals(Integer.valueOf(5), btDays.getDueDays());
+      assertEquals(null, btDays.getDiscountDays());
+      assertEquals(null, btDays.getDiscount());
   }
 
   @Test
   public void test02_1_2() throws Exception
   {
       bllTrm = gcshFile.getBillTermsByName("sofort");
+      assertNotEquals(null, bllTrm);
+      // System.err.println(bllTrm);
       
       assertEquals(BLLTRM_1_ID, bllTrm.getId());
       assertEquals("sofort", bllTrm.getName());
@@ -114,16 +121,20 @@ public class TestGCshBillTermsImpl
       assertEquals(null, bllTrm.getParentId());
       assertEquals(0, bllTrm.getChildren().size());
 
-      BilltermDays btDays = bllTrm.getDays();
-      assertEquals(Integer.valueOf(5), btDays.getBtDaysDueDays());
-      assertEquals(null, btDays.getBtDaysDiscDays());
-      assertEquals(null, btDays.getBtDaysDiscount());
+      GCshBillTermsDays btDays = bllTrm.getDays();
+      assertNotEquals(null, btDays);
+      
+      assertEquals(Integer.valueOf(5), btDays.getDueDays());
+      assertEquals(null, btDays.getDiscountDays());
+      assertEquals(null, btDays.getDiscount());
   }
 
   @Test
   public void test02_2_1() throws Exception
   {
       bllTrm = gcshFile.getBillTermsByID(BLLTRM_2_ID);
+      assertNotEquals(null, bllTrm);
+      // System.err.println(bllTrm);
       
       assertEquals(BLLTRM_2_ID, bllTrm.getId());
       assertEquals("30-10-3", bllTrm.getName());
@@ -132,16 +143,20 @@ public class TestGCshBillTermsImpl
       assertEquals(null, bllTrm.getParentId());
       assertEquals(0, bllTrm.getChildren().size());
 
-      BilltermDays btDays = bllTrm.getDays();
-      assertEquals(Integer.valueOf(30), btDays.getBtDaysDueDays());
-      assertEquals(Integer.valueOf(10), btDays.getBtDaysDiscDays());
-      assertEquals("300000/100000", btDays.getBtDaysDiscount());
+      GCshBillTermsDays btDays = bllTrm.getDays();
+      assertNotEquals(null, btDays);
+      
+      assertEquals(Integer.valueOf(30), btDays.getDueDays());
+      assertEquals(Integer.valueOf(10), btDays.getDiscountDays());
+      assertEquals(3.0, btDays.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
   public void test02_2_2() throws Exception
   {
       bllTrm = gcshFile.getBillTermsByName("30-10-3");
+      assertNotEquals(null, bllTrm);
+      // System.err.println(bllTrm);
       
       assertEquals(BLLTRM_2_ID, bllTrm.getId());
       assertEquals("30-10-3", bllTrm.getName());
@@ -150,16 +165,20 @@ public class TestGCshBillTermsImpl
       assertEquals(null, bllTrm.getParentId());
       assertEquals(0, bllTrm.getChildren().size());
 
-      BilltermDays btDays = bllTrm.getDays();
-      assertEquals(Integer.valueOf(30), btDays.getBtDaysDueDays());
-      assertEquals(Integer.valueOf(10), btDays.getBtDaysDiscDays());
-      assertEquals("300000/100000", btDays.getBtDaysDiscount());
+      GCshBillTermsDays btDays = bllTrm.getDays();
+      assertNotEquals(null, btDays);
+      
+      assertEquals(Integer.valueOf(30), btDays.getDueDays());
+      assertEquals(Integer.valueOf(10), btDays.getDiscountDays());
+      assertEquals(3.0, btDays.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
   public void test02_3_1() throws Exception
   {
       bllTrm = gcshFile.getBillTermsByID(BLLTRM_3_ID);
+      assertNotEquals(null, bllTrm);
+      // System.err.println(bllTrm);
       
       assertEquals(BLLTRM_3_ID, bllTrm.getId());
       assertEquals("nächster-monat-mitte", bllTrm.getName());
@@ -168,16 +187,20 @@ public class TestGCshBillTermsImpl
       assertEquals(null, bllTrm.getParentId());
       assertEquals(0, bllTrm.getChildren().size());
 
-      BilltermProximo btProx = bllTrm.getProximo();
-      assertEquals(Integer.valueOf(15), btProx.getBtProxDueDay());
-      assertEquals(Integer.valueOf(3), btProx.getBtProxDiscDay());
-      assertEquals("200000/100000", btProx.getBtProxDiscount());
+      GCshBillTermsProximo btProx = bllTrm.getProximo();
+      assertNotEquals(null, btProx);
+      
+      assertEquals(Integer.valueOf(15), btProx.getDueDay());
+      assertEquals(Integer.valueOf(3), btProx.getDiscountDay());
+      assertEquals(2.0, btProx.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
   public void test02_3_2() throws Exception
   {
       bllTrm = gcshFile.getBillTermsByName("nächster-monat-mitte");
+      assertNotEquals(null, bllTrm);
+      // System.err.println(bllTrm);
       
       assertEquals(BLLTRM_3_ID, bllTrm.getId());
       assertEquals("nächster-monat-mitte", bllTrm.getName());
@@ -186,9 +209,11 @@ public class TestGCshBillTermsImpl
       assertEquals(null, bllTrm.getParentId());
       assertEquals(0, bllTrm.getChildren().size());
 
-      BilltermProximo btProx = bllTrm.getProximo();
-      assertEquals(Integer.valueOf(15), btProx.getBtProxDueDay());
-      assertEquals(Integer.valueOf(3), btProx.getBtProxDiscDay());
-      assertEquals("200000/100000", btProx.getBtProxDiscount());
+      GCshBillTermsProximo btProx = bllTrm.getProximo();
+      assertNotEquals(null, btProx);
+      
+      assertEquals(Integer.valueOf(15), btProx.getDueDay());
+      assertEquals(Integer.valueOf(3), btProx.getDiscountDay());
+      assertEquals(2.0, btProx.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 }

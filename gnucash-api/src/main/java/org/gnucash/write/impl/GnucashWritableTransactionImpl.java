@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.gnucash.Const;
 import org.gnucash.currency.CurrencyNameSpace;
@@ -14,6 +15,7 @@ import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransaction;
+import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashTransactionImpl;
 import org.gnucash.read.impl.GnucashTransactionSplitImpl;
@@ -246,9 +248,15 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
     /**
      * @see GnucashWritableTransaction#getWritingSplits()
      */
-    @SuppressWarnings("unchecked")
-    public Collection<? extends GnucashWritableTransactionSplit> getWritingSplits() {
-	return (Collection<? extends GnucashWritableTransactionSplit>) super.getSplits();
+    public List<GnucashWritableTransactionSplit> getWritingSplits() {
+	List<GnucashWritableTransactionSplit> result = new LinkedList<GnucashWritableTransactionSplit>();
+	
+	for ( GnucashTransactionSplit split : super.getSplits() ) {
+	    GnucashWritableTransactionSplit newSplit = new GnucashWritableTransactionSplitImpl(split);
+	    result.add(newSplit);
+	}
+
+	return result;
     }
 
     /**

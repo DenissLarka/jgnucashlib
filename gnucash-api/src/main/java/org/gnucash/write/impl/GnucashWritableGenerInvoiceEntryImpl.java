@@ -325,8 +325,6 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	this.invoice = invoice;
     }
 
-    // -----------------------------------------------------------
-
     /**
      * Create a taxable invoiceEntry. (It has the taxtable of the customer with a
      * fallback to the first taxtable found assigned)

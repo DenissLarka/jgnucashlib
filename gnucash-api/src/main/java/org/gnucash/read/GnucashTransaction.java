@@ -57,6 +57,8 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      * @return the file we are associated with
      */
     GnucashFile getGnucashFile();
+    
+    // ----------------------------
 
     /**
      * Do not modify the returned collection!
