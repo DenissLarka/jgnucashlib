@@ -1,5 +1,6 @@
 package org.gnucash.write;
 
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.aux.GCshAddress;
@@ -21,7 +22,9 @@ public interface GnucashWritableCustomer extends GnucashCustomer,
 	 */
 	void setNumber(String number);
 
-	void setDiscount(String discount);
+	void setDiscount(FixedPointNumber discount);
+
+	void setCredit(FixedPointNumber credit);
 
 	/**
 	 * @param notes user-defined notes about the customer (may be null)

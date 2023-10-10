@@ -18,9 +18,9 @@ public class TestGnucashCustomerImpl
   private GnucashFile     gcshFile = null;
   private GnucashCustomer cust = null;
   
-  public static final String CUST_1_ID = "5d1dd9afa7554553988669830cc1f696";
-  public static final String CUST_2_ID = "f44645d2397946bcac90dff68cc03b76";
-  public static final String CUST_3_ID = "1d2081e8a10e4d5e9312d9fff17d470d";
+  public static final String CUST_1_ID = "5d1dd9afa7554553988669830cc1f696"; // Unfug und Quatsch GmbH
+  public static final String CUST_2_ID = "f44645d2397946bcac90dff68cc03b76"; // Is That So Ltd.
+  public static final String CUST_3_ID = "1d2081e8a10e4d5e9312d9fff17d470d"; // N'importe Quoi S.A.
 
   // -----------------------------------------------------------------
   
@@ -73,6 +73,9 @@ public class TestGnucashCustomerImpl
     assertEquals(CUST_1_ID, cust.getId());
     assertEquals("000001", cust.getNumber());
     assertEquals("Unfug und Quatsch GmbH", cust.getName());
+
+    assertEquals(0.0, cust.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(0.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
@@ -83,6 +86,9 @@ public class TestGnucashCustomerImpl
     assertEquals(CUST_2_ID, cust.getId());
     assertEquals("000002", cust.getNumber());
     assertEquals("Is That So Ltd.", cust.getName());
+
+    assertEquals(3.0, cust.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(2000.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test
@@ -93,6 +99,9 @@ public class TestGnucashCustomerImpl
     assertEquals(CUST_3_ID, cust.getId());
     assertEquals("000003", cust.getNumber());
     assertEquals("N'importe Quoi S.A.", cust.getName());
+
+    assertEquals(0.0, cust.getDiscount().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(0.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
   }
 
   @Test

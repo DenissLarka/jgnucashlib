@@ -75,6 +75,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 	return jwsdpPeer.getCustGuid().getValue();
     }
 
+    // ---------------------------------------------------------------
+
     /**
      * @return the jobs that have this customer associated with them.
      * @throws WrongInvoiceTypeException 
@@ -99,8 +101,21 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
     /**
      * {@inheritDoc}
      */
-    public String getDiscount() {
-	return jwsdpPeer.getCustDiscount();
+    public FixedPointNumber getDiscount() {
+	if ( jwsdpPeer.getCustDiscount() == null )
+	    return null;
+	
+	return new FixedPointNumber(jwsdpPeer.getCustDiscount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public FixedPointNumber getCredit() {
+	if ( jwsdpPeer.getCustCredit() == null )
+	    return null;
+	
+	return new FixedPointNumber(jwsdpPeer.getCustCredit());
     }
 
     /**

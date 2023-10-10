@@ -24,102 +24,109 @@ public interface GnucashCustomer extends GnucashObject {
 
     /**
      * The id of the prefered taxtable to use with this customer (may be null).
+     * 
      * @see {@link #getCustomerTaxTable()}
      */
     String getCustomerTaxTableID();
 
     /**
      * The prefered taxtable to use with this customer (may be null).
+     * 
      * @see {@link #getCustomerTaxTableID()}
      */
     GCshTaxTable getCustomerTaxTable();
 
     /**
-     * Date is not checked so invoiced that have entered payments in the future are considered Paid.
+     * Date is not checked so invoiced that have entered payments in the future are
+     * considered Paid.
+     * 
      * @return the current number of Unpaid invoices
-     * @throws WrongInvoiceTypeException 
+     * @throws WrongInvoiceTypeException
      */
     int getNofOpenInvoices() throws WrongInvoiceTypeException;
 
     /**
      * @return the sum of payments for invoices to this client
-     * @throws WrongInvoiceTypeException 
+     * @throws WrongInvoiceTypeException
      */
     FixedPointNumber getIncomeGenerated(GnucashGenerInvoice.ReadVariant readVar);
 
     /**
      * @return the sum of payments for invoices to this client
-     * @throws WrongInvoiceTypeException 
+     * @throws WrongInvoiceTypeException
      */
     FixedPointNumber getIncomeGenerated_direct();
 
     /**
      * @return the sum of payments for invoices to this client
-     * @throws WrongInvoiceTypeException 
+     * @throws WrongInvoiceTypeException
      */
     FixedPointNumber getIncomeGenerated_viaAllJobs();
 
     /**
-     * @throws WrongInvoiceTypeException 
-     * @see #getIncomeGenerated()
-     * Formatted acording to the current locale's currency-format
+     * @throws WrongInvoiceTypeException
+     * @see #getIncomeGenerated() Formatted acording to the current locale's
+     *      currency-format
      */
     String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar);
 
     /**
-     * @throws WrongInvoiceTypeException 
-     * @see #getIncomeGenerated()
-     * Formatted acording to the given locale's currency-format
+     * @throws WrongInvoiceTypeException
+     * @see #getIncomeGenerated() Formatted acording to the given locale's
+     *      currency-format
      */
     String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
 
     /**
      * @return the sum of left to pay Unpaid invoiced
-     * @throws WrongInvoiceTypeException 
+     * @throws WrongInvoiceTypeException
      */
     FixedPointNumber getOutstandingValue(GnucashGenerInvoice.ReadVariant readVar);
 
     /**
      * @return the sum of left to pay Unpaid invoiced
-     * @throws WrongInvoiceTypeException 
+     * @throws WrongInvoiceTypeException
      */
     FixedPointNumber getOutstandingValue_direct();
 
     /**
      * @return the sum of left to pay Unpaid invoiced
-     * @throws WrongInvoiceTypeException 
+     * @throws WrongInvoiceTypeException
      */
     FixedPointNumber getOutstandingValue_viaAllJobs();
 
     /**
-     * @throws WrongInvoiceTypeException 
-     * @see #getOutstandingValue()
-     * Formatted acording to the current locale's currency-format
+     * @throws WrongInvoiceTypeException
+     * @see #getOutstandingValue() Formatted acording to the current locale's
+     *      currency-format
      */
     String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar);
 
     /**
      *
-     * @throws WrongInvoiceTypeException 
-     * @see #getOutstandingValue()
-     * Formatted acording to the given locale's currency-format
+     * @throws WrongInvoiceTypeException
+     * @see #getOutstandingValue() Formatted acording to the given locale's
+     *      currency-format
      */
     String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
 
     /**
      * The gnucash-file is the top-level class to contain everything.
+     * 
      * @return the file we are associated with
      */
     GnucashFile getGnucashFile();
 
     /**
-     * @return the unique-id to identify this object with across name- and hirarchy-changes
+     * @return the unique-id to identify this object with across name- and
+     *         hirarchy-changes
      */
     String getId();
 
     /**
-     * @return the UNMODIFIABLE collection of jobs that have this customer associated with them.
-     * @throws WrongInvoiceTypeException 
+     * @return the UNMODIFIABLE collection of jobs that have this customer associated 
+     *         with them.
+     * @throws WrongInvoiceTypeException
      */
     Collection<GnucashCustomerJob> getJobs() throws WrongInvoiceTypeException;
 
@@ -131,15 +138,20 @@ public interface GnucashCustomer extends GnucashObject {
 
     /**
      *
-     * @return unused at the moment
+     * @return The customer-specific discount
      */
-    String getDiscount();
+    FixedPointNumber getDiscount();
+
+    /**
+     *
+     * @return the customer-specific credit
+     */
+    FixedPointNumber getCredit();
 
     /**
      * @return user-defined notes about the customer (may be null)
      */
     String getNotes();
-
 
     /**
      *
@@ -156,29 +168,27 @@ public interface GnucashCustomer extends GnucashObject {
      * @return the shipping-address including the name
      */
     GCshAddress getShippingAddress();
-    
+
     // ----------------------------
 
     Collection<GnucashGenerInvoice>    getInvoices() throws WrongInvoiceTypeException;
-    
+
     Collection<GnucashCustomerInvoice> getPaidInvoices_direct() throws WrongInvoiceTypeException;
-    
+
     Collection<GnucashJobInvoice>      getPaidInvoices_viaAllJobs() throws WrongInvoiceTypeException;
-    
+
     Collection<GnucashCustomerInvoice> getUnpaidInvoices_direct() throws WrongInvoiceTypeException;
-    
+
     Collection<GnucashJobInvoice>      getUnpaidInvoices_viaAllJobs() throws WrongInvoiceTypeException;
-    
+
     // ----------------------------
-    
-    public static int getHighestNumber(GnucashCustomer cust)
-    {
-      return cust.getGnucashFile().getHighestCustomerNumber();
+
+    public static int getHighestNumber(GnucashCustomer cust) {
+	return cust.getGnucashFile().getHighestCustomerNumber();
     }
 
-    public static String getNewNumber(GnucashCustomer cust)
-    {
-      return cust.getGnucashFile().getNewCustomerNumber();
+    public static String getNewNumber(GnucashCustomer cust) {
+	return cust.getGnucashFile().getNewCustomerNumber();
     }
 
 }

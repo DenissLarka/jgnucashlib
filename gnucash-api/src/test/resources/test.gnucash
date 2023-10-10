@@ -2582,7 +2582,8 @@
     <cmdty:space>CURRENCY</cmdty:space>
     <cmdty:id>EUR</cmdty:id>
   </cust:currency>
-  <cust:use-tt>0</cust:use-tt>
+  <cust:use-tt>1</cust:use-tt>
+  <cust:taxtable type="guid">de4c17d1eb0e4f088ba73d4c697032f0</cust:taxtable>
 </gnc:GncCustomer>
 <gnc:GncCustomer version="2.0.0">
   <cust:guid type="guid">5d1dd9afa7554553988669830cc1f696</cust:guid>
@@ -2631,8 +2632,8 @@
   <cust:shipaddr version="2.0.0"/>
   <cust:taxincluded>USEGLOBAL</cust:taxincluded>
   <cust:active>1</cust:active>
-  <cust:discount>0/1</cust:discount>
-  <cust:credit>0/1</cust:credit>
+  <cust:discount>300000/100000</cust:discount>
+  <cust:credit>200000/100</cust:credit>
   <cust:currency>
     <cmdty:space>CURRENCY</cmdty:space>
     <cmdty:id>EUR</cmdty:id>
@@ -3082,7 +3083,7 @@
 <gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">de4c17d1eb0e4f088ba73d4c697032f0</taxtable:guid>
   <taxtable:name>FR_USt_Std</taxtable:name>
-  <taxtable:refcount>0</taxtable:refcount>
+  <taxtable:refcount>1</taxtable:refcount>
   <taxtable:invisible>0</taxtable:invisible>
   <taxtable:entries>
     <gnc:GncTaxTableEntry>
