@@ -7,7 +7,8 @@ import java.io.InputStream;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.aux.GCshTaxTableEntry;
+import org.gnucash.read.aux.GCshBillTerms;
+import org.gnucash.read.impl.aux.TestGCshBillTermsImpl;
 import org.gnucash.read.impl.aux.TestGCshTaxTableImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.junit.Before;
@@ -25,6 +26,10 @@ public class TestGnucashCustomerImpl
   public static final String CUST_3_ID = "1d2081e8a10e4d5e9312d9fff17d470d"; // N'importe Quoi S.A.
 
   private static final String TAXTABLE_FR_1_ID   = TestGCshTaxTableImpl.TAXTABLE_FR_1_ID;
+
+  private static final String BLLTRM_1_ID = TestGCshBillTermsImpl.BLLTRM_1_ID;
+  private static final String BLLTRM_2_ID = TestGCshBillTermsImpl.BLLTRM_2_ID;
+  private static final String BLLTRM_3_ID = TestGCshBillTermsImpl.BLLTRM_3_ID;
 
   // -----------------------------------------------------------------
   
@@ -82,6 +87,11 @@ public class TestGnucashCustomerImpl
     assertEquals(0.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
 
     assertEquals(null, cust.getTaxTableID());
+    
+    assertEquals(BLLTRM_2_ID, cust.getTermsID());
+    assertEquals("30-10-3", cust.getTerms().getName());
+    assertEquals(GCshBillTerms.Type.DAYS, cust.getTerms().getType());
+    // etc., cf. class TestGCshBillTermsImpl
   }
 
   @Test
@@ -97,6 +107,7 @@ public class TestGnucashCustomerImpl
     assertEquals(2000.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
 
     assertEquals(null, cust.getTaxTableID());
+    assertEquals(null, cust.getTermsID());
   }
 
   @Test
@@ -115,6 +126,8 @@ public class TestGnucashCustomerImpl
     assertEquals("FR_USt_Std", cust.getTaxTable().getName());
     assertEquals(1, cust.getTaxTable().getEntries().size());
     // etc., cf. class TestGCshTaxTableImpl
+
+    assertEquals(null, cust.getTermsID());
   }
 
   @Test

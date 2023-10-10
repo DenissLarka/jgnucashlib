@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.aux.GCshBillTerms;
+import org.gnucash.read.impl.aux.TestGCshBillTermsImpl;
 import org.gnucash.read.impl.aux.TestGCshTaxTableImpl;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.junit.Before;
@@ -26,6 +28,10 @@ public class TestGnucashVendorImpl
   public static final String VEND_3_ID = "bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7";
 
   private static final String TAXTABLE_UK_1_ID   = TestGCshTaxTableImpl.TAXTABLE_UK_1_ID;
+
+  private static final String BLLTRM_1_ID = TestGCshBillTermsImpl.BLLTRM_1_ID;
+  private static final String BLLTRM_2_ID = TestGCshBillTermsImpl.BLLTRM_2_ID;
+  private static final String BLLTRM_3_ID = TestGCshBillTermsImpl.BLLTRM_3_ID;
 
   // -----------------------------------------------------------------
   
@@ -80,6 +86,11 @@ public class TestGnucashVendorImpl
     assertEquals("Lieferfanto AG", vend.getName());
 
     assertEquals(null, vend.getTaxTableID());
+
+    assertEquals(BLLTRM_1_ID, vend.getTermsID());
+    assertEquals("sofort", vend.getTerms().getName());
+    assertEquals(GCshBillTerms.Type.DAYS, vend.getTerms().getType());
+    // etc., cf. class TestGCshBillTermsImpl
   }
 
   @Test
@@ -92,6 +103,8 @@ public class TestGnucashVendorImpl
     assertEquals("Super Suppliers Corp.", vend.getName());
 
     assertEquals(TAXTABLE_UK_1_ID, vend.getTaxTableID());
+    
+    assertEquals(null, vend.getTermsID());
   }
 
   @Test
@@ -104,6 +117,11 @@ public class TestGnucashVendorImpl
     assertEquals("Achetez Chez Nous S.A.", vend.getName());
 
     assertEquals(null, vend.getTaxTableID());
+
+    assertEquals(BLLTRM_2_ID, vend.getTermsID());
+    assertEquals("30-10-3", vend.getTerms().getName());
+    assertEquals(GCshBillTerms.Type.DAYS, vend.getTerms().getType());
+    // etc., cf. class TestGCshBillTermsImpl
   }
 
   @Test

@@ -19,9 +19,9 @@ import junit.framework.JUnit4TestAdapter;
 
 public class TestGCshBillTermsImpl
 {
-  private static final String BLLTRM_1_ID = "599bfe3ab5b84a73bf3acabc5abd5bc7"; // "sofort" (5 Tage)
-  private static final String BLLTRM_2_ID = "f4310c65486a47a5a787348b7de6ca40"; // "30-10-3"
-  private static final String BLLTRM_3_ID = "f65a46140da94c81a4e1e3c0aa38c32b"; // "nächster-monat-mitte"
+  public  static final String BLLTRM_1_ID = "599bfe3ab5b84a73bf3acabc5abd5bc7"; // "sofort" (5 Tage)
+  public  static final String BLLTRM_2_ID = "f4310c65486a47a5a787348b7de6ca40"; // "30-10-3"
+  public  static final String BLLTRM_3_ID = "f65a46140da94c81a4e1e3c0aa38c32b"; // "nächster-monat-mitte"
     
   private GnucashFile   gcshFile = null;
   private GCshBillTerms bllTrm = null;

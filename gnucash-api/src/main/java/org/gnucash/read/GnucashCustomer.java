@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.aux.GCshBillTerms;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;
@@ -77,18 +78,34 @@ public interface GnucashCustomer extends GnucashObject {
     // ------------------------------------------------------------
 
     /**
-     * The id of the prefered taxtable to use with this customer (may be null).
+     * The id of the default tax table to use with this customer (may be null).
      * 
      * @see {@link #getTaxTable()}
      */
     String getTaxTableID();
 
     /**
-     * The prefered taxtable to use with this customer (may be null).
+     * The default tax table to use with this customer (may be null).
      * 
      * @see {@link #getTaxTableID()}
      */
     GCshTaxTable getTaxTable();
+
+    // ------------------------------------------------------------
+
+    /**
+     * The id of the default terms to use with this customer (may be null).
+     * 
+     * @see {@link #getTaxTable()}
+     */
+    String getTermsID();
+
+    /**
+     * The default terms to use with this customer (may be null).
+     * 
+     * @see {@link #getTaxTableID()}
+     */
+    GCshBillTerms getTerms();
 
     // ------------------------------------------------------------
 

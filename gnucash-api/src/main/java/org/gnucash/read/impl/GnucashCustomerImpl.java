@@ -14,6 +14,7 @@ import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.aux.GCshBillTerms;
 import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.aux.GCshAddressImpl;
@@ -170,6 +171,31 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 	    return null;
 	}
 	return getGnucashFile().getTaxTableByID(id);
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getTermsID() {
+	GncV2.GncBook.GncGncCustomer.CustTerms custTerms = jwsdpPeer.getCustTerms();
+	if (custTerms == null) {
+	    return null;
+	}
+
+	return custTerms.getValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public GCshBillTerms getTerms() {
+	String id = getTermsID();
+	if (id == null) {
+	    return null;
+	}
+	return getGnucashFile().getBillTermsByID(id);
     }
 
     // ---------------------------------------------------------------
