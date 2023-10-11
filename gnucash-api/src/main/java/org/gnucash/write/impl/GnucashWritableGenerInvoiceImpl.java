@@ -932,8 +932,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
         	    					invcNumber, vend.getName(),
         	    					expensesAcct, payableAcct,  
 		    					acctLotID,
-        	    					new FixedPointNumber(1), // ::TODO
-        	    					new FixedPointNumber(1), // ::TODO
+		    					amount, amount,
         	    					postDate, dueDate);
             postTrxID = postTrx.getId();
             postTrxRef.setValue(postTrxID);
@@ -1000,8 +999,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
         	    					invcNumber, job.getName(),
         	    					incExpAcct, recvblPayblAcct,   
 		    					acctLotID,
-        	    					new FixedPointNumber(1), // ::TODO
-        	    					new FixedPointNumber(1), // ::TODO
+		    					amount, amount,
         	    					postDate, dueDate);
             postTrxID = postTrx.getId();
             postTrxRef.setValue(postTrxID);
