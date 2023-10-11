@@ -8,7 +8,6 @@ import java.util.List;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
-import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.SplitNotFoundException;
 
 /**

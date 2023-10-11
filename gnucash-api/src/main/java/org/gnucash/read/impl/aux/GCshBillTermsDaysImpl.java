@@ -3,7 +3,6 @@ package org.gnucash.read.impl.aux;
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshBillTermsDays;
-import org.gnucash.read.aux.GCshBillTerms.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
