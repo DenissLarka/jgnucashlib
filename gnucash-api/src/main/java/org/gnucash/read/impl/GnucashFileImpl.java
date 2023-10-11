@@ -452,8 +452,8 @@ public class GnucashFileImpl implements GnucashFile {
 
 	GnucashGenerInvoice retval = invoiceID2invoice.get(id);
 	if (retval == null) {
-	    System.err.println(
-		    "No (generic) Invoice with id '" + id + "'. We know " + invoiceID2invoice.size() + " accounts.");
+	    LOGGER.error("No (generic) Invoice with id '" + id + "'. " + 
+	                 "We know " + invoiceID2invoice.size() + " accounts.");
 	}
 
 	return retval;
@@ -887,8 +887,8 @@ public class GnucashFileImpl implements GnucashFile {
 
 	GnucashGenerInvoiceEntry retval = invoiceEntryID2invoiceEntry.get(id);
 	if (retval == null) {
-	    System.err.println("No (generic) Invoice-Entry with id '" + id + "'. We know "
-		    + invoiceEntryID2invoiceEntry.size() + " accounts.");
+	    LOGGER.error("No (generic) Invoice-Entry with id '" + id + "'. " + 
+	                 "We know " + invoiceEntryID2invoiceEntry.size() + " accounts.");
 	}
 
 	return retval;
@@ -1726,7 +1726,8 @@ public class GnucashFileImpl implements GnucashFile {
 
 	GnucashAccount retval = accountID2account.get(id);
 	if (retval == null) {
-	    System.err.println("No Account with id '" + id + "'. We know " + accountID2account.size() + " accounts.");
+	    LOGGER.error("No Account with id '" + id + "'. " + 
+	                 "We know " + accountID2account.size() + " accounts.");
 	}
 	return retval;
     }

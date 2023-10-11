@@ -229,8 +229,8 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 
 	    GnucashGenerInvoice invoice = file.getGenerInvoiceByID(invoiceID);
 	    if (invoice == null) {
-		System.err.println("No invoice with id='" + invoiceID + "' for transaction '" + getId()
-			+ "' description '" + getDescription() + "'");
+		LOGGER.error("No invoice with id='" + invoiceID + "' for transaction '" + getId() + 
+			     "' description '" + getDescription() + "'");
 	    } else {
 		retval.add(invoice);
 	    }

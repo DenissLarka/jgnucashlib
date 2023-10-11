@@ -55,7 +55,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 
 	GnucashAccount acct = getAccount();
 	if (acct == null) {
-	    System.err.println("No such Account id='" + getAccountID() + "' for Transactions-Split with id '" + getId()
+	    LOGGER.error("No such Account id='" + getAccountID() + "' for Transactions-Split with id '" + getId()
 		    + "' description '" + getDescription() + "' in transaction with id '" + getTransaction().getId()
 		    + "' description '" + getTransaction().getDescription() + "'");
 	} else {
@@ -349,7 +349,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 	    }
 
 	    if (otherSplt != this) {
-		System.err.println("Duplicate transaction-split-id!! " + otherSplt.getId() + "["
+		LOGGER.error("Duplicate transaction-split-id!! " + otherSplt.getId() + "["
 			+ otherSplt.getClass().getName() + "] and " + getId() + "[" + getClass().getName() + "]\n"
 			+ "split0=" + otherSplt.toString() + "\n" + "split1=" + toString() + "\n");
 		IllegalStateException x = new IllegalStateException("DEBUG");

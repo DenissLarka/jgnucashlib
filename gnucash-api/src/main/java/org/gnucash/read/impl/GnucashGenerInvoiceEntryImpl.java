@@ -290,7 +290,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
 	    String taxTableId = taxTableEntry.getValue();
 	    if (taxTableId == null) {
-		System.err.println(
+		LOGGER.error(
 			"Customer invoice with id '" + getId() + 
 			"' is i-taxable but has empty id for the i-taxtable");
 		return null;
@@ -298,7 +298,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	    myInvcTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
 
 	    if (myInvcTaxtable == null) {
-		System.err.println("Customer invoice with id '" + getId() + 
+		LOGGER.error("Customer invoice with id '" + getId() + 
 			"' is i-taxable but has an unknown "
 			+ "i-taxtable-id '" + taxTableId + "'!");
 	    }
@@ -326,14 +326,14 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
 	    String taxTableId = taxTableEntry.getValue();
 	    if (taxTableId == null) {
-		System.err.println("Vendor bill with id '" + getId() + 
+		LOGGER.error("Vendor bill with id '" + getId() + 
 			"' is b-taxable but has empty id for the b-taxtable");
 		return null;
 	    }
 	    myBillTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
 
 	    if (myBillTaxtable == null) {
-		System.err.println("Vendor bill with id '" + getId() + 
+		LOGGER.error("Vendor bill with id '" + getId() + 
 			"' is b-taxable but has an unknown "
 			+ "b-taxtable-id '" + taxTableId + "'!");
 	    }
