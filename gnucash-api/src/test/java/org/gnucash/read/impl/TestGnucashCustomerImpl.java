@@ -123,7 +123,7 @@ public class TestGnucashCustomerImpl
     assertEquals(0.0, cust.getCredit().doubleValue(), ConstTest.DIFF_TOLERANCE);
 
     assertEquals(TAXTABLE_FR_1_ID, cust.getTaxTableID());
-    assertEquals("FR_USt_Std", cust.getTaxTable().getName());
+    assertEquals("FR_TVA_Std", cust.getTaxTable().getName());
     assertEquals(1, cust.getTaxTable().getEntries().size());
     // etc., cf. class TestGCshTaxTableImpl
 

@@ -24,8 +24,8 @@ public class TestGCshTaxTableImpl
   private static final String TAXTABLE_DE_2_ID   = "c518af53a93c4a5cb3e2161b7b358e68"; // DE_USt_red
     
   // FR
-  public  static final String TAXTABLE_FR_1_ID   = "de4c17d1eb0e4f088ba73d4c697032f0"; // FR_USt_Std
-  private static final String TAXTABLE_FR_2_ID   = "e279d5cc81204f1bb6cf672ef3357c0c"; // FR_USt_red
+  public  static final String TAXTABLE_FR_1_ID   = "de4c17d1eb0e4f088ba73d4c697032f0"; // FR_TVA_Std
+  private static final String TAXTABLE_FR_2_ID   = "e279d5cc81204f1bb6cf672ef3357c0c"; // FR_TVA_red
     
   // UK
   public  static final String TAXTABLE_UK_1_ID   = "0bc4e576896a4fb4a2779dcf310f82f1"; // UK_VAT_Std
@@ -194,7 +194,7 @@ public class TestGCshTaxTableImpl
       taxTab = gcshFile.getTaxTableByID(TAXTABLE_FR_1_ID);
       
       assertEquals(TAXTABLE_FR_1_ID, taxTab.getId());
-      assertEquals("FR_USt_Std", taxTab.getName());
+      assertEquals("FR_TVA_Std", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
       assertEquals(1, taxTab.getEntries().size());
@@ -206,10 +206,10 @@ public class TestGCshTaxTableImpl
   @Test
   public void test04_2() throws Exception
   {
-      taxTab = gcshFile.getTaxTableByName("FR_USt_Std");
+      taxTab = gcshFile.getTaxTableByName("FR_TVA_Std");
       
       assertEquals(TAXTABLE_FR_1_ID, taxTab.getId());
-      assertEquals("FR_USt_Std", taxTab.getName());
+      assertEquals("FR_TVA_Std", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
       assertEquals(1, taxTab.getEntries().size());
@@ -224,7 +224,7 @@ public class TestGCshTaxTableImpl
       taxTab = gcshFile.getTaxTableByID(TAXTABLE_FR_2_ID);
       
       assertEquals(TAXTABLE_FR_2_ID, taxTab.getId());
-      assertEquals("FR_USt_red", taxTab.getName());
+      assertEquals("FR_TVA_red", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
       assertEquals(1, taxTab.getEntries().size());
@@ -236,10 +236,10 @@ public class TestGCshTaxTableImpl
   @Test
   public void test05_2() throws Exception
   {
-      taxTab = gcshFile.getTaxTableByName("FR_USt_red");
+      taxTab = gcshFile.getTaxTableByName("FR_TVA_red");
       
       assertEquals(TAXTABLE_FR_2_ID, taxTab.getId());
-      assertEquals("FR_USt_red", taxTab.getName());
+      assertEquals("FR_TVA_red", taxTab.getName());
       assertEquals(null, taxTab.getParentID());
 
       assertEquals(1, taxTab.getEntries().size());

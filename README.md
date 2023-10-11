@@ -22,12 +22,15 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 
    (Once the splitting-up of the classes for invoices was done, this part was not too difficult.)
 
-* Introduced complete set of terms: 
-   * Customer terms --> `GCshCustomerTerms`
-   * Vendor terms --> `GCshVendorTerms`
-   * Bill terms (no, this is not the same as the vendor terms) --> `GCshBillTerms`
+* Introduced handling for terms based on class `GCshBillTerms`: Both the infos of the general list as well as the customers'/vendors' default terms can be read with all details now. In this version, write-operations are only possible in the form of references (i.e., assigning already-existing terms to a customer or a vendor without changing the term details themselves).
 
-   (Not fully tested yet!)
+* Better handling of tax tables based on class `GCshTaxtable(Entry)`: Analogous to terms above.
+
+* More complete coverage of data access to customer/vendor data:
+
+  * discount/credit (customers only)
+  * default tax table (had been forgotten for vendors)
+  * default terms (had not been available for both)
 
 * Introduced new packages (both for interfaces and implementations):
 

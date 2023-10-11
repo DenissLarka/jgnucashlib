@@ -1,5 +1,6 @@
 package org.gnucash.read.impl.aux;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -27,9 +28,11 @@ public class GCshTaxTableImpl implements GCshTaxTable {
     private final GncV2.GncBook.GncGncTaxTable jwsdpPeer;
 
     /**
-     * The file we belong to.
+     * the file we belong to.
      */
-    private final GnucashFile file;
+    private final GnucashFile myFile;
+    
+    // ---------------------------------------------------------------
 
     /**
      * @param peer the JWSDP-object we are facading.
@@ -39,18 +42,12 @@ public class GCshTaxTableImpl implements GCshTaxTable {
     @SuppressWarnings("exports")
     public GCshTaxTableImpl(final GncV2.GncBook.GncGncTaxTable peer, final GnucashFile gncFile) {
 	super();
-	jwsdpPeer = peer;
-	file = gncFile;
+	
+	this.jwsdpPeer = peer;
+	this.myFile = gncFile;
     }
 
-    /**
-     * The gnucash-file is the top-level class to contain everything.
-     * 
-     * @return the file we are associated with
-     */
-    public GnucashFile getFile() {
-	return file;
-    }
+    // ---------------------------------------------------------------
 
     /**
      *
@@ -107,7 +104,7 @@ public class GCshTaxTableImpl implements GCshTaxTable {
      * @return the parent tax-table or null
      */
     public GCshTaxTable getParent() {
-	return getFile().getTaxTableByID(getParentID());
+	return myFile.getTaxTableByID(getParentID());
     }
 
     /**
@@ -127,7 +124,7 @@ public class GCshTaxTableImpl implements GCshTaxTable {
 		    .getGncGncTaxTableEntry().iterator(); iter.hasNext();) {
 		GncV2.GncBook.GncGncTaxTable.TaxtableEntries.GncGncTaxTableEntry element = iter.next();
 
-		entries.add(new GCshTaxTableEntryImpl(element, getFile()));
+		entries.add(new GCshTaxTableEntryImpl(element, myFile));
 	    }
 
 	}

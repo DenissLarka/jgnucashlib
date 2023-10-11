@@ -3109,7 +3109,7 @@
 </gnc:GncTaxTable>
 <gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">de4c17d1eb0e4f088ba73d4c697032f0</taxtable:guid>
-  <taxtable:name>FR_USt_Std</taxtable:name>
+  <taxtable:name>FR_TVA_Std</taxtable:name>
   <taxtable:refcount>1</taxtable:refcount>
   <taxtable:invisible>0</taxtable:invisible>
   <taxtable:entries>
@@ -3122,7 +3122,7 @@
 </gnc:GncTaxTable>
 <gnc:GncTaxTable version="2.0.0">
   <taxtable:guid type="guid">e279d5cc81204f1bb6cf672ef3357c0c</taxtable:guid>
-  <taxtable:name>FR_USt_red</taxtable:name>
+  <taxtable:name>FR_TVA_red</taxtable:name>
   <taxtable:refcount>0</taxtable:refcount>
   <taxtable:invisible>0</taxtable:invisible>
   <taxtable:entries>

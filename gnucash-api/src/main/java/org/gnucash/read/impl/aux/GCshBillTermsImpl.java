@@ -37,6 +37,8 @@ public class GCshBillTermsImpl implements GCshBillTerms {
 	jwsdpPeer = peer;
     }
 
+    // ---------------------------------------------------------------
+
     /**
      *
      * @return The JWSDP-Object we are wrapping.

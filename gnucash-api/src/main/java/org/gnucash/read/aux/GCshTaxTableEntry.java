@@ -14,26 +14,40 @@ public interface GCshTaxTableEntry {
     // ---------------------------------------------------------------
 
     /**
-     * @return the amount the tax is ("16" for "16%")
-     * @see ${@link #getType()}
-     */
-    FixedPointNumber getAmount();
-
-    /**
      * usually ${@link GCshTaxTableEntry#TYPE_PERCENT}.
      * @see ${@link #getAmount())
      */
     String getType();
 
     /**
-     * @return Returns the account.
-     * @see ${@link #myAccount}
+     * @return the amount the tax is ("16" for "16%")
+     * @see ${@link #getType()}
      */
-    GnucashAccount getAccount();
+    FixedPointNumber getAmount();
+
     /**
      * @return Returns the accountID.
      * @see ${@link #myAccountID}
      */
     String getAccountID();
 
+    /**
+     * @return Returns the account.
+     * @see ${@link #myAccount}
+     */
+    GnucashAccount getAccount();
+    
+    // ---------------------------------------------------------------
+
+    /**
+     * @return Returns the accountID.
+     * @see ${@link #myAccountID}
+     */
+    void setAccountID(final String acctID);
+
+    /**
+     * @return Returns the account.
+     * @see ${@link #myAccount}
+     */
+    void setAccount(final GnucashAccount acct);
 }
