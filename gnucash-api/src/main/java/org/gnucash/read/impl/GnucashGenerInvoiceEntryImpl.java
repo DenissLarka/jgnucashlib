@@ -373,39 +373,72 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
 	if (jwsdpPeer.getEntryITaxtable() != null) {
 	    if (!jwsdpPeer.getEntryITaxtable().getType().equals(Const.XML_DATA_TYPE_GUID)) {
-		LOGGER.error("Customer invoice entry with id '" + getId() + 
+		LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId() + 
 			"' has i-taxtable with type='"
 			+ jwsdpPeer.getEntryITaxtable().getType() + "' != 'guid'");
 	    }
 	}
 
-	GCshTaxTable taxtable = null;
+	GCshTaxTable taxTab = null;
 	try {
-	    taxtable = getInvcTaxTable();
+	    taxTab = getInvcTaxTable();
 	} catch (NoTaxTableFoundException exc) {
-	    LOGGER.error("Customer invoice entry with id '" + getId()
-		    + "' is taxable but JWSDP peer has no i-taxtable-entry! " + "Assuming 0%");
+	    LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId() + 
+		    "' is taxable but JWSDP peer has no i-taxtable-entry! " + 
+		    "Assuming 0%");
 	    return new FixedPointNumber("0");
 	}
 
-	if (taxtable == null) {
-	    LOGGER.error("Customer invoice entry with id '" + getId() + 
+	// ::TODO ::CHECK
+	// Overly specific code / pseudo-improvement
+	// Reasons: 
+	// - We should not correct data errors -- why only check here?
+	//   There are hundreds of instances where we could check...
+	// - For this lib, the data in the GnuCash file is the truth. 
+	//   If it happens to be wrong, then it should be corrected, period.
+	// - This is not the way GnuCash works. It never just takes a 
+	//   tax rate directly, but rather goes via a tax table (entry).
+	// - Assuming standard German VAT is overly specific.
+//	if (taxTab == null) {
+//	    LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId() + 
+//		    "' is taxable but has an unknown i-taxtable! "
+//		    + "Assuming 19%");
+//	    return new FixedPointNumber("1900000/10000000");
+//	}
+	// Instead:
+	if (taxTab == null) {
+	    LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId() + 
 		    "' is taxable but has an unknown i-taxtable! "
-		    + "Assuming 19%");
-	    return new FixedPointNumber("1900000/10000000");
+		    + "Assuming 0%");
+	    return new FixedPointNumber("0");
 	}
 
-	GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
-	if (!taxTableEntry.getType().equals(GCshTaxTableEntry.TYPE_PERCENT)) {
-	    LOGGER.error("Customer invoice entry with id '" + getId() + 
-		    "' is taxable but has a i-taxtable "
-		    + "that is not in percent but in '" + taxTableEntry.getType() + "'! Assuming 19%");
-	    return new FixedPointNumber("1900000/10000000");
+	GCshTaxTableEntry taxTabEntr = taxTab.getEntries().iterator().next();
+	// ::TODO ::CHECK
+	// Overly specific code / pseudo-improvement
+	// Reasons: 
+	// - We should not correct data errors -- why only check here?
+	//   There are hundreds of instances where we could check...
+	// - Assuming standard German VAT is overly specific.
+//	if ( ! taxTabEntr.getType().equals(GCshTaxTableEntry.TYPE_PERCENT) ) {
+//	    LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId() + 
+//		    "' is taxable but has a i-taxtable "
+//		    + "that is not in percent but in '" + taxTabEntr.getType() + "'! Assuming 19%");
+//	    return new FixedPointNumber("1900000/10000000");
+//	}
+	// Instead:
+	// ::TODO
+	if ( taxTabEntr.getType().equals(GCshTaxTableEntry.TYPE_VALUE) ) {
+	    LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId() + 
+		    "' is taxable but has a i-taxtable of type '" + taxTabEntr.getType() + "'! " + 
+		    "NOT IMPLEMENTED YET " +
+	            "Assuming 0%");
+	    return new FixedPointNumber("0");
 	}
 
-	FixedPointNumber val = taxTableEntry.getAmount();
+	FixedPointNumber val = taxTabEntr.getAmount();
 
-	// the file contains 19 for 19%, we need 0,19
+	// the file contains, say, 19 for 19%, we need to convert it to 0,19.
 	return ((FixedPointNumber) val.clone()).divideBy(new FixedPointNumber("100"));
 
     }
@@ -426,38 +459,44 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
 	if (jwsdpPeer.getEntryBTaxtable() != null) {
 	    if (!jwsdpPeer.getEntryBTaxtable().getType().equals(Const.XML_DATA_TYPE_GUID)) {
-		LOGGER.error("Vendor bill entry with id '" + getId() + "' has b-taxtable with type='"
+		LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId() + "' has b-taxtable with type='"
 			+ jwsdpPeer.getEntryBTaxtable().getType() + "' != 'guid'");
 	    }
 	}
 
-	GCshTaxTable taxtable = null;
+	GCshTaxTable taxTab = null;
 	try {
-	    taxtable = getBillTaxTable();
+	    taxTab = getBillTaxTable();
 	} catch (NoTaxTableFoundException exc) {
-	    LOGGER.error("Vendor bill entry with id '" + getId()
-		    + "' is taxable but JWSDP peer has no b-taxtable-entry! " + "Assuming 0%");
+	    LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId() +
+		    "' is taxable but JWSDP peer has no b-taxtable-entry! " + 
+		    "Assuming 0%");
 	    return new FixedPointNumber("0");
 	}
 
-	if (taxtable == null) {
-	    LOGGER.error("Vendor bill entry with id '" + getId() + 
+	// Cf. getInvcApplicableTaxPercent()
+	if (taxTab == null) {
+	    LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId() + 
 		    "' is taxable but has an unknown b-taxtable! "
-		    + "Assuming 19%");
-	    return new FixedPointNumber("1900000/10000000");
+		    + "Assuming 0%");
+	    return new FixedPointNumber("0");
 	}
 
-	GCshTaxTableEntry taxTableEntry = taxtable.getEntries().iterator().next();
-	if (!taxTableEntry.getType().equals(GCshTaxTableEntry.TYPE_PERCENT)) {
-	    LOGGER.error("Vendor bill entry with id '" + getId() + 
-		    "' is taxable but has a b-taxtable "
-		    + "that is not in percent but in '" + taxTableEntry.getType() + "'! Assuming 19%");
-	    return new FixedPointNumber("1900000/10000000");
+	GCshTaxTableEntry taxTabEntr = taxTab.getEntries().iterator().next();
+	// ::TODO ::CHECK
+	// Cf. getInvcApplicableTaxPercent()
+	// ::TODO
+	if ( taxTabEntr.getType().equals(GCshTaxTableEntry.TYPE_VALUE) ) {
+	    LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId() + 
+		    "' is taxable but has a b-taxtable of type '" + taxTabEntr.getType() + "'! " + 
+		    "NOT IMPLEMENTED YET " +
+	            "Assuming 0%");
+	    return new FixedPointNumber("0");
 	}
 
-	FixedPointNumber val = taxTableEntry.getAmount();
+	FixedPointNumber val = taxTabEntr.getAmount();
 
-	// the file contains 19 for 19%, we need 0,19
+	// the file contains, say, 19 for 19%, we need to convert it to 0,19.
 	return ((FixedPointNumber) val.clone()).divideBy(new FixedPointNumber("100"));
 
     }
