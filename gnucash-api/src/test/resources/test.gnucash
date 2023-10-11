@@ -214,7 +214,7 @@
   </slot>
 </book:slots>
 <gnc:count-data cd:type="commodity">3</gnc:count-data>
-<gnc:count-data cd:type="account">92</gnc:count-data>
+<gnc:count-data cd:type="account">91</gnc:count-data>
 <gnc:count-data cd:type="transaction">11</gnc:count-data>
 <gnc:count-data cd:type="price">6</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncBillTerm">3</gnc:count-data>
@@ -1782,6 +1782,17 @@
   <act:parent type="guid">8a54850637cd4002be59eefc68a3ab80</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
+  <act:name>Material</act:name>
+  <act:id type="guid">3a4fe87c83ac4a1ba8c4d851ccd4d940</act:id>
+  <act:type>EXPENSE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:parent type="guid">23aa4227ddda457592998d18f888a662</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
   <act:name>Fremdkapital</act:name>
   <act:id type="guid">5008258df86243ee86d37dee64327c27</act:id>
   <act:type>LIABILITY</act:type>
@@ -1950,28 +1961,6 @@
     </slot>
   </act:slots>
   <act:parent type="guid">14305dc80e034834b3f531696d81b493</act:parent>
-</gnc:account>
-<gnc:account version="2.0.0">
-  <act:name>Aufwand</act:name>
-  <act:id type="guid">1312abc1f25140eba6cd5eb0e98e0f2e</act:id>
-  <act:type>INCOME</act:type>
-  <act:commodity>
-    <cmdty:space>CURRENCY</cmdty:space>
-    <cmdty:id>EUR</cmdty:id>
-  </act:commodity>
-  <act:commodity-scu>100</act:commodity-scu>
-  <act:parent type="guid">14305dc80e034834b3f531696d81b493</act:parent>
-</gnc:account>
-<gnc:account version="2.0.0">
-  <act:name>Material</act:name>
-  <act:id type="guid">3a4fe87c83ac4a1ba8c4d851ccd4d940</act:id>
-  <act:type>INCOME</act:type>
-  <act:commodity>
-    <cmdty:space>CURRENCY</cmdty:space>
-    <cmdty:id>EUR</cmdty:id>
-  </act:commodity>
-  <act:commodity-scu>100</act:commodity-scu>
-  <act:parent type="guid">1312abc1f25140eba6cd5eb0e98e0f2e</act:parent>
 </gnc:account>
 <gnc:transaction version="2.0.0">
   <trn:id type="guid">cc9fe6a245df45ba9b494660732a7755</trn:id>

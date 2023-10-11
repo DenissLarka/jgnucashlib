@@ -1102,7 +1102,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    SlotValue value = factory.createSlotValue();
 	    slot.setSlotKey("trans-read-only");
 	    value.setType("string");
-	    value.getContent().add("Aus einer Rechnung erzeugt. Für Änderungen müssen Sie die Buchung der Rechnung löschen."); // ::TODO
+	    value.getContent().add(Const.INVC_READ_ONLY_SLOT_TEXT);
 	    
 	    slot.setSlotValue(value);
 	    slots.getSlot().add(slot);
