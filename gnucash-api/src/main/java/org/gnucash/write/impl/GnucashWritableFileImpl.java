@@ -359,6 +359,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	int cntTaxTable = 0;
 	int cntInvoice = 0;
 	int cntIncEntry = 0;
+	int cntBillTerm = 0;
 	
 	/**
 	 * <p>
@@ -399,7 +400,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    } else if (element instanceof GncV2.GncBook.GncGncEmployee) {
 		// ::TODO
 	    } else if (element instanceof GncV2.GncBook.GncGncBillTerm) {
-		// ::TODO
+		cntBillTerm++;
 	    } else {
 		throw new IllegalStateException("Unecpected element in GNC:Book found! <" + element.toString() + ">");
 	    }
@@ -414,6 +415,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	setCountDataFor("gnc:GncTaxTable", cntTaxTable);
 	setCountDataFor("gnc:GncInvoice", cntInvoice);
 	setCountDataFor("gnc:GncEntry", cntIncEntry);
+	setCountDataFor("gnc:GncBillTerm", cntBillTerm);
 	
 	// make sure the correct sort-order of the entity-types is obeyed in writing.
 	// (we do not enforce this in the xml-schema to allow for reading out of order
@@ -694,6 +696,20 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     @SuppressWarnings("unchecked")
     public Collection<? extends GnucashWritableTransaction> getWritableTransactions() {
 	return (Collection<? extends GnucashWritableTransaction>) getTransactions();
+    }
+
+    public GnucashWritableTransaction getWritableTransactionByID(final String trxId) throws TransactionNotFoundException {
+	if (transactionID2transaction == null) {
+	    throw new IllegalStateException("no root-element loaded");
+	}
+	
+	for ( GnucashWritableTransaction trx : getWritableTransactions() )
+	{
+	    if ( trx.getId().equals(trxId) )
+		return trx;
+	}
+	
+	throw new TransactionNotFoundException();
     }
 
     /**

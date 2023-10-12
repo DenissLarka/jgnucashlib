@@ -486,8 +486,9 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	}
 	
 	invc.setInvoiceId(number);
-	invc.setInvoiceBillingId(number); // ::TODO ::CHECK
-	invc.setInvoiceActive(1); // TODO: is this correct?
+	// invc.setInvoiceBillingId(number); // ::TODO Do *not* fill with invoice number,
+	                                     // but instead with customer's reference number
+	invc.setInvoiceActive(1);
 	
 	// currency
 	{
@@ -578,8 +579,9 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	}
 	
 	invc.setInvoiceId(number);
-	invc.setInvoiceBillingId(number); // ::TODO ::CHECK
-	invc.setInvoiceActive(1); // TODO: is this correct?
+	// invc.setInvoiceBillingId(number); // ::CHECK Doesn't really make sense in a vendor bill
+	                                     // And even if: would have to be separate number
+	invc.setInvoiceActive(1);
 	
 	// currency
 	{
@@ -668,8 +670,12 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	}
 	
 	invc.setInvoiceId(number);
-	invc.setInvoiceBillingId(number); // ::TODO ::CHECK
-	invc.setInvoiceActive(1); // TODO: is this correct?
+	// invc.setInvoiceBillingId(number); // ::TODO ::CHECK Do *not* fill with invoice number,
+                                             // but instead with customer's reference number,
+	                                     // if it's a customer job (and even then -- the job 
+	                                     // itself should contain this number). If it's a 
+	                                     // vendor bill, then this does not make sense anyway.
+	invc.setInvoiceActive(1);
 	
 	// currency
 	{

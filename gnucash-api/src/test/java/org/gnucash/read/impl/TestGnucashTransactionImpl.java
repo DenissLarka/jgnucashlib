@@ -1,6 +1,7 @@
 package org.gnucash.read.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.InputStream;
 
@@ -17,8 +18,8 @@ public class TestGnucashTransactionImpl
   private GnucashFile        gcshFile = null;
   private GnucashTransaction trx = null;
   
-  private static final String TRX_1_ID = "32b216aa73a44137aa5b041ab8739058";
-  private static final String TRX_2_ID = "c97032ba41684b2bb5d1391c9d7547e9";
+  public static final String TRX_1_ID = "32b216aa73a44137aa5b041ab8739058";
+  public static final String TRX_2_ID = "c97032ba41684b2bb5d1391c9d7547e9";
 
   // -----------------------------------------------------------------
   
@@ -67,6 +68,7 @@ public class TestGnucashTransactionImpl
   public void test01() throws Exception
   {
     trx = gcshFile.getTransactionByID(TRX_1_ID);
+    assertNotEquals(null, trx);
     
     assertEquals(TRX_1_ID, trx.getId());
     assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE);
@@ -84,6 +86,7 @@ public class TestGnucashTransactionImpl
   public void test02() throws Exception
   {
     trx = gcshFile.getTransactionByID(TRX_2_ID);
+    assertNotEquals(null, trx);
     
     assertEquals(TRX_2_ID, trx.getId());
     assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE);

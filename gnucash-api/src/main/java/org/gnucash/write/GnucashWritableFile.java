@@ -14,6 +14,7 @@ import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.impl.TransactionNotFoundException;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
 import org.gnucash.write.spec.GnucashWritableJobInvoice;
@@ -155,8 +156,10 @@ public interface GnucashWritableFile extends GnucashFile,
      * @see GnucashFile#getTransactions()
      * @return writable versions of all transactions in the book.
      */
-    Collection<? extends GnucashWritableTransaction> getWritableTransactions();
+    public Collection<? extends GnucashWritableTransaction> getWritableTransactions();
 
+    public GnucashWritableTransaction getWritableTransactionByID(final String trxId) throws TransactionNotFoundException;
+    
     /**
      * @return a new transaction with no splits that is already added to this file
      */
