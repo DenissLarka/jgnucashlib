@@ -1,4 +1,4 @@
-package org.gnucash.write;
+package org.example.gnucash.write;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,17 +10,18 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
+import org.gnucash.write.GnucashWritableTransaction;
+import org.gnucash.write.GnucashWritableTransactionSplit;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 
 /**
  * Created by Deniss Larka
- * on 19.Apr.2017
  */
-public class GnuCashSandbox {
+public class GenTrx2 {
 
 	public static void main(String[] args) throws IOException {
 
-		GnuCashSandbox sandbox = new GnuCashSandbox();
+		GenTrx2 sandbox = new GenTrx2();
 		sandbox.process();
 	}
 

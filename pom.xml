@@ -15,9 +15,11 @@
 	</properties>
 
 	<modules>
+		
 		<module>gnucash-api</module>
+		<module>gnucash-api-examples</module>
+		
 	</modules>
-
 
 	<dependencies>
 
