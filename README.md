@@ -53,6 +53,8 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 
 * Some minor cleaning here and there (e.g., small inconsistencies in date-handling, `toString()`-methods, etc.).
 
+* Provided an extensive set of example programs (not generally-usable tools!) in a module of its own. Moved the one single example program that was there before into this module.
+
 # Planned
 It should go without extra notice, but the following points are of cours subject to change:
 
@@ -74,13 +76,17 @@ It should go without extra notice, but the following points are of cours subject
 
 * Configurable values in `Const` class.
 
-* More macro code (i.e., wrappers for generating specific variants of invoices/bills, say, or for booking a dividend payment from a share).
+* Possibly some macro code (i.e., wrappers for generating specific variants), e.g. wrappers for:
+
+  * generating specific variants of invoices/bills,
+  * booking invoice-payement transaction,
+  * booking dividend payments from a share.
 
 * Possibly taking over other original code from Marcus Wolschon (there are two more packages).
 
-* Set of command-line tools for basic handling of reading/writing activities.
+* Possibly write a set of generally-usable command-line tools for basic handling of reading/writing activities, based on existing set of simple examples (but in a separate module).
 
-* Last not least: Provide user documentation and/or more examples.
+* Last not least: Provide user documentation.
 
 # Known Issues
 * As mentioned above: As of now, the lib only works well when your GnuCash files are generated on a german system (locale de_DE).
