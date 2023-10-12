@@ -39,11 +39,11 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 
 * Improved exception handling/actual working of code with real-life data (not fundamentally different, but rather small repair work -- the code partially did not work in the above-mentioned environment).
 
-* JUnit-based set of regression test cases (with test data in dedicated test GnuCash file). This alone greatly improves security and peace of mind both for users and developers, let alone learning how to actually use the library (in lack of a documentation, simply look into the test cases to understand how to use the lib).
+* JUnit-based set of regression test cases (with test data in dedicated test GnuCash file). This alone greatly improves security and peace of mind both for users and developers, let alone learning how to actually use the library (in lack of a proper documentation, simply look into the examples and the test cases to understand how to use the lib).
 
 * Enhanced type safety and compile-time checks -- both were not always as strict as possible.
 
-* (Partially) got rid of overly specific and/or obsolete code (e.g., there were methods that only make sense when using the German standard SKR03/04 chart of accounts, or the 19% VAT (originally, until 2006, 16%, which you still could find in the code)).
+* (Partially) got rid of overly specific and/or obsolete code (e.g., there were methods that only make sense when using the german standard SKR03/04 chart of accounts, or the 19% VAT (originally, until 2006, 16%, which you still could find in the code)).
 
 * Got rid of some redundancies here and there, introduced class `Const` for that (which in turn contains hard-coded values).
 
@@ -64,9 +64,7 @@ It should go without extra notice, but the following points are of cours subject
 
 * Invoices and bills: Support more variants, such as choosing the terms of payment or the "tax included" flag for entries.
 
-* Generalizing tax-law-specific code (e.g., the 19% VAT in Germany that you will see here and there in the code).
-
-* Generalizing (technically) locale-specific code (e.g., GnuCash stores certain interal XML-tags with locale-specific values for transaction splits' actions). Currently, all this is too tightly tied to the German locale (de_DE).
+* Generalizing (technically) locale-specific code (e.g., GnuCash stores certain interal XML-tags with locale-specific values for transaction splits' actions). Currently, all this is too tightly tied to the german locale (de_DE).
 
 * Get rid of ugly code redundancies here and there, esp. in the class `Gnucash(Writable)GenerInvoiceImpl`.
 
@@ -83,6 +81,13 @@ It should go without extra notice, but the following points are of cours subject
 * Set of command-line tools for basic handling of reading/writing activities.
 
 * Last not least: Provide user documentation and/or more examples.
+
+# Known Issues
+* As mentioned above: As of now, the lib only works well when your GnuCash files are generated on a german system (locale de_DE).
+
+* When generating invoices, you cannot/should not call the `post()`-method immediately after composing the object. The post-method will work, but the amount of the post-transaction will be wrong (thus, the transaction will be useless as it cannot be corrected manually in GnuCash; post-transactions are read-only). Instead, you should first write the results to the output file using the `GnucashWritableFile.writeFile()`-method, then re-load/re-parse the invoice generated before and then use the `post()`-method. Then, the amount will be correct.
+
+  Cf. test classes `TestGnucashWritableCustomerInvoiceImpl`, `TestGnucashWritableVendorBillImpl` and  `TestGnucashWritableJobInvoiceImpl`.
 
 # Acknowlegdgements
 Special thanks to: 
