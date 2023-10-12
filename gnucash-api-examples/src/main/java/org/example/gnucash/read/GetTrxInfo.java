@@ -6,91 +6,67 @@ import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.impl.GnucashFileImpl;
 
-import org.example.CommandLineTool;
-import org.example.CouldNotExecuteException;
+public class GetTrxInfo {
+    // BEGIN Example data -- adapt to your needs
+    private static String gcshFileName = "example_in.gnucash";
+    private static String trxID        = "xyz";
+    // END Example data
 
-public class GetTrxInfo extends CommandLineTool
-{
-  // BEGIN Example data
-  private static String  gcshFileName = "example_in.gnucash";
-  private static String  trxID        = "xyz";
-  // END Example data
-  
-  // -----------------------------------------------------------------
-  
-  public static void main( String[] args )
-  {
-    try
-    {
-      GetTrxInfo tool = new GetTrxInfo ();
-      tool.execute(args);
-    }
-    catch (CouldNotExecuteException exc) 
-    {
-      System.err.println("Execution exception. Aborting.");
-      exc.printStackTrace();
-      System.exit(1);
-    }
-  }
+    // -----------------------------------------------------------------
 
-  @Override
-  protected void kernel() throws Exception
-  {
-    GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
-    
-    GnucashTransaction trx = gcshFile.getTransactionByID(trxID);
-    
-    try
-    {
-      System.out.println("ID:              " + trx.getId());
-    }
-    catch ( Exception exc )
-    {
-      System.out.println("ID:              " + "ERROR");
-    }
-    
-    try
-    {
-      System.out.println("Balance:         " + trx.getBalanceFormatted());
-    }
-    catch ( Exception exc )
-    {
-      System.out.println("Balance:         " + "ERROR");
-    }
-    
-    try
-    {
-      System.out.println("Currency:        " + trx.getCurrencyID());
-    }
-    catch ( Exception exc )
-    {
-      System.out.println("Currency:        " + "ERROR");
-    }
-        
-    try
-    {
-      System.out.println("Description:     '" + trx.getDescription() + "'");
-    }
-    catch ( Exception exc )
-    {
-      System.out.println("Description:     " + "ERROR");
+    public static void main(String[] args) {
+	try {
+	    GetTrxInfo tool = new GetTrxInfo();
+	    tool.kernel();
+	} catch (Exception exc) {
+	    System.err.println("Execution exception. Aborting.");
+	    exc.printStackTrace();
+	    System.exit(1);
+	}
     }
 
-    // ---
+    protected void kernel() throws Exception {
+	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
-    showSplits(trx);
-  }
+	GnucashTransaction trx = gcshFile.getTransactionByID(trxID);
 
-  // -----------------------------------------------------------------
+	try {
+	    System.out.println("ID:              " + trx.getId());
+	} catch (Exception exc) {
+	    System.out.println("ID:              " + "ERROR");
+	}
 
-  private void showSplits(GnucashTransaction trx)
-  {
-    System.out.println("");
-    System.out.println("Splits:");
-    
-    for ( GnucashTransactionSplit splt : trx.getSplits() )
-    {
-      System.out.println(" - " + splt.toString());
+	try {
+	    System.out.println("Balance:         " + trx.getBalanceFormatted());
+	} catch (Exception exc) {
+	    System.out.println("Balance:         " + "ERROR");
+	}
+
+	try {
+	    System.out.println("Currency:        " + trx.getCurrencyID());
+	} catch (Exception exc) {
+	    System.out.println("Currency:        " + "ERROR");
+	}
+
+	try {
+	    System.out.println("Description:     '" + trx.getDescription() + "'");
+	} catch (Exception exc) {
+	    System.out.println("Description:     " + "ERROR");
+	}
+
+	// ---
+
+	showSplits(trx);
     }
-  }
+
+    // -----------------------------------------------------------------
+
+    private void showSplits(GnucashTransaction trx) {
+	System.out.println("");
+	System.out.println("Splits:");
+
+	for (GnucashTransactionSplit splt : trx.getSplits()) {
+	    System.out.println(" - " + splt.toString());
+	}
+    }
 }

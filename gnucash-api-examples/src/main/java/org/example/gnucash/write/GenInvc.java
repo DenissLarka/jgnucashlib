@@ -12,7 +12,6 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.impl.NoTaxTableFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -25,314 +24,312 @@ import org.gnucash.write.spec.GnucashWritableJobInvoiceEntry;
 import org.gnucash.write.spec.GnucashWritableVendorBill;
 import org.gnucash.write.spec.GnucashWritableVendorBillEntry;
 
-import org.example.CommandLineTool;
-import org.example.CouldNotExecuteException;
-
-public class GenInvc extends CommandLineTool
-{
-  enum InvoiceType
-  {
-    CUSTOMER,
-    VENDOR,
-    JOB
-  }
-  
-  // BEGIN Example data
-  private static String           gcshInFileName    = "example_in.gnucash";
-  private static String           gcshOutFileName   = "example_out.gnucash";
-  private static InvoiceType      type              = InvoiceType.CUSTOMER; // e.g.
-  private static String           ownerID           = "xyz";
-  private static String           incExpAcctID      = "xyz";
-  private static String           recvblPayblAcctID = "xyz";
-  private static String           number            = "1234";
-  private static LocalDate        dateOpen          = LocalDate.now();
-  private static LocalDate        datePost          = LocalDate.now();
-  private static LocalDate        dateDue           = LocalDate.now();
-  private static FixedPointNumber amount            = new FixedPointNumber("1250/100");
-  // END Example data
-  
-  // -----------------------------------------------------------------
-
-  private static GnucashAccount   incExpAcct      = null;
-  private static GnucashAccount   recvblPayblAcct = null;
-
-  // -----------------------------------------------------------------
-  
-  public static void main( String[] args )
-  {
-    try
-    {
-      GenInvc tool = new GenInvc ();
-      tool.execute(args);
+public class GenInvc {
+    enum InvoiceType {
+	CUSTOMER, 
+	VENDOR, 
+	JOB
     }
-    catch (CouldNotExecuteException exc) 
-    {
-      System.err.println("Execution exception. Aborting.");
-      exc.printStackTrace();
-      System.exit(1);
-    }
-  }
 
-  @Override
-  protected void kernel() throws Exception
-  {
-    GnucashWritableFileImpl gcshFile = new GnucashWritableFileImpl(new File(gcshInFileName));
+    // -----------------------------------------------------------------
 
-    try 
-    {
-      incExpAcct = gcshFile.getAccountByID(incExpAcctID);
-      System.err.println("Income/expense account:     " + 
-                         "Code: " + incExpAcct.getCode() + ", " +
-                         "Type: " + incExpAcct.getType() + ", " + 
-                         "Name: '" + incExpAcct.getQualifiedName() + "'");
-    
-      if ( ! incExpAcct.getType().equals(GnucashAccount.TYPE_INCOME) && 
-           ! incExpAcct.getType().equals(GnucashAccount.TYPE_EXPENSE) )
-      {
-        System.err.println("Error: Account is neither an income nor an expenses account");
-        throw new WrongAccountTypeException();
-      }
-    }
-    catch ( Exception exc )
-    {
-      System.err.println("Error: Could not instantiate account with ID '" + incExpAcctID + "'");
-      throw new NoAccountFoundException();
-    }
-    
-    try 
-    {
-      recvblPayblAcct = gcshFile.getAccountByID(recvblPayblAcctID);
-      System.err.println("Receivable/payable account: " + 
-                         "Code: " + recvblPayblAcct.getCode() + ", " +
-                         "Type: " + recvblPayblAcct.getType() + ", " + 
-                         "Name: '" + recvblPayblAcct.getQualifiedName() + "'");
+    // BEGIN Example data -- adapt to your needs
+    private static String gcshInFileName    = "example_in.gnucash";
+    private static String gcshOutFileName   = "example_out.gnucash";
+    private static InvoiceType type         = InvoiceType.CUSTOMER;
+    private static String custID            = "1d2081e8a10e4d5e9312d9fff17d470d";
+    private static String vendID            = "bc1c7a6d0a6c4b4ea7dd9f8eb48f79f7";
+    private static String job1ID            = "e91b99cd6fbb48a985cbf1e8041f378c"; // customer job
+    private static String job2ID            = "028cfb5993ef4d6b83206bc844e2fe56"; // vendor job
+    private static String incAcctID         = "fed745c4da5c49ebb0fde0f47222b35b"; // Root Account:Erträge:Sonstiges
+    private static String expAcctID         = "7d4c7bf08901493ab346cc24595fdb97"; // Root Account:Aufwendungen:Sonstiges
+    private static String recvblAcctID      = "ee7561449e61448fb8fefdc27a35d559"; // Root Account:Aktiva:Forderungen:sonstige
+    private static String paybleAcctID      = "55711b4e6f564709bf880f292448237a"; // Root Account:Fremdkapital:Lieferanten:sonstige
+    private static String number            = "1234";
+    private static LocalDate dateOpen       = LocalDate.now();
+    private static LocalDate datePost       = LocalDate.now();
+    private static LocalDate dateDue        = LocalDate.now();
+    private static FixedPointNumber amount  = new FixedPointNumber("1250/100");
+    // END Example data
 
-      if ( ! recvblPayblAcct.getType().equals(GnucashAccount.TYPE_RECEIVABLE) && 
-           ! recvblPayblAcct.getType().equals(GnucashAccount.TYPE_PAYABLE) )
-      {
-        System.err.println("Error: Account is neither a receivable nor a payable account");
-        throw new WrongAccountTypeException();
-      }
-    }
-    catch ( Exception exc )
-    {
-      System.err.println("Error: Could not instantiate account with ID '" + recvblPayblAcctID + "'");
-      throw new NoAccountFoundException();
-    }
-    
-    GnucashGenerInvoice invc = null;
-    if ( type == InvoiceType.CUSTOMER )
-      invc = doCustomer(gcshFile);
-    else if ( type == InvoiceType.VENDOR )
-      invc = doVendor(gcshFile);
-    else if ( type == InvoiceType.JOB )
-      invc = doJob(gcshFile);
+    // -----------------------------------------------------------------
 
-    gcshFile.writeFile(new File(gcshOutFileName));
-    
-    System.out.println("New Invoice ID: " + invc.getId());
-  }
+    private static GnucashAccount incAcct    = null;
+    private static GnucashAccount expAcct    = null;
+    private static GnucashAccount recvblAcct = null;
+    private static GnucashAccount payblAcct  = null;
 
-  // -----------------------------------------------------------------
+    // -----------------------------------------------------------------
 
-  private GnucashWritableCustomerInvoice doCustomer(GnucashWritableFileImpl gcshFile)
-      throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException, WrongAccountTypeException
-  {
-    if ( ! incExpAcct.getType().equals(GnucashAccount.TYPE_INCOME) )
-    {
-      System.err.println("Error: You selected a customer invoice, but account " + incExpAcctID.toString() + " is not an income account");
-      throw new WrongAccountTypeException();
+    public static void main(String[] args) {
+	try {
+	    GenInvc tool = new GenInvc();
+	    tool.kernel();
+	} catch (Exception exc) {
+	    System.err.println("Execution exception. Aborting.");
+	    exc.printStackTrace();
+	    System.exit(1);
+	}
     }
-    
-    if ( ! recvblPayblAcct.getType().equals(GnucashAccount.TYPE_RECEIVABLE) )
-    {
-      System.err.println("Error: You selected a customer invoice, but account " + recvblPayblAcct.toString() + " is not an income account");
-      throw new WrongAccountTypeException();
-    }
-    
-    GnucashCustomer cust = null;
-    try
-    {
-      cust = gcshFile.getCustomerByID(ownerID);
-      System.err.println("Customer: " + cust.getNumber() + " (" + cust.getName() + ")");
-    }
-    catch ( Exception exc )
-    {
-      System.err.println("Error: No customer with ID '" + ownerID + "' found");
-      throw new NoOwnerFoundException();
-    }
-    
-    GnucashWritableCustomerInvoice invc = gcshFile.createWritableCustomerInvoice(
-                                                        number, 
-                                                        cust, 
-                                                        incExpAcct, recvblPayblAcct, 
-                                                        dateOpen, datePost, dateDue);
-    invc.setDescription("Generated by GenInv " + LocalDateTime.now().toString());
-    
-    GnucashWritableCustomerInvoiceEntry entry1 = invc.createEntry(incExpAcct, 
-                                                                  new FixedPointNumber(amount), 
-                                                                  new FixedPointNumber(1));
-    entry1.setAction(GnucashGenerInvoiceEntry.ACTION_JOB);
-    entry1.setDescription("Entry no. 1");
-    entry1.setDate(dateOpen.minus(1, ChronoUnit.DAYS));
 
-    GnucashWritableCustomerInvoiceEntry entry2 = invc.createEntry(incExpAcct, 
-                                                                  new FixedPointNumber(amount), new FixedPointNumber(1),
-                                                                  "DE_USt_Std");
-    entry2.setAction(GnucashGenerInvoiceEntry.ACTION_HOURS);
-    entry2.setDescription("Entry no. 2");
-    entry2.setDate(dateOpen);
+    protected void kernel() throws Exception {
+	GnucashWritableFileImpl gcshFile = new GnucashWritableFileImpl(new File(gcshInFileName));
 
-    GnucashWritableCustomerInvoiceEntry entry3 = invc.createEntry(incExpAcct, new FixedPointNumber(amount), 
-                                                                  new FixedPointNumber(1),
-                                                                  gcshFile.getTaxTableByName("FR_TVA_Std"));
-    entry3.setAction(GnucashGenerInvoiceEntry.ACTION_MATERIAL);
-    entry3.setDescription("Entry no. 3");
-    entry3.setDate(dateOpen.plus(1, ChronoUnit.DAYS));
+	try {
+	    incAcct = gcshFile.getAccountByID(incAcctID);
+	    System.err.println("Income account:     " + "Code: " + incAcct.getCode() + ", " + "Type: "
+		    + incAcct.getType() + ", " + "Name: '" + incAcct.getQualifiedName() + "'");
 
-    invc.post(incExpAcct, recvblPayblAcct, 
-              datePost, dateDue);
-    
-    return invc;
-  }
+	    if ( ! incAcct.getType().equals(GnucashAccount.TYPE_INCOME) ) {
+		System.err.println("Error: Account is not an income account");
+		throw new WrongAccountTypeException();
+	    }
+	} catch (Exception exc) {
+	    System.err.println("Error: Could not instantiate account with ID '" + incAcctID + "'");
+	    throw new NoAccountFoundException();
+	}
 
-  private GnucashWritableVendorBill doVendor(GnucashWritableFileImpl gcshFile)
-      throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException, WrongAccountTypeException
-  {
-    if ( ! incExpAcct.getType().equals(GnucashAccount.TYPE_EXPENSE) )
-    {
-      System.err.println("Error: You selected a vendor bill, but account " + incExpAcctID.toString() + " is not an expenses account");
-      throw new WrongAccountTypeException();
-    }
-    
-    if ( ! recvblPayblAcct.getType().equals(GnucashAccount.TYPE_PAYABLE) )
-    {
-      System.err.println("Error: You selected a vendor bill, but account " + recvblPayblAcct.toString() + " is not a payable account");
-      throw new WrongAccountTypeException();
-    }
-    
-    GnucashVendor vend = null;
-    try
-    {
-      vend = gcshFile.getVendorByID(ownerID);
-      System.err.println("Vendor: " + vend.getNumber() + " (" + vend.getName() + ")");
-    }
-    catch ( Exception exc )
-    {
-      System.err.println("Error: No vendor with ID '" + ownerID + "' found");
-      throw new NoOwnerFoundException();
-    }
-    
-    GnucashWritableVendorBill bll = gcshFile.createWritableVendorBill(
-                                                    number, 
-                                                    vend, 
-                                                    incExpAcct, recvblPayblAcct, 
-                                                    dateOpen, datePost, dateDue);
-    bll.setDescription("Generated by GenInv " + LocalDateTime.now().toString());
-    
-    GnucashWritableVendorBillEntry entry1 = bll.createEntry(incExpAcct, 
-                                                            new FixedPointNumber(amount), 
-                                                            new FixedPointNumber(1));
-    entry1.setAction(GnucashGenerInvoiceEntry.ACTION_JOB);
-    entry1.setDescription("Entry no. 1");
-    entry1.setDate(dateOpen.minus(1, ChronoUnit.DAYS));
-    
-    GnucashWritableVendorBillEntry entry2 = bll.createEntry(incExpAcct, 
-                                                            new FixedPointNumber(amount), 
-                                                            new FixedPointNumber(1),
-                                                            "DE_USt_Std");
-    entry2.setAction(GnucashGenerInvoiceEntry.ACTION_HOURS);
-    entry2.setDescription("Entry no. 2");
-    entry2.setDate(dateOpen);
+	try {
+	    expAcct = gcshFile.getAccountByID(expAcctID);
+	    System.err.println("Expenses account:     " + "Code: " + expAcct.getCode() + ", " + "Type: "
+		    + expAcct.getType() + ", " + "Name: '" + expAcct.getQualifiedName() + "'");
 
-    GnucashWritableVendorBillEntry entry3 = bll.createEntry(incExpAcct, 
-                                                            new FixedPointNumber(amount), 
-                                                            new FixedPointNumber(1),
-                                                            gcshFile.getTaxTableByName("FR_TVA_Std"));
-    entry3.setAction(GnucashGenerInvoiceEntry.ACTION_MATERIAL);
-    entry3.setDescription("Entry no. 3");
-    entry3.setDate(dateOpen.plus(1, ChronoUnit.DAYS));
+	    if ( ! expAcct.getType().equals(GnucashAccount.TYPE_EXPENSE) ) {
+		System.err.println("Error: Account is not an expenses account");
+		throw new WrongAccountTypeException();
+	    }
+	} catch (Exception exc) {
+	    System.err.println("Error: Could not instantiate account with ID '" + expAcctID + "'");
+	    throw new NoAccountFoundException();
+	}
 
-    bll.post(incExpAcct, recvblPayblAcct, 
-             datePost, dateDue);
+	try {
+	    recvblAcct = gcshFile.getAccountByID(recvblAcctID);
+	    System.err.println("Accounts-receivable account: " + "Code: " + recvblAcct.getCode() + ", " + "Type: "
+		    + recvblAcct.getType() + ", " + "Name: '" + recvblAcct.getQualifiedName() + "'");
 
-    return bll;
-  }
-  
-  private GnucashWritableJobInvoice doJob(GnucashWritableFileImpl gcshFile)
-      throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException, WrongAccountTypeException, UnknownInvoiceTypeException
-  {
-    GnucashGenerJob job = null;
-    try
-    {
-      job = gcshFile.getGenerJobByID(ownerID);
-      System.err.println("(Gener.) job: " + job.getNumber() + " (" + job.getName() + ")");
-    }
-    catch ( Exception exc )
-    {
-      System.err.println("Error: No (gener.) job with ID '" + ownerID + "' found");
-      throw new NoOwnerFoundException();
-    }
-    
-    if ( job.getOwnerType().equals(GCshOwner.TYPE_CUSTOMER) &&
-         ! incExpAcct.getType().equals(GnucashAccount.TYPE_INCOME) )
-    {
-      System.err.println("Error: You selected a customer job invoice, but account " + incExpAcctID.toString() + " is not an income account");
-      throw new WrongAccountTypeException();
-    }
-    else if ( job.getOwnerType().equals(GCshOwner.TYPE_VENDOR) &&
-              ! incExpAcct.getType().equals(GnucashAccount.TYPE_EXPENSE) )
-    {
-      System.err.println("Error: You selected a vendor job invoice, but account " + incExpAcctID.toString() + " is not an expenses account");
-      throw new WrongAccountTypeException();
-    }
-    
-    if ( job.getOwnerType().equals(GCshOwner.TYPE_CUSTOMER) &&
-         ! recvblPayblAcct.getType().equals(GnucashAccount.TYPE_RECEIVABLE) )
-    {
-      System.err.println("Error: You selected a customer job invoice, but account " + recvblPayblAcct.toString() + " is not a receivable account");
-      throw new WrongAccountTypeException();
-    }
-    else if ( job.getOwnerType().equals(GCshOwner.TYPE_VENDOR) &&
-              ! recvblPayblAcct.getType().equals(GnucashAccount.TYPE_PAYABLE) )
-    {
-      System.err.println("Error: You selected a vendor job invoice, but account " + recvblPayblAcct.toString() + " is not a payable account");
-      throw new WrongAccountTypeException();
-    }
-    
-    GnucashWritableJobInvoice invc = gcshFile.createWritableJobInvoice(
-                                                    number, 
-                                                    job, 
-                                                    incExpAcct, recvblPayblAcct, 
-                                                    dateOpen, datePost, dateDue);
-    invc.setDescription("Generated by GenInv " + LocalDateTime.now().toString());
-    
-    GnucashWritableJobInvoiceEntry entry1 = invc.createEntry(incExpAcct, 
-                                                             new FixedPointNumber(amount), 
-                                                             new FixedPointNumber(1));
-    entry1.setAction(GnucashGenerInvoiceEntry.ACTION_JOB);
-    entry1.setDescription("Entry no. 1");
-    entry1.setDate(dateOpen.minus(1, ChronoUnit.DAYS));
+	    if ( ! recvblAcct.getType().equals(GnucashAccount.TYPE_RECEIVABLE) ) {
+		System.err.println("Error: Account is not an accounts-receivable account");
+		throw new WrongAccountTypeException();
+	    }
+	} catch (Exception exc) {
+	    System.err.println("Error: Could not instantiate account with ID '" + recvblAcctID + "'");
+	    throw new NoAccountFoundException();
+	}
 
-    GnucashWritableJobInvoiceEntry entry2 = invc.createEntry(incExpAcct, 
-                                                             new FixedPointNumber(amount), 
-                                                             new FixedPointNumber(1),
-                                                             "DE_USt_Std");
-    entry2.setAction(GnucashGenerInvoiceEntry.ACTION_HOURS);
-    entry2.setDescription("Entry no. 2");
-    entry2.setDate(dateOpen);
+	try {
+	    payblAcct = gcshFile.getAccountByID(paybleAcctID);
+	    System.err.println("Accounts-payable account: " + "Code: " + payblAcct.getCode() + ", " + "Type: "
+		    + payblAcct.getType() + ", " + "Name: '" + payblAcct.getQualifiedName() + "'");
 
-    GnucashWritableJobInvoiceEntry entry3 = invc.createEntry(incExpAcct, 
-                                                             new FixedPointNumber(amount), 
-                                                             new FixedPointNumber(1),
-                                                             gcshFile.getTaxTableByName("FR_TVA_Std"));
-    entry3.setAction(GnucashGenerInvoiceEntry.ACTION_MATERIAL);
-    entry3.setDescription("Entry no. 3");
-    entry3.setDate(dateOpen.plus(1, ChronoUnit.DAYS));
+	    if ( ! payblAcct.getType().equals(GnucashAccount.TYPE_PAYABLE) ) {
+		System.err.println("Error: Account is not an accounts-payable account");
+		throw new WrongAccountTypeException();
+	    }
+	} catch (Exception exc) {
+	    System.err.println("Error: Could not instantiate account with ID '" + paybleAcctID + "'");
+	    throw new NoAccountFoundException();
+	}
 
-    invc.post(incExpAcct, recvblPayblAcct, 
-              datePost, dateDue);
+	GnucashGenerInvoice invc1 = null;
+	GnucashGenerInvoice invc2 = null;
+	
+	if ( type == InvoiceType.CUSTOMER ) {
+	    invc1 = doCustomer(gcshFile);
+	    System.out.println("New Invoice ID: " + invc1.getId());
+	}
+	else if ( type == InvoiceType.VENDOR ) {
+	    invc1 = doVendor(gcshFile);
+	    System.out.println("New Invoice ID: " + invc1.getId());
+	}
+	else if ( type == InvoiceType.JOB ) {
+	    invc1 = doJob_cust(gcshFile);
+	    System.out.println("New Invoice ID (1): " + invc1.getId());
 
-    return invc;
-  }
+	    invc2 = doJob_vend(gcshFile);
+	    System.out.println("New Invoice ID (2): " + invc2.getId());
+	}
+
+	gcshFile.writeFile(new File(gcshOutFileName));
+    }
+
+    // -----------------------------------------------------------------
+
+    private GnucashWritableCustomerInvoice doCustomer(GnucashWritableFileImpl gcshFile) throws NoOwnerFoundException,
+	    WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException, WrongAccountTypeException {
+	GnucashCustomer cust = null;
+	try {
+	    cust = gcshFile.getCustomerByID(custID);
+	    System.err.println("Customer: " + cust.getNumber() + " (" + cust.getName() + ")");
+	} catch (Exception exc) {
+	    System.err.println("Error: No customer with ID '" + custID + "' found");
+	    throw new NoOwnerFoundException();
+	}
+
+	GnucashWritableCustomerInvoice invc = gcshFile.createWritableCustomerInvoice(number, cust, 
+								incAcct, recvblAcct, 
+								dateOpen, datePost, dateDue);
+	invc.setDescription("Generated by GenInv " + LocalDateTime.now().toString());
+
+	GnucashWritableCustomerInvoiceEntry entry1 = invc.createEntry(incAcct, 
+		                                                      new FixedPointNumber(amount),
+		                                                      new FixedPointNumber(1));
+	entry1.setAction(GnucashGenerInvoiceEntry.ACTION_JOB);
+	entry1.setDescription("Entry no. 1");
+	entry1.setDate(dateOpen.minus(1, ChronoUnit.DAYS));
+
+	GnucashWritableCustomerInvoiceEntry entry2 = invc.createEntry(incAcct, 
+		                                                      new FixedPointNumber(amount),
+		                                                      new FixedPointNumber(1), 
+		                                                      "DE_USt_Std");
+	entry2.setAction(GnucashGenerInvoiceEntry.ACTION_HOURS);
+	entry2.setDescription("Entry no. 2");
+	entry2.setDate(dateOpen);
+
+	GnucashWritableCustomerInvoiceEntry entry3 = invc.createEntry(incAcct, 
+		                                                      new FixedPointNumber(amount),
+		                                                      new FixedPointNumber(1), 
+		                                                      gcshFile.getTaxTableByName("FR_TVA_Std"));
+	entry3.setAction(GnucashGenerInvoiceEntry.ACTION_MATERIAL);
+	entry3.setDescription("Entry no. 3");
+	entry3.setDate(dateOpen.plus(1, ChronoUnit.DAYS));
+
+	invc.post(incAcct, recvblAcct, datePost, dateDue);
+
+	return invc;
+    }
+
+    private GnucashWritableVendorBill doVendor(GnucashWritableFileImpl gcshFile) throws NoOwnerFoundException,
+	    WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException, WrongAccountTypeException {
+	GnucashVendor vend = null;
+	try {
+	    vend = gcshFile.getVendorByID(vendID);
+	    System.err.println("Vendor: " + vend.getNumber() + " (" + vend.getName() + ")");
+	} catch (Exception exc) {
+	    System.err.println("Error: No vendor with ID '" + vendID + "' found");
+	    throw new NoOwnerFoundException();
+	}
+
+	GnucashWritableVendorBill bll = gcshFile.createWritableVendorBill(number, vend, 
+							expAcct, payblAcct,
+							dateOpen, datePost, dateDue);
+	bll.setDescription("Generated by GenInv " + LocalDateTime.now().toString());
+
+	GnucashWritableVendorBillEntry entry1 = bll.createEntry(expAcct, 
+		                                                new FixedPointNumber(amount),
+		                                                new FixedPointNumber(1));
+	entry1.setAction(GnucashGenerInvoiceEntry.ACTION_JOB);
+	entry1.setDescription("Entry no. 1");
+	entry1.setDate(dateOpen.minus(1, ChronoUnit.DAYS));
+
+	GnucashWritableVendorBillEntry entry2 = bll.createEntry(expAcct, 
+		                                                new FixedPointNumber(amount),
+		                                                new FixedPointNumber(1), 
+		                                                "DE_USt_Std");
+	entry2.setAction(GnucashGenerInvoiceEntry.ACTION_HOURS);
+	entry2.setDescription("Entry no. 2");
+	entry2.setDate(dateOpen);
+
+	GnucashWritableVendorBillEntry entry3 = bll.createEntry(expAcct, 
+                                                                new FixedPointNumber(amount),
+                                                                new FixedPointNumber(1), 
+                                                                gcshFile.getTaxTableByName("FR_TVA_Std"));
+	entry3.setAction(GnucashGenerInvoiceEntry.ACTION_MATERIAL);
+	entry3.setDescription("Entry no. 3");
+	entry3.setDate(dateOpen.plus(1, ChronoUnit.DAYS));
+
+	bll.post(expAcct, payblAcct, datePost, dateDue);
+
+	return bll;
+    }
+
+    private GnucashWritableJobInvoice doJob_cust(GnucashWritableFileImpl gcshFile)
+	    throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException,
+	    WrongAccountTypeException, UnknownInvoiceTypeException {
+	GnucashGenerJob job = null;
+	try {
+	    job = gcshFile.getGenerJobByID(job1ID);
+	    System.err.println("(Gener.) job: " + job.getNumber() + " (" + job.getName() + ")");
+	} catch (Exception exc) {
+	    System.err.println("Error: No (gener.) job with ID '" + job1ID + "' found");
+	    throw new NoOwnerFoundException();
+	}
+
+	GnucashWritableJobInvoice invc = gcshFile.createWritableJobInvoice(number, job, 
+							incAcct, recvblAcct,
+							dateOpen, datePost, dateDue);
+	invc.setDescription("Generated by GenInv " + LocalDateTime.now().toString());
+
+	GnucashWritableJobInvoiceEntry entry1 = invc.createEntry(incAcct, 
+                                                                 new FixedPointNumber(amount),
+                                                                 new FixedPointNumber(1));
+	entry1.setAction(GnucashGenerInvoiceEntry.ACTION_JOB);
+	entry1.setDescription("Entry no. 1");
+	entry1.setDate(dateOpen.minus(1, ChronoUnit.DAYS));
+
+	GnucashWritableJobInvoiceEntry entry2 = invc.createEntry(incAcct, 
+		                                                 new FixedPointNumber(amount),
+		                                                 new FixedPointNumber(1), 
+		                                                 "DE_USt_Std");
+	entry2.setAction(GnucashGenerInvoiceEntry.ACTION_HOURS);
+	entry2.setDescription("Entry no. 2");
+	entry2.setDate(dateOpen);
+
+	GnucashWritableJobInvoiceEntry entry3 = invc.createEntry(incAcct, 
+		                                                 new FixedPointNumber(amount),
+		                                                 new FixedPointNumber(1), 
+		                                                 gcshFile.getTaxTableByName("FR_TVA_Std"));
+	entry3.setAction(GnucashGenerInvoiceEntry.ACTION_MATERIAL);
+	entry3.setDescription("Entry no. 3");
+	entry3.setDate(dateOpen.plus(1, ChronoUnit.DAYS));
+
+	invc.post(incAcct, recvblAcct, datePost, dateDue);
+
+	return invc;
+    }
+
+    private GnucashWritableJobInvoice doJob_vend(GnucashWritableFileImpl gcshFile)
+	    throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException,
+	    WrongAccountTypeException, UnknownInvoiceTypeException {
+	GnucashGenerJob job = null;
+	try {
+	    job = gcshFile.getGenerJobByID(job2ID);
+	    System.err.println("(Gener.) job: " + job.getNumber() + " (" + job.getName() + ")");
+	} catch (Exception exc) {
+	    System.err.println("Error: No (gener.) job with ID '" + job2ID + "' found");
+	    throw new NoOwnerFoundException();
+	}
+
+	GnucashWritableJobInvoice invc = gcshFile.createWritableJobInvoice(number, job, 
+							incAcct, payblAcct,
+							dateOpen, datePost, dateDue);
+	invc.setDescription("Generated by GenInv " + LocalDateTime.now().toString());
+
+	GnucashWritableJobInvoiceEntry entry1 = invc.createEntry(expAcct, 
+		                                                 new FixedPointNumber(amount),
+		                                                 new FixedPointNumber(1));
+	entry1.setAction(GnucashGenerInvoiceEntry.ACTION_JOB);
+	entry1.setDescription("Entry no. 1");
+	entry1.setDate(dateOpen.minus(1, ChronoUnit.DAYS));
+
+	GnucashWritableJobInvoiceEntry entry2 = invc.createEntry(expAcct, 
+		                                                 new FixedPointNumber(amount),
+		                                                 new FixedPointNumber(1), 
+		                                                 "DE_USt_Std");
+	entry2.setAction(GnucashGenerInvoiceEntry.ACTION_HOURS);
+	entry2.setDescription("Entry no. 2");
+	entry2.setDate(dateOpen);
+
+	GnucashWritableJobInvoiceEntry entry3 = invc.createEntry(expAcct, 
+		                                                 new FixedPointNumber(amount),
+		                                                 new FixedPointNumber(1), 
+		                                                 gcshFile.getTaxTableByName("FR_TVA_Std"));
+	entry3.setAction(GnucashGenerInvoiceEntry.ACTION_MATERIAL);
+	entry3.setDescription("Entry no. 3");
+	entry3.setDate(dateOpen.plus(1, ChronoUnit.DAYS));
+
+	invc.post(expAcct, payblAcct, datePost, dateDue);
+
+	return invc;
+    }
 }
