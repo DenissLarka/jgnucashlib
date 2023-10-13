@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
@@ -76,7 +76,7 @@ public class GenJob {
     }
 
     private GnucashWritableVendorJob doVendor(GnucashWritableFileImpl gcshFile)
-	    throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws NoOwnerFoundException, WrongInvoiceTypeException, TaxTableNotFoundException {
 	GnucashVendor vend = null;
 	try {
 	    vend = gcshFile.getVendorByID(vendID);

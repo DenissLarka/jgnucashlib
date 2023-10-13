@@ -69,7 +69,7 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
 	}
 	GnucashWritableFileImpl writableFile = (GnucashWritableFileImpl) getFile();
 	writableFile.getRootElement().getGncBook().getBookElements().remove(getJwsdpPeer());
-	writableFile.removeJob(this);
+	writableFile.removeGenerJob(this);
     }
 
     /**
@@ -191,7 +191,7 @@ public class GnucashWritableCustomerJobImpl extends GnucashCustomerJobImpl
 	if (jobId == null || jobId.trim().length() == 0) {
 	    throw new IllegalArgumentException("null or empty job-number given!");
 	}
-	GnucashGenerJob otherJob = getWritingFile().getJobByNumber(jobId);
+	GnucashGenerJob otherJob = getWritingFile().getGenerJobByNumber(jobId);
 	if (otherJob != null && !otherJob.getId().equals(getId())) {
 	    throw new IllegalArgumentException(
 		    "another job (id='" + otherJob.getId() + "' already exists with given jobNumber '" + jobId + "')");

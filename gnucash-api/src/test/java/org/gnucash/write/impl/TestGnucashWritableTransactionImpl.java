@@ -100,7 +100,7 @@ public class TestGnucashWritableTransactionImpl
   @Test
   public void test01_1() throws Exception
   {
-    GnucashWritableTransaction trx = gcshInFile.getWritableTransactionByID(TRX_1_ID);
+    GnucashWritableTransaction trx = gcshInFile.getTransactionByID(TRX_1_ID);
     assertNotEquals(null, trx);
     
     assertEquals(TRX_1_ID, trx.getId());
@@ -118,7 +118,7 @@ public class TestGnucashWritableTransactionImpl
   @Test
   public void test01_2() throws Exception
   {
-    GnucashWritableTransaction trx = gcshInFile.getWritableTransactionByID(TRX_2_ID);
+    GnucashWritableTransaction trx = gcshInFile.getTransactionByID(TRX_2_ID);
     assertNotEquals(null, trx);
     
     assertEquals(TRX_2_ID, trx.getId());
@@ -141,7 +141,7 @@ public class TestGnucashWritableTransactionImpl
   @Test
   public void test02_1() throws Exception
   {
-    GnucashWritableTransaction trx = gcshInFile.getWritableTransactionByID(TRX_1_ID);
+    GnucashWritableTransaction trx = gcshInFile.getTransactionByID(TRX_1_ID);
     assertNotEquals(null, trx);
     
     assertEquals(TRX_1_ID, trx.getId());
@@ -184,16 +184,16 @@ public class TestGnucashWritableTransactionImpl
 
   private void test02_1_check_memory(GnucashWritableTransaction trx) 
   {
-    assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE); // unchanged
     assertEquals("Super dividend", trx.getDescription()); // changed
     // ::TODO wrong format / this is actually not quite correct
     assertEquals("1970-01-01T00:00+01:00[Europe/Berlin]", trx.getDatePosted().toString()); // changed
     assertEquals("2023-08-06T08:21:44Z", trx.getDateEntered().toString()); // unchanged
         
-    assertEquals(3, trx.getSplitsCount());
-    assertEquals("7abf90fe15124254ac3eb7ec33f798e7", trx.getSplits().get(0).getId());
-    assertEquals("ea08a144322146cea38b39d134ca6fc1", trx.getSplits().get(1).getId());
-    assertEquals("5c5fa881869843d090a932f8e6b15af2", trx.getSplits().get(2).getId());
+    assertEquals(3, trx.getSplitsCount()); // unchanged
+    assertEquals("7abf90fe15124254ac3eb7ec33f798e7", trx.getSplits().get(0).getId()); // unchanged
+    assertEquals("ea08a144322146cea38b39d134ca6fc1", trx.getSplits().get(1).getId()); // unchanged
+    assertEquals("5c5fa881869843d090a932f8e6b15af2", trx.getSplits().get(2).getId()); // unchanged
   }
 
   public void test02_1_check_persisted(File outFile) throws Exception
@@ -204,16 +204,16 @@ public class TestGnucashWritableTransactionImpl
      assertNotEquals(null, trx);
      
      assertEquals(TRX_1_ID, trx.getId());
-     assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE);
+     assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE); // unchanged
      assertEquals("Super dividend", trx.getDescription()); // changed
      // ::TODO wrong format / this is actually not quite correct
      assertEquals("1970-01-01T00:00+01:00[Europe/Berlin]", trx.getDatePosted().toString()); // changed
      assertEquals("2023-08-06T08:21:44Z", trx.getDateEntered().toString()); // unchanged
          
-     assertEquals(3, trx.getSplitsCount());
-     assertEquals("7abf90fe15124254ac3eb7ec33f798e7", trx.getSplits().get(0).getId());
-     assertEquals("ea08a144322146cea38b39d134ca6fc1", trx.getSplits().get(1).getId());
-     assertEquals("5c5fa881869843d090a932f8e6b15af2", trx.getSplits().get(2).getId());
+     assertEquals(3, trx.getSplitsCount()); // unchanged
+     assertEquals("7abf90fe15124254ac3eb7ec33f798e7", trx.getSplits().get(0).getId()); // unchanged
+     assertEquals("ea08a144322146cea38b39d134ca6fc1", trx.getSplits().get(1).getId()); // unchanged
+     assertEquals("5c5fa881869843d090a932f8e6b15af2", trx.getSplits().get(2).getId()); // unchanged
   }
   
   // -----------------------------------------------------------------

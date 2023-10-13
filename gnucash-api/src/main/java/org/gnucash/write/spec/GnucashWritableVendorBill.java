@@ -6,7 +6,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoice;
@@ -33,21 +33,21 @@ public interface GnucashWritableVendorBill extends GnucashWritableGenerInvoice {
     GnucashWritableVendorBillEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     GnucashWritableVendorBillEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     GnucashWritableVendorBillEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // ---------------------------------------------------------------
     

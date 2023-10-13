@@ -12,7 +12,7 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
@@ -156,7 +156,7 @@ public class GenInvc {
     // -----------------------------------------------------------------
 
     private GnucashWritableCustomerInvoice doCustomer(GnucashWritableFileImpl gcshFile) throws NoOwnerFoundException,
-	    WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException, WrongAccountTypeException {
+	    WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException, WrongAccountTypeException {
 	GnucashCustomer cust = null;
 	try {
 	    cust = gcshFile.getCustomerByID(custID);
@@ -200,7 +200,7 @@ public class GenInvc {
     }
 
     private GnucashWritableVendorBill doVendor(GnucashWritableFileImpl gcshFile) throws NoOwnerFoundException,
-	    WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException, WrongAccountTypeException {
+	    WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException, WrongAccountTypeException {
 	GnucashVendor vend = null;
 	try {
 	    vend = gcshFile.getVendorByID(vendID);
@@ -244,7 +244,7 @@ public class GenInvc {
     }
 
     private GnucashWritableJobInvoice doJob_cust(GnucashWritableFileImpl gcshFile)
-	    throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException,
+	    throws NoOwnerFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException,
 	    WrongAccountTypeException, UnknownInvoiceTypeException {
 	GnucashGenerJob job = null;
 	try {
@@ -289,7 +289,7 @@ public class GenInvc {
     }
 
     private GnucashWritableJobInvoice doJob_vend(GnucashWritableFileImpl gcshFile)
-	    throws NoOwnerFoundException, WrongInvoiceTypeException, NoTaxTableFoundException, WrongOwnerTypeException,
+	    throws NoOwnerFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException,
 	    WrongAccountTypeException, UnknownInvoiceTypeException {
 	GnucashGenerJob job = null;
 	try {

@@ -12,7 +12,7 @@ import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.aux.WrongOwnerJITypeException;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.UnknownInvoiceTypeException;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoiceEntry;
@@ -68,7 +68,9 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 
     // -----------------------------------------------------------
 
-    void setDescription(String descr);
+    void setNumber(final String number);
+
+    void setDescription(final String descr);
 
     // -----------------------------------------------------------
 
@@ -90,10 +92,10 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * remove this invoice from the system.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      *
      */
-    void remove() throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void remove() throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // -----------------------------------------------------------
 
@@ -102,12 +104,12 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * The entry will have 16% salex-tax and use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     GnucashWritableGenerInvoiceEntry createGenerEntry(
 	    final GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException;
     
     // ----------------------------
 
@@ -116,41 +118,41 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * The entry will use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     /**
      * create and add a new entry.<br/>
      * The entry will use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     /**
      * create and add a new entry.<br/>
      *
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // ----------------------------
 
@@ -159,41 +161,41 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * The entry will use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     GnucashWritableVendorBillEntry createVendBillEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     /**
      * create and add a new entry.<br/>
      * The entry will use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     GnucashWritableVendorBillEntry createVendBillEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     /**
      * create and add a new entry.<br/>
      *
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     GnucashWritableVendorBillEntry createVendBillEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // ----------------------------
 
@@ -202,21 +204,21 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * The entry will use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @throws UnknownInvoiceTypeException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
     /**
      * create and add a new entry.<br/>
      * The entry will use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @throws UnknownInvoiceTypeException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
@@ -224,14 +226,14 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
     /**
      * create and add a new entry.<br/>
      *
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @throws UnknownInvoiceTypeException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
@@ -239,5 +241,5 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 }

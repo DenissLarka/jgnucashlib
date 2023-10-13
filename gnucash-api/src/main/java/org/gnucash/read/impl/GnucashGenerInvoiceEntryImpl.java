@@ -240,26 +240,26 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 
     /**
      * @param aTaxtable the taxtable to set
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @throws WrongInvoiceTypeException
      */
     protected void setInvcTaxTable(final GCshTaxTable aTaxtable)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	myInvcTaxtable = aTaxtable;
     }
 
     /**
      * @param aTaxtable the taxtable to set
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @throws WrongInvoiceTypeException
      */
     protected void setBillTaxTable(final GCshTaxTable aTaxtable)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	myBillTaxtable = aTaxtable;
     }
 
     protected void setJobTaxTable(final GCshTaxTable aTaxtable)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
 	
 	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();
@@ -274,10 +274,10 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
     /**
      * @return The taxtable in the gnucash xml-file. It defines what sales-tax-rates
      *         are known.
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @throws WrongInvoiceTypeException
      */
-    public GCshTaxTable getInvcTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException {
+    public GCshTaxTable getInvcTaxTable() throws TaxTableNotFoundException, WrongInvoiceTypeException {
 	if ( ! getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) && 
 	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
@@ -285,7 +285,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	if (myInvcTaxtable == null) {
 	    EntryITaxtable taxTableEntry = jwsdpPeer.getEntryITaxtable();
 	    if (taxTableEntry == null) {
-		throw new NoTaxTableFoundException();
+		throw new TaxTableNotFoundException();
 	    }
 
 	    String taxTableId = taxTableEntry.getValue();
@@ -310,10 +310,10 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
     /**
      * @return The taxtable in the gnucash xml-file. It defines what sales-tax-rates
      *         are known.
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @throws WrongInvoiceTypeException
      */
-    public GCshTaxTable getBillTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException {
+    public GCshTaxTable getBillTaxTable() throws TaxTableNotFoundException, WrongInvoiceTypeException {
 	if ( ! getType().equals(GnucashGenerInvoice.TYPE_VENDOR) && 
 	     ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
@@ -321,7 +321,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	if (myBillTaxtable == null) {
 	    EntryBTaxtable taxTableEntry = jwsdpPeer.getEntryBTaxtable();
 	    if (taxTableEntry == null) {
-		throw new NoTaxTableFoundException();
+		throw new TaxTableNotFoundException();
 	    }
 
 	    String taxTableId = taxTableEntry.getValue();
@@ -342,7 +342,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	return myBillTaxtable;
     }
 
-    public GCshTaxTable getJobTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException {
+    public GCshTaxTable getJobTaxTable() throws TaxTableNotFoundException, WrongInvoiceTypeException {
 	if ( ! getType().equals(GnucashGenerInvoice.TYPE_JOB) )
 	    throw new WrongInvoiceTypeException();
 
@@ -382,7 +382,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	GCshTaxTable taxTab = null;
 	try {
 	    taxTab = getInvcTaxTable();
-	} catch (NoTaxTableFoundException exc) {
+	} catch (TaxTableNotFoundException exc) {
 	    LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId() + 
 		    "' is taxable but JWSDP peer has no i-taxtable-entry! " + 
 		    "Assuming 0%");
@@ -467,7 +467,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
 	GCshTaxTable taxTab = null;
 	try {
 	    taxTab = getBillTaxTable();
-	} catch (NoTaxTableFoundException exc) {
+	} catch (TaxTableNotFoundException exc) {
 	    LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId() +
 		    "' is taxable but JWSDP peer has no b-taxtable-entry! " + 
 		    "Assuming 0%");

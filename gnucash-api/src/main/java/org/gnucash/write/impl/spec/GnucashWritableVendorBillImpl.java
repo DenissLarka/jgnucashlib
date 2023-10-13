@@ -19,7 +19,7 @@ import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceImpl;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashVendorBillEntryImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -78,10 +78,10 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
     /**
      * @param file the file we are associated with.
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException 
+     * @throws TaxTableNotFoundException 
      */
     public GnucashWritableVendorBillImpl(final GnucashWritableGenerInvoiceImpl invc)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	super(invc.getJwsdpPeer(), invc.getFile());
 
 	// No, we cannot check that first, because the super() method
@@ -231,12 +231,12 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * create and add a new entry.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     public GnucashWritableVendorBillEntry createEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, 
 		                                                   singleUnitPrice, quantity);
 	return entry;
@@ -247,13 +247,13 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      * The entry will use the accounts of the SKR03.
      * 
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     public GnucashWritableVendorBillEntry createEntry(
 	    final GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final String taxTabName) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final String taxTabName) throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, 
 		                                                   singleUnitPrice, quantity, 
 		                                                   taxTabName);
@@ -265,13 +265,13 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      *
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     public GnucashWritableVendorBillEntry createEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
-	    final GCshTaxTable taxTab) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    final GCshTaxTable taxTab) throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	GnucashWritableVendorBillEntry entry = createVendBillEntry(acct, 
 		                                                   singleUnitPrice, quantity, 
 		                                                   taxTab);
@@ -282,11 +282,11 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
 
     /**
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      * @see #addInvcEntry(GnucashGenerInvoiceEntryImpl)
      */
     protected void removeEntry(final GnucashWritableVendorBillEntryImpl impl)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
 
 	removeBillEntry(impl);
     }
@@ -297,16 +297,16 @@ public class GnucashWritableVendorBillImpl extends GnucashWritableGenerInvoiceIm
      *
      * @param entry the entry to add to our internal list of vendor-bill-entries
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
     protected void addEntry(final GnucashWritableVendorBillEntryImpl entry)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
 
 	addBillEntry(entry);
     }
 
     protected void subtractEntry(final GnucashGenerInvoiceEntryImpl entry)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	subtractBillEntry(entry);
     }
 

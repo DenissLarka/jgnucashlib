@@ -6,7 +6,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.UnknownInvoiceTypeException;
 
@@ -33,74 +33,74 @@ public interface GnucashWritableGenerInvoiceEntry extends GnucashGenerInvoiceEnt
 
     // -----------------------------------------------------------
 
-    void setInvcPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setInvcPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException;
 
-    void setInvcPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setInvcPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
-    void setInvcPriceFormatted(String price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
-
-    // ------------------------
-
-    void setBillPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
-
-    void setBillPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException;
-
-    void setBillPriceFormatted(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setInvcPriceFormatted(String price) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // ------------------------
 
-    void setJobPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+    void setBillPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException;
 
-    void setJobPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException, NumberFormatException, UnknownInvoiceTypeException;
+    void setBillPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException;
+
+    void setBillPriceFormatted(String price) throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException;
+
+    // ------------------------
+
+    void setJobPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+
+    void setJobPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException, NumberFormatException, UnknownInvoiceTypeException;
 
     void setJobPriceFormatted(String price)
-	    throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+	    throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
     // -----------------------------------------------------------
 
     void setAction(String a);
 
-    void setQuantity(String quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setQuantity(String quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
-    void setQuantity(FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setQuantity(FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
-    void setQuantityFormatted(String n) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setQuantityFormatted(String n) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     /**
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
-    void remove() throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void remove() throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // -----------------------------------------------------------
 
     /**
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
-    void setInvcTaxable(boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setInvcTaxable(boolean val) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     /**
      * @param tax the new taxtable to use. Null sets isTaxable to false.
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
-    void setInvcTaxTable(GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setInvcTaxTable(GCshTaxTable tax) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // ------------------------
 
     /**
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
-    void setBillTaxable(boolean val) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setBillTaxable(boolean val) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     /**
      * @param tax the new taxtable to use. Null sets isTaxable to false.
      * @throws WrongInvoiceTypeException
-     * @throws NoTaxTableFoundException
+     * @throws TaxTableNotFoundException
      */
-    void setBillTaxTable(GCshTaxTable tax) throws WrongInvoiceTypeException, NoTaxTableFoundException;
+    void setBillTaxTable(GCshTaxTable tax) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
     // -----------------------------------------------------------
 

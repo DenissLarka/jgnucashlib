@@ -2,7 +2,7 @@ package org.gnucash.write.spec;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
 import org.gnucash.write.GnucashWritableObject;
@@ -15,14 +15,14 @@ public interface GnucashWritableJobInvoiceEntry extends GnucashWritableGenerInvo
                                                         GnucashWritableObject 
 {
 
-    void setTaxable(boolean val) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+    void setTaxable(boolean val) throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
-    void setTaxTable(GCshTaxTable taxTab) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+    void setTaxTable(GCshTaxTable taxTab) throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
     // ---------------------------------------------------------------
 
-    void setPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+    void setPrice(String price) throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
-    void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException, NumberFormatException, UnknownInvoiceTypeException;
+    void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException, NumberFormatException, UnknownInvoiceTypeException;
 
 }

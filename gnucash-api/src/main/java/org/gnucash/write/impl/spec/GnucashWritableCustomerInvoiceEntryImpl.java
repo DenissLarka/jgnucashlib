@@ -8,7 +8,7 @@ import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.GnucashCustomerInvoiceEntry;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableFile;
@@ -69,13 +69,13 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
 	 * @throws WrongInvoiceTypeException 
-	 * @throws NoTaxTableFoundException 
+	 * @throws TaxTableNotFoundException 
 	 */
 	public GnucashWritableCustomerInvoiceEntryImpl(
 		final GnucashWritableCustomerInvoiceImpl invc,
 		final GnucashAccount account,
 		final FixedPointNumber quantity,
-		final FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+		final FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
 		super(invc, 
 		      createCustInvoiceEntry_int(invc, account, quantity, price));
 		
@@ -111,24 +111,24 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 
 	@Override
 	public void setTaxable(boolean val)
-		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
 	    setInvcTaxable(val);
 	}
 
 	@Override
 	public void setTaxTable(GCshTaxTable taxTab)
-		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
 	    setInvcTaxTable(taxTab);
 	}
 
 	@Override
 	public void setPrice(String price)
-		throws NumberFormatException, WrongInvoiceTypeException, NoTaxTableFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
 	    setInvcPrice(price);
 	}
 
 	@Override
-	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, NoTaxTableFoundException {
+	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
 	    setInvcPrice(price);
 	}
 

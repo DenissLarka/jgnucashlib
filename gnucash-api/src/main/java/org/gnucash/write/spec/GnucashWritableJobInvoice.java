@@ -6,7 +6,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.read.spec.GnucashVendorJob;
@@ -52,21 +52,21 @@ public interface GnucashWritableJobInvoice extends GnucashWritableGenerInvoice {
     GnucashWritableJobInvoiceEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
     GnucashWritableJobInvoiceEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
     GnucashWritableJobInvoiceEntry createEntry(
 	    GnucashAccount acct, 
 	    final FixedPointNumber singleUnitPrice,
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, NoTaxTableFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
     // ---------------------------------------------------------------
     

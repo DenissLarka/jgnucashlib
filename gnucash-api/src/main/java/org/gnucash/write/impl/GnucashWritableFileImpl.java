@@ -98,8 +98,27 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 
     // ---------------------------------------------------------------
 
+    /**
+     * @param file the file to load
+     * @throws IOException on bsic io-problems such as a FileNotFoundException
+     */
+    public GnucashWritableFileImpl(final File file) throws IOException {
+	super(file);
+	setModified(false);
+    }
+
     public GnucashWritableFileImpl(final InputStream is) throws IOException {
 	super(is);
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GnucashWritableFile getWritableGnucashFile() {
+	return this;
     }
 
     // ---------------------------------------------------------------
@@ -225,28 +244,96 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     }
 
     /**
-     * @param file the file to load
-     * @throws IOException on bsic io-problems such as a FileNotFoundException
+     * Calculate and set the correct valued for all the following count-data.<br/>
+     * Also check the that only valid elements are in the book-element and that they
+     * have the correct order.
+     * <p>
+     * <gnc:count-data cd:type="commodity">2</gnc:count-data>
+     * <gnc:count-data cd:type="account">394</gnc:count-data>
+     * <gnc:count-data cd:type="transaction">1576</gnc:count-data>
+     * <gnc:count-data cd:type="schedxaction">4</gnc:count-data>
+     * <gnc:count-data cd:type="gnc:GncCustomer">2</gnc:count-data>
+     * <gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
+     * <gnc:count-data cd:type="gnc:GncTaxTable">2</gnc:count-data>
+     * <gnc:count-data cd:type="gnc:GncInvoice">5</gnc:count-data>
+     * <gnc:count-data cd:type="gnc:GncEntry">18</gnc:count-data>
      */
-    public GnucashWritableFileImpl(final File file) throws IOException {
-	super(file);
-	setModified(false);
+    private void checkAllCountData() {
+    
+        int cntCommodity = 0;
+        int cntAccount = 0;
+        int cntTransaction = 0;
+        int cntCustomer = 0;
+        int cntVendor = 0;
+        int cntJob = 0;
+        int cntTaxTable = 0;
+        int cntInvoice = 0;
+        int cntIncEntry = 0;
+        int cntBillTerm = 0;
+        
+        /**
+         * <p>
+         * Objects of the following type(s) are allowed in the list
+         * {@link GncTemplateTransactions} {@link GncGncInvoice} {@link GncGncEntry}
+         * {@link GncGncJob} {@link GncGncTaxTable} {@link GncCommodity}
+         * {@link GncGncCustomer} {@link GncSchedxaction} {@link GncBudget}
+         * {@link GncAccount} {@link GncPricedb} {@link GncTransaction}
+         */
+        List<Object> bookElements = getRootElement().getGncBook().getBookElements();
+        for (Object element : bookElements) {
+            if (element instanceof GncV2.GncBook.GncCommodity) {
+        	cntCommodity++;
+            } else if (element instanceof GncAccount) {
+        	cntAccount++;
+            } else if (element instanceof GncTransaction) {
+        	cntTransaction++;
+            } else if (element instanceof GncV2.GncBook.GncGncCustomer) {
+        	cntCustomer++;
+            } else if (element instanceof GncV2.GncBook.GncGncVendor) {
+        	cntVendor++;
+            } else if (element instanceof GncV2.GncBook.GncGncJob) {
+        	cntJob++;
+            } else if (element instanceof GncV2.GncBook.GncGncTaxTable) {
+        	cntTaxTable++;
+            } else if (element instanceof GncV2.GncBook.GncGncInvoice) {
+        	cntInvoice++;
+            } else if (element instanceof GncV2.GncBook.GncGncEntry) {
+        	cntIncEntry++;
+            } else if (element instanceof GncV2.GncBook.GncTemplateTransactions) {
+        	// ::TODO
+            } else if (element instanceof GncV2.GncBook.GncSchedxaction) {
+        	// ::TODO
+            } else if (element instanceof GncBudget) {
+        	// ::TODO
+            } else if (element instanceof GncV2.GncBook.GncPricedb) {
+        	// ::TODO
+            } else if (element instanceof GncV2.GncBook.GncGncEmployee) {
+        	// ::TODO
+            } else if (element instanceof GncV2.GncBook.GncGncBillTerm) {
+        	cntBillTerm++;
+            } else {
+        	throw new IllegalStateException("Unecpected element in GNC:Book found! <" + element.toString() + ">");
+            }
+        }
+    
+        setCountDataFor("commodity", cntCommodity);
+        setCountDataFor("account", cntAccount);
+        setCountDataFor("transaction", cntTransaction);
+        setCountDataFor("gnc:GncCustomer", cntCustomer);
+        setCountDataFor("gnc:GncVendor", cntVendor);
+        setCountDataFor("gnc:GncJob", cntJob);
+        setCountDataFor("gnc:GncTaxTable", cntTaxTable);
+        setCountDataFor("gnc:GncInvoice", cntInvoice);
+        setCountDataFor("gnc:GncEntry", cntIncEntry);
+        setCountDataFor("gnc:GncBillTerm", cntBillTerm);
+        
+        // make sure the correct sort-order of the entity-types is obeyed in writing.
+        // (we do not enforce this in the xml-schema to allow for reading out of order
+        // files)
+        java.util.Collections.sort(bookElements, new BookElementsSorter());
     }
 
-    /**
-     * Used by GnucashTransactionImpl.createTransaction to add a new Transaction to
-     * this file.
-     *
-     * @see GnucashTransactionImpl#createSplit(GncTransaction.TrnSplits.TrnSplit)
-     */
-    protected void addTransaction(final GnucashTransactionImpl impl) {
-	incrementCountDataFor("transaction");
-
-	getRootElement().getGncBook().getBookElements().add(impl.getJwsdpPeer());
-	setModified(true);
-	transactionID2transaction.put(impl.getId(), impl);
-
-    }
+    // ---------------------------------------------------------------
 
     /**
      * @return all TaxTables defined in the book
@@ -277,15 +364,6 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     protected void loadFile(final File pFile) throws IOException {
 	super.loadFile(pFile);
 	lastWriteTime = Math.max(pFile.lastModified(), System.currentTimeMillis());
-    }
-
-    /**
-     * @see GnucashFileImpl#setRootElement(GncV2)
-     */
-    @SuppressWarnings("exports")
-    @Override
-    public void setRootElement(final GncV2 rootElement) {
-	super.setRootElement(rootElement);
     }
 
     /**
@@ -333,95 +411,9 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	lastWriteTime = Math.max(file.lastModified(), System.currentTimeMillis());
     }
 
-    /**
-     * Calculate and set the correct valued for all the following count-data.<br/>
-     * Also check the that only valid elements are in the book-element and that they
-     * have the correct order.
-     * <p>
-     * <gnc:count-data cd:type="commodity">2</gnc:count-data>
-     * <gnc:count-data cd:type="account">394</gnc:count-data>
-     * <gnc:count-data cd:type="transaction">1576</gnc:count-data>
-     * <gnc:count-data cd:type="schedxaction">4</gnc:count-data>
-     * <gnc:count-data cd:type="gnc:GncCustomer">2</gnc:count-data>
-     * <gnc:count-data cd:type="gnc:GncJob">2</gnc:count-data>
-     * <gnc:count-data cd:type="gnc:GncTaxTable">2</gnc:count-data>
-     * <gnc:count-data cd:type="gnc:GncInvoice">5</gnc:count-data>
-     * <gnc:count-data cd:type="gnc:GncEntry">18</gnc:count-data>
-     */
-    private void checkAllCountData() {
-
-	int cntCommodity = 0;
-	int cntAccount = 0;
-	int cntTransaction = 0;
-	int cntCustomer = 0;
-	int cntVendor = 0;
-	int cntJob = 0;
-	int cntTaxTable = 0;
-	int cntInvoice = 0;
-	int cntIncEntry = 0;
-	int cntBillTerm = 0;
-	
-	/**
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link GncTemplateTransactions} {@link GncGncInvoice} {@link GncGncEntry}
-	 * {@link GncGncJob} {@link GncGncTaxTable} {@link GncCommodity}
-	 * {@link GncGncCustomer} {@link GncSchedxaction} {@link GncBudget}
-	 * {@link GncAccount} {@link GncPricedb} {@link GncTransaction}
-	 */
-	List<Object> bookElements = getRootElement().getGncBook().getBookElements();
-	for (Object element : bookElements) {
-	    if (element instanceof GncV2.GncBook.GncCommodity) {
-		cntCommodity++;
-	    } else if (element instanceof GncAccount) {
-		cntAccount++;
-	    } else if (element instanceof GncTransaction) {
-		cntTransaction++;
-	    } else if (element instanceof GncV2.GncBook.GncGncCustomer) {
-		cntCustomer++;
-	    } else if (element instanceof GncV2.GncBook.GncGncVendor) {
-		cntVendor++;
-	    } else if (element instanceof GncV2.GncBook.GncGncJob) {
-		cntJob++;
-	    } else if (element instanceof GncV2.GncBook.GncGncTaxTable) {
-		cntTaxTable++;
-	    } else if (element instanceof GncV2.GncBook.GncGncInvoice) {
-		cntInvoice++;
-	    } else if (element instanceof GncV2.GncBook.GncGncEntry) {
-		cntIncEntry++;
-	    } else if (element instanceof GncV2.GncBook.GncTemplateTransactions) {
-		// ::TODO
-	    } else if (element instanceof GncV2.GncBook.GncSchedxaction) {
-		// ::TODO
-	    } else if (element instanceof GncBudget) {
-		// ::TODO
-	    } else if (element instanceof GncV2.GncBook.GncPricedb) {
-		// ::TODO
-	    } else if (element instanceof GncV2.GncBook.GncGncEmployee) {
-		// ::TODO
-	    } else if (element instanceof GncV2.GncBook.GncGncBillTerm) {
-		cntBillTerm++;
-	    } else {
-		throw new IllegalStateException("Unecpected element in GNC:Book found! <" + element.toString() + ">");
-	    }
-	}
-
-	setCountDataFor("commodity", cntCommodity);
-	setCountDataFor("account", cntAccount);
-	setCountDataFor("transaction", cntTransaction);
-	setCountDataFor("gnc:GncCustomer", cntCustomer);
-	setCountDataFor("gnc:GncVendor", cntVendor);
-	setCountDataFor("gnc:GncJob", cntJob);
-	setCountDataFor("gnc:GncTaxTable", cntTaxTable);
-	setCountDataFor("gnc:GncInvoice", cntInvoice);
-	setCountDataFor("gnc:GncEntry", cntIncEntry);
-	setCountDataFor("gnc:GncBillTerm", cntBillTerm);
-	
-	// make sure the correct sort-order of the entity-types is obeyed in writing.
-	// (we do not enforce this in the xml-schema to allow for reading out of order
-	// files)
-	java.util.Collections.sort(bookElements, new BookElementsSorter());
-    }
+    
+    
+    // ---------------------------------------------------------------
 
     /**
      * @return the underlying JAXB-element
@@ -432,6 +424,17 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     public GncV2 getRootElement() {
 	return super.getRootElement();
     }
+
+    /**
+     * @see GnucashFileImpl#setRootElement(GncV2)
+     */
+    @SuppressWarnings("exports")
+    @Override
+    public void setRootElement(final GncV2 rootElement) {
+	super.setRootElement(rootElement);
+    }
+
+    // ---------------------------------------------------------------
 
     /**
      * create a GUID for a new element. (guids are globally unique and not tied to a
@@ -604,12 +607,75 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	return account;
     }
 
+    // ---------------------------------------------------------------
+
+    /**
+     * @see GnucashWritableFile#getWritableTransactions()
+     */
+    @SuppressWarnings("unchecked")
+    public Collection<? extends GnucashWritableTransaction> getWritableTransactions() {
+	return (Collection<? extends GnucashWritableTransaction>) getTransactions();
+    }
+
     /**
      * @see GnucashWritableFile#getTransactionByID(java.lang.String)
      */
     @Override
     public GnucashWritableTransaction getTransactionByID(final String id) {
 	return (GnucashWritableTransaction) super.getTransactionByID(id);
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * Used by GnucashTransactionImpl.createTransaction to add a new Transaction to
+     * this file.
+     *
+     * @see GnucashTransactionImpl#createSplit(GncTransaction.TrnSplits.TrnSplit)
+     */
+    protected void addTransaction(final GnucashTransactionImpl impl) {
+	incrementCountDataFor("transaction");
+
+	getRootElement().getGncBook().getBookElements().add(impl.getJwsdpPeer());
+	setModified(true);
+	transactionID2transaction.put(impl.getId(), impl);
+
+    }
+
+    /**
+     * @param impl what to remove
+     */
+    public void removeTransaction(final GnucashWritableTransaction impl) {
+
+	Collection<GnucashWritableTransactionSplit> c = new LinkedList<GnucashWritableTransactionSplit>();
+	c.addAll(impl.getWritingSplits());
+	for (GnucashWritableTransactionSplit element : c) {
+	    element.remove();
+	}
+
+	getRootElement().getGncBook().getBookElements().remove(((GnucashWritableTransactionImpl) impl).getJwsdpPeer());
+	setModified(true);
+	transactionID2transaction.remove(impl.getId());
+
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * @see GnucashWritableFile#getWritableGenerJobs()
+     */
+    public Collection<GnucashWritableGenerJob> getWritableGenerJobs() {
+
+	Collection<GnucashGenerJob> jobList = getGenerJobs();
+	if (jobList == null) {
+	    throw new IllegalStateException("getGenerJobs() returned null");
+	}
+	
+	Collection<GnucashWritableGenerJob> retval = new ArrayList<GnucashWritableGenerJob>(jobList.size());
+	for (GnucashGenerJob job : jobList) {
+	    retval.add((GnucashWritableGenerJob) job);
+	}
+	return retval;
     }
 
     /**
@@ -623,18 +689,21 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	return (GnucashWritableGenerJob) super.getGenerJobByID(jobID);
     }
 
-    /**
-     * @see GnucashWritableFile#getWritableJobs()
-     */
-    public Collection<GnucashWritableGenerJob> getWritableJobs() {
+    // ----------------------------
 
-	Collection<GnucashGenerJob> jobs = getGenerJobs();
-	if (jobs == null) {
-	    throw new IllegalStateException("getJobs() returned null");
+    /**
+     * @see GnucashWritableFile#getWritableGenerJobs()
+     */
+    public Collection<GnucashWritableGenerInvoice> getWritableGenerInvoices() {
+
+	Collection<GnucashGenerInvoice> invcList = getGenerInvoices();
+	if (invcList == null) {
+	    throw new IllegalStateException("getWritableGenerInvoice() returned null");
 	}
-	Collection<GnucashWritableGenerJob> retval = new ArrayList<GnucashWritableGenerJob>(jobs.size());
-	for (GnucashGenerJob job : jobs) {
-	    retval.add((GnucashWritableGenerJob) job);
+	
+	Collection<GnucashWritableGenerInvoice> retval = new ArrayList<GnucashWritableGenerInvoice>(invcList.size());
+	for (GnucashGenerInvoice invc : invcList) {
+	    retval.add((GnucashWritableGenerInvoice) invc);
 	}
 	return retval;
     }
@@ -688,45 +757,6 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     @Override
     public GnucashWritableAccount getAccountByID(final String id) {
 	return (GnucashWritableAccount) super.getAccountByID(id);
-    }
-
-    /**
-     * @see GnucashWritableFile#getWritableTransactions()
-     */
-    @SuppressWarnings("unchecked")
-    public Collection<? extends GnucashWritableTransaction> getWritableTransactions() {
-	return (Collection<? extends GnucashWritableTransaction>) getTransactions();
-    }
-
-    public GnucashWritableTransaction getWritableTransactionByID(final String trxId) throws TransactionNotFoundException {
-	if (transactionID2transaction == null) {
-	    throw new IllegalStateException("no root-element loaded");
-	}
-	
-	for ( GnucashWritableTransaction trx : getWritableTransactions() )
-	{
-	    if ( trx.getId().equals(trxId) )
-		return trx;
-	}
-	
-	throw new TransactionNotFoundException();
-    }
-
-    /**
-     * @param impl what to remove
-     */
-    public void removeTransaction(final GnucashWritableTransaction impl) {
-
-	Collection<GnucashWritableTransactionSplit> c = new LinkedList<GnucashWritableTransactionSplit>();
-	c.addAll(impl.getWritingSplits());
-	for (GnucashWritableTransactionSplit element : c) {
-	    element.remove();
-	}
-
-	getRootElement().getGncBook().getBookElements().remove(((GnucashWritableTransactionImpl) impl).getJwsdpPeer());
-	setModified(true);
-	transactionID2transaction.remove(impl.getId());
-
     }
 
     /**
@@ -798,6 +828,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	}
 	throw new IllegalStateException("No priceDB in Book in Gnucash-file");
     }
+
+    // ---------------------------------------------------------------
 
     /**
      * {@inheritDoc}
@@ -989,11 +1021,13 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     /**
      * @param impl what to remove
      */
-    public void removeJob(final GnucashWritableGenerJob impl) {
+    public void removeGenerJob(final GnucashWritableGenerJob impl) {
 	jobID2job.remove(impl.getId());
 	getRootElement().getGncBook().getBookElements().remove(((GnucashWritableCustomerJobImpl) impl).getJwsdpPeer());
 	setModified(true);
     }
+
+    // ----------------------------
 
     /**
      * @see GnucashWritableFile#createWritableAccount()
@@ -1018,14 +1052,6 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     }
 
     /**
-     * @return a read-only collection of all accounts that have no parent
-     */
-    @SuppressWarnings("unchecked")
-    public Collection<? extends GnucashWritableAccount> getWritableRootAccounts() {
-	return (Collection<? extends GnucashWritableAccount>) getRootAccounts();
-    }
-
-    /**
      * @return a read-only collection of all accounts
      */
     public Collection<GnucashWritableAccount> getWritableAccounts() {
@@ -1037,10 +1063,20 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     }
 
     /**
+     * @return a read-only collection of all accounts that have no parent
+     */
+    @SuppressWarnings("unchecked")
+    public Collection<? extends GnucashWritableAccount> getWritableRootAccounts() {
+	return (Collection<? extends GnucashWritableAccount>) getRootAccounts();
+    }
+
+    // ----------------------------
+
+    /**
      * @param jnr the job-number to look for.
      * @return the (first) jobs that have this number or null if not found
      */
-    public GnucashWritableGenerJob getJobByNumber(final String jnr) {
+    public GnucashWritableGenerJob getGenerJobByNumber(final String jnr) {
 	if (jobID2job == null) {
 	    throw new IllegalStateException("no root-element loaded");
 	}
@@ -1073,14 +1109,6 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	getRootElement().getGncBook().getBookElements().remove(impl.getJwsdpPeer());
 	this.decrementCountDataFor("gnc:GncInvoice");
 	setModified(true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public GnucashWritableFile getWritableGnucashFile() {
-	return this;
     }
 
     /**

@@ -14,7 +14,6 @@ import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
-import org.gnucash.write.impl.TransactionNotFoundException;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
 import org.gnucash.write.spec.GnucashWritableJobInvoice;
@@ -94,6 +93,8 @@ public interface GnucashWritableFile extends GnucashFile,
      */
     GnucashWritableTransaction getTransactionByID(String id);
 
+    public Collection<GnucashWritableGenerInvoice> getWritableGenerInvoices();
+    
     /**
      * @see GnucashFile#getGenerInvoiceByID(String)
      * @param id the id to look for
@@ -132,12 +133,12 @@ public interface GnucashWritableFile extends GnucashFile,
      * @param jnr the job-number to look for.
      * @return the (first) jobs that have this number or null if not found
      */
-    GnucashWritableGenerJob getJobByNumber(final String jnr);
+    GnucashWritableGenerJob getGenerJobByNumber(final String jnr);
 
     /**
      * @return all jobs as writable versions.
      */
-    Collection<GnucashWritableGenerJob> getWritableJobs();
+    Collection<GnucashWritableGenerJob> getWritableGenerJobs();
 
     /**
      * Add a new currency.<br/>
@@ -158,7 +159,7 @@ public interface GnucashWritableFile extends GnucashFile,
      */
     public Collection<? extends GnucashWritableTransaction> getWritableTransactions();
 
-    public GnucashWritableTransaction getWritableTransactionByID(final String trxId) throws TransactionNotFoundException;
+    // public GnucashWritableTransaction getWritableTransactionByID(final String trxId) throws TransactionNotFoundException;
     
     /**
      * @return a new transaction with no splits that is already added to this file

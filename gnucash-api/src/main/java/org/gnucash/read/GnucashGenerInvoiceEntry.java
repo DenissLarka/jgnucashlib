@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.impl.NoTaxTableFoundException;
+import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
@@ -175,11 +175,11 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   
   // ------------------------------
 
-  public GCshTaxTable getInvcTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException;
+  public GCshTaxTable getInvcTaxTable() throws TaxTableNotFoundException, WrongInvoiceTypeException;
 
-  public GCshTaxTable getBillTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException;
+  public GCshTaxTable getBillTaxTable() throws TaxTableNotFoundException, WrongInvoiceTypeException;
 
-  public GCshTaxTable getJobTaxTable() throws NoTaxTableFoundException, WrongInvoiceTypeException;
+  public GCshTaxTable getJobTaxTable() throws TaxTableNotFoundException, WrongInvoiceTypeException;
 
   // ------------------------------
 
