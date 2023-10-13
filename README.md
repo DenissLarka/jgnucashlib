@@ -9,7 +9,7 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 **Caution:** Will not work on other locales (for details, cf. below).
 
 # Major Changes 
-## V. 1.0 --> 1.1
+## V. 1.0 &rarr; 1.1
 * Reading and writing of (technical/generic) invoices: Not just customer invoices, but also vendor bills now. According to the internal XML structure and the part of the code that is generated from it (i.e., the XSD file), both derive from a common class that represents a "generic" invoice. In addition to that, there is also a third type: job invoice (cf. next item).
     
     ==> Introduced specialized interfaces/classes: `GnucashCustomerInvoice(Impl)`, `GnucashVendorBill(Impl)` and `GnucashJobInvoice(Impl)`, which all derive from `GnucashGenerInvoice(Impl)`. Consequently, we have the same for their entries: `GnucashGenerInvoiceEntry(Impl)`, etc.
@@ -95,13 +95,15 @@ It should go without extra notice, but the following points are of cours subject
 
   Cf. test classes `TestGnucashWritableCustomerInvoiceImpl`, `TestGnucashWritableVendorBillImpl` and  `TestGnucashWritableJobInvoiceImpl`.
 
-# Acknowlegdgements
+# Acknowledgements
 Special thanks to: 
 
-* **Marcus Wolschon (Sofwaredesign u. Beratung)** for the original version (from 2005) and the pioneering work.
+* **Marcus Wolschon (Sofware-Design u. Beratung)** for the original version (from 2005) and the pioneering work 
+    (which, by the way, contained way more than what you see here) and for putting the base of this project under 
+    the GPL.
 
     This project is based on Marcus's work. There have been major changes since then, but you can still see where it originated from.
 
-  (Forked from http://sourceforge.net/projects/jgnucashlib)
+  (Forked from http://sourceforge.net/projects/jgnucashlib / revived in 2017, after some years of enchanted sleep.)
 
-* **Deniss Larka** for taking care of the project during the last couple of years.
+* **Deniss Larka** for kissing the beauty awake and taking care of her during the last couple of years.

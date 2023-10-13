@@ -28,3 +28,5 @@ Thus, the suggested workflow is:
 4. Do a test run and see whether it actually does what you expect.
 5. Adapt the code to your needs / integrate it into your project.
 
+# More Example Files
+https://www.gnucash.org/docs/examples/
