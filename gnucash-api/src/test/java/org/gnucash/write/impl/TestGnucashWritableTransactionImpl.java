@@ -186,7 +186,6 @@ public class TestGnucashWritableTransactionImpl
   {
     assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE); // unchanged
     assertEquals("Super dividend", trx.getDescription()); // changed
-    // ::TODO wrong format / this is actually not quite correct
     assertEquals("1970-01-01T00:00+01:00[Europe/Berlin]", trx.getDatePosted().toString()); // changed
     assertEquals("2023-08-06T08:21:44Z", trx.getDateEntered().toString()); // unchanged
         
@@ -206,7 +205,6 @@ public class TestGnucashWritableTransactionImpl
      assertEquals(TRX_1_ID, trx.getId());
      assertEquals(0.0, trx.getBalance().getBigDecimal().doubleValue(), ConstTest.DIFF_TOLERANCE); // unchanged
      assertEquals("Super dividend", trx.getDescription()); // changed
-     // ::TODO wrong format / this is actually not quite correct
      assertEquals("1970-01-01T00:00+01:00[Europe/Berlin]", trx.getDatePosted().toString()); // changed
      assertEquals("2023-08-06T08:21:44Z", trx.getDateEntered().toString()); // unchanged
          

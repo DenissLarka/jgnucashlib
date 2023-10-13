@@ -36,6 +36,11 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(GnucashTransactionImpl.class);
 
+    protected static final DateTimeFormatter DATE_ENTERED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
+    protected static final DateTimeFormatter DATE_POSTED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
+    
+    // ---------------------------------------------------------------
+
     /**
      * the JWSDP-object we are facading.
      */
@@ -45,6 +50,23 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
      * The file we belong to.
      */
     private final GnucashFile file;
+
+    /**
+     * The Currency-Format to use if no locale is given.
+     */
+    protected NumberFormat currencyFormat;
+
+    // ---------------------------------------------------------------
+
+    /**
+     * @see GnucashTransaction#getDateEntered()
+     */
+    protected ZonedDateTime dateEntered;
+
+    /**
+     * @see GnucashTransaction#getDatePosted()
+     */
+    protected ZonedDateTime datePosted;
 
     // ---------------------------------------------------------------
 
@@ -104,6 +126,24 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	    invc.addTransaction(this);
 	}
 
+    }
+
+    // ---------------------------------------------------------------
+
+    /**
+     * @return the JWSDP-object we are facading.
+     */
+    @SuppressWarnings("exports")
+    public GncTransaction getJwsdpPeer() {
+	return jwsdpPeer;
+    }
+
+    /**
+     * @see GnucashTransaction#getGnucashFile()
+     */
+    @Override
+    public GnucashFile getGnucashFile() {
+	return file;
     }
 
     // ---------------------------------------------------------------
@@ -292,24 +332,6 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     // ----------------------------
 
     /**
-     * @return the JWSDP-object we are facading.
-     */
-    @SuppressWarnings("exports")
-    public GncTransaction getJwsdpPeer() {
-	return jwsdpPeer;
-    }
-
-    /**
-     * @see GnucashTransaction#getGnucashFile()
-     */
-    @Override
-    public GnucashFile getGnucashFile() {
-	return file;
-    }
-
-    // ----------------------------
-
-    /**
      * @see #getSplits()
      */
     protected List<GnucashTransactionSplit> mySplits = null;
@@ -403,16 +425,6 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     /**
      * @see GnucashTransaction#getDateEntered()
      */
-    protected static final DateTimeFormatter DATE_ENTERED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
-
-    /**
-     * @see GnucashTransaction#getDateEntered()
-     */
-    protected ZonedDateTime dateEntered;
-
-    /**
-     * @see GnucashTransaction#getDateEntered()
-     */
     public ZonedDateTime getDateEntered() {
 	if (dateEntered == null) {
 	    String s = jwsdpPeer.getTrnDateEntered().getTsDate();
@@ -428,21 +440,6 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 
 	return dateEntered;
     }
-
-    /**
-     * format of the dataPosted-field in the xml(jwsdp)-file.
-     */
-    private static final DateTimeFormatter DATE_POSTED_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
-
-    /**
-     * @see GnucashTransaction#getDatePosted()
-     */
-    protected ZonedDateTime datePosted;
-
-    /**
-     * The Currency-Format to use if no locale is given.
-     */
-    protected NumberFormat currencyFormat;
 
     /**
      * The Currency-Format to use if no locale is given.

@@ -301,16 +301,24 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
      */
     public void setDateEntered(final ZonedDateTime dateEntered) {
 	this.dateEntered = dateEntered;
-	getJwsdpPeer().getTrnDateEntered().setTsDate(DATE_ENTERED_FORMAT.format(dateEntered));
+	String dateEnteredStr = this.dateEntered.format(DATE_ENTERED_FORMAT);
+	getJwsdpPeer().getTrnDateEntered().setTsDate(dateEnteredStr);
 	getWritingFile().setModified(true);
     }
 
+
+    @Override
+    public void setDateEntered(LocalDateTime dateEntered) {
+	setDateEntered(dateEntered.atZone(ZoneId.systemDefault()));
+    }
+    
     /**
      * @see GnucashWritableTransaction#setDatePosted(LocalDateTime)
      */
     public void setDatePosted(final LocalDate datePosted) {
 	this.datePosted = ZonedDateTime.of(datePosted, LocalTime.MIN, ZoneId.systemDefault());
-	getJwsdpPeer().getTrnDatePosted().setTsDate(DATE_ENTERED_FORMAT.format(this.datePosted));
+	String datePostedStr = this.datePosted.format(DATE_POSTED_FORMAT);
+	getJwsdpPeer().getTrnDatePosted().setTsDate(datePostedStr);
 	getWritingFile().setModified(true);
     }
 
@@ -353,11 +361,6 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
 		getPropertyChangeSupport().firePropertyChange("transactionNumber", old, tnum);
 	    }
 	}
-    }
-
-    @Override
-    public void setDateEntered(LocalDateTime dateEntered) {
-	setDateEntered(dateEntered.atZone(ZoneId.systemDefault()));
     }
 
 }

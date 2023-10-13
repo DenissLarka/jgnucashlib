@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
@@ -14,9 +13,9 @@ import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.IllegalGenerInvoiceEntryActionException;
-import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
@@ -278,8 +277,9 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	
 	{
 	    GncV2.GncBook.GncGncEntry.EntryDate entryDate = factory.createGncV2GncBookGncGncEntryEntryDate();
-	    // ::TODO
-	    entryDate.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
+	    ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
+	    String dateTimeStr = dateTime.format(DATE_FORMAT_BOOK);
+	    entryDate.setTsDate(ENTRY_DATE_FORMAT.format(dateTimeStr));
 	    entry.setEntryDate(entryDate);
 	}
 	
@@ -287,8 +287,9 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	
 	{
 	    GncV2.GncBook.GncGncEntry.EntryEntered entered = factory.createGncV2GncBookGncGncEntryEntryEntered();
-	    // ::TODO
-	    entered.setTsDate(ENTRY_DATE_FORMAT.format(new Date()));
+	    ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
+	    String dateTimeStr = dateTime.format(DATE_FORMAT_BOOK);
+	    entered.setTsDate(ENTRY_DATE_FORMAT.format(dateTimeStr));
 	    entry.setEntryEntered(entered);
 	}
 	
