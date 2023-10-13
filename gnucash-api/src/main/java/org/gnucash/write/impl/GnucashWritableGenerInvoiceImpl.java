@@ -1222,14 +1222,14 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	    value.setType(Const.XML_DATA_TYPE_STRING);
 	    
 	    String contentStr = "(unset)";
-	    if ( ownerType1.equals(GCshOwner.Type.CUSTOMER) ) {
+	    if ( ownerType1 == GCshOwner.Type.CUSTOMER ) {
 		contentStr = GnucashTransactionSplit.ACTION_INVOICE;
-	    } else if ( ownerType1.equals(GCshOwner.Type.VENDOR) ) {
+	    } else if ( ownerType1 == GCshOwner.Type.VENDOR ) {
 		contentStr = GnucashTransactionSplit.ACTION_BILL;
-	    } else if ( ownerType1.equals(GCshOwner.Type.JOB) ) {
-		if ( ownerType2.equals(GCshOwner.Type.CUSTOMER)) {
+	    } else if ( ownerType1 == GCshOwner.Type.JOB ) {
+		if ( ownerType2.equals(GCshOwner.TYPE_CUSTOMER)) {
 		    contentStr = GnucashTransactionSplit.ACTION_INVOICE;
-    		} else if ( ownerType2.equals(GCshOwner.Type.VENDOR)) {
+    		} else if ( ownerType2.equals(GCshOwner.TYPE_VENDOR)) {
 		    contentStr = GnucashTransactionSplit.ACTION_BILL;
 		}
 	    }

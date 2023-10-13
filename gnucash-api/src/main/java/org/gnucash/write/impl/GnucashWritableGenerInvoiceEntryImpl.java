@@ -279,7 +279,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	    GncV2.GncBook.GncGncEntry.EntryDate entryDate = factory.createGncV2GncBookGncGncEntryEntryDate();
 	    ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
 	    String dateTimeStr = dateTime.format(DATE_FORMAT_BOOK);
-	    entryDate.setTsDate(ENTRY_DATE_FORMAT.format(dateTimeStr));
+	    entryDate.setTsDate(dateTimeStr);
 	    entry.setEntryDate(entryDate);
 	}
 	
@@ -289,7 +289,7 @@ public class GnucashWritableGenerInvoiceEntryImpl extends GnucashGenerInvoiceEnt
 	    GncV2.GncBook.GncGncEntry.EntryEntered entered = factory.createGncV2GncBookGncGncEntryEntryEntered();
 	    ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
 	    String dateTimeStr = dateTime.format(DATE_FORMAT_BOOK);
-	    entered.setTsDate(ENTRY_DATE_FORMAT.format(dateTimeStr));
+	    entered.setTsDate(dateTimeStr);
 	    entry.setEntryEntered(entered);
 	}
 	
