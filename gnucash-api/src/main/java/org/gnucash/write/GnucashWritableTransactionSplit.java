@@ -1,21 +1,3 @@
-/**
- * GnucashWritableTransactionSplit.java
- * Created on 11.06.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 11.06.2005 - initial version
- * ...
- */
 package org.gnucash.write;
 
 import java.beans.PropertyChangeListener;
@@ -23,13 +5,12 @@ import java.beans.PropertyChangeListener;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransactionSplit;
+import org.gnucash.read.IllegalTransactionSplitActionException;
 
 /**
- * created: 11.06.2005 <br/>
  * Transaction-Split that can be modified<br/>
  * For propertyChange we support the properties "value", "quantity"
  * "description",  "splitAction" and "accountID".
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit, GnucashWritableObject {
 
@@ -61,6 +42,16 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 */
 	void setAccount(GnucashAccount account);
 
+	/**
+	 * For invoice payment transactions: One of the splits
+	 * contains a reference to the account lot which in turn
+	 * references the invoice.
+	 * 
+	 * @param accountId the new account to give this
+	 *        money to/take it from.
+	 */
+	void setLotID(final String accountId);
+
 
 	/**
 	 * If the currencies of transaction and account match, this also does
@@ -73,7 +64,7 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 * Same as ${@link #setQuantity(String)}.
 	 * @param n the new quantity (in the currency of the account)
 	 */
-	void setQuantityFormatetForHTML(String n);
+	void setQuantityFormattedForHTML(String n);
 
 	/**
 	 * If the currencies of transaction and account match, this also does
@@ -93,7 +84,7 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 * Same as ${@link #setValue(String)}.
 	 * @param n the new value (in the currency of the transaction)
 	 */
-	void setValueFormatetForHTML(String n);
+	void setValueFormattedForHTML(String n);
 
 	/**
 	 * If the currencies of transaction and account match, this also does
@@ -111,9 +102,10 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	/**
 	 * Set the type of association this split has with
 	 * an invoice's lot.
-	 * @param action null, "Zahlung" or "Rechnung"
+	 * @param action null, or one of the ACTION_xyz values defined
+	 * @throws IllegalTransactionSplitActionException 
 	 */
-	void setSplitAction(String action);
+	void setAction(String action) throws IllegalTransactionSplitActionException;
 
 
 	/**

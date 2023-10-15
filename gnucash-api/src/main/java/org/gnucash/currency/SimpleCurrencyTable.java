@@ -1,8 +1,3 @@
-/**
- * CurrencyTable.java
- * created: 28.08.2005 14:20:13
- * (c) 2005 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- */
 package org.gnucash.currency;
 
 //other imports
@@ -21,17 +16,9 @@ import org.slf4j.LoggerFactory;
 //automatically created propertyChangeListener-Support
 
 /**
- * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
- * Project: gnucashReader<br/>
- * CurrencyTable.java<br/>
- * created: 28.08.2005 14:20:13 <br/>
- * <br/>
- * <p>
  * A CurrencyTable holds the translations from some currencies to one base-currency
  * of one specfic point in time (usually the current time).</p><br/>
  * By default "EUR" is added with the value 1. (to be used as a base.currency)
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class SimpleCurrencyTable implements Serializable {
 
@@ -131,7 +118,7 @@ public class SimpleCurrencyTable implements Serializable {
 	/**
 	 * maps a currency-name in capital letters(e.g. "GBP")
 	 * to a factor {@link FixedPointNumber}
-	 * that is to be multiplied with an ammount of that currency
+	 * that is to be multiplied with an amount of that currency
 	 * to get the value in the base-currency.
 	 *
 	 * @see {@link #getConversionFactor(String)}
@@ -141,7 +128,7 @@ public class SimpleCurrencyTable implements Serializable {
 	/**
 	 * @param iso4217CurrencyCode a currency-name in capital letters(e.g. "GBP")
 	 * @return a factor {@link FixedPointNumber}
-	 * that is to be multiplied with an ammount of that currency
+	 * that is to be multiplied with an amount of that currency
 	 * to get the value in the base-currency.
 	 */
 	public FixedPointNumber getConversionFactor(final String iso4217CurrencyCode) {
@@ -158,7 +145,7 @@ public class SimpleCurrencyTable implements Serializable {
 	/**
 	 * @param iso4217CurrencyCode a currency-name in capital letters(e.g. "GBP")
 	 * @param factor              a factor {@link FixedPointNumber}
-	 *                            that is to be multiplied with an ammount of that currency
+	 *                            that is to be multiplied with an amount of that currency
 	 *                            to get the value in the base-currency.
 	 */
 	public void setConversionFactor(final String iso4217CurrencyCode,

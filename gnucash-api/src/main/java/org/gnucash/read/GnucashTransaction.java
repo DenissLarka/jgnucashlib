@@ -1,16 +1,3 @@
-/**
- * GnucashTransaction.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  05.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read;
 
 import java.time.ZonedDateTime;
@@ -18,18 +5,30 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.impl.SplitNotFoundException;
 
 /**
- * created: 05.05.2005
- * TODO write a comment what this type does here
- *
- *
  * It is comparable and sorts primarily on the date the transaction happened
  * and secondarily on the date it was entered.
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashTransaction extends Comparable<GnucashTransaction> {
+  
+  // For the following types cf.:
+  // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Transaction.h
+  
+  // ::MAGIC
+  // Caution: In theory, these should be chars, not Strings.
+  // However, if we used chars, we would have to convert to Strings
+  // anyway when using them (or else, we have weird errors writing
+  // the GnuCash file).
+  public static final String TYPE_NONE    = "";
+  public static final String TYPE_INVOICE = "I";
+  public static final String TYPE_PAYMENT = "P";
+  public static final String TYPE_LINK    = "L";
+  
+  // -----------------------------------------------------------------
 
     /**
      *
@@ -48,11 +47,18 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      */
     String getTransactionNumber();
 
+    // ----------------------------
+
+    @SuppressWarnings("exports")
+    GncTransaction getJwsdpPeer();
+
     /**
      * The gnucash-file is the top-level class to contain everything.
      * @return the file we are associated with
      */
     GnucashFile getGnucashFile();
+    
+    // ----------------------------
 
     /**
      * Do not modify the returned collection!
@@ -70,13 +76,15 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
     /**
      *
      * @return the first split of this transaction or null.
+     * @throws SplitNotFoundException 
      */
-    GnucashTransactionSplit getFirstSplit();
+    GnucashTransactionSplit getFirstSplit() throws SplitNotFoundException;
 
     /**
      * @return the second split of this transaction or null.
+     * @throws SplitNotFoundException 
      */
-    GnucashTransactionSplit getSecondSplit();
+    GnucashTransactionSplit getSecondSplit() throws SplitNotFoundException;
 
     /**
      *
@@ -110,14 +118,14 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
 
     /**
      * @return "ISO4217" for a currency "FUND" or a fond,...
-     * @see {@link GnucashAccount#CURRENCYNAMESPACE_CURRENCY}
-     * @see {@link GnucashAccount#CURRENCYNAMESPACE_FUND}
+     * @see {@link CurrencyNameSpace#NAMESPACE_CURRENCY}
+     * @see {@link GnucashAccount#CURRENCY_NAMESPACE_FUND}
      */
     String getCurrencyNameSpace();
 
     /**
      * The name of the currency in the given namespace
-     * e.g. "EUR" for euro in namespace "ISO4217"= {@link GnucashAccount#CURRENCYNAMESPACE_CURRENCY}
+     * e.g. "EUR" for euro in namespace "ISO4217"= {@link CurrencyNameSpace#NAMESPACE_CURRENCY}
      * @see {@link #getCurrencyNameSpace()}
      */
     String getCurrencyID();
@@ -134,12 +142,12 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getBalance()
      */
-    String getBalanceFormatet();
+    String getBalanceFormatted();
     /**
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getBalance()
      */
-    String getBalanceFormatet(Locale loc);
+    String getBalanceFormatted(Locale loc);
 
     /**
      * The result is in the currency of the transaction.<br/>
@@ -152,12 +160,12 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getNegatedBalance()
      */
-    String getNegatedBalanceFormatet();
+    String getNegatedBalanceFormatted();
     /**
      * The result is in the currency of the transaction.
      * @see GnucashTransaction#getNegatedBalance()
      */
-    String getNegatedBalanceFormatet(Locale loc);
+    String getNegatedBalanceFormatted(Locale loc);
 
     /**
      * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.

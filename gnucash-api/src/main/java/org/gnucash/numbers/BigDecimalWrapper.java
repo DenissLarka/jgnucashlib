@@ -1,8 +1,3 @@
-/**
- * BigDecimalWrapper.java
- * created: 13.12.2005 17:18:27
- * (c) 2005 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- */
 package org.gnucash.numbers;
 
 //other imports
@@ -17,16 +12,8 @@ import java.math.RoundingMode;
 //automatically created propertyChangeListener-Support
 
 /**
- * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung<
- * /a>.<br/>
- * Project: gnucashReader<br/>
- * BigDecimalWrapper.java<br/>
- * created: 13.12.2005 17:18:27 <br/>
- * <br/>
  * This is a helper super-class for classes that can be converted to a BigDecimal
  * and shall extend that class but not use it's state.<br/>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public abstract class BigDecimalWrapper extends BigDecimal {
 

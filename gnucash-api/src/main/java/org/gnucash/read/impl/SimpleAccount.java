@@ -1,8 +1,3 @@
-/**
- * SimpleAccount.java
- * License: GPLv3 or later
- * created: 22.05.2006 17:56:15
- */
 package org.gnucash.read.impl;
 
 //other imports
@@ -21,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.currency.ComplexCurrencyTable;
+import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
@@ -30,21 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * (c) 2006 by Wolschon Softwaredesign und Beratung.<br/>
- * Project: gnucashReader<br/>
- * SimpleAccount.java<br/>
- * created: 22.05.2006 17:56:15 <br/>
- * <br/><br/>
  * This is a base-class that helps implementing the GnucashAccount
  * -interface with it's extenive number of convenience-methods.<br/>
- *
- * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public abstract class SimpleAccount implements GnucashAccount {
 
-	/**
-	 * Our logger for debug- and error-output.
-	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAccount.class);
 
 	/**
@@ -159,7 +145,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	/**
 	 * @see GnucashAccount#getSubAccounts()
 	 */
-	public Collection getSubAccounts() {
+	public Collection<GnucashAccount> getSubAccounts() {
 		return getChildren();
 	}
 
@@ -183,7 +169,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		// is conversion needed?
-		if (getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)
+		if (getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)
 				&&
 				getCurrencyID().equals(currency.getCurrencyCode())) {
 			return retval;
@@ -220,16 +206,16 @@ public abstract class SimpleAccount implements GnucashAccount {
 	}
 
 	/**
-	 * @see GnucashAccount#getBalanceRecursiveFormated(LocalDate)
+	 * @see GnucashAccount#getBalanceRecursiveFormatted(LocalDate)
 	 */
-	public String getBalanceRecursiveFormated(final LocalDate date) {
+	public String getBalanceRecursiveFormatted(final LocalDate date) {
 		return getCurrencyFormat().format(getBalanceRecursive(date));
 	}
 
 	/**
-	 * @see GnucashAccount#getBalanceRecursiveFormated()
+	 * @see GnucashAccount#getBalanceRecursiveFormatted()
 	 */
-	public String getBalanceRecursiveFormated() {
+	public String getBalanceRecursiveFormatted() {
 		return getCurrencyFormat().format(getBalanceRecursive());
 	}
 
@@ -289,21 +275,20 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 * @see GnucashAccount#getBalanceRecursive(Date, Currency)
 	 */
 	public FixedPointNumber getBalanceRecursive(final LocalDate date,
-												final String currencyNameSpace,
-												final String currencyName) {
+                                                    final String currencyNameSpace,
+                                                    final String currencyName) {
 
-		FixedPointNumber retval = getBalance(date, currencyNameSpace, currencyName);
+	    FixedPointNumber retval = getBalance(date, currencyNameSpace, currencyName);
 
-		if (retval == null) {
-			retval = new FixedPointNumber();
-		}
+	    if (retval == null) {
+		retval = new FixedPointNumber();
+	    }
 
-		for (Object element : getChildren()) {
-			GnucashAccount child = (GnucashAccount) element;
-			retval.add(child.getBalanceRecursive(date, currencyNameSpace, currencyName));
-		}
+	    for ( GnucashAccount child : getChildren() ) {
+		retval.add(child.getBalanceRecursive(date, currencyNameSpace, currencyName));
+	    }
 
-		return retval;
+	    return retval;
 	}
 
 	/**
@@ -367,7 +352,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		FixedPointNumber retval = getBalance(date);
 
 		if (retval == null) {
-			LOGGER.warn("SimpleAccount.getBalance() - "
+			LOGGER.error("SimpleAccount.getBalance() - "
 					+ "error creating balance!");
 			return null;
 		}
@@ -382,7 +367,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		ComplexCurrencyTable currencyTable = getGnucashFile().getCurrencyTable();
 
 		if (currencyTable == null) {
-			LOGGER.warn("SimpleAccount.getBalance() - cannot transfer "
+			LOGGER.error("SimpleAccount.getBalance() - cannot transfer "
 					+ "to given currency because we have no currency-table!");
 			return null;
 		}
@@ -391,7 +376,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 				retval,
 				getCurrencyID())) {
 			Collection<String> currencies = getGnucashFile().getCurrencyTable().getCurrencies(getCurrencyNameSpace());
-			LOGGER.warn("SimpleAccount.getBalance() - cannot transfer "
+			LOGGER.error("SimpleAccount.getBalance() - cannot transfer "
 					+ "from our currency '"
 					+ getCurrencyNameSpace() + "'-'"
 					+ getCurrencyID()
@@ -404,7 +389,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		if (!currencyTable.convertFromBaseCurrency(currencyNameSpace, retval, currencyName)) {
-			LOGGER.warn("SimpleAccount.getBalance() - cannot transfer "
+			LOGGER.error("SimpleAccount.getBalance() - cannot transfer "
 					+ "from base-currenty to given currency '"
 					+ currencyNameSpace
 					+ "-"
@@ -427,7 +412,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 */
 	public Currency getCurrency() {
 
-		if (!getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
+		if (!getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
 			return null;
 		}
 
@@ -444,7 +429,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		// the currency may have changed
-		if (this.getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
+		if (this.getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
 			Currency currency = getCurrency();
 			currencyFormat.setCurrency(currency);
 		} else {
@@ -460,7 +445,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 *
 	 * @see #getBalance(LocalDate)
 	 */
-	public String getBalanceFormated() {
+	public String getBalanceFormatted() {
 		return getCurrencyFormat().format(getBalance());
 	}
 
@@ -470,7 +455,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 *
 	 * @see #getBalance(LocalDate)
 	 */
-	public String getBalanceFormated(final Locale loc) {
+	public String getBalanceFormatted(final Locale loc) {
 
 		NumberFormat cf = NumberFormat.getCurrencyInstance(loc);
 		cf.setCurrency(getCurrency());
@@ -495,18 +480,19 @@ public abstract class SimpleAccount implements GnucashAccount {
 
 		FixedPointNumber balance = new FixedPointNumber();
 
-		for (GnucashTransactionSplit split : getTransactionSplits()) {
+		for ( GnucashTransactionSplit split : getTransactionSplits() ) {
 			if ( date  != null &&
 			     after != null ) {
 			  if ( split.getTransaction().getDatePosted().isAfter( ChronoZonedDateTime.from(date.atStartOfDay()) ) ) {
-	              after.add(split);
-	              continue;
+			      after.add(split);
+			      continue;
 			  }
 			}
 
 			// the currency of the quantity is the one of the account
 			balance.add(split.getQuantity());
 		}
+		
 		return balance;
 	}
 
@@ -516,6 +502,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	public FixedPointNumber getBalance(final GnucashTransactionSplit lastIncludesSplit) {
 
 		FixedPointNumber balance = new FixedPointNumber();
+		
 		for (GnucashTransactionSplit split : getTransactionSplits()) {
 			balance.add(split.getQuantity());
 
@@ -524,6 +511,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 			}
 
 		}
+		
 		return balance;
 	}
 
@@ -541,6 +529,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 			}
 
 		}
+		
 		return null;
 	}
 
@@ -563,22 +552,20 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 *                            from being compared to this Object.
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	public int compareTo(final Object o) {
+	public int compareTo(final GnucashAccount otherAcc) {
 
-		int i = compareNamesTo(o);
+		int i = compareNamesTo(otherAcc);
 		if (i != 0) {
 			return i;
 		}
 
-		if (o instanceof GnucashAccount) {
-			GnucashAccount other = (GnucashAccount) o;
-			i = other.getId().compareTo(getId());
-			if (i != 0) {
-				return i;
-			}
+		GnucashAccount other = otherAcc;
+		i = other.getId().compareTo(getId());
+		if (i != 0) {
+		  return i;
 		}
 
-		return ("" + hashCode()).compareTo("" + o.hashCode());
+		return ("" + hashCode()).compareTo("" + otherAcc.hashCode());
 
 	}
 
@@ -627,17 +614,16 @@ public abstract class SimpleAccount implements GnucashAccount {
 		if (i0 == null && i1 != null) {
 			return 1;
 		}
-		if (i1 == null && i0 != null) {
+		else if (i1 == null && i0 != null) {
 			return -1;
 		}
-		if (i0 == null) {
+		else if (i0 == null) {
 			return me.compareTo(other);
 		}
-		if (i1 == null) {
+		else if (i1 == null) {
 			return me.compareTo(other);
 		}
-
-		if (i1.equals(i0)) {
+		else if (i1.equals(i0)) {
 			return me.compareTo(other);
 		}
 

@@ -1,35 +1,73 @@
-/**
- * GnucashTransactionSplit.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  05.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read;
-
-
 
 import java.util.Collection;
 import java.util.Locale;
 
+import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 
-
-
 /**
- * created: 05.05.2005 <br/>
  * This denotes a single addition or removal of some
  * value from one account in a transaction made up of
  * multiple such splits.
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
-public interface GnucashTransactionSplit extends Comparable {
+public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSplit> {
+
+  // For the following enumerations cf.:
+  // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Split.h
+  
+  // Note: The following should be chars, but the method where they are 
+  // used is generated and accepts a String.
+  // ::MAGIC
+  public static final String CREC = "c"; // cleared
+  public static final String YREC = "y"; // reconciled  
+  public static final String FREC = "f"; // frozen into accounting period
+  public static final String NREC = "n"; // not reconciled or cleared
+  public static final String VREC = "v"; // void
+    
+  // ::TODO: Locale-specific, make generic
+  // ::MAGIC
+  public static final String ACTION_INVOICE = "Rechnung";
+  public static final String ACTION_BILL    = "Lieferantenrechnung";
+  public static final String ACTION_PAYMENT = "Zahlung";
+  public static final String ACTION_BUY     = "Kauf";
+  public static final String ACTION_SELL    = "Verkauf";
+  
+  // Not yet, for future releases:
+//  public static final String SPLIT_DATE_RECONCILED    = "date-reconciled";
+//  public static final String SPLIT_BALANCE            = "balance";
+//  public static final String SPLIT_CLEARED_BALANCE    = "cleared-balance";
+//  public static final String SPLIT_RECONCILED_BALANCE = "reconciled-balance";
+//  public static final String SPLIT_MEMO               = "memo";
+//  public static final String SPLIT_ACTION             = "action";
+//  public static final String SPLIT_RECONCILE          = "reconcile-flag";
+//  public static final String SPLIT_AMOUNT             = "amount";
+//  public static final String SPLIT_SHARE_PRICE        = "share-price";
+//  public static final String SPLIT_VALUE              = "value";
+//  public static final String SPLIT_TYPE               = "type";
+//  public static final String SPLIT_VOIDED_AMOUNT      = "voided-amount";
+//  public static final String SPLIT_VOIDED_VALUE       = "voided-value";
+//  public static final String SPLIT_LOT                = "lot";
+//  public static final String SPLIT_TRANS              = "trans";
+//  public static final String SPLIT_ACCOUNT            = "account";
+//  public static final String SPLIT_ACCOUNT_GUID       = "account-guid";
+//  public static final String SPLIT_ACCT_FULLNAME      = "acct-fullname";
+//  public static final String SPLIT_CORR_ACCT_NAME     = "corr-acct-fullname";
+//  public static final String SPLIT_CORR_ACCT_CODE     = "corr-acct-code";
+  
+  // -----------------------------------------------------------------
+
+  @SuppressWarnings("exports")
+  GncTransaction.TrnSplits.TrnSplit getJwsdpPeer();
+
+  /**
+   * The gnucash-file is the top-level class to contain everything.
+   * @return the file we are associated with
+   */
+  GnucashFile getGnucashFile();
+  
+  // -----------------------------------------------------------------
+
 
     /**
      *
@@ -66,24 +104,24 @@ public interface GnucashTransactionSplit extends Comparable {
      * The value is in the currency of the transaction!
      * @return the value-transfer this represents
      */
-    String getValueFormatet();
+    String getValueFormatted();
     /**
      * The value is in the currency of the transaction!
      * @param locale the locale to use
      * @return the value-transfer this represents
      */
-    String getValueFormatet(Locale locale);
+    String getValueFormatted(Locale locale);
     /**
      * The value is in the currency of the transaction!
      * @return the value-transfer this represents
      */
-    String getValueFormatetForHTML();
+    String getValueFormattedForHTML();
     /**
      * The value is in the currency of the transaction!
      * @param locale the locale to use
      * @return the value-transfer this represents
      */
-    String getValueFormatetForHTML(Locale locale);
+    String getValueFormattedForHTML(Locale locale);
 
     /**
      * @return the balance of the account (in the account's currency)
@@ -95,12 +133,12 @@ public interface GnucashTransactionSplit extends Comparable {
      * @return the balance of the account (in the account's currency)
      *         up to this split.
      */
-    String getAccountBalanceFormatet();
+    String getAccountBalanceFormatted();
 
     /**
-     * @see GnucashAccount#getBalanceFormated()
+     * @see GnucashAccount#getBalanceFormatted()
      */
-    String getAccountBalanceFormatet(Locale locale);
+    String getAccountBalanceFormatted(Locale locale);
 
     /**
      * The quantity is in the currency of the account!
@@ -112,27 +150,27 @@ public interface GnucashTransactionSplit extends Comparable {
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
      */
-    String getQuantityFormatet();
+    String getQuantityFormatted();
 
     /**
      * The quantity is in the currency of the account!
      * @param locale the locale to use
      * @return the number of items added to the account
      */
-    String getQuantityFormatet(Locale locale);
+    String getQuantityFormatted(Locale locale);
 
     /**
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
      */
-    String getQuantityFormatetForHTML();
+    String getQuantityFormattedForHTML();
 
     /**
      * The quantity is in the currency of the account!
      * @param locale the locale to use
      * @return the number of items added to the account
      */
-    String getQuantityFormatetForHTML(Locale locale);
+    String getQuantityFormattedForHTML(Locale locale);
 
     /**
      * @return the user-defined description for this object
@@ -140,12 +178,14 @@ public interface GnucashTransactionSplit extends Comparable {
      */
     String getDescription();
 
-    /**
+    public String getLotID();
+
+      /**
      * Get the type of association this split has with
      * an invoice's lot.
-     * @return null, "Zahlung" or "Rechnung"
+     * @return null, or one of the ACTION_xyz values defined
      */
-    String getSplitAction();
+    String getAction();
 
     /**
      * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.
