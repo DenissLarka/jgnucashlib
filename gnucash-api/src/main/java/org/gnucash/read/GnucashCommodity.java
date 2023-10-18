@@ -26,7 +26,7 @@ public interface GnucashCommodity {
      *         separated by a colon. This is used to make the so-called ID
      *         a real ID (i.e., unique).
      */
-    String getNameSpaceId();
+    String getQualifId();
 
     /**
      * @return the "extended" code of a commodity
@@ -43,7 +43,7 @@ public interface GnucashCommodity {
      */
     String getName();
 
-    int getFraction();
+    Integer getFraction();
 
     // ------------------------------------------------------------
 

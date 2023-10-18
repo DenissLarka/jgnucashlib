@@ -2,7 +2,6 @@ package org.gnucash.read.impl;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashCommodity;
-import org.gnucash.read.GnucashFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +41,9 @@ public class GnucashCommodityImpl implements GnucashCommodity
      */
     @Override
     public String getNameSpace() {
+	if ( jwsdpPeer.getCmdtySpace() == null )
+	    return null;
+	
 	return jwsdpPeer.getCmdtySpace();
     }
 
@@ -50,6 +52,9 @@ public class GnucashCommodityImpl implements GnucashCommodity
      */
     @Override
     public String getId() {
+	if ( jwsdpPeer.getCmdtyId() == null )
+	    return null;
+	
 	return jwsdpPeer.getCmdtyId();
     }
 
@@ -57,7 +62,11 @@ public class GnucashCommodityImpl implements GnucashCommodity
      * {@inheritDoc}
      */
     @Override
-    public String getNameSpaceId() {
+    public String getQualifId() {
+	if ( getNameSpace() == null ||
+	     getId() == null )
+	    return null;
+	
 	return getNameSpace() + ":" + getId();
     }
 
@@ -66,6 +75,9 @@ public class GnucashCommodityImpl implements GnucashCommodity
      */
     @Override
     public String getName() {
+	if ( jwsdpPeer.getCmdtyName() == null )
+	    return null;
+	
 	return jwsdpPeer.getCmdtyName();
     }
 
@@ -74,6 +86,9 @@ public class GnucashCommodityImpl implements GnucashCommodity
      */
     @Override
     public String getXCode() {
+	if ( jwsdpPeer.getCmdtyXcode() == null )
+	    return null;
+	
 	return jwsdpPeer.getCmdtyXcode();
     }
 
@@ -81,7 +96,10 @@ public class GnucashCommodityImpl implements GnucashCommodity
      * {@inheritDoc}
      */
     @Override
-    public int getFraction() {
+    public Integer getFraction() {
+	if ( jwsdpPeer.getCmdtyFraction() == null )
+	    return null;
+	
 	return jwsdpPeer.getCmdtyFraction();
     }
 

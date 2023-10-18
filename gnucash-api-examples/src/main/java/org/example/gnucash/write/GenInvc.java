@@ -12,6 +12,9 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.WrongAccountTypeException;
+import org.gnucash.read.impl.AccountNotFoundException;
+import org.gnucash.read.impl.OwnerNotFoundException;
 import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
@@ -86,7 +89,7 @@ public class GenInvc {
 	    }
 	} catch (Exception exc) {
 	    System.err.println("Error: Could not instantiate account with ID '" + incAcctID + "'");
-	    throw new NoAccountFoundException();
+	    throw new AccountNotFoundException();
 	}
 
 	try {
@@ -100,7 +103,7 @@ public class GenInvc {
 	    }
 	} catch (Exception exc) {
 	    System.err.println("Error: Could not instantiate account with ID '" + expAcctID + "'");
-	    throw new NoAccountFoundException();
+	    throw new AccountNotFoundException();
 	}
 
 	try {
@@ -114,7 +117,7 @@ public class GenInvc {
 	    }
 	} catch (Exception exc) {
 	    System.err.println("Error: Could not instantiate account with ID '" + recvblAcctID + "'");
-	    throw new NoAccountFoundException();
+	    throw new AccountNotFoundException();
 	}
 
 	try {
@@ -128,7 +131,7 @@ public class GenInvc {
 	    }
 	} catch (Exception exc) {
 	    System.err.println("Error: Could not instantiate account with ID '" + paybleAcctID + "'");
-	    throw new NoAccountFoundException();
+	    throw new AccountNotFoundException();
 	}
 
 	GnucashGenerInvoice invc1 = null;
@@ -155,15 +158,15 @@ public class GenInvc {
 
     // -----------------------------------------------------------------
 
-    private GnucashWritableCustomerInvoice doCustomer(GnucashWritableFileImpl gcshFile) throws NoOwnerFoundException,
-	    WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException, WrongAccountTypeException {
+    private GnucashWritableCustomerInvoice doCustomer(GnucashWritableFileImpl gcshFile) 
+	    throws OwnerNotFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException, WrongAccountTypeException {
 	GnucashCustomer cust = null;
 	try {
 	    cust = gcshFile.getCustomerByID(custID);
 	    System.err.println("Customer: " + cust.getNumber() + " (" + cust.getName() + ")");
 	} catch (Exception exc) {
 	    System.err.println("Error: No customer with ID '" + custID + "' found");
-	    throw new NoOwnerFoundException();
+	    throw new OwnerNotFoundException();
 	}
 
 	GnucashWritableCustomerInvoice invc = gcshFile.createWritableCustomerInvoice(number, cust, 
@@ -199,15 +202,15 @@ public class GenInvc {
 	return invc;
     }
 
-    private GnucashWritableVendorBill doVendor(GnucashWritableFileImpl gcshFile) throws NoOwnerFoundException,
-	    WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException, WrongAccountTypeException {
+    private GnucashWritableVendorBill doVendor(GnucashWritableFileImpl gcshFile) 
+	    throws OwnerNotFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException, WrongAccountTypeException {
 	GnucashVendor vend = null;
 	try {
 	    vend = gcshFile.getVendorByID(vendID);
 	    System.err.println("Vendor: " + vend.getNumber() + " (" + vend.getName() + ")");
 	} catch (Exception exc) {
 	    System.err.println("Error: No vendor with ID '" + vendID + "' found");
-	    throw new NoOwnerFoundException();
+	    throw new OwnerNotFoundException();
 	}
 
 	GnucashWritableVendorBill bll = gcshFile.createWritableVendorBill(number, vend, 
@@ -244,7 +247,7 @@ public class GenInvc {
     }
 
     private GnucashWritableJobInvoice doJob_cust(GnucashWritableFileImpl gcshFile)
-	    throws NoOwnerFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException,
+	    throws OwnerNotFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException,
 	    WrongAccountTypeException, UnknownInvoiceTypeException {
 	GnucashGenerJob job = null;
 	try {
@@ -252,7 +255,7 @@ public class GenInvc {
 	    System.err.println("(Gener.) job: " + job.getNumber() + " (" + job.getName() + ")");
 	} catch (Exception exc) {
 	    System.err.println("Error: No (gener.) job with ID '" + job1ID + "' found");
-	    throw new NoOwnerFoundException();
+	    throw new OwnerNotFoundException();
 	}
 
 	GnucashWritableJobInvoice invc = gcshFile.createWritableJobInvoice(number, job, 
@@ -289,7 +292,7 @@ public class GenInvc {
     }
 
     private GnucashWritableJobInvoice doJob_vend(GnucashWritableFileImpl gcshFile)
-	    throws NoOwnerFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException,
+	    throws OwnerNotFoundException, WrongInvoiceTypeException, TaxTableNotFoundException, WrongOwnerTypeException,
 	    WrongAccountTypeException, UnknownInvoiceTypeException {
 	GnucashGenerJob job = null;
 	try {
@@ -297,7 +300,7 @@ public class GenInvc {
 	    System.err.println("(Gener.) job: " + job.getNumber() + " (" + job.getName() + ")");
 	} catch (Exception exc) {
 	    System.err.println("Error: No (gener.) job with ID '" + job2ID + "' found");
-	    throw new NoOwnerFoundException();
+	    throw new OwnerNotFoundException();
 	}
 
 	GnucashWritableJobInvoice invc = gcshFile.createWritableJobInvoice(number, job, 

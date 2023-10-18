@@ -999,7 +999,8 @@ public class GnucashFileImpl implements GnucashFile {
      * @see GnucashVendor
      * @see GnucashVendorImpl
      */
-    protected Map<String, GnucashCommodity> cmdtyID2Cmdty;
+    protected Map<String, GnucashCommodity> cmdtyQualifID2Cmdty;
+    protected Map<String, String>           cmdtyXCode2QualifID;
 
     /**
      * Helper to implement the {@link GnucashObject}-interface without having the
@@ -1248,25 +1249,41 @@ public class GnucashFileImpl implements GnucashFile {
     }
 
     private void initCommodityMap(final GncV2 pRootElement) {
-    cmdtyID2Cmdty = new HashMap<>();
+	initCommodityMap1(pRootElement);
+	initCommodityMap2(pRootElement);
+    }
+    
+    private void initCommodityMap1(final GncV2 pRootElement) {
+    cmdtyQualifID2Cmdty = new HashMap<String, GnucashCommodity>();
 
     for (Iterator<Object> iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext();) {
         Object bookElement = iter.next();
         if (!(bookElement instanceof GncV2.GncBook.GncCommodity)) {
         continue;
         }
-        GncV2.GncBook.GncCommodity jwsdpVend = (GncV2.GncBook.GncCommodity) bookElement;
+        GncV2.GncBook.GncCommodity jwsdpCmdty = (GncV2.GncBook.GncCommodity) bookElement;
 
         try {
-        GnucashCommodityImpl cmdty = createCommodity(jwsdpVend);
-        cmdtyID2Cmdty.put(cmdty.getNameSpaceId(), cmdty);
+        GnucashCommodityImpl cmdty = createCommodity(jwsdpCmdty);
+        cmdtyQualifID2Cmdty.put(cmdty.getQualifId(), cmdty);
         } catch (RuntimeException e) {
         LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initCommodityMap: "
-            + "ignoring illegal Commodity entry with id=" + jwsdpVend.getCmdtyId(), e);
+            + "ignoring illegal Commodity entry with id=" + jwsdpCmdty.getCmdtyId(), e);
         }
     } // for
 
-    LOGGER.debug("No. of entries in Commodity map: " + vendorID2vendor.size());
+    LOGGER.debug("No. of entries in Commodity map (1): " + cmdtyQualifID2Cmdty.size());
+    }
+
+    private void initCommodityMap2(final GncV2 pRootElement) {
+    cmdtyXCode2QualifID = new HashMap<String, String>();
+
+    for ( String qualifID : cmdtyQualifID2Cmdty.keySet() ) {
+	GnucashCommodity cmdty = cmdtyQualifID2Cmdty.get(qualifID);
+	cmdtyXCode2QualifID.put(cmdty.getXCode(), cmdty.getQualifId());
+    } 
+
+    LOGGER.debug("No. of entries in Commodity map (2): " + cmdtyXCode2QualifID.size());
     }
 
     private void initJobMap(final GncV2 pRootElement) {
@@ -1846,41 +1863,82 @@ public class GnucashFileImpl implements GnucashFile {
 
     @Override
     public Collection<GnucashVendor> getVendors() {
+	if (vendorID2vendor == null) {
+	    throw new IllegalStateException("no root-element loaded");
+	}
+	
 	return vendorID2vendor.values();
     }
 
     // ---------------------------------------------------------------
 
     @Override
-    public GnucashCommodity getCommodityByID(String nameSpace, String id) {
-    if (cmdtyID2Cmdty == null) {
-        throw new IllegalStateException("no root-element loaded");
-    }
-
-    GnucashCommodity retval = cmdtyID2Cmdty.get(nameSpace + ":" + id);
-    if (retval == null) {
-        LOGGER.warn("No Commodity with id '" + id + "'. We know " + cmdtyID2Cmdty.size() + " commodities.");
-    }
-    return retval;
+    public GnucashCommodity getCommodityByQualifID(String nameSpace, String id) {
+	return getCommodityByQualifID(nameSpace + ":" + id);
     }
 
     @Override
-    public GnucashCommodity getCommodityByName(String name) {
-    if (vendorID2vendor == null) {
-        throw new IllegalStateException("no root-element loaded");
+    public GnucashCommodity getCommodityByQualifID(String qualifID) {
+	if (cmdtyQualifID2Cmdty == null) {
+	    throw new IllegalStateException("no root-element loaded");
+	}
+
+	GnucashCommodity retval = cmdtyQualifID2Cmdty.get(qualifID);
+	if (retval == null) {
+	    LOGGER.warn("No Commodity with qualified id '" + qualifID + "'. We know " + cmdtyQualifID2Cmdty.size()
+		    + " commodities.");
+	}
+	return retval;
     }
 
-    for (GnucashCommodity cmdty : getCommodities()) {
-        if (cmdty.getName().equals(name)) {
-        return cmdty;
-        }
+    @Override
+    public GnucashCommodity getCommodityByXCode(String xCode) {
+	if ( cmdtyQualifID2Cmdty == null ||
+             cmdtyXCode2QualifID == null ) {
+	    throw new IllegalStateException("no root-element(s) loaded");
+	}
+
+	String qualifID = cmdtyXCode2QualifID.get(xCode);
+	if (qualifID == null) {
+	    LOGGER.warn("No Commodity with X-Code '" + xCode + "'. We know " + cmdtyXCode2QualifID.size() + " commodities in map 2.");
+	}
+	
+	GnucashCommodity retval = cmdtyQualifID2Cmdty.get(qualifID);
+	if (retval == null) {
+	    LOGGER.warn("No Commodity with qualified ID '" + qualifID + "'. We know " + cmdtyQualifID2Cmdty.size() + " commodities in map 1.");
+	}
+	
+	return retval;
     }
-    return null;
+
+    @Override
+    public Collection<GnucashCommodity> getCommoditiesByName(String expr) {
+	if (cmdtyQualifID2Cmdty == null) {
+	    throw new IllegalStateException("no root-element loaded");
+	}
+	
+	Collection<GnucashCommodity> result = new ArrayList<GnucashCommodity>();
+
+	for (GnucashCommodity cmdty : getCommodities()) {
+	    if ( cmdty.getName() != null ) // yes, that can actually happen! 
+	    {
+		if ( cmdty.getName().toLowerCase().
+			contains(expr.trim().toLowerCase()) ) {
+		    result.add(cmdty);
+		}
+	    }
+	}
+	
+	return result;
     }
 
     @Override
     public Collection<GnucashCommodity> getCommodities() {
-    return cmdtyID2Cmdty.values();
+	if (cmdtyQualifID2Cmdty == null) {
+	    throw new IllegalStateException("no root-element loaded");
+	}
+	
+	return cmdtyQualifID2Cmdty.values();
     }
 
     // ---------------------------------------------------------------
@@ -2335,7 +2393,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     @Override
     public int getNofEntriesCommodityMap() {
-    return cmdtyID2Cmdty.size();
+    return cmdtyQualifID2Cmdty.size();
     }
 
     // ---------------------------------------------------------------

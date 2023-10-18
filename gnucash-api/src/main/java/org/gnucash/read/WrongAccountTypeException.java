@@ -1,4 +1,4 @@
-package org.example.gnucash.write;
+package org.gnucash.read;
 
 public class WrongAccountTypeException extends Exception
 {

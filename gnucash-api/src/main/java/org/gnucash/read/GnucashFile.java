@@ -505,7 +505,19 @@ public interface GnucashFile extends GnucashObject {
      * @param id the unique id of the currency/security/commodity to look for
      * @return the currency/security/commodity or null if it's not found
      */
-    GnucashCommodity getCommodityByID(String nameSpace, String id);
+    GnucashCommodity getCommodityByQualifID(String nameSpace, String id);
+
+    /**
+     * @param id the unique id of the currency/security/commodity to look for
+     * @return the currency/security/commodity or null if it's not found
+     */
+    GnucashCommodity getCommodityByQualifID(String qualifID);
+
+    /**
+     * @param id the unique id of the currency/security/commodity to look for
+     * @return the currency/security/commodity or null if it's not found
+     */
+    GnucashCommodity getCommodityByXCode(String xCode);
 
     /**
      * warning: this function has to traverse all currencies/securities/commodities. If it much faster to try
@@ -516,7 +528,7 @@ public interface GnucashFile extends GnucashObject {
      * @return null if not found
      * @see #getCommodityByID(String)
      */
-    GnucashCommodity getCommodityByName(String name);
+    Collection<GnucashCommodity> getCommoditiesByName(String name);
 
     /**
      * @return a (possibly read-only) collection of all currencies/securities/commodities Do not modify the
