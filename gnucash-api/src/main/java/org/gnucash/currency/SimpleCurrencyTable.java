@@ -27,6 +27,20 @@ public class SimpleCurrencyTable implements Serializable {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleCurrencyTable.class);
 
+	private static final long serialVersionUID = 4464939590559924285L;
+	
+	// -----------------------------------------------------------
+
+	/**
+	 * maps a currency-name in capital letters(e.g. "GBP")
+	 * to a factor {@link FixedPointNumber}
+	 * that is to be multiplied with an amount of that currency
+	 * to get the value in the base-currency.
+	 *
+	 * @see {@link #getConversionFactor(String)}
+	 */
+	private Map<String, FixedPointNumber> mIso4217CurrencyCodes2Factor = new Hashtable<String, FixedPointNumber>();
+
 	//------------------------ support for propertyChangeListeners ------------------
 	//
 	///**
@@ -96,34 +110,11 @@ public class SimpleCurrencyTable implements Serializable {
 
 	//-------------------------------------------------------
 
-	/**
-	 * Just an overridden ToString to return this classe's name
-	 * and hashCode.
-	 *
-	 * @return className and hashCode
-	 */
-	public String toString() {
-		return "CurrencyTable@" + hashCode();
-	}
-
-	/**
-	 *
-	 */
 	public SimpleCurrencyTable() {
 		super();
 		setConversionFactor("EUR", new FixedPointNumber(1));
 		//setConversionFactor("GBP", new FixedPointNumber("769/523"));
 	}
-
-	/**
-	 * maps a currency-name in capital letters(e.g. "GBP")
-	 * to a factor {@link FixedPointNumber}
-	 * that is to be multiplied with an amount of that currency
-	 * to get the value in the base-currency.
-	 *
-	 * @see {@link #getConversionFactor(String)}
-	 */
-	private Map<String, FixedPointNumber> mIso4217CurrencyCodes2Factor = new Hashtable<String, FixedPointNumber>();
 
 	/**
 	 * @param iso4217CurrencyCode a currency-name in capital letters(e.g. "GBP")
@@ -136,13 +127,6 @@ public class SimpleCurrencyTable implements Serializable {
 	}
 
 	/**
-	 * forget all conversion-factors.
-	 */
-	public void clear() {
-		mIso4217CurrencyCodes2Factor.clear();
-	}
-
-	/**
 	 * @param iso4217CurrencyCode a currency-name in capital letters(e.g. "GBP")
 	 * @param factor              a factor {@link FixedPointNumber}
 	 *                            that is to be multiplied with an amount of that currency
@@ -151,6 +135,13 @@ public class SimpleCurrencyTable implements Serializable {
 	public void setConversionFactor(final String iso4217CurrencyCode,
 			final FixedPointNumber factor) {
 		mIso4217CurrencyCodes2Factor.put(iso4217CurrencyCode, factor);
+	}
+
+	/**
+	 * forget all conversion-factors.
+	 */
+	public void clear() {
+		mIso4217CurrencyCodes2Factor.clear();
 	}
 
 	/**
@@ -198,6 +189,18 @@ public class SimpleCurrencyTable implements Serializable {
 	 */
 	public Collection<String> getCurrencies() {
 		return mIso4217CurrencyCodes2Factor.keySet();
+	}
+	
+	// -----------------------------------------------------------
+
+	/**
+	 * Just an overridden ToString to return this classe's name
+	 * and hashCode.
+	 *
+	 * @return className and hashCode
+	 */
+	public String toString() {
+		return "CurrencyTable@" + hashCode();
 	}
 
 }

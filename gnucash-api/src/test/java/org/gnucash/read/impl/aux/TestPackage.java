@@ -18,6 +18,8 @@ public class TestPackage extends TestCase
     
     suite.addTest(org.gnucash.read.impl.aux.TestGCshBillTermsImpl.suite());
     suite.addTest(org.gnucash.read.impl.aux.TestGCshTaxTableImpl.suite());
+    
+    suite.addTest(org.gnucash.read.impl.aux.TestGCshPriceImpl.suite());
 
     return suite;
   }

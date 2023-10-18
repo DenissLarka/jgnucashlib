@@ -34,6 +34,7 @@ import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncPricedb.Price;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -48,8 +49,10 @@ import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.aux.GCshBillTerms;
+import org.gnucash.read.aux.GCshPrice;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.aux.GCshBillTermsImpl;
+import org.gnucash.read.impl.aux.GCshPriceImpl;
 import org.gnucash.read.impl.aux.GCshTaxTableImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerInvoiceImpl;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
@@ -912,16 +915,58 @@ public class GnucashFileImpl implements GnucashFile {
      * @see #getGnucashFile()
      */
     private File file;
+    
+    // ---------------------------------------------------------------
 
     /**
-     * @param pCmdtySpace the namespace for pCmdtyId
-     * @param pCmdtyId    the currency-name
-     * @return the latest price-quote in the gnucash-file in EURO
-     * @see {@link GnucashFile#getLatestPrice(String, String)}
+     * Filles lazy in getTaxTables() .
+     *
+     * @see #getTaxTables()
+     */
+    protected Map<String, GCshPrice> priceById = null;
+
+    /**
+     * {@inheritDoc}
+     */
+    public GCshPrice getPriceByID(String id) {
+        if (priceById == null) {
+            getPrices();
+        }
+        
+        return priceById.get(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Collection<GCshPrice> getPrices() {
+        if (priceById == null) {
+            priceById = new HashMap<String, GCshPrice>();
+
+            List<Object> bookElements = this.getRootElement().getGncBook().getBookElements();
+            for (Object bookElement : bookElements) {
+                if ( bookElement instanceof GncV2.GncBook.GncPricedb ) {
+                    GncV2.GncBook.GncPricedb priceDB = (GncV2.GncBook.GncPricedb) bookElement;
+                    List<GncV2.GncBook.GncPricedb.Price> prices = priceDB.getPrice();
+                    for ( GncV2.GncBook.GncPricedb.Price jwsdpPeer : prices ) {
+                	GCshPriceImpl price = new GCshPriceImpl(jwsdpPeer, this);
+                	priceById.put(price.getId(), price);
+                    } // for jwsdpPeer
+                } // if 
+            } // for bookElement
+        } // if
+
+        return priceById.values();
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public FixedPointNumber getLatestPrice(final String pCmdtySpace, final String pCmdtyId) {
 	return getLatestPrice(pCmdtySpace, pCmdtyId, 0);
     }
+
+    // ---------------------------------------------------------------
 
     /**
      * the top-level Element of the gnucash-files parsed and checked for validity by
@@ -1313,8 +1358,6 @@ public class GnucashFileImpl implements GnucashFile {
 	LOGGER.debug("No. of entries in (generic) Job map: " + jobID2job.size());
     }
 
-    // ---------------------------------------------------------------
-
     /**
      * Use a heuristic to determine the defaultcurrency-id. If we cannot find one,
      * we default to EUR.<br/>
@@ -1549,7 +1592,7 @@ public class GnucashFileImpl implements GnucashFile {
 	return factor.multiply(latestQuote);
     }
 
-    // ----------------------------
+    // ---------------------------------------------------------------
 
     /**
      * @param jwsdpAcct the JWSDP-peer (parsed xml-element) to fill our object with

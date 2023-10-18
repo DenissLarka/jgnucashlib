@@ -25,7 +25,26 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		void conversionFactorChanged(final String namespace, final String currency, final FixedPointNumber factor);
 	}
 
+	private static final long serialVersionUID = 7318173535959109553L;
+
+	// -----------------------------------------------------------
+
+	/**
+	 * Namespace is e.g. "ISO4217" or "FUND"
+	 */
+	private Map<String, SimpleCurrencyTable> namespace2CurrencyTable;
+	
 	private transient volatile List<ComplexCurrencyTableChangeListener> listeners = null;
+
+	// -----------------------------------------------------------
+
+	public ComplexCurrencyTable() {
+		super();
+
+		addNameSpace(CurrencyNameSpace.NAMESPACE_CURRENCY, new SimpleCurrencyTable());
+	}
+
+	// -----------------------------------------------------------
 
 	public void addComplexCurrencyTableChangeListener(final ComplexCurrencyTableChangeListener listener) {
 		if (listeners == null) {
@@ -48,11 +67,6 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			}
 		}
 	}
-
-	/**
-	 * Namespace is e.g. "ISO4217" or "FUND"
-	 */
-	private Map<String, SimpleCurrencyTable> namespace2CurrencyTable;
 
 	//------------------------ support for propertyChangeListeners ------------------
 	//
@@ -122,17 +136,6 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	//}
 	//
 	//-------------------------------------------------------
-
-	/**
-	 * Just an overridden ToString to return this classe's name
-	 * and hashCode.
-	 *
-	 * @return className and hashCode
-	 */
-	@Override
-	public String toString() {
-		return "ComplexCurrencyTable@" + hashCode();
-	}
 
 	/**
 	 * Add a new namespace with no conversion-factors.<br/>
@@ -351,15 +354,6 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	}
 
 	/**
-	 *
-	 */
-	public ComplexCurrencyTable() {
-		super();
-
-		addNameSpace(CurrencyNameSpace.NAMESPACE_CURRENCY, new SimpleCurrencyTable());
-	}
-
-	/**
 	 * @param pNamespace
 	 */
 	public Collection<String> getCurrencies(final String pNamespace) {
@@ -369,4 +363,18 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		}
 		return namespace.getCurrencies();
 	}
+	
+	// -----------------------------------------------------------
+	
+	/**
+	 * Just an overridden ToString to return this classe's name
+	 * and hashCode.
+	 *
+	 * @return className and hashCode
+	 */
+	@Override
+	public String toString() {
+		return "ComplexCurrencyTable@" + hashCode();
+	}
+
 }

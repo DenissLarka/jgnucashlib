@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshBillTerms;
+import org.gnucash.read.aux.GCshPrice;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashJobInvoice;
@@ -87,11 +88,25 @@ public interface GnucashFile extends GnucashObject {
     // ---------------------------------------------------------------
 
     /**
+     * @param id id of a price
+     * @return the identified price or null
+     */
+    GCshPrice getPriceByID(String id);
+
+    /**
+     * @return all prices defined in the book
+     * @link GCshPrice
+     */
+    Collection<GCshPrice> getPrices();
+
+    /**
      * @param pCmdtySpace the namespace for pCmdtyId
      * @param pCmdtyId    the currency-name
      * @return the latest price-quote in the gnucash-file in EURO
      */
     FixedPointNumber getLatestPrice(final String pCmdtySpace, final String pCmdtyId);
+
+    // ---------------------------------------------------------------
 
     // public abstract void setFile(File file);
 
