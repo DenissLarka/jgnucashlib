@@ -1,4 +1,4 @@
-package org.gnucash;
+package org.gnucash.currency;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -11,13 +11,12 @@ public class TestPackage extends TestCase
     junit.textui.TestRunner.run(suite());
   }
 
+  @SuppressWarnings("exports")
   public static Test suite() throws Exception
   {
     TestSuite suite = new TestSuite();
     
-    suite.addTest(org.gnucash.currency.TestPackage.suite());
-    suite.addTest(org.gnucash.read.TestPackage.suite());
-    suite.addTest(org.gnucash.write.TestPackage.suite());
+    suite.addTest(org.gnucash.currency.TestCmdtyCurrID.suite());
 
     return suite;
   }

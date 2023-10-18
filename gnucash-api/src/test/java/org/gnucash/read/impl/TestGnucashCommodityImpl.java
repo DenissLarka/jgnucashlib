@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;
+import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashFile;
 import org.junit.Before;
@@ -31,6 +31,9 @@ public class TestGnucashCommodityImpl
     
   private GnucashFile      gcshFile = null;
   private GnucashCommodity cmdty = null;
+  
+  private CmdtyCurrID cmdtyCurrID1 = new CmdtyCurrID(CMDTY_1_NAMESPACE, CMDTY_1_ID);
+  private CmdtyCurrID cmdtyCurrID2 = new CmdtyCurrID(CMDTY_2_NAMESPACE, CMDTY_2_ID);
   
   // -----------------------------------------------------------------
   
@@ -74,6 +77,16 @@ public class TestGnucashCommodityImpl
   }
 
   // -----------------------------------------------------------------
+  
+  @Test 
+  public void test00() throws Exception
+  {
+      // Cf. TestCmdtyCurrID -- let's just double-check 
+      assertEquals(CMDTY_1_NAMESPACE + CmdtyCurrID.SEPARATOR + CMDTY_1_ID, cmdtyCurrID1.toString());
+      assertEquals(CMDTY_2_NAMESPACE + CmdtyCurrID.SEPARATOR + CMDTY_2_ID, cmdtyCurrID2.toString());
+  }
+  
+  // ------------------------------
 
   @Test
   public void test01_1() throws Exception
@@ -81,7 +94,7 @@ public class TestGnucashCommodityImpl
     cmdty = gcshFile.getCommodityByQualifID(CMDTY_1_NAMESPACE, CMDTY_1_ID);
     assertNotEquals(null, cmdty);
     
-    assertEquals(CMDTY_1_NAMESPACE + ":" + CMDTY_1_ID, cmdty.getQualifId());
+    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId());
     assertEquals(CMDTY_1_NAMESPACE, cmdty.getNameSpace());
     assertEquals(CMDTY_1_ID, cmdty.getId());
     assertEquals(CMDTY_1_ISIN, cmdty.getXCode());
@@ -91,10 +104,10 @@ public class TestGnucashCommodityImpl
   @Test
   public void test01_2() throws Exception
   {
-    cmdty = gcshFile.getCommodityByQualifID(CMDTY_1_NAMESPACE + ":" + CMDTY_1_ID);
+    cmdty = gcshFile.getCommodityByQualifID(cmdtyCurrID1.toString());
     assertNotEquals(null, cmdty);
     
-    assertEquals(CMDTY_1_NAMESPACE + ":" + CMDTY_1_ID, cmdty.getQualifId());
+    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId());
     assertEquals(CMDTY_1_NAMESPACE, cmdty.getNameSpace());
     assertEquals(CMDTY_1_ID, cmdty.getId());
     assertEquals(CMDTY_1_ISIN, cmdty.getXCode());
@@ -107,7 +120,7 @@ public class TestGnucashCommodityImpl
     cmdty = gcshFile.getCommodityByXCode(CMDTY_1_ISIN);
     assertNotEquals(null, cmdty);
     
-    assertEquals(CMDTY_1_NAMESPACE + ":" + CMDTY_1_ID, cmdty.getQualifId());
+    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId());
     assertEquals(CMDTY_1_NAMESPACE, cmdty.getNameSpace());
     assertEquals(CMDTY_1_ID, cmdty.getId());
     assertEquals(CMDTY_1_ISIN, cmdty.getXCode());
@@ -121,7 +134,7 @@ public class TestGnucashCommodityImpl
     assertNotEquals(null, cmdtyList);
     assertEquals(1, cmdtyList.size());
     
-    assertEquals(CMDTY_1_NAMESPACE + ":" + CMDTY_1_ID, 
+    assertEquals(cmdtyCurrID1.toString(), 
 	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId());
     assertEquals(CMDTY_1_NAMESPACE, 
 	         ((GnucashCommodity) cmdtyList.toArray()[0]).getNameSpace());
@@ -135,13 +148,13 @@ public class TestGnucashCommodityImpl
     cmdtyList = gcshFile.getCommoditiesByName("BENZ");
     assertNotEquals(null, cmdtyList);
     assertEquals(1, cmdtyList.size());
-    assertEquals(CMDTY_1_NAMESPACE + ":" + CMDTY_1_ID, 
+    assertEquals(cmdtyCurrID1.toString(), 
 	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId());
     
     cmdtyList = gcshFile.getCommoditiesByName(" MeRceDeS-bEnZ  ");
     assertNotEquals(null, cmdtyList);
     assertEquals(1, cmdtyList.size());
-    assertEquals(CMDTY_1_NAMESPACE + ":" + CMDTY_1_ID, 
+    assertEquals(CMDTY_1_NAMESPACE + CmdtyCurrID.SEPARATOR + CMDTY_1_ID, 
 	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId());
   }
 }

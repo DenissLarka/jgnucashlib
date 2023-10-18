@@ -11,4 +11,6 @@ public class CurrencyNameSpace {
     public static final String NAMESPACE_NASDAQ   = "NASDAQ";
     public static final String NAMESPACE_NYSE     = "NYSE";
 
+    public static final String NAMESPACE_UNSET    = "UNSET";
+
 }
