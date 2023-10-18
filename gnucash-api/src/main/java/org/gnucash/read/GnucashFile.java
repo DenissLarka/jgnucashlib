@@ -499,6 +499,31 @@ public interface GnucashFile extends GnucashObject {
      */
     Collection<GnucashVendor> getVendors();
 
+    // ----------------------------
+
+    /**
+     * @param id the unique id of the currency/security/commodity to look for
+     * @return the currency/security/commodity or null if it's not found
+     */
+    GnucashCommodity getCommodityByID(String nameSpace, String id);
+
+    /**
+     * warning: this function has to traverse all currencies/securities/commodities. If it much faster to try
+     * getCommodityByID first and only call this method if the returned account does
+     * not have the right name.
+     *
+     * @param name the name to look for
+     * @return null if not found
+     * @see #getCommodityByID(String)
+     */
+    GnucashCommodity getCommodityByName(String name);
+
+    /**
+     * @return a (possibly read-only) collection of all currencies/securities/commodities Do not modify the
+     *         returned collection!
+     */
+    Collection<GnucashCommodity> getCommodities();
+
     // ---------------------------------------------------------------
     // Statistics (for test purposes)
 
@@ -517,6 +542,8 @@ public interface GnucashFile extends GnucashObject {
     public int getNofEntriesCustomerMap();
 
     public int getNofEntriesVendorMap();
+
+    public int getNofEntriesCommodityMap();
 
     // ---------------------------------------------------------------
     // In this section, we assume that customer, vendor and job numbers

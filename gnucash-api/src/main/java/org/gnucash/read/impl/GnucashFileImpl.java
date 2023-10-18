@@ -37,6 +37,7 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
+import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
@@ -993,6 +994,14 @@ public class GnucashFileImpl implements GnucashFile {
     protected Map<String, GnucashVendor> vendorID2vendor;
 
     /**
+     * All vendors indexed by their unique id-String.
+     *
+     * @see GnucashVendor
+     * @see GnucashVendorImpl
+     */
+    protected Map<String, GnucashCommodity> cmdtyID2Cmdty;
+
+    /**
      * Helper to implement the {@link GnucashObject}-interface without having the
      * same code twice.
      */
@@ -1040,6 +1049,8 @@ public class GnucashFileImpl implements GnucashFile {
 	initCustomerMap(pRootElement);
 
 	initVendorMap(pRootElement);
+
+    initCommodityMap(pRootElement);
 
 	initJobMap(pRootElement);
 
@@ -1236,6 +1247,28 @@ public class GnucashFileImpl implements GnucashFile {
 	LOGGER.debug("No. of entries in vendor map: " + vendorID2vendor.size());
     }
 
+    private void initCommodityMap(final GncV2 pRootElement) {
+    cmdtyID2Cmdty = new HashMap<>();
+
+    for (Iterator<Object> iter = pRootElement.getGncBook().getBookElements().iterator(); iter.hasNext();) {
+        Object bookElement = iter.next();
+        if (!(bookElement instanceof GncV2.GncBook.GncCommodity)) {
+        continue;
+        }
+        GncV2.GncBook.GncCommodity jwsdpVend = (GncV2.GncBook.GncCommodity) bookElement;
+
+        try {
+        GnucashCommodityImpl cmdty = createCommodity(jwsdpVend);
+        cmdtyID2Cmdty.put(cmdty.getNameSpaceId(), cmdty);
+        } catch (RuntimeException e) {
+        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initCommodityMap: "
+            + "ignoring illegal Commodity entry with id=" + jwsdpVend.getCmdtyId(), e);
+        }
+    } // for
+
+    LOGGER.debug("No. of entries in Commodity map: " + vendorID2vendor.size());
+    }
+
     private void initJobMap(final GncV2 pRootElement) {
 	jobID2job = new HashMap<String, GnucashGenerJob>();
 
@@ -1250,17 +1283,17 @@ public class GnucashFileImpl implements GnucashFile {
 		GnucashGenerJobImpl job = createGenerJob(jwsdpJob);
 		String jobID = job.getId();
 		if (jobID == null) {
-		    LOGGER.error("File contains a customer/vendor job w/o an ID. indexing it with the ID ''");
+		    LOGGER.error("File contains a (generic) Job w/o an ID. indexing it with the ID ''");
 		    jobID = "";
 		}
 		jobID2job.put(job.getId(), job);
 	    } catch (RuntimeException e) {
 		LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initJobMap: "
-			+ "ignoring illegal Customer/Vendor-Job-Entry with id=" + jwsdpJob.getJobId(), e);
+			+ "ignoring illegal (generic) Job entry with id=" + jwsdpJob.getJobId(), e);
 	    }
 	} // for
 
-	LOGGER.debug("No. of entries in (generic) job map: " + jobID2job.size());
+	LOGGER.debug("No. of entries in (generic) Job map: " + jobID2job.size());
     }
 
     // ---------------------------------------------------------------
@@ -1558,6 +1591,15 @@ public class GnucashFileImpl implements GnucashFile {
     }
 
     /**
+     * @param jwsdpCmdty the JWSDP-peer (parsed xml-element) to fill our object with
+     * @return the new GnucashCommodity to wrap the given JAXB object.
+     */
+    protected GnucashCommodityImpl createCommodity(final GncV2.GncBook.GncCommodity jwsdpCmdty) {
+      GnucashCommodityImpl cmdty = new GnucashCommodityImpl(jwsdpCmdty);
+    return cmdty;
+    }
+
+    /**
      * @param jwsdpTrx the JWSDP-peer (parsed xml-element) to fill our object with
      * @return the new GnucashTransaction to wrap the given jaxb-object.
      */
@@ -1805,6 +1847,40 @@ public class GnucashFileImpl implements GnucashFile {
     @Override
     public Collection<GnucashVendor> getVendors() {
 	return vendorID2vendor.values();
+    }
+
+    // ---------------------------------------------------------------
+
+    @Override
+    public GnucashCommodity getCommodityByID(String nameSpace, String id) {
+    if (cmdtyID2Cmdty == null) {
+        throw new IllegalStateException("no root-element loaded");
+    }
+
+    GnucashCommodity retval = cmdtyID2Cmdty.get(nameSpace + ":" + id);
+    if (retval == null) {
+        LOGGER.warn("No Commodity with id '" + id + "'. We know " + cmdtyID2Cmdty.size() + " commodities.");
+    }
+    return retval;
+    }
+
+    @Override
+    public GnucashCommodity getCommodityByName(String name) {
+    if (vendorID2vendor == null) {
+        throw new IllegalStateException("no root-element loaded");
+    }
+
+    for (GnucashCommodity cmdty : getCommodities()) {
+        if (cmdty.getName().equals(name)) {
+        return cmdty;
+        }
+    }
+    return null;
+    }
+
+    @Override
+    public Collection<GnucashCommodity> getCommodities() {
+    return cmdtyID2Cmdty.values();
     }
 
     // ---------------------------------------------------------------
@@ -2217,36 +2293,49 @@ public class GnucashFileImpl implements GnucashFile {
     // ---------------------------------------------------------------
     // Statistics (for test purposes)
 
+    @Override
     public int getNofEntriesAccountMap() {
 	return accountID2account.size();
     }
 
+    @Override
     public int getNofEntriesTransactionMap() {
 	return transactionID2transaction.size();
     }
 
+    @Override
     public int getNofEntriesTransactionSplitsMap() {
 	return transactionSplitID2transactionSplit.size();
     }
 
+    @Override
     public int getNofEntriesGenerInvoiceMap() {
 	return invoiceID2invoice.size();
     }
 
+    @Override
     public int getNofEntriesGenerInvoiceEntriesMap() {
 	return invoiceEntryID2invoiceEntry.size();
     }
 
+    @Override
     public int getNofEntriesGenerJobMap() {
 	return jobID2job.size();
     }
 
+    @Override
     public int getNofEntriesCustomerMap() {
 	return customerID2customer.size();
     }
 
+    @Override
     public int getNofEntriesVendorMap() {
 	return vendorID2vendor.size();
+    }
+
+    @Override
+    public int getNofEntriesCommodityMap() {
+    return cmdtyID2Cmdty.size();
     }
 
     // ---------------------------------------------------------------
