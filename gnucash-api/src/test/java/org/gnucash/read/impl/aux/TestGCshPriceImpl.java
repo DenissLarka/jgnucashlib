@@ -90,8 +90,8 @@ public class TestGCshPriceImpl
       prc = gcshFile.getPriceByID(PRICE_1_ID);
       
       assertEquals(PRICE_1_ID, prc.getId());
-      assertEquals("EURONEXT:MBG", prc.getCommodityQualifId());
-      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId());
+      assertEquals("EURONEXT:MBG", prc.getCommodityQualifId().toString());
+      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId().toString());
       assertEquals("EUR", prc.getCurrencyCode());
       assertEquals("transaction", prc.getType());
       assertEquals(LocalDate.of(2023, 7, 1), prc.getDate());
@@ -104,8 +104,8 @@ public class TestGCshPriceImpl
       prc = gcshFile.getPriceByID(PRICE_2_ID);
       
       assertEquals(PRICE_2_ID, prc.getId());
-      assertEquals("EURONEXT:SAP", prc.getCommodityQualifId());
-      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId());
+      assertEquals("EURONEXT:SAP", prc.getCommodityQualifId().toString());
+      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId().toString());
       assertEquals("EUR", prc.getCurrencyCode());
       assertEquals("unknown", prc.getType());
       assertEquals(LocalDate.of(2023, 7, 20), prc.getDate());
@@ -118,8 +118,8 @@ public class TestGCshPriceImpl
       prc = gcshFile.getPriceByID(PRICE_3_ID);
       
       assertEquals(PRICE_3_ID, prc.getId());
-      assertEquals("EURONEXT:SAP", prc.getCommodityQualifId());
-      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId());
+      assertEquals("EURONEXT:SAP", prc.getCommodityQualifId().toString());
+      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId().toString());
       assertEquals("EUR", prc.getCurrencyCode());
       assertEquals("transaction", prc.getType());
       assertEquals(LocalDate.of(2023, 7, 18), prc.getDate());

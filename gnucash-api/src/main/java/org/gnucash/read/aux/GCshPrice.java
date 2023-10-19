@@ -2,6 +2,7 @@ package org.gnucash.read.aux;
 
 import java.time.LocalDate;
 
+import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
@@ -28,11 +29,11 @@ public interface GCshPrice {
 	
     String getId();
 
-    String getCommodityQualifId();
+    CmdtyCurrID getCommodityQualifId() throws InvalidCmdtyCurrTypeException;
 
     GnucashCommodity getCommodity() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException;
 
-    String getCurrencyQualifId();
+    CmdtyCurrID getCurrencyQualifId() throws InvalidCmdtyCurrTypeException;
 
     String getCurrencyCode();
 

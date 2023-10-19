@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
@@ -56,7 +57,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public String getCommodityQualifId() {
+    public CmdtyCurrID getCommodityQualifId() throws InvalidCmdtyCurrTypeException {
 	if ( jwsdpPeer.getPriceCommodity() == null )
 	    return null;
 		
@@ -65,7 +66,9 @@ public class GCshPriceImpl implements GCshPrice {
 	     cmdty.getCmdtyId() == null )
 	    return null;
 		    
-	return cmdty.getCmdtySpace() + ":" + cmdty.getCmdtyId();
+	CmdtyCurrID result = new CmdtyCurrID(cmdty.getCmdtySpace(), cmdty.getCmdtyId(), true);
+	    
+	return result;
     }
 
     @Override
@@ -79,7 +82,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public String getCurrencyQualifId() {
+    public CmdtyCurrID getCurrencyQualifId() throws InvalidCmdtyCurrTypeException {
 	if ( jwsdpPeer.getPriceCurrency() == null )
 	    return null;
 		
@@ -87,8 +90,10 @@ public class GCshPriceImpl implements GCshPrice {
 	if ( curr.getCmdtySpace() == null ||
 	     curr.getCmdtyId() == null )
 	    return null;
+	
+	CmdtyCurrID result = new CmdtyCurrID(curr.getCmdtySpace(), curr.getCmdtyId(), true);
 		    
-	return curr.getCmdtySpace() + ":" + curr.getCmdtyId();
+	return result;
     }
 
     @Override
@@ -157,13 +162,26 @@ public class GCshPriceImpl implements GCshPrice {
     
     @Override
     public String toString() {
-	return "GCshPriceImpl [getId()=" + getId() + 
-	     ", getCommodityQualifId()=" + getCommodityQualifId() + 
-	      ", getCurrencyQualifId()=" + getCurrencyQualifId() + 
-	                  ", getDate()=" + getDate() + 
-	                ", getSource()=" + getSource() + 
-	                  ", getType()=" + getType() + 
-	                 ", getValue()=" + getValue() + "]";
+	String result = "GCshPriceImpl [id=" + getId();
+	
+	try {
+	    result += ", cmdty-qualif-id='" + getCommodityQualifId() + "'";
+	} catch (InvalidCmdtyCurrTypeException e) {
+	    result += ", cmdty-qualif-id=" + "ERROR";
+	}
+	
+	try {
+	    result += ", curr-qualif-id='" + getCurrencyQualifId() + "'";
+	} catch (InvalidCmdtyCurrTypeException e) {
+	    result += ", curr-qualif-id=" + "ERROR";
+	}
+	
+	result += ", date=" + getDate(); 
+	result += ", source=" + getSource(); 
+	result += ", type=" + getType(); 
+	result += ", value=" + getValue() + "]";
+	
+	return result;
     }
     
     
