@@ -41,7 +41,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	public ComplexCurrencyTable() {
 		super();
 
-		addNameSpace(CurrencyNameSpace.NAMESPACE_CURRENCY, new SimpleCurrencyTable());
+		addNameSpace(CmdtyCurrNameSpace.CURRENCY, new SimpleCurrencyTable());
 	}
 
 	// -----------------------------------------------------------
@@ -188,7 +188,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null currency-id given!");
 		}
 
-		return convertFromBaseCurrency(CurrencyNameSpace.NAMESPACE_CURRENCY, pValue, pIso4217CurrencyCode);
+		return convertFromBaseCurrency(CmdtyCurrNameSpace.CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -248,7 +248,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return convertToBaseCurrency(CurrencyNameSpace.NAMESPACE_CURRENCY, pValue, pIso4217CurrencyCode);
+		return convertToBaseCurrency(CmdtyCurrNameSpace.CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return getConversionFactor(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode);
+		return getConversionFactor(CmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -276,9 +276,9 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null conversion-factor given!");
 		}
 
-		setConversionFactor(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode, pFactor);
+		setConversionFactor(CmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode, pFactor);
 
-		fireCurrencyTableChanged(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode, pFactor);
+		fireCurrencyTableChanged(CmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode, pFactor);
 	}
 
 	/**

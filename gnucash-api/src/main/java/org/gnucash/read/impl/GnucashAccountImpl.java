@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.gnucash.currency.CurrencyNameSpace;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
 import org.slf4j.Logger;
@@ -112,7 +112,7 @@ public class GnucashAccountImpl extends SimpleAccount
      */
     public String getCurrencyNameSpace() {
 	if (jwsdpPeer.getActCommodity() == null) {
-	    return CurrencyNameSpace.NAMESPACE_CURRENCY; // default-currency because gnucash 2.2 has no currency on the root-account
+	    return CmdtyCurrNameSpace.CURRENCY; // default-currency because gnucash 2.2 has no currency on the root-account
 	}
 	return jwsdpPeer.getActCommodity().getCmdtySpace();
     }

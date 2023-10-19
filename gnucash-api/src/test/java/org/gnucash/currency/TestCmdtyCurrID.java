@@ -30,10 +30,26 @@ public class TestCmdtyCurrID
     CmdtyCurrID commCurr = new CmdtyCurrID(Currency.getInstance("EUR"));
     
     assertEquals(CmdtyCurrID.Type.CURRENCY, commCurr.getType());
-    assertEquals(CurrencyNameSpace.NAMESPACE_CURRENCY, commCurr.getNameSpace());
     assertEquals("EUR", commCurr.getCurrency().getCurrencyCode());
-    assertEquals(null, commCurr.getSecCode());
-
+    
+    try
+    {
+	commCurr.getExchange(); // invalid call in this context
+    }
+    catch ( InvalidCmdtyCurrTypeException exc )
+    {
+	assertEquals(0, 0);
+    }
+    
+    try
+    {
+	commCurr.getSecCode(); // invalid call in this context
+    }
+    catch ( InvalidCmdtyCurrTypeException exc )
+    {
+	assertEquals(0, 0);
+    }
+    
     assertEquals("CURRENCY:EUR", commCurr.toString());
     
     // ---
@@ -41,9 +57,25 @@ public class TestCmdtyCurrID
     commCurr = new CmdtyCurrID(Currency.getInstance("USD"));
     
     assertEquals(CmdtyCurrID.Type.CURRENCY, commCurr.getType());
-    assertEquals(CurrencyNameSpace.NAMESPACE_CURRENCY, commCurr.getNameSpace());
     assertEquals("USD", commCurr.getCurrency().getCurrencyCode());
-    assertEquals(null, commCurr.getSecCode());
+
+    try
+    {
+	commCurr.getExchange(); // illegal call in this context
+    }
+    catch ( InvalidCmdtyCurrTypeException exc )
+    {
+	assertEquals(0, 0);
+    }
+
+    try
+    {
+	commCurr.getSecCode(); // illegal call in this context
+    }
+    catch ( InvalidCmdtyCurrTypeException exc )
+    {
+	assertEquals(0, 0);
+    }
 
     assertEquals("CURRENCY:USD", commCurr.toString());
 
@@ -63,28 +95,42 @@ public class TestCmdtyCurrID
   @Test
   public void test02() throws Exception
   {
-    CmdtyCurrID commCurr = new CmdtyCurrID(CurrencyNameSpace.NAMESPACE_EUREX, "MBG");
+    CmdtyCurrID commCurr = new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.EURONEXT, "MBG");
     
-    assertEquals(CmdtyCurrID.Type.SECURITY, commCurr.getType());
-    assertEquals(CurrencyNameSpace.NAMESPACE_EUREX, commCurr.getNameSpace());
-    assertEquals(null, commCurr.getCurrency());
+    assertEquals(CmdtyCurrID.Type.SECURITY_EXCHANGE, commCurr.getType());
+    assertEquals(CmdtyCurrNameSpace.Exchange.EURONEXT, commCurr.getExchange());
     assertEquals("MBG", commCurr.getSecCode());
 
-    assertEquals("EUREX:MBG", commCurr.toString());
+    try
+    {
+	commCurr.getCurrency(); // invalid call in this context
+    }
+    catch ( InvalidCmdtyCurrTypeException exc )
+    {
+	assertEquals(0, 0);
+    }
+    
+    assertEquals("EURONEXT:MBG", commCurr.toString());
   }
 
   @Test
   public void test03() throws Exception
   {
-    CmdtyCurrID commCurr1 = new CmdtyCurrID(CurrencyNameSpace.NAMESPACE_EUREX, "MBG");
-    CmdtyCurrID commCurr2 = new CmdtyCurrID("EUREX", "MBG");
+    CmdtyCurrID commCurr1  = new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.EURONEXT, "MBG");
+    CmdtyCurrID commCurr21 = new CmdtyCurrID("EURONEXT", "MBG", true);
+    CmdtyCurrID commCurr22 = new CmdtyCurrID("EURONEXT", "MBG", false);
   
-    assertEquals(commCurr1, commCurr2);
-    
+    assertEquals(commCurr1.toString(), commCurr21.toString());
+    assertEquals(commCurr1.toString(), commCurr21.toString());
+    assertEquals(commCurr1.toStringLong(), commCurr21.toStringLong());
+    assertEquals(commCurr1.toStringLong(), commCurr21.toStringLong());
+    assertEquals(commCurr1, commCurr21);
+    assertNotEquals(commCurr1, commCurr22);
+      
     // ---
 
-    CmdtyCurrID commCurr31 = new CmdtyCurrID(CurrencyNameSpace.NAMESPACE_AMEX, "MBG");
-    CmdtyCurrID commCurr32 = new CmdtyCurrID(CurrencyNameSpace.NAMESPACE_EUREX, "DIS");
+    CmdtyCurrID commCurr31 = new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.NYSE, "MBG");
+    CmdtyCurrID commCurr32 = new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.EURONEXT, "DIS");
     
     assertNotEquals(commCurr1, commCurr31);
     assertNotEquals(commCurr1, commCurr32);
@@ -97,12 +143,74 @@ public class TestCmdtyCurrID
   
     assertEquals(commCurr4, commCurr5);
     assertNotEquals(commCurr1, commCurr4);
-    assertNotEquals(commCurr2, commCurr4);
+    assertNotEquals(commCurr21, commCurr4);
+    assertNotEquals(commCurr22, commCurr4);
     assertNotEquals(commCurr31, commCurr4);
     assertNotEquals(commCurr32, commCurr4);
     
     CmdtyCurrID commCurr6 = new CmdtyCurrID(Currency.getInstance("JPY"));
     
     assertNotEquals(commCurr4, commCurr6);
+  }
+  
+  @Test
+  public void test04_1() throws Exception
+  {
+      CmdtyCurrID commCurrPrs = CmdtyCurrID.parse("CURRENCY:EUR");
+      CmdtyCurrID commCurrRef = new CmdtyCurrID(Currency.getInstance("EUR"));
+      
+      assertEquals(CmdtyCurrID.Type.CURRENCY, commCurrPrs.getType());
+      assertEquals("CURRENCY:EUR", commCurrPrs.toString());
+      assertEquals(commCurrRef, commCurrPrs);
+
+      // ---
+      
+      commCurrPrs = CmdtyCurrID.parse("CURRENCY:USD");
+      commCurrRef = new CmdtyCurrID(Currency.getInstance("USD"));
+      
+      assertEquals(CmdtyCurrID.Type.CURRENCY, commCurrPrs.getType());
+      assertEquals("CURRENCY:USD", commCurrPrs.toString());
+      assertEquals(commCurrRef, commCurrPrs);
+  }
+
+  @Test
+  public void test04_2() throws Exception
+  {
+      CmdtyCurrID commCurrPrs = CmdtyCurrID.parse("EURONEXT:SAP");
+      CmdtyCurrID commCurrRef = new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.EURONEXT, "SAP");
+      
+      assertEquals(CmdtyCurrID.Type.SECURITY_EXCHANGE, commCurrPrs.getType());
+      assertEquals("EURONEXT:SAP", commCurrPrs.toString());
+      assertEquals(commCurrRef, commCurrPrs);
+
+//      // ---
+//      
+//      commCurrPrs = CmdtyCurrID.parse("CURRENCY:USD");
+//      commCurrRef = new CmdtyCurrID(Currency.getInstance("USD"));
+//      
+//      assertEquals("CURRENCY:USD", commCurrPrs.toString());
+//      assertEquals(commCurrRef, commCurrPrs);
+  }
+
+  @Test
+  public void test04_3() throws Exception
+  {
+      CmdtyCurrID commCurrPrs = CmdtyCurrID.parse("FUXNSTUELL:BURP");
+      CmdtyCurrID commCurrRef = new CmdtyCurrID();
+      commCurrRef.setType(CmdtyCurrID.Type.SECURITY_GENERAL);
+      commCurrRef.setNameSpaceFree("FUXNSTUELL");
+      commCurrRef.setSecCode("BURP");
+      
+      assertEquals(CmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
+      assertEquals("FUXNSTUELL:BURP", commCurrPrs.toString());
+      assertEquals(commCurrRef, commCurrPrs);
+
+//      // ---
+//      
+//      commCurrPrs = CmdtyCurrID.parse("CURRENCY:USD");
+//      commCurrRef = new CmdtyCurrID(Currency.getInstance("USD"));
+//      
+//      assertEquals("CURRENCY:USD", commCurrPrs.toString());
+//      assertEquals(commCurrRef, commCurrPrs);
   }
 }

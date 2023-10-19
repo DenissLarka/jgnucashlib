@@ -1,5 +1,7 @@
 package org.gnucash.read.impl;
 
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashCommodity;
 import org.slf4j.Logger;
@@ -36,22 +38,14 @@ public class GnucashCommodityImpl implements GnucashCommodity
 
     // ---------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getNameSpace() {
+    private String getNameSpace() {
 	if ( jwsdpPeer.getCmdtySpace() == null )
 	    return null;
 	
 	return jwsdpPeer.getCmdtySpace();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getId() {
+    private String getId() {
 	if ( jwsdpPeer.getCmdtyId() == null )
 	    return null;
 	
@@ -60,14 +54,17 @@ public class GnucashCommodityImpl implements GnucashCommodity
 
     /**
      * {@inheritDoc}
+     * @throws InvalidCmdtyCurrTypeException 
      */
     @Override
-    public String getQualifId() {
+    public CmdtyCurrID getQualifId() throws InvalidCmdtyCurrTypeException {
 	if ( getNameSpace() == null ||
 	     getId() == null )
 	    return null;
 	
-	return getNameSpace() + ":" + getId();
+	CmdtyCurrID result = new CmdtyCurrID(getNameSpace(), getId(), true);
+	
+	return result;
     }
 
     /**
@@ -107,7 +104,18 @@ public class GnucashCommodityImpl implements GnucashCommodity
 
     @Override
     public String toString() {
-	return "NOT IMPLEMENTED YET";
+	
+	String result = "GnucashCommodityImpl [";
+	try {
+	    result += "qualif-id='" + getQualifId().toString() + "'";
+	} catch (InvalidCmdtyCurrTypeException e) {
+	    result += "qualif-id=" + "ERROR";
+	} 
+	result += ", name='" + getName() + "'"; 
+	result += ", x-code='" + getXCode() + "'"; 
+	result += ", fraction=" + getFraction() + "]";
+	
+	return result;
     }
 
 }

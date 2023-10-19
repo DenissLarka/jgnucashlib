@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import org.gnucash.ConstTest;
 import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashFile;
 import org.junit.Before;
@@ -18,22 +19,22 @@ import junit.framework.JUnit4TestAdapter;
 public class TestGnucashCommodityImpl
 {
   // Mercedes-Benz Group AG
-  public static final String CMDTY_1_NAMESPACE = "EUREX";
-  public static final String CMDTY_1_ID        = "MBG";   
-  public static final String CMDTY_1_ISIN      = "DE0007100000";
+  public static final CmdtyCurrNameSpace.Exchange CMDTY_1_EXCH = CmdtyCurrNameSpace.Exchange.EURONEXT;
+  public static final String CMDTY_1_ID                        = "MBG";   
+  public static final String CMDTY_1_ISIN                      = "DE0007100000";
   
   // SAP SE
-  public static final String CMDTY_2_NAMESPACE = "EUREX";
-  public static final String CMDTY_2_ID        = "SAP";   
-  public static final String CMDTY_2_ISIN      = "DE0007164600";
+  public static final CmdtyCurrNameSpace.Exchange CMDTY_2_EXCH = CmdtyCurrNameSpace.Exchange.EURONEXT;
+  public static final String CMDTY_2_ID                        = "SAP";   
+  public static final String CMDTY_2_ISIN                      = "DE0007164600";
     
   // -----------------------------------------------------------------
     
   private GnucashFile      gcshFile = null;
   private GnucashCommodity cmdty = null;
   
-  private CmdtyCurrID cmdtyCurrID1 = new CmdtyCurrID(CMDTY_1_NAMESPACE, CMDTY_1_ID);
-  private CmdtyCurrID cmdtyCurrID2 = new CmdtyCurrID(CMDTY_2_NAMESPACE, CMDTY_2_ID);
+  private CmdtyCurrID cmdtyCurrID1 = null;
+  private CmdtyCurrID cmdtyCurrID2 = null;
   
   // -----------------------------------------------------------------
   
@@ -74,6 +75,11 @@ public class TestGnucashCommodityImpl
       System.err.println("Cannot parse GnuCash file");
       exc.printStackTrace();
     }
+    
+    // ---
+    
+    cmdtyCurrID1 = new CmdtyCurrID(CMDTY_1_EXCH, CMDTY_1_ID);
+    cmdtyCurrID2 = new CmdtyCurrID(CMDTY_2_EXCH, CMDTY_2_ID);
   }
 
   // -----------------------------------------------------------------
@@ -82,8 +88,8 @@ public class TestGnucashCommodityImpl
   public void test00() throws Exception
   {
       // Cf. TestCmdtyCurrID -- let's just double-check 
-      assertEquals(CMDTY_1_NAMESPACE + CmdtyCurrID.SEPARATOR + CMDTY_1_ID, cmdtyCurrID1.toString());
-      assertEquals(CMDTY_2_NAMESPACE + CmdtyCurrID.SEPARATOR + CMDTY_2_ID, cmdtyCurrID2.toString());
+      assertEquals(CMDTY_1_EXCH.toString() + CmdtyCurrID.SEPARATOR + CMDTY_1_ID, cmdtyCurrID1.toString());
+      assertEquals(CMDTY_2_EXCH.toString() + CmdtyCurrID.SEPARATOR + CMDTY_2_ID, cmdtyCurrID2.toString());
   }
   
   // ------------------------------
@@ -91,12 +97,11 @@ public class TestGnucashCommodityImpl
   @Test
   public void test01_1() throws Exception
   {
-    cmdty = gcshFile.getCommodityByQualifID(CMDTY_1_NAMESPACE, CMDTY_1_ID);
+    cmdty = gcshFile.getCommodityByQualifID(CMDTY_1_EXCH, CMDTY_1_ID);
     assertNotEquals(null, cmdty);
     
-    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId());
-    assertEquals(CMDTY_1_NAMESPACE, cmdty.getNameSpace());
-    assertEquals(CMDTY_1_ID, cmdty.getId());
+    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId().toString());
+    assertEquals(cmdtyCurrID1, cmdty.getQualifId()); // not trivial!
     assertEquals(CMDTY_1_ISIN, cmdty.getXCode());
     assertEquals("Mercedes-Benz Group AG", cmdty.getName());
   }
@@ -107,9 +112,8 @@ public class TestGnucashCommodityImpl
     cmdty = gcshFile.getCommodityByQualifID(cmdtyCurrID1.toString());
     assertNotEquals(null, cmdty);
     
-    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId());
-    assertEquals(CMDTY_1_NAMESPACE, cmdty.getNameSpace());
-    assertEquals(CMDTY_1_ID, cmdty.getId());
+    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId().toString());
+    assertEquals(cmdtyCurrID1, cmdty.getQualifId()); // not trivial!
     assertEquals(CMDTY_1_ISIN, cmdty.getXCode());
     assertEquals("Mercedes-Benz Group AG", cmdty.getName());
   }
@@ -120,9 +124,8 @@ public class TestGnucashCommodityImpl
     cmdty = gcshFile.getCommodityByXCode(CMDTY_1_ISIN);
     assertNotEquals(null, cmdty);
     
-    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId());
-    assertEquals(CMDTY_1_NAMESPACE, cmdty.getNameSpace());
-    assertEquals(CMDTY_1_ID, cmdty.getId());
+    assertEquals(cmdtyCurrID1.toString(), cmdty.getQualifId().toString());
+    assertEquals(cmdtyCurrID1, cmdty.getQualifId()); // not trivial!
     assertEquals(CMDTY_1_ISIN, cmdty.getXCode());
     assertEquals("Mercedes-Benz Group AG", cmdty.getName());
   }
@@ -135,11 +138,9 @@ public class TestGnucashCommodityImpl
     assertEquals(1, cmdtyList.size());
     
     assertEquals(cmdtyCurrID1.toString(), 
-	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId());
-    assertEquals(CMDTY_1_NAMESPACE, 
-	         ((GnucashCommodity) cmdtyList.toArray()[0]).getNameSpace());
-    assertEquals(CMDTY_1_ID, 
-	         ((GnucashCommodity) cmdtyList.toArray()[0]).getId());
+	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId().toString());
+    assertEquals(cmdtyCurrID1, 
+	        ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId()); // not trivial!
     assertEquals(CMDTY_1_ISIN, 
 	         ((GnucashCommodity) cmdtyList.toArray()[0]).getXCode());
     assertEquals("Mercedes-Benz Group AG", 
@@ -148,13 +149,15 @@ public class TestGnucashCommodityImpl
     cmdtyList = gcshFile.getCommoditiesByName("BENZ");
     assertNotEquals(null, cmdtyList);
     assertEquals(1, cmdtyList.size());
-    assertEquals(cmdtyCurrID1.toString(), 
+    assertEquals(cmdtyCurrID1, 
 	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId());
     
     cmdtyList = gcshFile.getCommoditiesByName(" MeRceDeS-bEnZ  ");
     assertNotEquals(null, cmdtyList);
     assertEquals(1, cmdtyList.size());
-    assertEquals(CMDTY_1_NAMESPACE + CmdtyCurrID.SEPARATOR + CMDTY_1_ID, 
-	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId());
+    assertEquals(cmdtyCurrID1.toString(), 
+	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId().toString());
+    assertEquals(cmdtyCurrID1, 
+	         ((GnucashCommodity) cmdtyList.toArray()[0]).getQualifId()); // not trivial!
   }
 }

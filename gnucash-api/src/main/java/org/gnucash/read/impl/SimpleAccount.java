@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.currency.ComplexCurrencyTable;
-import org.gnucash.currency.CurrencyNameSpace;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
@@ -169,7 +169,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		// is conversion needed?
-		if (getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)
+		if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)
 				&&
 				getCurrencyID().equals(currency.getCurrencyCode())) {
 			return retval;
@@ -412,7 +412,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 */
 	public Currency getCurrency() {
 
-		if (!getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
+		if (!getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
 			return null;
 		}
 
@@ -429,7 +429,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		// the currency may have changed
-		if (this.getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
+		if (this.getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
 			Currency currency = getCurrency();
 			currencyFormat.setCurrency(currency);
 		} else {

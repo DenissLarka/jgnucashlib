@@ -1,20 +1,19 @@
 package org.example.gnucash.read;
 
 import java.io.File;
-import java.util.Collection;
 
-import org.gnucash.currency.CurrencyNameSpace;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 public class GetCmdtyInfo {
     // BEGIN Example data -- adapt to your needs
-    private static String gcshFileName = "example_in.gnucash";
-    private static String exchange     = CurrencyNameSpace.NAMESPACE_EUREX;
-    private static String ticker       = "MBG";
-    private static String isin         = "DE0007100000";
-    private static String searchName   = "merced";
+    private static String gcshFileName                  = "example_in.gnucash";
+    private static CmdtyCurrNameSpace.Exchange exchange = CmdtyCurrNameSpace.Exchange.EURONEXT;
+    private static String ticker                        = "MBG";
+    private static String isin                          = "DE0007100000";
+    private static String searchName                    = "merced";
     // END Example data
 
     // -----------------------------------------------------------------
@@ -35,7 +34,7 @@ public class GetCmdtyInfo {
 
 	// Choose one of the following variants:
 	// Var 1)
-	GnucashCommodity cmdty = gcshFile.getCommodityByQualifID(exchange, ticker);
+	GnucashCommodity cmdty = gcshFile.getCommodityByQualifID(exchange.toString(), ticker);
 	// Var 2)
 	// GnucashCommodity cmdty = gcshFile.getCommodityByQualifID(exchange + ":" + ticker);
 	// Var 3)
@@ -43,18 +42,6 @@ public class GetCmdtyInfo {
 	// Var 4)
 	// Collection<GnucashCommodity> cmdtyList = gcshFile.getCommoditiesByName(searchName);
 	// GnucashCommodity cmdty = (GnucashCommodity) cmdtyList.iterator().next(); // first element
-
-	try {
-	    System.out.println("Name space:        " + cmdty.getNameSpace());
-	} catch (Exception exc) {
-	    System.out.println("Name space:        " + "ERROR");
-	}
-
-	try {
-	    System.out.println("ID:                " + cmdty.getId());
-	} catch (Exception exc) {
-	    System.out.println("ID:                " + "ERROR");
-	}
 
 	try {
 	    System.out.println("Full ID:           " + cmdty.getQualifId());

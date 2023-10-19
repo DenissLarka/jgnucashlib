@@ -3,7 +3,11 @@ package org.gnucash.read;
 import java.io.File;
 import java.util.Collection;
 
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.currency.ComplexCurrencyTable;
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.aux.GCshBillTerms;
 import org.gnucash.read.aux.GCshPrice;
@@ -520,11 +524,17 @@ public interface GnucashFile extends GnucashObject {
      * @param id the unique id of the currency/security/commodity to look for
      * @return the currency/security/commodity or null if it's not found
      */
+    GnucashCommodity getCommodityByQualifID(CmdtyCurrID cmdtyCurrID);
+
     GnucashCommodity getCommodityByQualifID(String nameSpace, String id);
+
+    GnucashCommodity getCommodityByQualifID(CmdtyCurrNameSpace.Exchange exchange, String id);
 
     /**
      * @param id the unique id of the currency/security/commodity to look for
      * @return the currency/security/commodity or null if it's not found
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
     GnucashCommodity getCommodityByQualifID(String qualifID);
 

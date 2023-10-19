@@ -232,14 +232,14 @@
   <cmdty:quote_tz/>
 </gnc:commodity>
 <gnc:commodity version="2.0.0">
-  <cmdty:space>EUREX</cmdty:space>
+  <cmdty:space>EURONEXT</cmdty:space>
   <cmdty:id>MBG</cmdty:id>
   <cmdty:name>Mercedes-Benz Group AG</cmdty:name>
   <cmdty:xcode>DE0007100000</cmdty:xcode>
   <cmdty:fraction>10000</cmdty:fraction>
 </gnc:commodity>
 <gnc:commodity version="2.0.0">
-  <cmdty:space>EUREX</cmdty:space>
+  <cmdty:space>EURONEXT</cmdty:space>
   <cmdty:id>SAP</cmdty:id>
   <cmdty:name>SAP SE</cmdty:name>
   <cmdty:xcode>DE0007164600</cmdty:xcode>
@@ -256,7 +256,7 @@
   <price>
     <price:id type="guid">b7fe7eb916164f1d9d43f41262530381</price:id>
     <price:commodity>
-      <cmdty:space>EUREX</cmdty:space>
+      <cmdty:space>EURONEXT</cmdty:space>
       <cmdty:id>MBG</cmdty:id>
     </price:commodity>
     <price:currency>
@@ -273,7 +273,7 @@
   <price>
     <price:id type="guid">8f2d1e3263aa4efba4a8e0e892c166b3</price:id>
     <price:commodity>
-      <cmdty:space>EUREX</cmdty:space>
+      <cmdty:space>EURONEXT</cmdty:space>
       <cmdty:id>SAP</cmdty:id>
     </price:commodity>
     <price:currency>
@@ -290,7 +290,7 @@
   <price>
     <price:id type="guid">d2db5e4108b9413aa678045ca66b205f</price:id>
     <price:commodity>
-      <cmdty:space>EUREX</cmdty:space>
+      <cmdty:space>EURONEXT</cmdty:space>
       <cmdty:id>SAP</cmdty:id>
     </price:commodity>
     <price:currency>
@@ -307,7 +307,7 @@
   <price>
     <price:id type="guid">232625da7b4b4f55ba5e0e81b6ab4cac</price:id>
     <price:commodity>
-      <cmdty:space>EUREX</cmdty:space>
+      <cmdty:space>EURONEXT</cmdty:space>
       <cmdty:id>SAP</cmdty:id>
     </price:commodity>
     <price:currency>
@@ -324,7 +324,7 @@
   <price>
     <price:id type="guid">f2806739b34a4f55a86d9c83f2061606</price:id>
     <price:commodity>
-      <cmdty:space>EUREX</cmdty:space>
+      <cmdty:space>EURONEXT</cmdty:space>
       <cmdty:id>SAP</cmdty:id>
     </price:commodity>
     <price:currency>
@@ -341,7 +341,7 @@
   <price>
     <price:id type="guid">0f9b0c306c1f490c92f3fb96d03f40c3</price:id>
     <price:commodity>
-      <cmdty:space>EUREX</cmdty:space>
+      <cmdty:space>EURONEXT</cmdty:space>
       <cmdty:id>SAP</cmdty:id>
     </price:commodity>
     <price:currency>
@@ -431,7 +431,7 @@
   <act:id type="guid">d49554f33a0340bdb6611a1ab5575998</act:id>
   <act:type>STOCK</act:type>
   <act:commodity>
-    <cmdty:space>EUREX</cmdty:space>
+    <cmdty:space>EURONEXT</cmdty:space>
     <cmdty:id>MBG</cmdty:id>
   </act:commodity>
   <act:commodity-scu>10000</act:commodity-scu>
@@ -449,7 +449,7 @@
   <act:id type="guid">b3741e92e3b9475b9d5a2dc8254a8111</act:id>
   <act:type>STOCK</act:type>
   <act:commodity>
-    <cmdty:space>EUREX</cmdty:space>
+    <cmdty:space>EURONEXT</cmdty:space>
     <cmdty:id>SAP</cmdty:id>
   </act:commodity>
   <act:commodity-scu>10000</act:commodity-scu>

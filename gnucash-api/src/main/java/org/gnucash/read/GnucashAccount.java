@@ -126,14 +126,14 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
 
     /**
      * @return "ISO4217" for a currency "FUND" or a fond,...
-     * @see {@link #NAMESPACE_CURRENCY}
+     * @see {@link #CURRENCY}
      * @see {@link #CURRENCY_NAMESPACE_FUND}
      */
     String getCurrencyNameSpace();
 
     /**
      * The name of the currency in the given namespace e.g. "EUR" for euro in
-     * namespace "ISO4217"= {@link #NAMESPACE_CURRENCY}
+     * namespace "ISO4217"= {@link #CURRENCY}
      *
      * @see {@link #getCurrencyNameSpace()}
      */

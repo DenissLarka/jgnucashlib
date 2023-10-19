@@ -3,7 +3,7 @@ package org.gnucash.write.impl;
 import java.beans.PropertyChangeSupport;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CurrencyNameSpace;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashVendor;
@@ -119,7 +119,7 @@ public class GnucashWritableVendorImpl extends GnucashVendorImpl
 		{
 			GncV2.GncBook.GncGncVendor.VendorCurrency currency = factory.createGncV2GncBookGncGncVendorVendorCurrency();
 			currency.setCmdtyId(file.getDefaultCurrencyID());
-			currency.setCmdtySpace(CurrencyNameSpace.NAMESPACE_CURRENCY);
+			currency.setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
 			vend.setVendorCurrency(currency);
 		}
 

@@ -5,6 +5,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.gnucash.Const;
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncPricedb.Price.PriceCommodity;
 import org.gnucash.generated.GncV2.GncBook.GncPricedb.Price.PriceCurrency;
@@ -67,7 +69,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public GnucashCommodity getCommodity() {
+    public GnucashCommodity getCommodity() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 	if ( getCommodityQualifId() == null )
 	    return null;
 	
@@ -103,7 +105,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public GnucashCommodity getCurrency() {
+    public GnucashCommodity getCurrency() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 	if ( getCurrencyQualifId() == null )
 	    return null;
 	

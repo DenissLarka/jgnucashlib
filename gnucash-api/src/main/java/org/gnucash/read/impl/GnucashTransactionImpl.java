@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CurrencyNameSpace;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -206,7 +206,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     public String getBalanceFormatted(final Locale loc) {
 
 	NumberFormat cf = NumberFormat.getInstance(loc);
-	if (getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
+	if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
 	    cf.setCurrency(Currency.getInstance(getCurrencyID()));
 	} else {
 	    cf.setCurrency(null);
@@ -241,7 +241,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
      */
     public String getNegatedBalanceFormatted(final Locale loc) throws NumberFormatException {
 	NumberFormat cf = NumberFormat.getInstance(loc);
-	if (getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
+	if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
 	    cf.setCurrency(Currency.getInstance(getCurrencyID()));
 	} else {
 	    cf.setCurrency(null);
@@ -449,7 +449,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     protected NumberFormat getCurrencyFormat() {
 	if (currencyFormat == null) {
 	    currencyFormat = NumberFormat.getCurrencyInstance();
-	    if (getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
+	    if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
 		currencyFormat.setCurrency(Currency.getInstance(getCurrencyID()));
 	    } else {
 		currencyFormat = NumberFormat.getInstance();

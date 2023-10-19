@@ -1,32 +1,17 @@
 package org.gnucash.read;
 
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+
 public interface GnucashCommodity {
-
-    /**
-     * @return the name space of the commodity (e.g., "CURRENCY" 
-     *         in case of a currency, or one of the major stock
-     *         exchanges' name, such as "AMEX", "NASDAQ" or "EUREX". 
-     */
-    String getNameSpace();
-
-    /**
-     * @return the currency/security/commodity ID.
-     *         This is *not* a technical ID (i.e. not a UUID, as in the
-     *         other GnuCash entities), but a) an ISO4217 currency code,
-     *         in case of a currency (name space = "CURRENCY"), or 
-     *         b) a security/commodity code unique within the given name space
-     *         (typically, this is the security ticker, which is unique
-     *         in the realm of a specific stock exchange, such as "AMEX",
-     *         "NASDAQ" or "EUREX").
-     */
-    String getId();
 
     /**
      * @return the combination of getNameSpace() and getId(), 
      *         separated by a colon. This is used to make the so-called ID
      *         a real ID (i.e., unique).
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getQualifId();
+    CmdtyCurrID getQualifId() throws InvalidCmdtyCurrTypeException;
 
     /**
      * @return the "extended" code of a commodity
