@@ -400,4 +400,18 @@ public class GnucashVendorImpl extends GnucashObjectImpl
 	return vend.getGnucashFile().getHighestVendorNumber();
     }
 
+    // -----------------------------------------------------------------
+
+    public String toString() {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("[GnucashVendorImpl:");
+	buffer.append(" id: ");
+	buffer.append(getId());
+	buffer.append(" number: '");
+	buffer.append(getNumber() + "'");
+	buffer.append(" name: '");
+	buffer.append(getName() + "'");
+	buffer.append("]");
+	return buffer.toString();
+    }
 }

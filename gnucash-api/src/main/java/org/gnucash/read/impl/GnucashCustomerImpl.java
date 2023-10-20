@@ -13,6 +13,7 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.aux.GCshBillTerms;
 import org.gnucash.read.aux.GCshOwner;
@@ -436,4 +437,18 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
 	return cust.getGnucashFile().getHighestCustomerNumber();
     }
 
+    // -----------------------------------------------------------------
+
+    public String toString() {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("[GnucashCustomerImpl:");
+	buffer.append(" id: ");
+	buffer.append(getId());
+	buffer.append(" number: '");
+	buffer.append(getNumber() + "'");
+	buffer.append(" name: '");
+	buffer.append(getName() + "'");
+	buffer.append("]");
+	return buffer.toString();
+    }
 }

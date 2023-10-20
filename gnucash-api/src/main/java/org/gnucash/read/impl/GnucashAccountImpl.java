@@ -227,4 +227,23 @@ public class GnucashAccountImpl extends SimpleAccount
 	jwsdpPeer = newPeer;
     }
 
+    // -----------------------------------------------------------------
+
+    public String toString() {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append("[GnucashAccountImpl:");
+	buffer.append(" id: ");
+	buffer.append(getId());
+	buffer.append(" code: '");
+	buffer.append(getCode() + "'");
+	buffer.append(" type: ");
+	buffer.append(getType());
+	buffer.append(" qualif-name: '");
+	buffer.append(getQualifiedName() + "'");
+	buffer.append(" currency: ");
+	buffer.append(getCurrencyID());
+	buffer.append("]");
+	return buffer.toString();
+    }
+    
 }
