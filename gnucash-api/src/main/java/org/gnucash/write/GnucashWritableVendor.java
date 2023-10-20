@@ -12,27 +12,29 @@ public interface GnucashWritableVendor extends GnucashVendor,
                                                GnucashWritableObject 
 {
 
-	void remove();
+    void remove();
+    
+    // ---------------------------------------------------------------
 
-	/**
-	 * @see {@link GnucashVendor#getNumber()}
-	 * @param number the user-assigned number of this Vendor (may contain non-digits)
-	 */
-	void setNumber(String number);
+    /**
+     * @see {@link GnucashVendor#getNumber()}
+     * @param number the user-assigned number of this Vendor (may contain
+     *               non-digits)
+     */
+    void setNumber(String number);
 
-	void setName(String name);
+    void setName(String name);
 
-	void setAddress(GCshAddress adr);
+    void setAddress(GCshAddress adr);
 
-	GCshWritableAddress getWritableAddress();
+    GCshWritableAddress getWritableAddress();
 
-	GCshWritableAddress getAddress();
+    GCshWritableAddress getAddress();
 
-
-	/**
-	 * @param name the name of the user-defined attribute
-	 * @param value the value or null if not set
-	 * @see {@link GnucashObject#getUserDefinedAttribute(String)}
-	 */
-	void setUserDefinedAttribute(final String name, final String value);
+    /**
+     * @param name  the name of the user-defined attribute
+     * @param value the value or null if not set
+     * @see {@link GnucashObject#getUserDefinedAttribute(String)}
+     */
+    void setUserDefinedAttribute(final String name, final String value);
 }

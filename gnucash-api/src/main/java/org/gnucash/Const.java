@@ -1,5 +1,7 @@
 package org.gnucash;
 
+import org.gnucash.currency.CmdtyCurrNameSpace;
+
 public class Const
 {
   
@@ -20,7 +22,7 @@ public class Const
 
   // -----------------------------------------------------------------
   // ::TODO
-  // The following constants are Locale-specific. This should be cleaned-up.
+  // The following constants are partially locale-specific. This should be cleaned-up.
 
   /*
    * This is an ugly ad-hoc solution to be cleaned-up in a future release. 
@@ -29,5 +31,10 @@ public class Const
    * should be mapped to locale-specific config file entries. 
    */
   public static final String INVC_READ_ONLY_SLOT_TEXT = "Aus einer Rechnung erzeugt. Für Änderungen müssen Sie die Buchung der Rechnung löschen.";
+
+  // -----------------------------------------------------------------
+
+  public static final int CMDTY_FRACTION_DEFAULT = 10000;
+  public static final String CMDTY_XCODE_DEFAULT = "DE000000001"; // pseudo-ISIN
 
 }

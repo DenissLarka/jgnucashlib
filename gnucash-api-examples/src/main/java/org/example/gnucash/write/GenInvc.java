@@ -139,21 +139,22 @@ public class GenInvc {
 	
 	if ( type == InvoiceType.CUSTOMER ) {
 	    invc1 = doCustomer(gcshFile);
-	    System.out.println("New Invoice ID: " + invc1.getId());
+	    System.out.println("Invoice to write: " + invc1.toString());
 	}
 	else if ( type == InvoiceType.VENDOR ) {
 	    invc1 = doVendor(gcshFile);
-	    System.out.println("New Invoice ID: " + invc1.getId());
+	    System.out.println("Invoice to write: " + invc1.toString());
 	}
 	else if ( type == InvoiceType.JOB ) {
 	    invc1 = doJob_cust(gcshFile);
-	    System.out.println("New Invoice ID (1): " + invc1.getId());
+	    System.out.println("Invoice to write (1): " + invc1.toString());
 
 	    invc2 = doJob_vend(gcshFile);
-	    System.out.println("New Invoice ID (2): " + invc2.getId());
+	    System.out.println("Invoice to write (2): " + invc1.toString());
 	}
 
 	gcshFile.writeFile(new File(gcshOutFileName));
+	System.out.println("OK");
     }
 
     // -----------------------------------------------------------------

@@ -15,7 +15,8 @@ import org.gnucash.read.impl.SplitNotFoundException;
  * For PropertyChange-Listeners we support the properties:
  * "description" and "splits".
  */
-public interface GnucashWritableTransaction extends GnucashTransaction {
+public interface GnucashWritableTransaction extends GnucashTransaction
+{
 
     /**
      * @param id the new currency

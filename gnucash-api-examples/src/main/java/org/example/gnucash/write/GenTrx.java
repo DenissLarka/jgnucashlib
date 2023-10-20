@@ -53,8 +53,8 @@ public class GenTrx {
 	trx.setDatePosted(datePosted);
 	trx.setDateEntered(LocalDateTime.now());
 
+	System.out.println("Transaction to write: " + trx.toString());
 	gcshFile.writeFile(new File(gcshOutFileName));
-
-	System.out.println(trx.getId());
+	System.out.println("OK");
     }
 }

@@ -66,5 +66,6 @@ public class GenTrx2 {
 	// Caution: output file will always be in uncompressed XML format,
 	// regardless of whether the input file was compressed or not.
 	gnucashFile.writeFile(new File(gcshOutFileName));
+	System.out.println("OK");
     }
 }

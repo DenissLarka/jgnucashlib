@@ -32,10 +32,9 @@ public class GenCust {
 	GnucashWritableCustomer cust = gcshFile.createWritableCustomer();
 	cust.setNumber(GnucashCustomer.getNewNumber(cust));
 	cust.setName(name);
-	System.err.println("Customer: " + cust.getNumber() + " (" + cust.getName() + ")");
-
+	
+	System.out.println("Customer to write: " + cust.toString());
 	gcshFile.writeFile(new File(gcshOutFileName));
-
-	System.out.println(cust.getId());
+	System.out.println("OK");
     }
 }

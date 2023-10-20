@@ -53,9 +53,9 @@ public class GenJob {
 	else if (type == JobType.VENDOR)
 	    job = doVendor(gcshFile);
 
+	System.out.println("Job to write: " + job.toString());
 	gcshFile.writeFile(new File(gcshOutFileName));
-
-	System.out.println(job.getId());
+	System.out.println("OK");
     }
 
     // -----------------------------------------------------------------

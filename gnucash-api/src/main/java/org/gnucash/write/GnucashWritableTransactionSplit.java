@@ -12,7 +12,9 @@ import org.gnucash.read.IllegalTransactionSplitActionException;
  * For propertyChange we support the properties "value", "quantity"
  * "description",  "splitAction" and "accountID".
  */
-public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit, GnucashWritableObject {
+public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit, 
+                                                         GnucashWritableObject
+{
 
 	/**
 	 * @return the transaction this is a split of.

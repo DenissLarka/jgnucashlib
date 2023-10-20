@@ -22,7 +22,6 @@ import org.gnucash.read.GnucashObject;
  * </ul>
  */
 public interface GnucashWritableAccount extends GnucashAccount, 
-                                                GnucashObject,
                                                 GnucashWritableObject 
 {
 

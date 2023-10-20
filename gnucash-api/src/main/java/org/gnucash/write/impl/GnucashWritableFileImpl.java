@@ -20,7 +20,10 @@ import java.util.TreeSet;
 import java.util.zip.GZIPOutputStream;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
@@ -36,6 +39,7 @@ import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.aux.GCshPrice;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
 import org.gnucash.read.impl.GnucashCustomerImpl;
@@ -47,6 +51,7 @@ import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableAccount;
+import org.gnucash.write.GnucashWritableCommodity;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableGenerInvoice;
@@ -513,6 +518,12 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     public GncV2.GncBook.GncGncJob createGncGncJobType() {
 	GncV2.GncBook.GncGncJob retval = getObjectFactory().createGncV2GncBookGncGncJob();
 	incrementCountDataFor("gnc:GncJob");
+	return retval;
+    }
+
+    protected GncV2.GncBook.GncCommodity createGncGncCommodityType() {
+	GncV2.GncBook.GncCommodity retval = getObjectFactory().createGncV2GncBookGncCommodity();
+	incrementCountDataFor("gnc:GncCommodity");
 	return retval;
     }
 
@@ -1173,6 +1184,59 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    rootAccounts = rootAccounts2;
 	}
 	return rootAccounts;
+    }
+    
+    // ---------------------------------------------------------------
+
+    @Override
+    public GnucashWritableCommodity createWritableCommodity() {
+	GnucashWritableCommodityImpl cmdty = new GnucashWritableCommodityImpl(this);
+//	try {
+//	    super.cmdtyQualifID2Cmdty.put(cmdty.getQualifId().toString(), cmdty);
+//	    super.cmdtyXCode2QualifID.put(cmdty.getXCode(), cmdty.getQualifId().toString());
+//	} catch ( Exception exc ) {
+//	    LOGGER.error("createWritableCommodity: Could not add new commodity to cache");
+//	}
+	return cmdty;	
+    }
+
+    @Override
+    public void removeCommodity(GnucashWritableCommodity cmdty) throws InvalidCmdtyCurrTypeException, ObjectCascadeException, InvalidCmdtyCurrIDException {
+	if ( cmdty.getQualifId().toString().
+		startsWith(CmdtyCurrNameSpace.CURRENCY + CmdtyCurrID.SEPARATOR) )
+	    throw new IllegalArgumentException("Currency commodities may not be removed");
+	
+	if ( existPriceObjects(cmdty) )
+	{
+	    LOGGER.error("Commodity with ID '" + cmdty.getQualifId() + "' cannot be removed because " + 
+	                 "there are price objects in the Price DB that depend on it");
+	    throw new ObjectCascadeException();
+	}
+	
+	cmdtyQualifID2Cmdty.remove(cmdty.getQualifId().toString());
+	
+	for ( String xCode : cmdtyXCode2QualifID.keySet() ) {
+	    if ( cmdtyQualifID2Cmdty.get(xCode).equals(cmdty.getQualifId().toString()) )
+		cmdtyXCode2QualifID.remove(xCode);
+	}
+
+	getRootElement().getGncBook().getBookElements().remove(((GnucashWritableCommodityImpl) cmdty).getJwsdpPeer());
+	setModified(true);
+    }
+
+    private boolean existPriceObjects(GnucashWritableCommodity cmdty) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	int counter = 0;
+	for ( GCshPrice price : getPrices() ) {
+	    if ( price.getCommodity().getQualifId().
+		    equals(cmdty.getQualifId()) ) {
+		counter++;
+	    }
+	}
+	
+	if ( counter > 0 )
+	    return true;
+	else
+	    return false;
     }
 
 }

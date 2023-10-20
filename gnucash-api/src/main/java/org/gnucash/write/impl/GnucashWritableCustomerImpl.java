@@ -26,18 +26,14 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableCustomerImpl.class);
 
+    // ---------------------------------------------------------------
+
     /**
      * Our helper to implement the GnucashWritableObject-interface.
      */
     private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
-
-    /**
-     * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String,
-     *      java.lang.String)
-     */
-    public void setUserDefinedAttribute(final String name, final String value) {
-	helper.setUserDefinedAttribute(name, value);
-    }
+    
+    // ---------------------------------------------------------------
 
     /**
      * Please use ${@link GnucashWritableFile#createWritableCustomer()}.
@@ -324,6 +320,16 @@ public class GnucashWritableCustomerImpl extends GnucashCustomerImpl
 	    getJwsdpPeer().getCustShipaddr().setAddrPhone(adr.getTel());
 	}
 	getGnucashFile().setModified(true);
+    }
+    
+    // ---------------------------------------------------------------
+
+    /**
+     * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String,
+     *      java.lang.String)
+     */
+    public void setUserDefinedAttribute(final String name, final String value) {
+	helper.setUserDefinedAttribute(name, value);
     }
 
 }

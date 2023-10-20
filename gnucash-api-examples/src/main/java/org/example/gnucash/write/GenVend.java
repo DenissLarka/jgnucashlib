@@ -32,10 +32,9 @@ public class GenVend {
 	GnucashWritableVendor vend = gcshFile.createWritableVendor();
 	vend.setNumber(GnucashVendor.getNewNumber(vend));
 	vend.setName(name);
-	System.err.println("Vendor: " + vend.getNumber() + " (" + vend.getName() + ")");
 
+	System.out.println("Vendor to write: " + vend.toString());
 	gcshFile.writeFile(new File(gcshOutFileName));
-
-	System.out.println(vend.getId());
+	System.out.println("OK");
     }
 }

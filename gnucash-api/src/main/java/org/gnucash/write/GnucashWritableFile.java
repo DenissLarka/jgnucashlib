@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -14,6 +16,7 @@ import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.gnucash.write.impl.ObjectCascadeException;
 import org.gnucash.write.spec.GnucashWritableCustomerInvoice;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
 import org.gnucash.write.spec.GnucashWritableJobInvoice;
@@ -261,5 +264,20 @@ public interface GnucashWritableFile extends GnucashFile,
      * @param impl the account to remove
      */
     void removeAccount(GnucashWritableAccount impl);
+
+    // ---------------------------------------------------------------
+
+    /**
+     * @return a new commodity with no values that is already added to this file
+     */
+    GnucashWritableCommodity createWritableCommodity();
+
+    /**
+     * @param cmdty the commodity to remove
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws ObjectCascadeException 
+     * @throws InvalidCmdtyCurrIDException 
+     */
+    void removeCommodity(GnucashWritableCommodity cmdty) throws InvalidCmdtyCurrTypeException, ObjectCascadeException, InvalidCmdtyCurrIDException;
 
 }

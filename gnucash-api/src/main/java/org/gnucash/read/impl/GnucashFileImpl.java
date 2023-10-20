@@ -38,6 +38,7 @@ import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
+import org.gnucash.generated.GncV2.GncBook.GncPricedb;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -939,6 +940,17 @@ public class GnucashFileImpl implements GnucashFile {
         return priceById.get(id);
     }
 
+    protected GncV2.GncBook.GncPricedb getPriceDB() {
+	List<Object> bookElements = this.getRootElement().getGncBook().getBookElements();
+	for ( Object bookElement : bookElements ) {
+	    if ( bookElement instanceof GncV2.GncBook.GncPricedb ) {
+		return (GncV2.GncBook.GncPricedb) bookElement;
+	    } 
+	}
+	
+	return null; // Compiler happy
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -946,18 +958,13 @@ public class GnucashFileImpl implements GnucashFile {
         if (priceById == null) {
             priceById = new HashMap<String, GCshPrice>();
 
-            List<Object> bookElements = this.getRootElement().getGncBook().getBookElements();
-            for (Object bookElement : bookElements) {
-                if ( bookElement instanceof GncV2.GncBook.GncPricedb ) {
-                    GncV2.GncBook.GncPricedb priceDB = (GncV2.GncBook.GncPricedb) bookElement;
-                    List<GncV2.GncBook.GncPricedb.Price> prices = priceDB.getPrice();
-                    for ( GncV2.GncBook.GncPricedb.Price jwsdpPeer : prices ) {
-                	GCshPriceImpl price = new GCshPriceImpl(jwsdpPeer, this);
-                	priceById.put(price.getId(), price);
-                    } // for jwsdpPeer
-                } // if 
-            } // for bookElement
-        } // if
+            GncV2.GncBook.GncPricedb priceDB = getPriceDB();
+            List<GncV2.GncBook.GncPricedb.Price> prices = priceDB.getPrice();
+            for ( GncV2.GncBook.GncPricedb.Price jwsdpPeer : prices ) {
+        	GCshPriceImpl price = new GCshPriceImpl(jwsdpPeer, this);
+        	priceById.put(price.getId(), price);
+            }
+        } 
 
         return priceById.values();
     }
@@ -1668,7 +1675,7 @@ public class GnucashFileImpl implements GnucashFile {
      * @return the new GnucashCommodity to wrap the given JAXB object.
      */
     protected GnucashCommodityImpl createCommodity(final GncV2.GncBook.GncCommodity jwsdpCmdty) {
-      GnucashCommodityImpl cmdty = new GnucashCommodityImpl(jwsdpCmdty);
+      GnucashCommodityImpl cmdty = new GnucashCommodityImpl(jwsdpCmdty, this);
     return cmdty;
     }
 
