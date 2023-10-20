@@ -1,7 +1,10 @@
 package org.gnucash.read;
 
+import java.util.Collection;
+
 import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.read.aux.GCshPrice;
 
 public interface GnucashCommodity {
 
@@ -32,12 +35,8 @@ public interface GnucashCommodity {
 
     // ------------------------------------------------------------
 
-    /*
-    Collection<GnucashPrice> getQuotes();
+    Collection<GCshPrice> getQuotes() throws InvalidCmdtyCurrTypeException;
     
-    String getQuoteSource();
+    GCshPrice getYoungestQuote() throws InvalidCmdtyCurrTypeException;
     
-    String getQuoteTz();
-    */
-
 }

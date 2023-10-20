@@ -47,4 +47,6 @@ public interface GCshPrice {
 
     FixedPointNumber getValue();
     
+    String getValueFormatted() throws InvalidCmdtyCurrTypeException;
+    
 }

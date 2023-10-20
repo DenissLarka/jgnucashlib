@@ -1,10 +1,15 @@
 package org.gnucash.read.impl;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.aux.GCshPrice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,6 +116,39 @@ public class GnucashCommodityImpl implements GnucashCommodity
 	    return null;
 	
 	return jwsdpPeer.getCmdtyFraction();
+    }
+
+    // -----------------------------------------------------------------
+
+    // ::TODO sort the entries by date
+    @Override
+    public Collection<GCshPrice> getQuotes() throws InvalidCmdtyCurrTypeException {
+	Collection<GCshPrice> result = new ArrayList<GCshPrice>();
+	
+	Collection<GCshPrice> prices = getGnucashFile().getPrices();
+	for ( GCshPrice price : prices ) {
+	    if ( price.getCommodityQualifId().toString().equals(getQualifId().toString()) ) {
+		result.add(price);
+	    }
+	}
+	
+	return result;
+    }
+
+    @Override
+    public GCshPrice getYoungestQuote() throws InvalidCmdtyCurrTypeException {
+	
+	GCshPrice result = null;
+
+	LocalDate youngestDate = LocalDate.of(1970, 1, 1); // ::MAGIC
+	for ( GCshPrice price : getQuotes() ) {
+	    if ( price.getDate().isAfter(youngestDate) ) {
+		result = price;
+		youngestDate = price.getDate();
+	    }
+	}
+
+	return result;
     }
 
     // -----------------------------------------------------------------

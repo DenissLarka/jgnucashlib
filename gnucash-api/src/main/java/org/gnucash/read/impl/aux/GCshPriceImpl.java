@@ -1,11 +1,14 @@
 package org.gnucash.read.impl.aux;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Currency;
 
 import org.gnucash.Const;
 import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
@@ -36,6 +39,13 @@ public class GCshPriceImpl implements GCshPrice {
     // -----------------------------------------------------------
 
     /**
+     * The currency-format to use for formatting.<br/>
+     */
+    private NumberFormat currencyFormat = null;
+
+    // -----------------------------------------------------------
+
+    /**
      * @param newPeer the JWSDP-object we are wrapping.
      */
     @SuppressWarnings("exports")
@@ -47,7 +57,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     // -----------------------------------------------------------
-	
+
     @Override
     public String getId() {
 	if ( jwsdpPeer.getPriceId() == null )
@@ -119,6 +129,25 @@ public class GCshPriceImpl implements GCshPrice {
 	return cmdty;
     }
 
+    /**
+     * @return The currency-format to use for formating.
+     * @throws InvalidCmdtyCurrTypeException 
+     */
+    private NumberFormat getCurrencyFormat() throws InvalidCmdtyCurrTypeException {
+	if (currencyFormat == null) {
+	    currencyFormat = NumberFormat.getCurrencyInstance();
+	}
+
+	// the currency may have changed
+	if ( ! getCurrencyQualifId().getType().equals(CmdtyCurrID.Type.CURRENCY) )
+	    throw new InvalidCmdtyCurrTypeException();
+	    
+	Currency currency = Currency.getInstance(getCurrencyCode());
+	currencyFormat.setCurrency(currency);
+
+	return currencyFormat;
+    }
+
     @Override
     public LocalDate getDate() {
 	if ( jwsdpPeer.getPriceTime() == null )
@@ -158,6 +187,11 @@ public class GCshPriceImpl implements GCshPrice {
 	return new FixedPointNumber(jwsdpPeer.getPriceValue());
     }
 
+    @Override
+    public String getValueFormatted() throws InvalidCmdtyCurrTypeException {
+	return getCurrencyFormat().format(getValue());
+    }
+
     // ---------------------------------------------------------------
     
     @Override
@@ -177,9 +211,15 @@ public class GCshPriceImpl implements GCshPrice {
 	}
 	
 	result += ", date=" + getDate(); 
-	result += ", source=" + getSource(); 
-	result += ", type=" + getType(); 
-	result += ", value=" + getValue() + "]";
+	result += ", source='" + getSource() + "'"; 
+	result += ", type=" + getType();
+	
+	try {
+	    result += ", value=" + getValueFormatted() + "]";
+	} catch (InvalidCmdtyCurrTypeException e) {
+	    // TODO Auto-generated catch block
+	    result += ", value=" + "ERROR" + "]";
+	}
 	
 	return result;
     }

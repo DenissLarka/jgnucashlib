@@ -3,7 +3,9 @@ package org.example.gnucash.read;
 import java.io.File;
 
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.read.GnucashCommodity;
+import org.gnucash.read.aux.GCshPrice;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
@@ -44,9 +46,9 @@ public class GetCmdtyInfo {
 	// GnucashCommodity cmdty = (GnucashCommodity) cmdtyList.iterator().next(); // first element
 
 	try {
-	    System.out.println("Full ID:           " + cmdty.getQualifId());
+	    System.out.println("Qualified ID:      '" + cmdty.getQualifId() + "'");
 	} catch (Exception exc) {
-	    System.out.println("Full ID:           " + "ERROR");
+	    System.out.println("Qualified ID:      " + "ERROR");
 	}
 
 	try {
@@ -74,9 +76,20 @@ public class GetCmdtyInfo {
 
     // -----------------------------------------------------------------
 
-    private void showQuotes(GnucashCommodity cust) throws WrongInvoiceTypeException {
+    private void showQuotes(GnucashCommodity cmdty) throws InvalidCmdtyCurrTypeException {
 	System.out.println("");
 	System.out.println("Quotes:");
-	System.out.println("NOT IMPLEMENTED YET");
+
+	System.out.println("");
+	System.out.println("Number of quotes: " + cmdty.getQuotes().size());
+
+	System.out.println("");
+	for (GCshPrice prc : cmdty.getQuotes()) {
+	    System.out.println(" - " + prc.toString());
+	}
+
+	System.out.println("");
+	System.out.println("Youngest Quote:");
+	System.out.println(cmdty.getYoungestQuote());
     }
 }
