@@ -21,6 +21,8 @@ public class TestPackage extends TestCase
 
     suite.addTest(org.gnucash.write.impl.TestGnucashWritableTransactionImpl.suite());
 
+    suite.addTest(org.gnucash.write.impl.TestGnucashWritableCommodityImpl.suite());
+
     suite.addTest(org.gnucash.write.impl.spec.TestPackage.suite());
 
     return suite;
