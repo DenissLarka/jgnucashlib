@@ -3,6 +3,7 @@ package org.gnucash.read.aux;
 import java.time.LocalDate;
 
 import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CurrencyID;
 import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
@@ -33,9 +34,9 @@ public interface GCshPrice {
 
     GnucashCommodity getCommodity() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException;
 
-    CmdtyCurrID getCurrencyQualifId() throws InvalidCmdtyCurrTypeException;
+    CurrencyID getCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
-    String getCurrencyCode();
+    String getCurrencyCode() throws InvalidCmdtyCurrTypeException;
 
     GnucashCommodity getCurrency() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException;
 
@@ -47,6 +48,6 @@ public interface GCshPrice {
 
     FixedPointNumber getValue();
     
-    String getValueFormatted() throws InvalidCmdtyCurrTypeException;
+    String getValueFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
     
 }

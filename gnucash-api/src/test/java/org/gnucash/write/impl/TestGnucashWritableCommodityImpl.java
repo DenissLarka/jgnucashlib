@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.gnucash.ConstTest;
 import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CommodityID_Exchange;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.write.GnucashWritableCommodity;
 import org.junit.Before;
@@ -92,7 +93,7 @@ public class TestGnucashWritableCommodityImpl
   public void test01_1() throws Exception
   {
       GnucashWritableCommodity cmdty = gcshInFile.createWritableCommodity();
-      cmdty.setQualifId(new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.NASDAQ, "SCAM"));
+      cmdty.setQualifId(new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.NASDAQ, "SCAM"));
       cmdty.setName("Scam and Screw Corp.");
       
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
@@ -170,15 +171,15 @@ public class TestGnucashWritableCommodityImpl
   public void test02_1() throws Exception
   {
       GnucashWritableCommodity cmdty1 = gcshInFile.createWritableCommodity();
-      cmdty1.setQualifId(new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.NASDAQ, "SCAM"));
+      cmdty1.setQualifId(new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.NASDAQ, "SCAM"));
       cmdty1.setName("Scam and Screw Corp.");
       
       GnucashWritableCommodity cmdty2 = gcshInFile.createWritableCommodity();
-      cmdty2.setQualifId(new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.XETRA, "TEUR"));
+      cmdty2.setQualifId(new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.XETRA, "TEUR"));
       cmdty2.setName("Total Überteuert AG");
       
       GnucashWritableCommodity cmdty3 = gcshInFile.createWritableCommodity();
-      cmdty3.setQualifId(new CmdtyCurrID(CmdtyCurrNameSpace.Exchange.EURONEXT, "FOUS"));
+      cmdty3.setQualifId(new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.EURONEXT, "FOUS"));
       cmdty3.setName("Ils sont fous ces dingos!");
       
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);

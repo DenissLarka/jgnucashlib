@@ -1,9 +1,5 @@
 package org.gnucash.currency;
 
-import java.util.Currency;
-
-import javax.xml.stream.events.Namespace;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * in this class, if you absolutely need it. After all, this is FOSS...)
  *  
  * @param exchange
- * @param secCode
+ * @param code
  */
 public class CmdtyCurrID {
     
@@ -28,7 +24,8 @@ public class CmdtyCurrID {
     // We do not use the GnuCash-internally used "NONCURRENCY"
     public enum Type {
 	CURRENCY,
-	SECURITY_EXCHANGE, // name space is (informal) abbrev. of major world exchange
+	SECURITY_EXCHANGE, // name space is semi-formal abbrev. of major world exchange
+	SECURITY_MIC,      // name space is formal abbrev. of major world exchange
 	SECURITY_GENERAL,  // name space can be freely chosen
 	UNSET
     }
@@ -41,11 +38,9 @@ public class CmdtyCurrID {
 
     // ---------------------------------------------------------------
 
-    private Type                        type;
-    private Currency                    currency;
-    private CmdtyCurrNameSpace.Exchange exchange;
-    private String                      secCode;
-    private String                      nameSpaceFree;
+    protected Type    type;
+    protected String  nameSpace;
+    protected String  code;
 
     // ---------------------------------------------------------------
     
@@ -53,23 +48,7 @@ public class CmdtyCurrID {
 	this.type = Type.UNSET;
     }
 
-    public CmdtyCurrID(Currency curr) throws InvalidCmdtyCurrTypeException {
-	this.type = Type.CURRENCY;
-	setCurrency(curr);
-	this.exchange      = CmdtyCurrNameSpace.Exchange.UNSET;
-	this.secCode       = null;
-	this.nameSpaceFree = null;
-    }
-
-    public CmdtyCurrID(CmdtyCurrNameSpace.Exchange exchange, String secCode) throws InvalidCmdtyCurrTypeException {
-	this.type = Type.SECURITY_EXCHANGE;
-	setExchange(exchange);
-	setSecCode(secCode);
-	this.currency      = null;
-	this.nameSpaceFree = null;
-    }
-
-    public CmdtyCurrID(String nameSpaceFree, String code, boolean tryMap) throws InvalidCmdtyCurrTypeException {
+    public CmdtyCurrID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException {
 	
 	if ( nameSpaceFree == null )
 	    throw new IllegalArgumentException("Name space is null");
@@ -83,37 +62,14 @@ public class CmdtyCurrID {
 	if ( code.trim().equals("") )
 	    throw new IllegalArgumentException("Security code is empty");
 
-	if ( nameSpaceFree.trim().equals(CmdtyCurrNameSpace.CURRENCY) )
-	{
+	if ( nameSpaceFree.trim().equals(CmdtyCurrNameSpace.CURRENCY) ) {
 	    this.type = Type.CURRENCY;
-	    setCurrency(code);
-	    this.exchange      = CmdtyCurrNameSpace.Exchange.UNSET;
-	    this.secCode       = null;
-	    this.nameSpaceFree = null;
+	} else {
+	    this.type = Type.SECURITY_GENERAL;
 	}
-	else
-	{
-	    if ( tryMap ) {
-		try {
-		    this.type = Type.SECURITY_EXCHANGE;
-		    setExchange(nameSpaceFree);
-		    this.nameSpaceFree = null;
-		} catch ( Exception exc ) {
-		    this.type = Type.SECURITY_GENERAL;
-		    setNameSpaceFree(nameSpaceFree);
-		    this.exchange = CmdtyCurrNameSpace.Exchange.UNSET;
-		}
-	    }
-	    else
-	    {
-		this.type = Type.SECURITY_GENERAL;
-		setNameSpaceFree(nameSpaceFree);
-		this.exchange = CmdtyCurrNameSpace.Exchange.UNSET;
-	    }
-	    
-	    setSecCode(code);
-	    this.currency = null;	
-	}
+
+	setNameSpace(nameSpaceFree.trim());
+	setCode(code.trim());
     }
 
 //    public CmdtyCurrID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException {
@@ -148,118 +104,36 @@ public class CmdtyCurrID {
         return type;
     }
     
-    public void setType(Type type) {
+    public void setType(Type type) throws InvalidCmdtyCurrIDException {
         this.type = type;
-        
-        if ( type == Type.CURRENCY )
-        {
-            this.exchange      = CmdtyCurrNameSpace.Exchange.UNSET;
-            this.secCode       = null;
-            this.nameSpaceFree = null;
-        }
-        else if ( type == Type.SECURITY_EXCHANGE )
-        {
-            this.currency      = null;
-            this.nameSpaceFree = null;
-        }
-        else if ( type == Type.SECURITY_GENERAL )
-        {
-            this.currency = null;
-            this.exchange = CmdtyCurrNameSpace.Exchange.UNSET;
-        }
     }
     
-    // ----------------------------
-    
-    public Currency getCurrency() throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.CURRENCY )
-	    throw new InvalidCmdtyCurrTypeException();
-	
-        return currency;
+    public String getNameSpace() {
+        return nameSpace;
     }
     
-    public void setCurrency(Currency currency) throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.CURRENCY )
-	    throw new InvalidCmdtyCurrTypeException();
-	
-        this.currency = currency;
-    }
-
-    public void setCurrency(String iso4217CurrCode) throws InvalidCmdtyCurrTypeException {
-	if ( iso4217CurrCode == null )
-	    throw new IllegalArgumentException("Argument string is null");
-
-	setCurrency(Currency.getInstance(iso4217CurrCode));
-    }
-
-    // ----------------------------
-    
-    public CmdtyCurrNameSpace.Exchange getExchange() throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_EXCHANGE )
-	    throw new InvalidCmdtyCurrTypeException();
-	
-        return exchange;
-    }
-    
-    public void setExchange(CmdtyCurrNameSpace.Exchange exchange) throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_EXCHANGE )
-	    throw new InvalidCmdtyCurrTypeException();
-	
-        this.exchange = exchange;
-    }
-    
-    public void setExchange(String exchangeStr) throws InvalidCmdtyCurrTypeException {
-	if ( exchangeStr == null )
-	    throw new IllegalArgumentException("Exchange string is null");
-
-	if ( exchangeStr.trim().equals("") )
-	    throw new IllegalArgumentException("Exchange string is empty");
-
-        setExchange(CmdtyCurrNameSpace.Exchange.valueOf(exchangeStr.trim()));
-    }
-    
-    public String getSecCode() throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_EXCHANGE && 
-             type != Type.SECURITY_GENERAL )
-	    throw new InvalidCmdtyCurrTypeException();
-	
-        return secCode;
-    }
-    
-    public void setSecCode(String secCode) throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_EXCHANGE && 
-	     type != Type.SECURITY_GENERAL )
-	    throw new InvalidCmdtyCurrTypeException();
-	
-	if ( secCode == null )
-	    throw new IllegalArgumentException("Security code is null");
-
-	if ( secCode.trim().equals("") )
-	    throw new IllegalArgumentException("Security code is empty");
-
-        this.secCode = secCode.trim();
-    }
-    
-    // ----------------------------
-    
-    public String getNameSpaceFree() throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_GENERAL )
-	    throw new InvalidCmdtyCurrTypeException();
-	
-        return nameSpaceFree;
-    }
-    
-    public void setNameSpaceFree(String nameSpace) throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_GENERAL )
-	    throw new InvalidCmdtyCurrTypeException();
-	
+    public void setNameSpace(String nameSpace) throws InvalidCmdtyCurrTypeException {
 	if ( nameSpace == null )
 	    throw new IllegalArgumentException("Name space is null");
 
 	if ( nameSpace.trim().equals("") )
 	    throw new IllegalArgumentException("Name space is empty");
 
-        this.nameSpaceFree = nameSpace.trim();
+        this.nameSpace = nameSpace.trim();
+    }
+    
+    public String getCode() {
+        return code;
+    }
+    
+    public void setCode(String secCode) throws InvalidCmdtyCurrTypeException {
+	if ( secCode == null )
+	    throw new IllegalArgumentException("Security code is null");
+
+	if ( secCode.trim().equals("") )
+	    throw new IllegalArgumentException("Security code is empty");
+
+        this.code = secCode.trim();
     }
     
     // ---------------------------------------------------------------
@@ -285,22 +159,14 @@ public class CmdtyCurrID {
 	if ( nameSpaceLoc.equals(CmdtyCurrNameSpace.CURRENCY) )
 	{
 	    result.setType(Type.CURRENCY);
-	    result.setCurrency(Currency.getInstance(currSecCodeLoc));
+	    result.setNameSpace(CmdtyCurrNameSpace.CURRENCY);
+	    result.setCode(currSecCodeLoc);
 	}	
 	else 
 	{
-	    try {
-		CmdtyCurrNameSpace.Exchange exchangeLoc = CmdtyCurrNameSpace.Exchange.valueOf(nameSpaceLoc);
-		result.setType(Type.SECURITY_EXCHANGE);
-		result.setExchange(exchangeLoc);
-		result.setSecCode(currSecCodeLoc);
-	    }
-	    catch ( Exception exc )
-	    {
-		result.setType(Type.SECURITY_GENERAL);
-		result.setNameSpaceFree(nameSpaceLoc);
-		result.setSecCode(currSecCodeLoc);
-	    }
+	    result.setType(Type.SECURITY_GENERAL);
+	    result.setNameSpace(nameSpaceLoc);
+	    result.setCode(currSecCodeLoc);
 	}
 	
 	return result;
@@ -312,10 +178,8 @@ public class CmdtyCurrID {
     public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + ((currency == null) ? 0 : currency.hashCode());
-	result = prime * result + ((exchange == null) ? 0 : exchange.hashCode());
-	result = prime * result + ((nameSpaceFree == null) ? 0 : nameSpaceFree.hashCode());
-	result = prime * result + ((secCode == null) ? 0 : secCode.hashCode());
+	result = prime * result + ((nameSpace == null) ? 0 : nameSpace.hashCode());
+	result = prime * result + ((code == null) ? 0 : code.hashCode());
 	result = prime * result + ((type == null) ? 0 : type.hashCode());
 	return result;
     }
@@ -331,22 +195,15 @@ public class CmdtyCurrID {
 	CmdtyCurrID other = (CmdtyCurrID) obj;
 	if (type != other.type)
 	    return false;
-	if (currency == null) {
-	    if (other.currency != null)
+	if (nameSpace == null) {
+	    if (other.nameSpace != null)
 		return false;
-	} else if (!currency.equals(other.currency))
+	} else if (!nameSpace.equals(other.nameSpace))
 	    return false;
-	if (exchange != other.exchange)
-	    return false;
-	if (nameSpaceFree == null) {
-	    if (other.nameSpaceFree != null)
+	if (code == null) {
+	    if (other.code != null)
 		return false;
-	} else if (!nameSpaceFree.equals(other.nameSpaceFree))
-	    return false;
-	if (secCode == null) {
-	    if (other.secCode != null)
-		return false;
-	} else if (!secCode.equals(other.secCode))
+	} else if (!code.equals(other.code))
 	    return false;
 	return true;
     }
@@ -360,17 +217,7 @@ public class CmdtyCurrID {
 
     public String toStringShort() {
 	
-	String result = "ERROR";
-
-	if (type == Type.CURRENCY) {
-	    result = CmdtyCurrNameSpace.CURRENCY.toString() + SEPARATOR + currency.getCurrencyCode();
-	} else if (type == Type.SECURITY_EXCHANGE) {
-	    result = exchange.toString() + SEPARATOR + secCode;
-	} else if (type == Type.SECURITY_GENERAL) {
-	    result = nameSpaceFree + SEPARATOR + secCode;
-	} else if (type == Type.UNSET) {
-	    result = "UNSET";
-	}
+	String result = nameSpace + SEPARATOR + code;
 
 	return result;
     }
@@ -378,42 +225,8 @@ public class CmdtyCurrID {
     public String toStringLong() {
 	String result = "CmdtyCurrID [type=" + getType();
 	
-	if ( type == Type.CURRENCY )
-	{
-	    try {
-		result += ", currency='" + getCurrency().getCurrencyCode() + "'";
-	    } catch (InvalidCmdtyCurrTypeException e) {
-		result += ", currency=" + "ERROR";
-	    }
-	}
-	else if ( type == Type.SECURITY_EXCHANGE )
-	{
-	    try {
-		result += ", exchange='" + getExchange() + "'";
-	    } catch (InvalidCmdtyCurrTypeException e) {
-		result += ", exchange=" + "ERROR";
-	    }
-	    
-	    try {
-		result += ", secCode='" + getSecCode() + "'";
-	    } catch (InvalidCmdtyCurrTypeException e) {
-		result += ", secCode=" + "ERROR";
-	    }
-	}
-	else if ( type == Type.SECURITY_GENERAL )
-	{
-	    try {
-		result += ", nameSpaceFree='" + getNameSpaceFree() + "'";
-	    } catch (InvalidCmdtyCurrTypeException e) {
-		result += ", nameSpaceFree=" + "ERROR";
-	    }
-
-	    try {
-		result += ", secCode='" + getSecCode() + "'";
-	    } catch (InvalidCmdtyCurrTypeException e) {
-		result += ", secCode=" + "ERROR";
-	    }
-	}
+	result += ", nameSpace='" + getNameSpace() + "'";
+	result += ", code='" + getCode() + "'";
 	
 	result += "]";
 	

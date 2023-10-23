@@ -1,5 +1,6 @@
 package org.gnucash.read.impl.aux;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -9,6 +10,7 @@ import java.util.Currency;
 import org.gnucash.Const;
 import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CurrencyID;
 import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
@@ -76,7 +78,7 @@ public class GCshPriceImpl implements GCshPrice {
 	     cmdty.getCmdtyId() == null )
 	    return null;
 		    
-	CmdtyCurrID result = new CmdtyCurrID(cmdty.getCmdtySpace(), cmdty.getCmdtyId(), true);
+	CmdtyCurrID result = new CmdtyCurrID(cmdty.getCmdtySpace(), cmdty.getCmdtyId());
 	    
 	return result;
     }
@@ -92,7 +94,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public CmdtyCurrID getCurrencyQualifId() throws InvalidCmdtyCurrTypeException {
+    public CurrencyID getCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	if ( jwsdpPeer.getPriceCurrency() == null )
 	    return null;
 		
@@ -101,13 +103,13 @@ public class GCshPriceImpl implements GCshPrice {
 	     curr.getCmdtyId() == null )
 	    return null;
 	
-	CmdtyCurrID result = new CmdtyCurrID(curr.getCmdtySpace(), curr.getCmdtyId(), true);
+	CurrencyID result = new CurrencyID(curr.getCmdtySpace(), curr.getCmdtyId());
 		    
 	return result;
     }
 
     @Override
-    public String getCurrencyCode() {
+    public String getCurrencyCode() throws InvalidCmdtyCurrTypeException {
 	if ( jwsdpPeer.getPriceCurrency() == null )
 	    return null;
 		
@@ -115,7 +117,10 @@ public class GCshPriceImpl implements GCshPrice {
 	if ( curr.getCmdtySpace() == null ||
 	     curr.getCmdtyId() == null )
 	    return null;
-		    
+	
+	if ( ! curr.getCmdtySpace().equals(CmdtyCurrNameSpace.CURRENCY) )
+	    throw new InvalidCmdtyCurrTypeException();
+	
 	return curr.getCmdtyId();
     }
 
@@ -132,15 +137,16 @@ public class GCshPriceImpl implements GCshPrice {
     /**
      * @return The currency-format to use for formating.
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    private NumberFormat getCurrencyFormat() throws InvalidCmdtyCurrTypeException {
+    private NumberFormat getCurrencyFormat() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	if (currencyFormat == null) {
 	    currencyFormat = NumberFormat.getCurrencyInstance();
 	}
 
-	// the currency may have changed
-	if ( ! getCurrencyQualifId().getType().equals(CmdtyCurrID.Type.CURRENCY) )
-	    throw new InvalidCmdtyCurrTypeException();
+//	// the currency may have changed
+//	if ( ! getCurrencyQualifId().getType().equals(CmdtyCurrID.Type.CURRENCY) )
+//	    throw new InvalidCmdtyCurrTypeException();
 	    
 	Currency currency = Currency.getInstance(getCurrencyCode());
 	currencyFormat.setCurrency(currency);
@@ -188,7 +194,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public String getValueFormatted() throws InvalidCmdtyCurrTypeException {
+    public String getValueFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	return getCurrencyFormat().format(getValue());
     }
 
@@ -206,7 +212,7 @@ public class GCshPriceImpl implements GCshPrice {
 	
 	try {
 	    result += ", curr-qualif-id='" + getCurrencyQualifId() + "'";
-	} catch (InvalidCmdtyCurrTypeException e) {
+	} catch (Exception e) {
 	    result += ", curr-qualif-id=" + "ERROR";
 	}
 	
@@ -216,7 +222,7 @@ public class GCshPriceImpl implements GCshPrice {
 	
 	try {
 	    result += ", value=" + getValueFormatted() + "]";
-	} catch (InvalidCmdtyCurrTypeException e) {
+	} catch (Exception e) {
 	    // TODO Auto-generated catch block
 	    result += ", value=" + "ERROR" + "]";
 	}

@@ -2,8 +2,8 @@ package org.example.gnucash.write;
 
 import java.io.File;
 
-import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CommodityID_Exchange;
 import org.gnucash.write.GnucashWritableCommodity;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 
@@ -34,9 +34,9 @@ public class GenCmdty {
 	GnucashWritableFileImpl gcshFile = new GnucashWritableFileImpl(new File(gcshInFileName));
 
 	GnucashWritableCommodity cmdty = gcshFile.createWritableCommodity();
-	cmdty.setName(name);
-	cmdty.setQualifId(new CmdtyCurrID("NASDAQ", "MSFT", true));
+	cmdty.setQualifId(new CommodityID_Exchange(exchange, ticker));
 	cmdty.setXCode(isin);
+	cmdty.setName(name);
 
 	System.out.println("Commodity to write: " + cmdty.toString());
 	gcshFile.writeFile(new File(gcshOutFileName));

@@ -9,6 +9,30 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 **Caution:** Will not work on other locales (for details, cf. below).
 
 # Major Changes 
+## V. 1.1 &rarr; 1.2
+* Introduced interfaces/classes `Gnucash(Writable)Commodity(Impl)` for reading and writing "commodities", in GnuCash lingo an umbrella term for 
+  * Currencies
+  * (Real) Securities (shares, bonds, funds, etc.)
+  * Possibly other assets that can be mapped to this GnuCash entity as pseudo-securities, such as crypto-currencies, physical precious metals, etc.
+
+* Reading of securities' quotes (GnuCash lingo: "prices") is possible, but writing them is not possible yet.
+
+* Some minor big-fixing here and there.
+
+In this context, the following was also necessary/also made sense:
+
+* Introduced auxiliary interface/class `GCshPrice(Impl)` representing an entry of the GnuCash price database.
+
+* Introduced auxiliary class `CmdtyCurrID` (essentially a pair of commodity name space and commodity code), which represents a security-style pseudo-ID for commodities (thus, including currencies, cf. above). Note that, as opposed to all other entities in the GnuCash XML file, commodities have no internal UUID (a fact that the author finds irritating), hence the need to define this entity for both easy and safe handling of read and write operations.
+
+* Closely linked to `CmdtyCurrID`: Major rework on the class `CmdtyCurrNameSpace` (formerly `CurrencyNameSpace`): introduced several enums for enhanced type safety.
+
+  *Background*: In and of itself, GnuCash's commodity name space can be freely defined; only suggestions are made on how to define it, e.g. a major stock exchange's abbreviation or a major securities index name. But you *need* not do it like that. The author is well aware of the fact that the GnuCash developers have -- likely after having weighed the pros and cons -- purposefully decided *not* to enforce any pre-defined values. 
+
+  In this lib, we follow this spirit (as well as the path that the original author Marcus Wolschon followed): We *allow* the users to freely define any name space they want, but we *encourage* them to use one of the pre-defined enums in `CmdtyCurrNameSpace` (expecting that buying, holding and selling conventional securities on major markets will be the most typical use case by far).
+
+  *Note that the current definition of the enums in the class `CmdtyCurrNameSpace` is by no means final and "once and for all". The author rather expects some re-work iterations on the existing ones and the introduction of new ones.*
+
 ## V. 1.0 &rarr; 1.1
 * Reading and writing of (technical/generic) invoices: Not just customer invoices, but also vendor bills now. According to the internal XML structure and the part of the code that is generated from it (i.e., the XSD file), both derive from a common class that represents a "generic" invoice. In addition to that, there is also a third type: job invoice (cf. next item).
     
@@ -35,7 +59,7 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 * Introduced new packages (both for interfaces and implementations):
 
    *  "spec" for the above-mentioned special variants of generic classes.
-   *  "aux" for auxiliary classes (and for them, a special prefix: `GCsh`). Also, made code both redundancy-free and more readable by getting rid of nested classes (e.g., `Gnucash(xyz)Invoice.Address` --> `GCshAdress` or `GGshTaxTable.TaxTableEntry` --> `GCshTaxTableEntry`).
+   *  "aux" for auxiliary classes (and for them, a special prefix: `GCsh`). Also, made code both redundancy-free and more readable by getting rid of nested classes (e.g., `Gnucash(xyz)Invoice.Address` &rarr; `GCshAdress` or `GGshTaxTable.TaxTableEntry` &rarr; `GCshTaxTableEntry`).
 
 * Improved exception handling/actual working of code with real-life data (not fundamentally different, but rather small repair work -- the code partially did not work in the above-mentioned environment).
 
@@ -49,18 +73,16 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
 
 * Got rid of (public) methods that accept internal IDs as arguments: First, internal IDs are -- well -- internal/internally generated and thus should not be part of an API, and second, GnuCash uses only UUIDs anyway, and there is simply no point in generating these outside (to be fair: for all of these methods, there were wrappers without).
 
-* Renamed some classes to honour naming conventions (e.g., `abcMyObjectWritingxyz` --> `abcWritableMyObjectxyz`).
+* Renamed some classes to honour naming conventions (e.g., `abcMyObjectWritingxyz` &rarr; `abcWritableMyObjectxyz`).
 
 * Some minor cleaning here and there (e.g., small inconsistencies in date-handling, `toString()`-methods, etc.).
 
 * Provided an extensive set of example programs (not generally-usable tools!) in a module of its own. Moved the one single example program that was there before into this module.
 
 # Planned
-It should go without extra notice, but the following points are of cours subject to change:
+It should go without saying, but the following points are of course subject to change and by no means a promise that they will actually be implemented soon:
 
-* Classes for "commodities" (i.e. securities such as shares and bonds) and methods for buying/selling them in investment accounts.
-
-* Classes for commodity (security) quotes.
+* Methods for buying/selling securities ("commodities") in investment accounts.
 
 * Classes for employees and employee vouchers.
 

@@ -3,6 +3,8 @@ package org.gnucash.write.impl;
 import org.gnucash.Const;
 import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CommodityID_Exchange;
+import org.gnucash.currency.CurrencyID;
 import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
@@ -97,16 +99,8 @@ public class GnucashWritableCommodityImpl extends GnucashCommodityImpl
 
     @Override
     public void setQualifId(CmdtyCurrID qualifId) throws InvalidCmdtyCurrTypeException {
-	if ( qualifId.getType() == CmdtyCurrID.Type.CURRENCY ) {
-		getJwsdpPeer().setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
-		getJwsdpPeer().setCmdtyId(qualifId.getCurrency().getCurrencyCode());
-	} else if ( qualifId.getType() == CmdtyCurrID.Type.SECURITY_EXCHANGE ) {
-		getJwsdpPeer().setCmdtySpace(qualifId.getExchange().toString());
-		getJwsdpPeer().setCmdtyId(qualifId.getSecCode());
-	} else if ( qualifId.getType() == CmdtyCurrID.Type.SECURITY_GENERAL ) {
-		getJwsdpPeer().setCmdtySpace(qualifId.getNameSpaceFree());
-		getJwsdpPeer().setCmdtyId(qualifId.getSecCode());
-	}
+	getJwsdpPeer().setCmdtySpace(qualifId.getNameSpace());
+	getJwsdpPeer().setCmdtyId(qualifId.getCode());
 
 	getGnucashFile().setModified(true);
     }

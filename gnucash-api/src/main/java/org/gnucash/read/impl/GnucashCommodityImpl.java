@@ -80,7 +80,7 @@ public class GnucashCommodityImpl implements GnucashCommodity
 	     getId() == null )
 	    return null;
 	
-	CmdtyCurrID result = new CmdtyCurrID(getNameSpace(), getId(), true);
+	CmdtyCurrID result = new CmdtyCurrID(getNameSpace(), getId());
 	
 	return result;
     }
