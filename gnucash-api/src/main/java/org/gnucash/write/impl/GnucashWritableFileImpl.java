@@ -863,6 +863,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * 
      * @throws WrongInvoiceTypeException
      * @throws WrongOwnerTypeException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      * @throws  
      * @see GnucashWritableFile#createWritableTransaction()
      */
@@ -873,7 +875,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final GnucashAccount receivableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException {
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException, NumberFormatException, InvalidCmdtyCurrTypeException {
 	if (cust == null) {
 	    throw new IllegalArgumentException("null customer given");
 	}
@@ -895,6 +897,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * 
      * @throws WrongInvoiceTypeException
      * @throws WrongOwnerTypeException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      *
      * @see GnucashWritableFile#createWritableTransaction()
      */
@@ -905,7 +909,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final GnucashAccount payableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException {
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException, NumberFormatException, InvalidCmdtyCurrTypeException {
 	if (vend == null) {
 	    throw new IllegalArgumentException("null vendor given");
 	}
@@ -927,6 +931,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
      * 
      * @throws WrongInvoiceTypeException
      * @throws WrongOwnerTypeException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      *
      * @see GnucashWritableFile#createWritableTransaction()
      */
@@ -938,7 +944,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
 	    final LocalDate dueDate)
-	    throws WrongInvoiceTypeException, WrongOwnerTypeException {
+	    throws WrongInvoiceTypeException, WrongOwnerTypeException, NumberFormatException, InvalidCmdtyCurrTypeException {
 	if (job == null) {
 	    throw new IllegalArgumentException("null job given");
 	}
@@ -1227,7 +1233,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     private boolean existPriceObjects(GnucashWritableCommodity cmdty) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	int counter = 0;
 	for ( GCshPrice price : getPrices() ) {
-	    if ( price.getCommodity().getQualifId().
+	    if ( price.getFromCommodity().getQualifId().
 		    equals(cmdty.getQualifId()) ) {
 		counter++;
 	    }

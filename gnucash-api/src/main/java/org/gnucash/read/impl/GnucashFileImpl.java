@@ -1321,15 +1321,15 @@ public class GnucashFileImpl implements GnucashFile {
         GncV2.GncBook.GncCommodity jwsdpCmdty = (GncV2.GncBook.GncCommodity) bookElement;
 
         try {
-        GnucashCommodityImpl cmdty = createCommodity(jwsdpCmdty);
-        try {
-	    cmdtyQualifID2Cmdty.put(cmdty.getQualifId().toString(), cmdty);
-	} catch (InvalidCmdtyCurrTypeException e) {
-	    LOGGER.error("initCommodityMap1: Could not add Commodity to map: " + cmdty.toString());
-	}
+            GnucashCommodityImpl cmdty = createCommodity(jwsdpCmdty);
+            try {
+        	cmdtyQualifID2Cmdty.put(cmdty.getQualifId().toString(), cmdty);
+            } catch (InvalidCmdtyCurrTypeException e) {
+        	LOGGER.error("initCommodityMap1: Could not add Commodity to map: " + cmdty.toString());
+            }
         } catch (RuntimeException e) {
-        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initCommodityMap: "
-            + "ignoring illegal Commodity entry with id=" + jwsdpCmdty.getCmdtyId(), e);
+            LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initCommodityMap: "
+        	    + "ignoring illegal Commodity entry with id=" + jwsdpCmdty.getCmdtyId(), e);
         }
     } // for
 
@@ -1381,7 +1381,7 @@ public class GnucashFileImpl implements GnucashFile {
     /**
      * Use a heuristic to determine the defaultcurrency-id. If we cannot find one,
      * we default to EUR.<br/>
-     * Comodity-stace is fixed as "ISO4217" .
+     * Comodity-stace is fixed as "CURRENCY" .
      *
      * @return the default-currencyID to use.
      */
@@ -1390,17 +1390,21 @@ public class GnucashFileImpl implements GnucashFile {
 	if (root == null) {
 	    return "EUR";
 	}
+	
 	for (Iterator<Object> iter = getRootElement().getGncBook().getBookElements().iterator(); iter.hasNext();) {
 	    Object bookElement = iter.next();
 	    if (!(bookElement instanceof GncAccount)) {
 		continue;
 	    }
+	    
 	    GncAccount jwsdpAccount = (GncAccount) bookElement;
-	    if (jwsdpAccount.getActCommodity() != null
-		    && jwsdpAccount.getActCommodity().getCmdtySpace().equals("ISO4217")) {
-		return jwsdpAccount.getActCommodity().getCmdtyId();
+	    if ( jwsdpAccount.getActCommodity() != null ) {
+		 if ( jwsdpAccount.getActCommodity().getCmdtySpace().equals(CmdtyCurrNameSpace.CURRENCY) ) {
+		     return jwsdpAccount.getActCommodity().getCmdtyId();
+		 }
 	    }
 	}
+	
 	return "EUR";
     }
 
@@ -1423,7 +1427,9 @@ public class GnucashFileImpl implements GnucashFile {
 			+ priceDB.getVersion() + " prices will not be loaded!");
 	    } else {
 		getCurrencyTable().clear();
-		getCurrencyTable().setConversionFactor("ISO4217", getDefaultCurrencyID(), new FixedPointNumber(1));
+		getCurrencyTable().setConversionFactor(CmdtyCurrNameSpace.CURRENCY, 
+			                               getDefaultCurrencyID(), 
+			                               new FixedPointNumber(1));
 
 		for (Iterator<GncV2.GncBook.GncPricedb.Price> iter = priceDB.getPrice().iterator(); iter.hasNext();) {
 		    GncV2.GncBook.GncPricedb.Price price = iter.next();
@@ -1437,7 +1443,8 @@ public class GnucashFileImpl implements GnucashFile {
 		    }
 
 		    String baseCurrency = getDefaultCurrencyID();
-		    if (comodity.getCmdtySpace().equals("ISO4217") && comodity.getCmdtyId().equals(baseCurrency)) {
+		    if ( comodity.getCmdtySpace().equals(CmdtyCurrNameSpace.CURRENCY) && 
+			 comodity.getCmdtyId().equals(baseCurrency) ) {
 			LOGGER.warn("Ignoring price-quote for " + baseCurrency + " because " + baseCurrency + " is"
 				+ "our base-currency.");
 			continue;
@@ -1548,9 +1555,9 @@ public class GnucashFileImpl implements GnucashFile {
 		     * priceQuote.getPriceType() + "' expecting 'last' "); continue; }
 		     */
 
-		    if (!priceQuote.getPriceCurrency().getCmdtySpace().equals("ISO4217")) {
+		    if (!priceQuote.getPriceCurrency().getCmdtySpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
 			if (depth > maxRecursionDepth) {
-			    LOGGER.warn("ignoring price-quote that is not in an" + " ISO4217 -currency but in '"
+			    LOGGER.warn("ignoring price-quote that is not in an ISO4217-currency but in '"
 				    + priceQuote.getPriceCurrency().getCmdtyId());
 			    continue;
 			}
@@ -1981,7 +1988,12 @@ public class GnucashFileImpl implements GnucashFile {
 	}
 
 	if ( cmdtyQualifID2Cmdty.size() != cmdtyXCode2QualifID.size() ) {
-	    throw new IllegalStateException("Sizes of root elements are not equal");
+	    // CAUTION: Don't throw an exception, at least not in all cases,
+	    // because this is not necessarily an error: Only if the GnuCash
+	    // file does not contain quotes for foreign currencies (i.e. currency-
+	    // commodities but only security-commodities is this an error.
+	    // throw new IllegalStateException("Sizes of root elements are not equal");
+	    LOGGER.debug("getCommodityByXCode: Sizes of root elements are not equal.");
 	}
 	
 	String qualifIDStr = cmdtyXCode2QualifID.get(xCode);

@@ -42,7 +42,7 @@ public interface GnucashFile extends GnucashObject {
     /**
      * Use a heuristic to determine the defaultcurrency-id. If we cannot find one,
      * we default to EUR.<br/>
-     * Comodity-stace is fixed as "ISO4217" .
+     * Comodity-stace is fixed as "CURRENCY" .
      * 
      * @return the default-currencyID to use.
      */

@@ -2,6 +2,7 @@ package org.gnucash.write;
 
 import java.time.LocalDate;
 
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
@@ -9,6 +10,7 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.IllegalTransactionSplitActionException;
 import org.gnucash.read.aux.GCshOwner;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.aux.WrongOwnerJITypeException;
@@ -93,9 +95,12 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * 
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      *
      */
-    void remove() throws WrongInvoiceTypeException, TaxTableNotFoundException;
+    void remove() throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     // -----------------------------------------------------------
 
@@ -119,12 +124,15 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * 
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -132,13 +140,16 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * 
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -146,13 +157,16 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableCustomerInvoiceEntry createCustInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     // ----------------------------
 
@@ -162,12 +176,15 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * 
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableVendorBillEntry createVendBillEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -175,13 +192,16 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * 
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableVendorBillEntry createVendBillEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -189,13 +209,16 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * @return an entry using the given Tax-Table
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableVendorBillEntry createVendBillEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     // ----------------------------
 
@@ -206,12 +229,15 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
      * @throws UnknownInvoiceTypeException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -220,13 +246,16 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
      * @throws UnknownInvoiceTypeException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final String taxTabName)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * create and add a new entry.<br/>
@@ -235,11 +264,14 @@ public interface GnucashWritableGenerInvoice extends GnucashGenerInvoice {
      * @throws WrongInvoiceTypeException
      * @throws TaxTableNotFoundException
      * @throws UnknownInvoiceTypeException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     GnucashWritableJobInvoiceEntry createJobInvcEntry(
 	    final GnucashAccount acct,
 	    final FixedPointNumber singleUnitPrice, 
 	    final FixedPointNumber quantity, 
 	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException;
 }

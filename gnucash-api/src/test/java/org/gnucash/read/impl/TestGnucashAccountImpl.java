@@ -17,13 +17,13 @@ public class TestGnucashAccountImpl
   private GnucashFile    gcshFile = null;
   private GnucashAccount acct = null;
   
-  private static final String ACCT_1_ID = "bbf77a599bd24a3dbfec3dd1d0bb9f5c";
-  private static final String ACCT_2_ID = "cc2c4709633943c39293bfd73de88c9b";
-  private static final String ACCT_3_ID = "5008258df86243ee86d37dee64327c27";
-  private static final String ACCT_4_ID = "68a4c19f9a8c48909fc69d0dc18c37a6";
-  private static final String ACCT_5_ID = "7e223ee2260d4ba28e8e9e19ce291f43";
-  private static final String ACCT_6_ID = "ebc834e7f20e4be38f445d655142d6b1";
-  private static final String ACCT_7_ID = "d49554f33a0340bdb6611a1ab5575998";
+  private static final String ACCT_1_ID = "bbf77a599bd24a3dbfec3dd1d0bb9f5c"; // Root Account::Aktiva::Sichteinlagen::KK::Giro RaiBa
+  private static final String ACCT_2_ID = "cc2c4709633943c39293bfd73de88c9b"; // Root Account::Aktiva::Depots::Depot RaiBa
+  private static final String ACCT_3_ID = "5008258df86243ee86d37dee64327c27"; // Root Account::Fremdkapital
+  private static final String ACCT_4_ID = "68a4c19f9a8c48909fc69d0dc18c37a6"; // Root Account::Fremdkapital::Lieferanten::Lieferfanto
+  private static final String ACCT_5_ID = "7e223ee2260d4ba28e8e9e19ce291f43"; // Root Account::Aktiva::Forderungen::Unfug_Quatsch
+  private static final String ACCT_6_ID = "ebc834e7f20e4be38f445d655142d6b1"; // Root Account::Anfangsbestand
+  private static final String ACCT_7_ID = "d49554f33a0340bdb6611a1ab5575998"; // Root Account::Aktiva::Depots::Depot RaiBa::DE0007100000 Mercedes-Benz
 
   // -----------------------------------------------------------------
   
@@ -78,19 +78,20 @@ public class TestGnucashAccountImpl
     assertEquals("Giro RaiBa", acct.getName());
     assertEquals("Root Account::Aktiva::Sichteinlagen::KK::Giro RaiBa", acct.getQualifiedName());
     assertEquals("Girokonto 1", acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
+    assertEquals("CURRENCY:EUR", acct.getCmdtyCurrID().toString());
          
     assertEquals("fdffaa52f5b04754901dfb1cf9221494", acct.getParentAccountId());
     
-    assertEquals(3560.46, acct.getBalance().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(3560.46, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(3060.46, acct.getBalance().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(3060.46, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
     
-    assertEquals(5, acct.getTransactions().size());
+    assertEquals(6, acct.getTransactions().size());
     assertEquals("568864bfb0954897ab8578db4d27372f", acct.getTransactions().get(0).getId());
     assertEquals("29557cfdf4594eb68b1a1b710722f991", acct.getTransactions().get(1).getId());
     assertEquals("67796d4f7c924c1da38f7813dbc3a99d", acct.getTransactions().get(2).getId());
     assertEquals("18a45dfc8a6868c470438e27d6fe10b2", acct.getTransactions().get(3).getId());
     assertEquals("ccff780b18294435bf03c6cb1ac325c1", acct.getTransactions().get(4).getId());
+    assertEquals("d465b802d5c940c9bba04b87b63ba23f", acct.getTransactions().get(5).getId());
   }
 
   @Test
@@ -103,13 +104,13 @@ public class TestGnucashAccountImpl
     assertEquals("Depot RaiBa", acct.getName());
     assertEquals("Root Account::Aktiva::Depots::Depot RaiBa", acct.getQualifiedName());
     assertEquals("Aktiendepot 1", acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
+    assertEquals("CURRENCY:EUR", acct.getCmdtyCurrID().toString());
     
     assertEquals("7ee6fe4de6db46fd957f3513c9c6f983", acct.getParentAccountId());
 
     // ::TODO
-    assertEquals(0.00, acct.getBalance().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(0.00, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(0.0, acct.getBalance().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    assertEquals(4428.0, acct.getBalanceRecursive().doubleValue(), ConstTest.DIFF_TOLERANCE);
 
     // ::TODO
     assertEquals(0, acct.getTransactions().size());
@@ -127,7 +128,7 @@ public class TestGnucashAccountImpl
     assertEquals("Fremdkapital", acct.getName());
     assertEquals("Root Account::Fremdkapital", acct.getQualifiedName());
     assertEquals("alle Verbindlichkeiten", acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
+    assertEquals("CURRENCY:EUR", acct.getCmdtyCurrID().toString());
     
     assertEquals("14305dc80e034834b3f531696d81b493", acct.getParentAccountId());
 
@@ -150,7 +151,7 @@ public class TestGnucashAccountImpl
     assertEquals("Lieferfanto", acct.getName());
     assertEquals("Root Account::Fremdkapital::Lieferanten::Lieferfanto", acct.getQualifiedName());
     assertEquals(null, acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
+    assertEquals("CURRENCY:EUR", acct.getCmdtyCurrID().toString());
     
     assertEquals("a6d76c8d72764905adecd78d955d25c0", acct.getParentAccountId());
 
@@ -174,7 +175,7 @@ public class TestGnucashAccountImpl
     assertEquals("Unfug_Quatsch", acct.getName());
     assertEquals("Root Account::Aktiva::Forderungen::Unfug_Quatsch", acct.getQualifiedName());
     assertEquals(null, acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
+    assertEquals("CURRENCY:EUR", acct.getCmdtyCurrID().toString());
     
     assertEquals("74401ce4880c4f4487c4301027a71bde", acct.getParentAccountId());
 
@@ -198,7 +199,7 @@ public class TestGnucashAccountImpl
     assertEquals("Anfangsbestand", acct.getName());
     assertEquals("Root Account::Anfangsbestand", acct.getQualifiedName());
     assertEquals("Anfangsbestand", acct.getDescription());
-    assertEquals("EUR", acct.getCurrencyID());
+    assertEquals("CURRENCY:EUR", acct.getCmdtyCurrID().toString());
     
     assertEquals("14305dc80e034834b3f531696d81b493", acct.getParentAccountId());
 
@@ -220,7 +221,7 @@ public class TestGnucashAccountImpl
     assertEquals("DE0007100000 Mercedes-Benz", acct.getName());
     assertEquals("Root Account::Aktiva::Depots::Depot RaiBa::DE0007100000 Mercedes-Benz", acct.getQualifiedName());
     assertEquals("Mercedes-Benz Group AG", acct.getDescription());
-    assertEquals("MBG", acct.getCurrencyID());
+    assertEquals("EURONEXT:MBG", acct.getCmdtyCurrID().toString());
     
     assertEquals(ACCT_2_ID, acct.getParentAccountId());
 

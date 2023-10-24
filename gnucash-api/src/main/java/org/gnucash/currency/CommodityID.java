@@ -43,6 +43,16 @@ public class CommodityID extends CmdtyCurrID {
 	setType(Type.SECURITY_GENERAL);
     }
 
+    public CommodityID(CmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	
+	super(cmdtyCurrID.getNameSpace(), cmdtyCurrID.getCode());
+
+	if ( getType() == Type.CURRENCY )
+	    throw new InvalidCmdtyCurrTypeException();
+
+	setType(Type.SECURITY_GENERAL);
+    }
+
     // ---------------------------------------------------------------
 
     @Override

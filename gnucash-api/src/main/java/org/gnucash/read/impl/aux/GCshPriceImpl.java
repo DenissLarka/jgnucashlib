@@ -10,6 +10,7 @@ import java.util.Currency;
 import org.gnucash.Const;
 import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CommodityID;
 import org.gnucash.currency.CurrencyID;
 import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
@@ -68,8 +69,10 @@ public class GCshPriceImpl implements GCshPrice {
 	return jwsdpPeer.getPriceId().getValue();
     }
 
+    // ----------------------------
+    
     @Override
-    public CmdtyCurrID getCommodityQualifId() throws InvalidCmdtyCurrTypeException {
+    public CmdtyCurrID getFromCmdtyCurrQualifId() throws InvalidCmdtyCurrTypeException {
 	if ( jwsdpPeer.getPriceCommodity() == null )
 	    return null;
 		
@@ -84,17 +87,40 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public GnucashCommodity getCommodity() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
-	if ( getCommodityQualifId() == null )
-	    return null;
-	
-	GnucashCommodity cmdty = file.getCommodityByQualifID(getCommodityQualifId());
-	
-	return cmdty;
+    public CommodityID getFromCommodityQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	CmdtyCurrID cmdtyCurrID = getFromCmdtyCurrQualifId();
+	return new CommodityID(cmdtyCurrID);
     }
 
     @Override
-    public CurrencyID getCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public CurrencyID getFromCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	CmdtyCurrID cmdtyCurrID = getFromCmdtyCurrQualifId();
+	return new CurrencyID(cmdtyCurrID);
+    }
+
+    @Override
+    public GnucashCommodity getFromCommodity() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+	CommodityID cmdtyID = getFromCommodityQualifId();
+	GnucashCommodity cmdty = file.getCommodityByQualifID(cmdtyID);
+	return cmdty;
+    }
+    
+    @Override
+    public String getFromCurrencyCode() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	return getFromCurrencyQualifId().getCurrency().getCurrencyCode();
+    }
+
+    @Override
+    public GnucashCommodity getFromCurrency() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+	CurrencyID currID = getFromCurrencyQualifId(); 
+	GnucashCommodity cmdty = file.getCommodityByQualifID(currID);
+	return cmdty;
+    }
+    
+    // ----------------------------
+    
+    @Override
+    public CurrencyID getToCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	if ( jwsdpPeer.getPriceCurrency() == null )
 	    return null;
 		
@@ -109,7 +135,7 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public String getCurrencyCode() throws InvalidCmdtyCurrTypeException {
+    public String getToCurrencyCode() throws InvalidCmdtyCurrTypeException {
 	if ( jwsdpPeer.getPriceCurrency() == null )
 	    return null;
 		
@@ -125,15 +151,17 @@ public class GCshPriceImpl implements GCshPrice {
     }
 
     @Override
-    public GnucashCommodity getCurrency() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
-	if ( getCurrencyQualifId() == null )
+    public GnucashCommodity getToCurrency() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+	if ( getToCurrencyQualifId() == null )
 	    return null;
 	
-	GnucashCommodity cmdty = file.getCommodityByQualifID(getCurrencyQualifId());
+	GnucashCommodity cmdty = file.getCommodityByQualifID(getToCurrencyQualifId());
 	
 	return cmdty;
     }
 
+    // ----------------------------
+    
     /**
      * @return The currency-format to use for formating.
      * @throws InvalidCmdtyCurrTypeException 
@@ -148,7 +176,7 @@ public class GCshPriceImpl implements GCshPrice {
 //	if ( ! getCurrencyQualifId().getType().equals(CmdtyCurrID.Type.CURRENCY) )
 //	    throw new InvalidCmdtyCurrTypeException();
 	    
-	Currency currency = Currency.getInstance(getCurrencyCode());
+	Currency currency = Currency.getInstance(getToCurrencyCode());
 	currencyFormat.setCurrency(currency);
 
 	return currencyFormat;
@@ -205,13 +233,13 @@ public class GCshPriceImpl implements GCshPrice {
 	String result = "GCshPriceImpl [id=" + getId();
 	
 	try {
-	    result += ", cmdty-qualif-id='" + getCommodityQualifId() + "'";
+	    result += ", cmdty-qualif-id='" + getFromCmdtyCurrQualifId() + "'";
 	} catch (InvalidCmdtyCurrTypeException e) {
 	    result += ", cmdty-qualif-id=" + "ERROR";
 	}
 	
 	try {
-	    result += ", curr-qualif-id='" + getCurrencyQualifId() + "'";
+	    result += ", curr-qualif-id='" + getToCurrencyQualifId() + "'";
 	} catch (Exception e) {
 	    result += ", curr-qualif-id=" + "ERROR";
 	}

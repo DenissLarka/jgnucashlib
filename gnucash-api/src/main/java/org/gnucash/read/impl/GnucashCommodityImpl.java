@@ -127,7 +127,7 @@ public class GnucashCommodityImpl implements GnucashCommodity
 	
 	Collection<GCshPrice> prices = getGnucashFile().getPrices();
 	for ( GCshPrice price : prices ) {
-	    if ( price.getCommodityQualifId().toString().equals(getQualifId().toString()) ) {
+	    if ( price.getFromCmdtyCurrQualifId().toString().equals(getQualifId().toString()) ) {
 		result.add(price);
 	    }
 	}

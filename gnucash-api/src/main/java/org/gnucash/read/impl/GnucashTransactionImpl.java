@@ -158,7 +158,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     }
 
     /**
-     * @return "ISO4217" for a currency "FUND" or a fond,...
+     * @return "CURRENCY" for a currency "FUND" or a fond,...
      * @see GnucashAccount#getCurrencyNameSpace()
      */
     public String getCurrencyNameSpace() {

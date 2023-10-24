@@ -4,7 +4,7 @@ A Java-library for manipulating the XML file format of the GnuCash open
 source accounting software. Usable to automate accounting-tasks, taxes.
 
 # Compatibility
-Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (locale de_DE) and OpenJDK 18.0.
+Version 1.2 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (locale de_DE) and OpenJDK 18.0.
 
 **Caution:** Will not work on other locales (for details, cf. below).
 
@@ -15,23 +15,37 @@ Version 1.1 of the library has been tested with GnuCash 5.3 and 5.4 on Linux (lo
   * (Real) Securities (shares, bonds, funds, etc.)
   * Possibly other assets that can be mapped to this GnuCash entity as pseudo-securities, such as crypto-currencies, physical precious metals, etc.
 
-* Reading of securities' quotes (GnuCash lingo: "prices") is possible, but writing them is not possible yet.
+* Reading of commodities' prices is possible, but writing them is not possible yet. Given the above polymorphism of the commodity (cf. above), a "price" is one of the following:
 
-* Some minor big-fixing here and there.
+  * A currency's exchange rate
+  * A security's quote
+  * A pseudo-security's price
+
+   (all of them usually noted in the default currency)
+
+  Given that we have several variants of `CmdtyCurrID` (cf. below), we also have several methods returning various types.
 
 In this context, the following was also necessary/also made sense:
 
 * Introduced auxiliary interface/class `GCshPrice(Impl)` representing an entry of the GnuCash price database.
 
-* Introduced auxiliary class `CmdtyCurrID` (essentially a pair of commodity name space and commodity code), which represents a security-style pseudo-ID for commodities (thus, including currencies, cf. above). Note that, as opposed to all other entities in the GnuCash XML file, commodities have no internal UUID (a fact that the author finds irritating), hence the need to define this entity for both easy and safe handling of read and write operations.
+* Introduced auxiliary class `CmdtyCurrID` (essentially a pair of commodity name space and commodity code), which represents a security-style pseudo-ID for commodities (thus, including currencies, cf. above). In addition to that, introduced (grand-)child classes `CommodityID`, `CurrencyID`, `CommodityID_Exchange` and `CommodityID_MIC` to represent various variants with adequate type-safety, i.e. for both easy and safe handling of read and write operations. 
 
-* Closely linked to `CmdtyCurrID`: Major rework on the class `CmdtyCurrNameSpace` (formerly `CurrencyNameSpace`): introduced several enums for enhanced type safety.
+  Note that, as opposed to all other entities in the GnuCash XML file, commodities have no internal UUID (a fact that the author finds irritating).
+
+* Closely linked to `CmdtyCurrID` and its descendants: Major rework on the class `CmdtyCurrNameSpace` (formerly `CurrencyNameSpace`): introduced several enums for enhanced type safety.
 
   *Background*: In and of itself, GnuCash's commodity name space can be freely defined; only suggestions are made on how to define it, e.g. a major stock exchange's abbreviation or a major securities index name. But you *need* not do it like that. The author is well aware of the fact that the GnuCash developers have -- likely after having weighed the pros and cons -- purposefully decided *not* to enforce any pre-defined values. 
 
   In this lib, we follow this spirit (as well as the path that the original author Marcus Wolschon followed): We *allow* the users to freely define any name space they want, but we *encourage* them to use one of the pre-defined enums in `CmdtyCurrNameSpace` (expecting that buying, holding and selling conventional securities on major markets will be the most typical use case by far).
 
   *Note that the current definition of the enums in the class `CmdtyCurrNameSpace` is by no means final and "once and for all". The author rather expects some re-work iterations on the existing ones and the introduction of new ones.*
+
+Finally: 
+
+* Improved test coverage.
+
+* Some minor big-fixing here and there.
 
 ## V. 1.0 &rarr; 1.1
 * Reading and writing of (technical/generic) invoices: Not just customer invoices, but also vendor bills now. According to the internal XML structure and the part of the code that is generated from it (i.e., the XSD file), both derive from a common class that represents a "generic" invoice. In addition to that, there is also a third type: job invoice (cf. next item).

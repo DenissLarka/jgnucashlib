@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.gnucash.Const;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryBTaxtable;
 import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryBill;
@@ -17,6 +18,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.IllegalTransactionSplitActionException;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.aux.GCshTaxTableEntry;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
@@ -242,9 +244,12 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @param aTaxtable the taxtable to set
      * @throws TaxTableNotFoundException
      * @throws WrongInvoiceTypeException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     protected void setInvcTaxTable(final GCshTaxTable aTaxtable)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException {
 	myInvcTaxtable = aTaxtable;
     }
 
@@ -252,14 +257,17 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl
      * @param aTaxtable the taxtable to set
      * @throws TaxTableNotFoundException
      * @throws WrongInvoiceTypeException
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
+     * @throws IllegalTransactionSplitActionException 
      */
     protected void setBillTaxTable(final GCshTaxTable aTaxtable)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException {
 	myBillTaxtable = aTaxtable;
     }
 
     protected void setJobTaxTable(final GCshTaxTable aTaxtable)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
+	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException {
 	
 	if (!getType().equals(GnucashGenerInvoice.TYPE_JOB))
 	    throw new WrongInvoiceTypeException();

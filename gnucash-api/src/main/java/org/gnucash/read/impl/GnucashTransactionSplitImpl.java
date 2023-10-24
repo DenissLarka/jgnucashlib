@@ -6,11 +6,11 @@ import java.util.Locale;
 
 import org.gnucash.Const;
 import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
@@ -165,8 +165,9 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 
     /**
      * @return The currencyFormat for the quantity to use when no locale is given.
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    protected NumberFormat getQuantityCurrencyFormat() {
+    protected NumberFormat getQuantityCurrencyFormat() throws InvalidCmdtyCurrTypeException {
 
 	return ((GnucashAccountImpl) getAccount()).getCurrencyFormat();
     }
@@ -223,16 +224,18 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
     }
 
     /**
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransactionSplit#getAccountBalanceFormatted()
      */
-    public String getAccountBalanceFormatted() {
+    public String getAccountBalanceFormatted() throws InvalidCmdtyCurrTypeException {
 	return ((GnucashAccountImpl) getAccount()).getCurrencyFormat().format(getAccountBalance());
     }
 
     /**
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransactionSplit#getAccountBalanceFormatted(java.util.Locale)
      */
-    public String getAccountBalanceFormatted(final Locale locale) {
+    public String getAccountBalanceFormatted(final Locale locale) throws InvalidCmdtyCurrTypeException {
 	return getAccount().getBalanceFormatted(locale);
     }
 
@@ -245,8 +248,9 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 
     /**
      * The value is in the currency of the account!
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    public String getQuantityFormatted() {
+    public String getQuantityFormatted() throws InvalidCmdtyCurrTypeException {
 	return getQuantityCurrencyFormat().format(getQuantity());
     }
 
@@ -255,28 +259,31 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      *
      * @param locale the locale to format to
      * @return the formatted number
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    public String getQuantityFormatted(final Locale locale) {
+    public String getQuantityFormatted(final Locale locale) throws InvalidCmdtyCurrTypeException {
 	if (getTransaction().getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
 	    return NumberFormat.getNumberInstance(locale).format(getQuantity());
 	}
 
 	NumberFormat nf = NumberFormat.getCurrencyInstance(locale);
-	nf.setCurrency(Currency.getInstance(getAccount().getCurrencyID()));
+	nf.setCurrency(Currency.getInstance(getAccount().getCmdtyCurrID().getCode()));
 	return nf.format(getQuantity());
     }
 
     /**
      * The value is in the currency of the account!
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    public String getQuantityFormattedForHTML() {
+    public String getQuantityFormattedForHTML() throws InvalidCmdtyCurrTypeException {
 	return getQuantityFormatted().replaceFirst("€", "&euro;");
     }
 
     /**
      * The value is in the currency of the account!
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    public String getQuantityFormattedForHTML(final Locale locale) {
+    public String getQuantityFormattedForHTML(final Locale locale) throws InvalidCmdtyCurrTypeException {
 	return getQuantityFormatted(locale).replaceFirst("€", "&euro;");
     }
 

@@ -3,6 +3,7 @@ package org.gnucash.read;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 
@@ -132,13 +133,15 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
     /**
      * @return the balance of the account (in the account's currency)
      *         up to this split.
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getAccountBalanceFormatted();
+    String getAccountBalanceFormatted() throws InvalidCmdtyCurrTypeException;
 
     /**
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashAccount#getBalanceFormatted()
      */
-    String getAccountBalanceFormatted(Locale locale);
+    String getAccountBalanceFormatted(Locale locale) throws InvalidCmdtyCurrTypeException;
 
     /**
      * The quantity is in the currency of the account!
@@ -149,28 +152,32 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
     /**
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getQuantityFormatted();
+    String getQuantityFormatted() throws InvalidCmdtyCurrTypeException;
 
     /**
      * The quantity is in the currency of the account!
      * @param locale the locale to use
      * @return the number of items added to the account
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getQuantityFormatted(Locale locale);
+    String getQuantityFormatted(Locale locale) throws InvalidCmdtyCurrTypeException;
 
     /**
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getQuantityFormattedForHTML();
+    String getQuantityFormattedForHTML() throws InvalidCmdtyCurrTypeException;
 
     /**
      * The quantity is in the currency of the account!
      * @param locale the locale to use
      * @return the number of items added to the account
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getQuantityFormattedForHTML(Locale locale);
+    String getQuantityFormattedForHTML(Locale locale) throws InvalidCmdtyCurrTypeException;
 
     /**
      * @return the user-defined description for this object

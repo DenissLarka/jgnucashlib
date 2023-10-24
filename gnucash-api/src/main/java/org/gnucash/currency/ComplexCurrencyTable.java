@@ -15,7 +15,7 @@ import org.gnucash.read.GnucashFile;
 
 /**
  * Currency-Table that can work with multiple namespaces.<br/>
- * By default "ISO4217"-GnucashFile.getDefaultCurrencyID() is added with the value 1. (to be used as a base.currency)
+ * By default "CURRENCY"-GnucashFile.getDefaultCurrencyID() is added with the value 1. (to be used as a base.currency)
  *
  * @see GnucashFile#getDefaultCurrencyID()
  */
@@ -30,7 +30,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	// -----------------------------------------------------------
 
 	/**
-	 * Namespace is e.g. "ISO4217" or "FUND"
+	 * Namespace is e.g. "CURRENCY" or "EURONEXT"
 	 */
 	private Map<String, SimpleCurrencyTable> namespace2CurrencyTable;
 	
@@ -192,7 +192,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	}
 
 	/**
-	 * @param namespace e.g. "ISO4217"
+	 * @param namespace e.g. "CURRENCY"
 	 * @see SimpleCurrencyTable#convertFromBaseCurrency(FixedPointNumber, String)
 	 */
 	public boolean convertToBaseCurrency(final String namespace,
@@ -216,7 +216,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	}
 
 	/**
-	 * @param namespace e.g. "ISO4217"
+	 * @param namespace e.g. "CURRENCY"
 	 * @see SimpleCurrencyTable#convertFromBaseCurrency(FixedPointNumber, String)
 	 */
 	public boolean convertFromBaseCurrency(final String namespace,

@@ -3,6 +3,8 @@ package org.gnucash.write.impl;
 import java.text.ParseException;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
@@ -178,9 +180,10 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashWritableTransactionSplit#setQuantity(FixedPointNumber)
 	 */
-	public void setQuantity(final String n) {
+	public void setQuantity(final String n) throws InvalidCmdtyCurrTypeException {
 		try {
 			this.setQuantity(new FixedPointNumber(n.toLowerCase().replaceAll("&euro;", "").replaceAll("&pound;", "")));
 		}
@@ -200,34 +203,32 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 
 	/**
 	 * @return true if the currency of transaction and account match
+	 * @throws InvalidCmdtyCurrTypeException 
 	 */
-	private boolean isCurrencyMatching() {
-		GnucashAccount account = getAccount();
-		if (account == null) {
+	private boolean isCurrencyMatching() throws InvalidCmdtyCurrTypeException {
+		GnucashAccount acct = getAccount();
+		if (acct == null) {
 			return false;
 		}
 		GnucashWritableTransaction transaction = getTransaction();
 		if (transaction == null) {
 			return false;
 		}
-		String actCID = account.getCurrencyID();
-		if (actCID == null) {
+		CmdtyCurrID acctCmdtyCurrID = acct.getCmdtyCurrID();
+		if (acctCmdtyCurrID == null) {
 			return false;
 		}
-		String actCNS = account.getCurrencyNameSpace();
-		if (actCNS == null) {
-			return false;
-		}
-		return (actCID.equals(transaction.getCurrencyID())
-				&&
-				actCNS.equals(transaction.getCurrencyNameSpace())
+		return ( acctCmdtyCurrID.getCode().equals(transaction.getCurrencyID()) &&
+			 acctCmdtyCurrID.getNameSpace().equals(transaction.getCurrencyNameSpace() )
 		);
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
+	 * @throws NumberFormatException 
 	 * @see GnucashWritableTransactionSplit#setQuantity(FixedPointNumber)
 	 */
-	public void setQuantity(final FixedPointNumber n) {
+	public void setQuantity(final FixedPointNumber n) throws NumberFormatException, InvalidCmdtyCurrTypeException {
 		if (n == null) {
 			throw new NullPointerException("null quantity given");
 		}
@@ -253,9 +254,10 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashWritableTransactionSplit#setValue(FixedPointNumber)
 	 */
-	public void setValue(final String n) {
+	public void setValue(final String n) throws InvalidCmdtyCurrTypeException {
 		try {
 			this.setValue(new FixedPointNumber(n.toLowerCase().replaceAll("&euro;", "").replaceAll("&pound;", "")));
 		}
@@ -274,9 +276,11 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
+	 * @throws NumberFormatException 
 	 * @see GnucashWritableTransactionSplit#setValue(FixedPointNumber)
 	 */
-	public void setValue(final FixedPointNumber n) {
+	public void setValue(final FixedPointNumber n) throws NumberFormatException, InvalidCmdtyCurrTypeException {
 		if (n == null) {
 			throw new NullPointerException("null value given");
 		}
@@ -387,16 +391,18 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	// --------------------- support for propertyChangeListeners ---------------
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashWritableTransactionSplit#setQuantityFormattedForHTML(java.lang.String)
 	 */
-	public void setQuantityFormattedForHTML(final String n) {
+	public void setQuantityFormattedForHTML(final String n) throws InvalidCmdtyCurrTypeException {
 		this.setQuantity(n);
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashWritableTransactionSplit#setValueFormattedForHTML(java.lang.String)
 	 */
-	public void setValueFormattedForHTML(final String n) {
+	public void setValueFormattedForHTML(final String n) throws InvalidCmdtyCurrTypeException {
 		this.setValue(n);
 	}
 

@@ -220,6 +220,8 @@ public interface GnucashWritableFile extends GnucashFile,
      * 
      * @return a new invoice with no entries that is already added to this file
      * @throws WrongOwnerTypeException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      */
     GnucashWritableCustomerInvoice createWritableCustomerInvoice(
 	    final String invoiceNumber, 
@@ -228,12 +230,14 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashAccount receivableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * FOR USE BY EXTENSIONS ONLY
      * 
      * @return a new invoice with no entries that is already added to this file
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      */
     GnucashWritableVendorBill createWritableVendorBill(
 	    final String invoiceNumber, 
@@ -242,12 +246,14 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashAccount payableAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     /**
      * FOR USE BY EXTENSIONS ONLY
      * 
      * @return a new invoice with no entries that is already added to this file
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      */
     GnucashWritableJobInvoice createWritableJobInvoice(
 	    final String invoiceNumber, 
@@ -256,7 +262,7 @@ public interface GnucashWritableFile extends GnucashFile,
 	    final GnucashAccount recvblPayblAcct,
 	    final LocalDate openedDate,
 	    final LocalDate postDate,
-	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
+	    final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException, NumberFormatException, InvalidCmdtyCurrTypeException;
 
     // -----------------------------------------------------------
 

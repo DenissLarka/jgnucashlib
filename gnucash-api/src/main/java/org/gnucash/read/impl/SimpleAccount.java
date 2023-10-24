@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.currency.ComplexCurrencyTable;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
@@ -153,9 +154,10 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 * @param date     ignores transactions after the given date
 	 * @param currency the currency the result shall be in (use account-currency if null)
 	 * @return null if the conversion is not possible
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see #getBalance(LocalDate)
 	 */
-	public FixedPointNumber getBalance(final LocalDate date, final Currency currency) {
+	public FixedPointNumber getBalance(final LocalDate date, final Currency currency) throws InvalidCmdtyCurrTypeException {
 
 		FixedPointNumber retval = getBalance(date);
 
@@ -169,9 +171,8 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		// is conversion needed?
-		if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)
-				&&
-				getCurrencyID().equals(currency.getCurrencyCode())) {
+		if ( getCmdtyCurrID().getNameSpace().equals(CmdtyCurrNameSpace.CURRENCY) &&
+		     getCmdtyCurrID().getCode().equals(currency.getCurrencyCode()) ) {
 			return retval;
 		}
 
@@ -183,13 +184,12 @@ public abstract class SimpleAccount implements GnucashAccount {
 			return null;
 		}
 
-		if (!currencyTable.convertToBaseCurrency(getCurrencyNameSpace(),
-				retval,
-				getCurrencyID())) {
+		if ( ! currencyTable.convertToBaseCurrency(getCmdtyCurrID().getNameSpace(),
+							   retval,
+							   getCmdtyCurrID().getCode())) {
 			LOGGER.warn("SimpleAccount.getBalance() - cannot transfer "
 					+ "from our currency '"
-					+ getCurrencyNameSpace() + "'-'"
-					+ getCurrencyID()
+					+ getCmdtyCurrID().toString()
 					+ "' to the base-currency!");
 			return null;
 		}
@@ -206,31 +206,37 @@ public abstract class SimpleAccount implements GnucashAccount {
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashAccount#getBalanceRecursiveFormatted(LocalDate)
 	 */
-	public String getBalanceRecursiveFormatted(final LocalDate date) {
+	public String getBalanceRecursiveFormatted(final LocalDate date) throws InvalidCmdtyCurrTypeException {
 		return getCurrencyFormat().format(getBalanceRecursive(date));
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashAccount#getBalanceRecursiveFormatted()
 	 */
-	public String getBalanceRecursiveFormatted() {
+	public String getBalanceRecursiveFormatted() throws InvalidCmdtyCurrTypeException {
 		return getCurrencyFormat().format(getBalanceRecursive());
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashAccount#getBalanceRecursive()
 	 */
-	public FixedPointNumber getBalanceRecursive() {
+	public FixedPointNumber getBalanceRecursive() throws InvalidCmdtyCurrTypeException {
 		return getBalanceRecursive(LocalDate.now());
 	}
 
 	/**
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashAccount#getBalanceRecursive(LocalDate)
 	 */
-	public FixedPointNumber getBalanceRecursive(final LocalDate date) {
-		return getBalanceRecursive(date, this.getCurrencyNameSpace(), this.getCurrencyID());
+	public FixedPointNumber getBalanceRecursive(final LocalDate date) throws InvalidCmdtyCurrTypeException {
+		return getBalanceRecursive(date, 
+					   getCmdtyCurrID().getNameSpace(), 
+					   getCmdtyCurrID().getCode());
 	}
 
 	/**
@@ -272,11 +278,12 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 * @param currencyNameSpace the currency the result shall be in
 	 * @param currencyName      the currency the result shall be in
 	 * @return Gets the balance including all sub-accounts.
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashAccount#getBalanceRecursive(Date, Currency)
 	 */
 	public FixedPointNumber getBalanceRecursive(final LocalDate date,
                                                     final String currencyNameSpace,
-                                                    final String currencyName) {
+                                                    final String currencyName) throws InvalidCmdtyCurrTypeException {
 
 	    FixedPointNumber retval = getBalance(date, currencyNameSpace, currencyName);
 
@@ -297,9 +304,10 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 * @param date     ignores transactions after the given date
 	 * @param currency the currency the result shall be in
 	 * @return Gets the balance including all sub-accounts.
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see GnucashAccount#getBalanceRecursive(Date, Currency)
 	 */
-	public FixedPointNumber getBalanceRecursive(final LocalDate date, final Currency currency) {
+	public FixedPointNumber getBalanceRecursive(final LocalDate date, final Currency currency) throws InvalidCmdtyCurrTypeException {
 
 		FixedPointNumber retval = getBalance(date, currency);
 
@@ -346,9 +354,10 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 * @param currencyNameSpace the currency the result shall be in
 	 * @param currencyName      the currency the result shall be in
 	 * @return null if the conversion is not possible
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see #getBalance(LocalDate)
 	 */
-	public FixedPointNumber getBalance(final LocalDate date, final String currencyNameSpace, final String currencyName) {
+	public FixedPointNumber getBalance(final LocalDate date, final String currencyNameSpace, final String currencyName) throws InvalidCmdtyCurrTypeException {
 		FixedPointNumber retval = getBalance(date);
 
 		if (retval == null) {
@@ -358,9 +367,8 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		// is conversion needed?
-		if (getCurrencyNameSpace().equals(currencyNameSpace)
-				&&
-				getCurrencyID().equals(currencyName)) {
+		if ( getCmdtyCurrID().getNameSpace().equals(currencyNameSpace) &&
+		     getCmdtyCurrID().getCode().equals(currencyName)) {
 			return retval;
 		}
 
@@ -372,14 +380,13 @@ public abstract class SimpleAccount implements GnucashAccount {
 			return null;
 		}
 
-		if (!currencyTable.convertToBaseCurrency(getCurrencyNameSpace(),
-				retval,
-				getCurrencyID())) {
-			Collection<String> currencies = getGnucashFile().getCurrencyTable().getCurrencies(getCurrencyNameSpace());
+		if ( ! currencyTable.convertToBaseCurrency(getCmdtyCurrID().getNameSpace(),
+							   retval,
+							   getCmdtyCurrID().getCode())) {
+			Collection<String> currencies = getGnucashFile().getCurrencyTable().getCurrencies(getCmdtyCurrID().getNameSpace());
 			LOGGER.error("SimpleAccount.getBalance() - cannot transfer "
 					+ "from our currency '"
-					+ getCurrencyNameSpace() + "'-'"
-					+ getCurrencyID()
+					+ getCmdtyCurrID().toString()
 					+ "' to the base-currency!"
 					+ " \n(we know " + getGnucashFile().getCurrencyTable().getNameSpaces().size()
 					+ " currency-namespaces and "
@@ -409,27 +416,29 @@ public abstract class SimpleAccount implements GnucashAccount {
 
 	/**
 	 * @return null if we are no currency but e.g. a fund
+	 * @throws InvalidCmdtyCurrTypeException 
 	 */
-	public Currency getCurrency() {
+	public Currency getCurrency() throws InvalidCmdtyCurrTypeException {
 
-		if (!getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
+		if ( ! getCmdtyCurrID().getNameSpace().equals(CmdtyCurrNameSpace.CURRENCY) ) {
 			return null;
 		}
 
-		String gnucashCurrencyID = getCurrencyID();
+		String gnucashCurrencyID = getCmdtyCurrID().getCode();
 		return Currency.getInstance(gnucashCurrencyID);
 	}
 
 	/**
 	 * @return The currency-format to use for formating.
+	 * @throws InvalidCmdtyCurrTypeException 
 	 */
-	public NumberFormat getCurrencyFormat() {
+	public NumberFormat getCurrencyFormat() throws InvalidCmdtyCurrTypeException {
 		if (currencyFormat == null) {
 			currencyFormat = NumberFormat.getCurrencyInstance();
 		}
 
-		// the currency may have changed
-		if (this.getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
+		    // the currency may have changed
+		if ( this.getCmdtyCurrID().getNameSpace().equals(CmdtyCurrNameSpace.CURRENCY) ) {
 			Currency currency = getCurrency();
 			currencyFormat.setCurrency(currency);
 		} else {
@@ -442,20 +451,22 @@ public abstract class SimpleAccount implements GnucashAccount {
 	/**
 	 * same as {@link #getBalance(LocalDate)}. <br/>
 	 * ignores transactions after the current date+time.
+	 * @throws InvalidCmdtyCurrTypeException 
 	 *
 	 * @see #getBalance(LocalDate)
 	 */
-	public String getBalanceFormatted() {
+	public String getBalanceFormatted() throws InvalidCmdtyCurrTypeException {
 		return getCurrencyFormat().format(getBalance());
 	}
 
 	/**
 	 * same as {@link #getBalance(LocalDate)}. <br/>
 	 * ignores transactions after the current date+time.
+	 * @throws InvalidCmdtyCurrTypeException 
 	 *
 	 * @see #getBalance(LocalDate)
 	 */
-	public String getBalanceFormatted(final Locale loc) {
+	public String getBalanceFormatted(final Locale loc) throws InvalidCmdtyCurrTypeException {
 
 		NumberFormat cf = NumberFormat.getCurrencyInstance(loc);
 		cf.setCurrency(getCurrency());

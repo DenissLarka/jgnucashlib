@@ -1,12 +1,20 @@
 package org.gnucash.read.impl.aux;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CommodityID;
+import org.gnucash.currency.CommodityID_Exchange;
+import org.gnucash.currency.CurrencyID;
+import org.gnucash.numbers.FixedPointNumber;
+import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.aux.GCshPrice;
 import org.gnucash.read.impl.GnucashFileImpl;
@@ -19,12 +27,23 @@ public class TestGCshPriceImpl
 {
   // DE
   // Note the funny parent/child pair.
-  private static final String PRICE_1_ID = "b7fe7eb916164f1d9d43f41262530381";
-  private static final String PRICE_2_ID = "8f2d1e3263aa4efba4a8e0e892c166b3";
-  private static final String PRICE_3_ID = "d2db5e4108b9413aa678045ca66b205f";
+  private static final String PRICE_1_ID = "b7fe7eb916164f1d9d43f41262530381"; // MBG/EUR
+  private static final String PRICE_2_ID = "8f2d1e3263aa4efba4a8e0e892c166b3"; // SAP/EUR
+  private static final String PRICE_3_ID = "d2db5e4108b9413aa678045ca66b205f"; // SAP/EUR
+  private static final String PRICE_4_ID = "037c268b47fb46d385360b1c9788a459"; // USD/EUR
 
+  // -----------------------------------------------------------------
+  
   private GnucashFile  gcshFile = null;
   private GCshPrice    prc = null;
+  
+  CommodityID          cmdtyID11 = null;
+  CommodityID_Exchange cmdtyID12 = null;
+
+  CommodityID          cmdtyID21 = null;
+  CommodityID_Exchange cmdtyID22 = null;
+  
+  CurrencyID           currID1   = null;
   
   // -----------------------------------------------------------------
   
@@ -65,6 +84,16 @@ public class TestGCshPriceImpl
       System.err.println("Cannot parse GnuCash file");
       exc.printStackTrace();
     }
+    
+    // ---
+    
+    cmdtyID11 = new CommodityID("EURONEXT", "MBG");
+    cmdtyID12 = new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.EURONEXT, "MBG");
+
+    cmdtyID21 = new CommodityID("EURONEXT", "SAP");
+    cmdtyID22 = new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.EURONEXT, "SAP");
+    
+    currID1   = new CurrencyID("USD");
   }
 
   // -----------------------------------------------------------------
@@ -74,7 +103,7 @@ public class TestGCshPriceImpl
   {
       Collection<GCshPrice> priceList = gcshFile.getPrices();
       
-      assertEquals(6, priceList.size());
+      assertEquals(7, priceList.size());
 
       // ::TODO: Sort array for predictability
 //      Object[] priceArr = priceList.toArray();
@@ -90,12 +119,44 @@ public class TestGCshPriceImpl
       prc = gcshFile.getPriceByID(PRICE_1_ID);
       
       assertEquals(PRICE_1_ID, prc.getId());
-      assertEquals("EURONEXT:MBG", prc.getCommodityQualifId().toString());
-      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId().toString());
-      assertEquals("EUR", prc.getCurrencyCode());
+      assertEquals(cmdtyID11.toString(), prc.getFromCmdtyCurrQualifId().toString());
+      assertEquals(cmdtyID11.toString(), prc.getFromCommodityQualifId().toString());
+      assertEquals(cmdtyID12.toString(), prc.getFromCommodityQualifId().toString());
+      assertEquals(cmdtyID11, prc.getFromCommodityQualifId());
+      assertNotEquals(cmdtyID22, prc.getFromCommodityQualifId()); // sic
+      assertEquals("Mercedes-Benz Group AG", prc.getFromCommodity().getName());
+      assertEquals("CURRENCY:EUR", prc.getToCurrencyQualifId().toString());
+      assertEquals("EUR", prc.getToCurrencyCode());
       assertEquals("transaction", prc.getType());
       assertEquals(LocalDate.of(2023, 7, 1), prc.getDate());
       assertEquals(22.53, prc.getValue().doubleValue(), ConstTest.DIFF_TOLERANCE);
+      
+      try
+      {
+	  CurrencyID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+      
+      try
+      {
+	  String dummy = prc.getFromCurrencyCode(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+      
+      try
+      {
+	  GnucashCommodity dummy = prc.getFromCurrency(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
   }
 
   @Test
@@ -104,12 +165,44 @@ public class TestGCshPriceImpl
       prc = gcshFile.getPriceByID(PRICE_2_ID);
       
       assertEquals(PRICE_2_ID, prc.getId());
-      assertEquals("EURONEXT:SAP", prc.getCommodityQualifId().toString());
-      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId().toString());
-      assertEquals("EUR", prc.getCurrencyCode());
+      assertEquals(cmdtyID21.toString(), prc.getFromCmdtyCurrQualifId().toString());
+      assertEquals(cmdtyID21.toString(), prc.getFromCommodityQualifId().toString());
+      assertEquals(cmdtyID22.toString(), prc.getFromCommodityQualifId().toString());
+      assertEquals(cmdtyID21, prc.getFromCommodityQualifId());
+      assertNotEquals(cmdtyID22, prc.getFromCommodityQualifId()); // sic
+      assertEquals("SAP SE", prc.getFromCommodity().getName());
+      assertEquals("CURRENCY:EUR", prc.getToCurrencyQualifId().toString());
+      assertEquals("EUR", prc.getToCurrencyCode());
       assertEquals("unknown", prc.getType());
       assertEquals(LocalDate.of(2023, 7, 20), prc.getDate());
       assertEquals(145.0, prc.getValue().doubleValue(), ConstTest.DIFF_TOLERANCE);
+    
+      try
+      {
+	  CurrencyID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+      
+      try
+      {
+	  String dummy = prc.getFromCurrencyCode(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+      
+      try
+      {
+	  GnucashCommodity dummy = prc.getFromCurrency(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
   }
   
   @Test
@@ -118,12 +211,79 @@ public class TestGCshPriceImpl
       prc = gcshFile.getPriceByID(PRICE_3_ID);
       
       assertEquals(PRICE_3_ID, prc.getId());
-      assertEquals("EURONEXT:SAP", prc.getCommodityQualifId().toString());
-      assertEquals("CURRENCY:EUR", prc.getCurrencyQualifId().toString());
-      assertEquals("EUR", prc.getCurrencyCode());
+      assertEquals(cmdtyID21.toString(), prc.getFromCmdtyCurrQualifId().toString());
+      assertEquals(cmdtyID21.toString(), prc.getFromCommodityQualifId().toString());
+      assertEquals(cmdtyID22.toString(), prc.getFromCommodityQualifId().toString());
+      assertEquals(cmdtyID21, prc.getFromCommodityQualifId());
+      assertNotEquals(cmdtyID22, prc.getFromCommodityQualifId()); // sic
+      assertEquals("SAP SE", prc.getFromCommodity().getName());
+      assertEquals("CURRENCY:EUR", prc.getToCurrencyQualifId().toString());
+      assertEquals("EUR", prc.getToCurrencyCode());
       assertEquals("transaction", prc.getType());
       assertEquals(LocalDate.of(2023, 7, 18), prc.getDate());
       assertEquals(125.0, prc.getValue().doubleValue(), ConstTest.DIFF_TOLERANCE);
+      
+      try
+      {
+	  CurrencyID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+      
+      try
+      {
+	  String dummy = prc.getFromCurrencyCode(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+      
+      try
+      {
+	  GnucashCommodity dummy = prc.getFromCurrency(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+  }
+
+  @Test
+  public void test02_4() throws Exception
+  {
+      prc = gcshFile.getPriceByID(PRICE_4_ID);
+      
+      assertEquals(PRICE_4_ID, prc.getId());
+      assertEquals(currID1.toString(), prc.getFromCmdtyCurrQualifId().toString());
+      assertEquals(currID1.toString(), prc.getFromCurrencyQualifId().toString());
+      assertEquals("USD", prc.getFromCurrencyCode());
+      assertEquals("CURRENCY:EUR", prc.getToCurrencyQualifId().toString());
+      assertEquals("EUR", prc.getToCurrencyCode());
+      assertEquals(null, prc.getType());
+      assertEquals(LocalDate.of(2023, 10, 1), prc.getDate());
+      assertEquals(new FixedPointNumber("100/93").doubleValue(), 
+	           prc.getValue().doubleValue(), ConstTest.DIFF_TOLERANCE);
+      
+      try
+      {
+	  CommodityID dummy = prc.getFromCommodityQualifId(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
+      
+      try
+      {
+	  GnucashCommodity dummy = prc.getFromCommodity(); // illegal call in this context
+      }
+      catch ( Exception exc )
+      {
+	  assertEquals(0, 0);
+      }
   }
 
   // ::TODO

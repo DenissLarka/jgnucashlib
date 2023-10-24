@@ -44,9 +44,28 @@ public class CurrencyID extends CmdtyCurrID {
 	setCurrency(curr);
     }
 
+    public CurrencyID(String currStr) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+
+	super(CmdtyCurrNameSpace.CURRENCY, currStr);
+	
+	setType(Type.CURRENCY);
+	setCurrency(currStr);
+    }
+
     public CurrencyID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	
 	super(nameSpaceFree, code);
+
+	if ( getType() != Type.CURRENCY )
+	    throw new InvalidCmdtyCurrTypeException();
+
+	setType(Type.CURRENCY);
+	setCurrency(code);
+    }
+
+    public CurrencyID(CmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	
+	super(cmdtyCurrID.getNameSpace(), cmdtyCurrID.getCode());
 
 	if ( getType() != Type.CURRENCY )
 	    throw new InvalidCmdtyCurrTypeException();

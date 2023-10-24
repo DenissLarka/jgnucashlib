@@ -5,16 +5,17 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CurrencyID;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransactionSplit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of GnucashAccount that used a
@@ -107,24 +108,19 @@ public class GnucashAccountImpl extends SimpleAccount
     }
 
     /**
-     * @return "ISO4217" for a currency "FUND" or a fond,...
-     * @see GnucashAccount#getCurrencyNameSpace()
+     * {@inheritDoc}
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    public String getCurrencyNameSpace() {
-	if (jwsdpPeer.getActCommodity() == null) {
-	    return CmdtyCurrNameSpace.CURRENCY; // default-currency because gnucash 2.2 has no currency on the root-account
+    public CmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException {
+	if ( jwsdpPeer.getActCommodity() == null &&
+	     jwsdpPeer.getActType().equals(TYPE_ROOT) ) {
+	    return new CurrencyID(); // default-currency because gnucash 2.2 has no currency on the root-account
 	}
-	return jwsdpPeer.getActCommodity().getCmdtySpace();
-    }
-
-    /**
-     * @see GnucashAccount#getCurrencyID()
-     */
-    public String getCurrencyID() {
-	if (jwsdpPeer.getActCommodity() == null) {
-	    return "EUR"; // default-currency because gnucash 2.2 has no currency on the root-account
-	}
-	return jwsdpPeer.getActCommodity().getCmdtyId();
+	
+	CmdtyCurrID result = new CmdtyCurrID(jwsdpPeer.getActCommodity().getCmdtySpace(),
+		                             jwsdpPeer.getActCommodity().getCmdtyId()); 
+	
+	return result;
     }
 
     /**
@@ -240,8 +236,14 @@ public class GnucashAccountImpl extends SimpleAccount
 	buffer.append(getType());
 	buffer.append(" qualif-name: '");
 	buffer.append(getQualifiedName() + "'");
-	buffer.append(" currency: ");
-	buffer.append(getCurrencyID());
+	
+	buffer.append(" commodity/currency: '");
+	try {
+	    buffer.append(getCmdtyCurrID() + "'");
+	} catch (InvalidCmdtyCurrTypeException e) {
+	    buffer.append("ERROR");
+	}
+	
 	buffer.append("]");
 	return buffer.toString();
     }

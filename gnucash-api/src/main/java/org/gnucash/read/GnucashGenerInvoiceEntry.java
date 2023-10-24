@@ -1,6 +1,5 @@
 package org.gnucash.read;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import org.gnucash.generated.GncV2;

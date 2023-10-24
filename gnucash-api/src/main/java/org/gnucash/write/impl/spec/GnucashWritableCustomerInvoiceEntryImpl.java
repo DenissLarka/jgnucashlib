@@ -1,10 +1,12 @@
 package org.gnucash.write.impl.spec;
 
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
+import org.gnucash.read.IllegalTransactionSplitActionException;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
@@ -111,24 +113,24 @@ public class GnucashWritableCustomerInvoiceEntryImpl extends GnucashWritableGene
 
 	@Override
 	public void setTaxable(boolean val)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, InvalidCmdtyCurrTypeException {
 	    setInvcTaxable(val);
 	}
 
 	@Override
 	public void setTaxTable(GCshTaxTable taxTab)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, InvalidCmdtyCurrTypeException {
 	    setInvcTaxTable(taxTab);
 	}
 
 	@Override
 	public void setPrice(String price)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
+		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, InvalidCmdtyCurrTypeException {
 	    setInvcPrice(price);
 	}
 
 	@Override
-	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
+	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException, IllegalTransactionSplitActionException, NumberFormatException, InvalidCmdtyCurrTypeException {
 	    setInvcPrice(price);
 	}
 

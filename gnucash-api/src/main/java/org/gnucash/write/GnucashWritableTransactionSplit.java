@@ -2,6 +2,7 @@ package org.gnucash.write;
 
 import java.beans.PropertyChangeListener;
 
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransactionSplit;
@@ -59,41 +60,49 @@ public interface GnucashWritableTransactionSplit extends GnucashTransactionSplit
 	 * If the currencies of transaction and account match, this also does
 	 * ${@link #setQuantity(FixedPointNumber)}.
 	 * @param n the new quantity (in the currency of the account)
+	 * @throws InvalidCmdtyCurrTypeException 
 	 */
-	void setQuantity(String n);
+	void setQuantity(String n) throws InvalidCmdtyCurrTypeException;
 
 	/**
 	 * Same as ${@link #setQuantity(String)}.
 	 * @param n the new quantity (in the currency of the account)
+	 * @throws InvalidCmdtyCurrTypeException 
 	 */
-	void setQuantityFormattedForHTML(String n);
+	void setQuantityFormattedForHTML(String n) throws InvalidCmdtyCurrTypeException;
 
 	/**
 	 * If the currencies of transaction and account match, this also does
 	 * ${@link #setQuantity(FixedPointNumber)}.
 	 * @param n the new quantity (in the currency of the account)
+	 * @throws InvalidCmdtyCurrTypeException 
+	 * @throws NumberFormatException 
 	 */
-	void setQuantity(FixedPointNumber n);
+	void setQuantity(FixedPointNumber n) throws NumberFormatException, InvalidCmdtyCurrTypeException;
 
 	/**
 	 * If the currencies of transaction and account match, this also does
 	 * ${@link #setValue(FixedPointNumber)}.
 	 * @param n the new value (in the currency of the transaction)
+	 * @throws InvalidCmdtyCurrTypeException 
 	 */
-	void setValue(String n);
+	void setValue(String n) throws InvalidCmdtyCurrTypeException;
 
 	/**
 	 * Same as ${@link #setValue(String)}.
 	 * @param n the new value (in the currency of the transaction)
+	 * @throws InvalidCmdtyCurrTypeException 
 	 */
-	void setValueFormattedForHTML(String n);
+	void setValueFormattedForHTML(String n) throws InvalidCmdtyCurrTypeException;
 
 	/**
 	 * If the currencies of transaction and account match, this also does
 	 * ${@link #setValue(FixedPointNumber)}.
 	 * @param n the new value (in the currency of the transaction)
+	 * @throws InvalidCmdtyCurrTypeException 
+	 * @throws NumberFormatException 
 	 */
-	void setValue(FixedPointNumber n);
+	void setValue(FixedPointNumber n) throws NumberFormatException, InvalidCmdtyCurrTypeException;
 
 	/**
 	 * Set the description-text.

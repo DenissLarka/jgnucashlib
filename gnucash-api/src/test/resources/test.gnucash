@@ -214,9 +214,9 @@
   </slot>
 </book:slots>
 <gnc:count-data cd:type="commodity">3</gnc:count-data>
-<gnc:count-data cd:type="account">91</gnc:count-data>
-<gnc:count-data cd:type="transaction">11</gnc:count-data>
-<gnc:count-data cd:type="price">6</gnc:count-data>
+<gnc:count-data cd:type="account">92</gnc:count-data>
+<gnc:count-data cd:type="transaction">12</gnc:count-data>
+<gnc:count-data cd:type="price">7</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncBillTerm">3</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncCustomer">3</gnc:count-data>
 <gnc:count-data cd:type="gnc:GncEntry">12</gnc:count-data>
@@ -227,6 +227,13 @@
 <gnc:commodity version="2.0.0">
   <cmdty:space>CURRENCY</cmdty:space>
   <cmdty:id>EUR</cmdty:id>
+  <cmdty:get_quotes/>
+  <cmdty:quote_source>currency</cmdty:quote_source>
+  <cmdty:quote_tz/>
+</gnc:commodity>
+<gnc:commodity version="2.0.0">
+  <cmdty:space>CURRENCY</cmdty:space>
+  <cmdty:id>USD</cmdty:id>
   <cmdty:get_quotes/>
   <cmdty:quote_source>currency</cmdty:quote_source>
   <cmdty:quote_tz/>
@@ -253,6 +260,22 @@
   <cmdty:fraction>1</cmdty:fraction>
 </gnc:commodity>
 <gnc:pricedb version="1">
+  <price>
+    <price:id type="guid">037c268b47fb46d385360b1c9788a459</price:id>
+    <price:commodity>
+      <cmdty:space>CURRENCY</cmdty:space>
+      <cmdty:id>USD</cmdty:id>
+    </price:commodity>
+    <price:currency>
+      <cmdty:space>CURRENCY</cmdty:space>
+      <cmdty:id>EUR</cmdty:id>
+    </price:currency>
+    <price:time>
+      <ts:date>2023-10-01 10:59:00 +0000</ts:date>
+    </price:time>
+    <price:source>user:price</price:source>
+    <price:value>100/93</price:value>
+  </price>
   <price>
     <price:id type="guid">b7fe7eb916164f1d9d43f41262530381</price:id>
     <price:commodity>
@@ -589,6 +612,17 @@
       <slot:value type="string">dummy</slot:value>
     </slot>
   </act:slots>
+  <act:parent type="guid">06d05a9c302b44a8b5a16e91fed31b95</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Tagesgeld RaiBa USD</act:name>
+  <act:id type="guid">cc85104b83b74099bbdbdf69497e7696</act:id>
+  <act:type>BANK</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>USD</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
   <act:parent type="guid">06d05a9c302b44a8b5a16e91fed31b95</act:parent>
 </gnc:account>
 <gnc:account version="2.0.0">
@@ -2292,6 +2326,44 @@
       <split:reconciled-state>n</split:reconciled-state>
       <split:value>-9414/100</split:value>
       <split:quantity>-9414/100</split:quantity>
+      <split:account type="guid">bbf77a599bd24a3dbfec3dd1d0bb9f5c</split:account>
+    </trn:split>
+  </trn:splits>
+</gnc:transaction>
+<gnc:transaction version="2.0.0">
+  <trn:id type="guid">d465b802d5c940c9bba04b87b63ba23f</trn:id>
+  <trn:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </trn:currency>
+  <trn:date-posted>
+    <ts:date>2023-10-01 10:59:00 +0000</ts:date>
+  </trn:date-posted>
+  <trn:date-entered>
+    <ts:date>2023-10-24 07:02:44 +0000</ts:date>
+  </trn:date-entered>
+  <trn:description>Liqu-Mgt</trn:description>
+  <trn:slots>
+    <slot>
+      <slot:key>date-posted</slot:key>
+      <slot:value type="gdate">
+        <gdate>2023-10-01</gdate>
+      </slot:value>
+    </slot>
+  </trn:slots>
+  <trn:splits>
+    <trn:split>
+      <split:id type="guid">70f9e015ad9f456caac92181bacc8914</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>50000/100</split:value>
+      <split:quantity>46500/100</split:quantity>
+      <split:account type="guid">cc85104b83b74099bbdbdf69497e7696</split:account>
+    </trn:split>
+    <trn:split>
+      <split:id type="guid">ae7fb71ec3d44589b56fb3a7b72beb33</split:id>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>-50000/100</split:value>
+      <split:quantity>-50000/100</split:quantity>
       <split:account type="guid">bbf77a599bd24a3dbfec3dd1d0bb9f5c</split:account>
     </trn:split>
   </trn:splits>

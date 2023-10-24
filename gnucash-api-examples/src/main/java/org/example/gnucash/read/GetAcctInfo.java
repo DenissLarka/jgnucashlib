@@ -63,13 +63,13 @@ public class GetAcctInfo {
 	try {
 	    System.out.println("Description:     '" + acct.getDescription() + "'");
 	} catch (Exception exc) {
-	    System.out.println("Description:      " + "ERROR");
+	    System.out.println("Description:     " + "ERROR");
 	}
 
 	try {
-	    System.out.println("Currency:        " + acct.getCurrencyID());
+	    System.out.println("Cmdty/Curr:      '" + acct.getCmdtyCurrID() + "'");
 	} catch (Exception exc) {
-	    System.out.println("Currency:        " + "ERROR");
+	    System.out.println("Cmdty/Curr:      " + "ERROR");
 	}
 
 	System.out.println("");
