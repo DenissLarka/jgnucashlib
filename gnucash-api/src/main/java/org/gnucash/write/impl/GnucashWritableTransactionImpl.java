@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
@@ -280,20 +281,13 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
     }
 
     /**
-     * @param id the new currency
+     * @param id the new commodity/currency name-space/code
      * @see #setCurrencyNameSpace(String)
      * @see {@link GnucashTransaction#getCurrencyID()}
      */
-    public void setCurrencyID(final String id) {
-	this.getJwsdpPeer().getTrnCurrency().setCmdtyId(id);
-    }
-
-    /**
-     * @param id the new namespace
-     * @see {@link GnucashTransaction#getCurrencyNameSpace()}
-     */
-    public void setCurrencyNameSpace(final String id) {
-	this.getJwsdpPeer().getTrnCurrency().setCmdtySpace(id);
+    public void setCmdtyCurrID(final CmdtyCurrID cmdtyCurrID) {
+	this.getJwsdpPeer().getTrnCurrency().setCmdtySpace(cmdtyCurrID.getNameSpace());
+	this.getJwsdpPeer().getTrnCurrency().setCmdtyId(cmdtyCurrID.getCode());
     }
 
     /**

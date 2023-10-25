@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransaction;
@@ -23,13 +24,7 @@ public interface GnucashWritableTransaction extends GnucashTransaction
      * @see #setCurrencyNameSpace(String)
      * @see {@link GnucashTransaction#getCurrencyID()}
      */
-    void setCurrencyID(final String id);
-
-    /**
-     * @param id the new namespace
-     * @see {@link GnucashTransaction#getCurrencyNameSpace()}
-     */
-    void setCurrencyNameSpace(final String id);
+    void setCmdtyCurrID(final CmdtyCurrID cmdtyCurrID);
 
     /**
      * The gnucash-file is the top-level class to contain everything.
