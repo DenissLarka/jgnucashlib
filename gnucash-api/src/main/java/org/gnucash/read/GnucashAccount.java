@@ -214,11 +214,11 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
      * same as getBalance(new Date()). ignores transactions after the current
      * date+time
      *
-     * @param locale the locale to use (does not affect the currency)
+     * @param lcl the locale to use (does not affect the currency)
      * @return the balance formatted using the given locale
      * @throws InvalidCmdtyCurrTypeException 
      */
-    String getBalanceFormatted(Locale locale) throws InvalidCmdtyCurrTypeException;
+    String getBalanceFormatted(Locale lcl) throws InvalidCmdtyCurrTypeException;
 
     /**
      * Be aware that the result is in the currency of this account!

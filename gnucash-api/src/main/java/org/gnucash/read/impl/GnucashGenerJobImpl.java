@@ -180,8 +180,8 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
     /**
      * {@inheritDoc}
      */
-    public String getIncomeGeneratedFormatted(Locale l) {
-	return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated());
+    public String getIncomeGeneratedFormatted(Locale lcl) {
+	return NumberFormat.getCurrencyInstance(lcl).format(getIncomeGenerated());
     }
 
     /**
@@ -217,8 +217,8 @@ public class GnucashGenerJobImpl implements GnucashGenerJob {
     /**
      * {@inheritDoc}
      */
-    public String getOutstandingValueFormatted(Locale l) {
-	return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue());
+    public String getOutstandingValueFormatted(Locale lcl) {
+	return NumberFormat.getCurrencyInstance(lcl).format(getOutstandingValue());
     }
 
     // -----------------------------------------------------------------

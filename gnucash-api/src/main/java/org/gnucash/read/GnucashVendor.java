@@ -128,7 +128,7 @@ public interface GnucashVendor extends GnucashObject {
      * @see #getExpensesGenerated() Formatted acording to the given locale's
      *      currency-format
      */
-    String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l);
+    String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale lcl);
 
     // -------------------------------------
 
@@ -163,7 +163,7 @@ public interface GnucashVendor extends GnucashObject {
      * @see #getOutstandingValue() Formatted acording to the given locale's
      *      currency-format
      */
-    String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale l) throws WrongInvoiceTypeException;
+    String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, Locale lcl) throws WrongInvoiceTypeException;
 
     // ------------------------------------------------------------
 

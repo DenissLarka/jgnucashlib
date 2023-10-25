@@ -4,6 +4,7 @@ import java.text.ParseException;
 
 import org.gnucash.Const;
 import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
@@ -218,9 +219,9 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		if (acctCmdtyCurrID == null) {
 			return false;
 		}
-		return ( acctCmdtyCurrID.getCode().equals(transaction.getCurrencyID()) &&
-			 acctCmdtyCurrID.getNameSpace().equals(transaction.getCurrencyNameSpace() )
-		);
+	
+		// Important: Don't forget to cast the IDs to their most basic type
+		return ((CmdtyCurrID) acctCmdtyCurrID).equals((CmdtyCurrID) transaction.getCmdtyCurrID());
 	}
 
 	/**
@@ -265,11 +266,11 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 			try {
 				Number parsed = this.getValueCurrencyFormat().parse(n);
 				this.setValue(new FixedPointNumber(parsed.toString()));
-			}
-			catch (NumberFormatException e1) {
+			} catch (NumberFormatException e1) {
 				throw e;
-			}
-			catch (ParseException e1) {
+			} catch (ParseException e1) {
+				throw e;
+			} catch (InvalidCmdtyCurrIDException e1) {
 				throw e;
 			}
 		}

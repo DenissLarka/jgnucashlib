@@ -6,14 +6,16 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Currency;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CurrencyID;
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -21,8 +23,8 @@ import org.gnucash.generated.SlotValue;
 import org.gnucash.generated.SlotsType;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
-import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashFile;
+import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
 import org.slf4j.Logger;
@@ -158,18 +160,14 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
     }
 
     /**
-     * @return "CURRENCY" for a currency "FUND" or a fond,...
-     * @see GnucashAccount#getCurrencyNameSpace()
-     */
-    public String getCurrencyNameSpace() {
-	return jwsdpPeer.getTrnCurrency().getCmdtySpace();
-    }
-
-    /**
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashAccount#getCurrencyID()
      */
-    public String getCurrencyID() {
-	return jwsdpPeer.getTrnCurrency().getCmdtyId();
+    public CmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException {
+
+	CmdtyCurrID result = new CmdtyCurrID(jwsdpPeer.getTrnCurrency().getCmdtySpace(), 
+		                             jwsdpPeer.getTrnCurrency().getCmdtyId());
+	return result;
     }
 
     /**
@@ -191,23 +189,27 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      *
      * @see GnucashTransaction#getBalanceFormatted()
      */
-    public String getBalanceFormatted() {
+    public String getBalanceFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	return getCurrencyFormat().format(getBalance());
     }
 
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      *
      * @see GnucashTransaction#getBalanceFormatted(java.util.Locale)
      */
-    public String getBalanceFormatted(final Locale loc) {
+    public String getBalanceFormatted(final Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 
-	NumberFormat cf = NumberFormat.getInstance(loc);
-	if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
-	    cf.setCurrency(Currency.getInstance(getCurrencyID()));
+	NumberFormat cf = NumberFormat.getInstance(lcl);
+	if (getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	    cf.setCurrency(new CurrencyID(getCmdtyCurrID()).getCurrency());
 	} else {
 	    cf.setCurrency(null);
 	}
@@ -227,27 +229,31 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      *
      * @see GnucashTransaction#getNegatedBalanceFormatted()
      */
-    public String getNegatedBalanceFormatted() throws NumberFormatException {
+    public String getNegatedBalanceFormatted() throws NumberFormatException, InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	return getCurrencyFormat().format(getNegatedBalance());
     }
 
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      *
      * @see GnucashTransaction#getNegatedBalanceFormatted(java.util.Locale)
      */
-    public String getNegatedBalanceFormatted(final Locale loc) throws NumberFormatException {
-	NumberFormat cf = NumberFormat.getInstance(loc);
-	if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
-	    cf.setCurrency(Currency.getInstance(getCurrencyID()));
+    public String getNegatedBalanceFormatted(final Locale lcl) throws NumberFormatException, InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	NumberFormat nf = NumberFormat.getInstance(lcl);
+	if ( getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	    nf.setCurrency(new CurrencyID(getCmdtyCurrID()).getCurrency());
 	} else {
-	    cf.setCurrency(null);
+	    nf.setCurrency(null);
 	}
 
-	return cf.format(getNegatedBalance());
+	return nf.format(getNegatedBalance());
     }
 
     /**
@@ -445,12 +451,14 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
      * The Currency-Format to use if no locale is given.
      *
      * @return default currency-format with the transaction's currency set
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    protected NumberFormat getCurrencyFormat() {
+    protected NumberFormat getCurrencyFormat() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	if (currencyFormat == null) {
 	    currencyFormat = NumberFormat.getCurrencyInstance();
-	    if (getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
-		currencyFormat.setCurrency(Currency.getInstance(getCurrencyID()));
+	    if (getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY) {
+		currencyFormat.setCurrency(new CurrencyID(getCmdtyCurrID()).getCurrency());
 	    } else {
 		currencyFormat = NumberFormat.getInstance();
 	    }
@@ -502,7 +510,7 @@ public class GnucashTransactionImpl extends GnucashObjectImpl
 	buffer.append(" amount: ");
 	try {
 	    buffer.append(getFirstSplit().getValueFormatted());
-	} catch (SplitNotFoundException e) {
+	} catch (Exception e) {
 	    buffer.append("ERROR");
 	}
 

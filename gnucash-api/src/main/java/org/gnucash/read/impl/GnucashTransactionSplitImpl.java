@@ -1,11 +1,12 @@
 package org.gnucash.read.impl;
 
 import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.Locale;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.CurrencyID;
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
@@ -174,46 +175,65 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
 
     /**
      * @return the currency-format of the transaction
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    public NumberFormat getValueCurrencyFormat() {
+    public NumberFormat getValueCurrencyFormat() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 
 	return ((GnucashTransactionImpl) getTransaction()).getCurrencyFormat();
     }
 
     /**
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransactionSplit#getValueFormatted()
      */
-    public String getValueFormatted() {
-	return getValueCurrencyFormat().format(getValue());
+    public String getValueFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	NumberFormat nf = getValueCurrencyFormat();
+	if ( getTransaction().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	    // redundant, but symmetry:
+	    nf.setCurrency(new CurrencyID(getTransaction().getCmdtyCurrID()).getCurrency());
+	    return nf.format(getValue());
+	}
+	else {
+	    return nf.format(getValue()) + " " + getTransaction().getCmdtyCurrID().toString(); 
+	}
     }
 
     /**
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransactionSplit#getValueFormatted(java.util.Locale)
      */
-    public String getValueFormatted(final Locale locale) {
+    public String getValueFormatted(final Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 
-	NumberFormat cf = NumberFormat.getInstance(locale);
-	if (getTransaction().getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
-	    cf.setCurrency(Currency.getInstance(getTransaction().getCurrencyID()));
-	} else {
-	    cf = NumberFormat.getNumberInstance(locale);
+	NumberFormat nf = NumberFormat.getInstance(lcl);
+	if ( getTransaction().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	    // redundant, but symmetry:
+	    nf.setCurrency(new CurrencyID(getTransaction().getCmdtyCurrID()).getCurrency());
+	    return nf.format(getValue());
 	}
-
-	return cf.format(getValue());
+	else {
+	    return nf.format(getValue()) + " " + getTransaction().getCmdtyCurrID().toString(); 
+	}
     }
 
     /**
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransactionSplit#getValueFormattedForHTML()
      */
-    public String getValueFormattedForHTML() {
+    public String getValueFormattedForHTML() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	return getValueFormatted().replaceFirst("€", "&euro;");
     }
 
     /**
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransactionSplit#getValueFormattedForHTML(java.util.Locale)
      */
-    public String getValueFormattedForHTML(final Locale locale) {
-	return getValueFormatted(locale).replaceFirst("€", "&euro;");
+    public String getValueFormattedForHTML(final Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	return getValueFormatted(lcl).replaceFirst("€", "&euro;");
     }
 
     /**
@@ -235,8 +255,8 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransactionSplit#getAccountBalanceFormatted(java.util.Locale)
      */
-    public String getAccountBalanceFormatted(final Locale locale) throws InvalidCmdtyCurrTypeException {
-	return getAccount().getBalanceFormatted(locale);
+    public String getAccountBalanceFormatted(final Locale lcl) throws InvalidCmdtyCurrTypeException {
+	return getAccount().getBalanceFormatted(lcl);
     }
 
     /**
@@ -249,42 +269,54 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
     /**
      * The value is in the currency of the account!
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    public String getQuantityFormatted() throws InvalidCmdtyCurrTypeException {
-	return getQuantityCurrencyFormat().format(getQuantity());
+    public String getQuantityFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	NumberFormat nf = getQuantityCurrencyFormat();
+	if ( getAccount().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	    nf.setCurrency(new CurrencyID(getAccount().getCmdtyCurrID()).getCurrency());
+	    return nf.format(getQuantity());
+	}
+	else {
+	    return nf.format(getQuantity()) + " " + getAccount().getCmdtyCurrID().toString(); 
+	}
     }
 
     /**
      * The value is in the currency of the account!
      *
-     * @param locale the locale to format to
+     * @param lcl the locale to format to
      * @return the formatted number
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    public String getQuantityFormatted(final Locale locale) throws InvalidCmdtyCurrTypeException {
-	if (getTransaction().getCurrencyNameSpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
-	    return NumberFormat.getNumberInstance(locale).format(getQuantity());
+    public String getQuantityFormatted(final Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	NumberFormat nf = NumberFormat.getCurrencyInstance(lcl);
+	if ( getAccount().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	    nf.setCurrency(new CurrencyID(getAccount().getCmdtyCurrID()).getCurrency());
+	    return nf.format(getQuantity());
 	}
-
-	NumberFormat nf = NumberFormat.getCurrencyInstance(locale);
-	nf.setCurrency(Currency.getInstance(getAccount().getCmdtyCurrID().getCode()));
-	return nf.format(getQuantity());
+	else {
+	    return nf.format(getQuantity()) + " " + getAccount().getCmdtyCurrID().toString(); 
+	}
     }
 
     /**
      * The value is in the currency of the account!
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    public String getQuantityFormattedForHTML() throws InvalidCmdtyCurrTypeException {
+    public String getQuantityFormattedForHTML() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	return getQuantityFormatted().replaceFirst("€", "&euro;");
     }
 
     /**
      * The value is in the currency of the account!
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    public String getQuantityFormattedForHTML(final Locale locale) throws InvalidCmdtyCurrTypeException {
-	return getQuantityFormatted(locale).replaceFirst("€", "&euro;");
+    public String getQuantityFormattedForHTML(final Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+	return getQuantityFormatted(lcl).replaceFirst("€", "&euro;");
     }
 
     /**

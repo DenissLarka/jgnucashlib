@@ -13,7 +13,6 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerJob;
-import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.aux.GCshAddress;
 import org.gnucash.read.aux.GCshBillTerms;
 import org.gnucash.read.aux.GCshOwner;
@@ -283,12 +282,12 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
     }
 
     /**
-     * @param l the locale to format for
+     * @param lcl the locale to format for
      * @return formatted acording to the given locale's currency-format
      * @see #getIncomeGenerated()
      */
-    public String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) {
-	return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated(readVar));
+    public String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale lcl) {
+	return NumberFormat.getCurrencyInstance(lcl).format(getIncomeGenerated(readVar));
     }
 
     // -------------------------------------
@@ -367,8 +366,8 @@ public class GnucashCustomerImpl extends GnucashObjectImpl
      * @see #getOutstandingValue() Formatted acording to the given locale's
      *      currency-format
      */
-    public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) {
-	return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue(readVar));
+    public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale lcl) {
+	return NumberFormat.getCurrencyInstance(lcl).format(getOutstandingValue(readVar));
     }
 
     // -----------------------------------------------------------------

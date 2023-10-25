@@ -3,6 +3,7 @@ package org.gnucash.read;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
@@ -104,25 +105,33 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
     /**
      * The value is in the currency of the transaction!
      * @return the value-transfer this represents
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getValueFormatted();
+    String getValueFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
+    /**
+     * The value is in the currency of the transaction!
+     * @param lcl the locale to use
+     * @return the value-transfer this represents
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
+     */
+    String getValueFormatted(Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
+    /**
+     * The value is in the currency of the transaction!
+     * @return the value-transfer this represents
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
+     */
+    String getValueFormattedForHTML() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
     /**
      * The value is in the currency of the transaction!
      * @param locale the locale to use
      * @return the value-transfer this represents
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      */
-    String getValueFormatted(Locale locale);
-    /**
-     * The value is in the currency of the transaction!
-     * @return the value-transfer this represents
-     */
-    String getValueFormattedForHTML();
-    /**
-     * The value is in the currency of the transaction!
-     * @param locale the locale to use
-     * @return the value-transfer this represents
-     */
-    String getValueFormattedForHTML(Locale locale);
+    String getValueFormattedForHTML(Locale locale) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     /**
      * @return the balance of the account (in the account's currency)
@@ -141,7 +150,7 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
      * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashAccount#getBalanceFormatted()
      */
-    String getAccountBalanceFormatted(Locale locale) throws InvalidCmdtyCurrTypeException;
+    String getAccountBalanceFormatted(Locale lcl) throws InvalidCmdtyCurrTypeException;
 
     /**
      * The quantity is in the currency of the account!
@@ -153,31 +162,35 @@ public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSp
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    String getQuantityFormatted() throws InvalidCmdtyCurrTypeException;
+    String getQuantityFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     /**
      * The quantity is in the currency of the account!
-     * @param locale the locale to use
+     * @param lcl the locale to use
      * @return the number of items added to the account
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    String getQuantityFormatted(Locale locale) throws InvalidCmdtyCurrTypeException;
+    String getQuantityFormatted(Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     /**
      * The quantity is in the currency of the account!
      * @return the number of items added to the account
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    String getQuantityFormattedForHTML() throws InvalidCmdtyCurrTypeException;
+    String getQuantityFormattedForHTML() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     /**
      * The quantity is in the currency of the account!
-     * @param locale the locale to use
+     * @param lcl the locale to use
      * @return the number of items added to the account
      * @throws InvalidCmdtyCurrTypeException 
+     * @throws InvalidCmdtyCurrIDException 
      */
-    String getQuantityFormattedForHTML(Locale locale) throws InvalidCmdtyCurrTypeException;
+    String getQuantityFormattedForHTML(Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     /**
      * @return the user-defined description for this object

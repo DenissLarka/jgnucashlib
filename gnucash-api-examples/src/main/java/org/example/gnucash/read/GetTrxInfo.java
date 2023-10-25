@@ -43,9 +43,9 @@ public class GetTrxInfo {
 	}
 
 	try {
-	    System.out.println("Currency:        " + trx.getCurrencyID());
+	    System.out.println("Cmdty/Curr:      '" + trx.getCmdtyCurrID() + "'");
 	} catch (Exception exc) {
-	    System.out.println("Currency:        " + "ERROR");
+	    System.out.println("Cmdty/Curr:      " + "ERROR");
 	}
 
 	try {

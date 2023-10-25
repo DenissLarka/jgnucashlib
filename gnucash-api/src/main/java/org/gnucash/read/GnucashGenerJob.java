@@ -111,7 +111,7 @@ public interface GnucashGenerJob {
      * @see #getIncomeGenerated() Formatted acording to the given locale's
      *      currency-format
      */
-    String getIncomeGeneratedFormatted(Locale l);
+    String getIncomeGeneratedFormatted(Locale lcl);
 
     /**
      * @return the sum of left to pay Unpaid invoiced
@@ -132,7 +132,7 @@ public interface GnucashGenerJob {
      * @see #getOutstandingValue() Formatted acording to the given locale's
      *      currency-format
      */
-    String getOutstandingValueFormatted(Locale l);
+    String getOutstandingValueFormatted(Locale lcl);
 
     // ---------------------------------------------------------------
 

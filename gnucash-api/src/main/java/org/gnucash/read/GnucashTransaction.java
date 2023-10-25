@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.currency.InvalidCmdtyCurrIDException;
+import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.impl.SplitNotFoundException;
@@ -116,20 +119,7 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      */
     boolean isBalanced();
 
-    /**
-     * @return "CURRENCY" for a currency "FUND" or a fond,...
-     * @see {@link CmdtyCurrNameSpace#CURRENCY}
-     * @see {@link GnucashAccount#CURRENCY_NAMESPACE_FUND}
-     */
-    String getCurrencyNameSpace();
-
-    /**
-     * The name of the currency in the given namespace
-     * e.g. "EUR" for euro in namespace "CURRENCY"= {@link CmdtyCurrNameSpace#CURRENCY}
-     * @see {@link #getCurrencyNameSpace()}
-     */
-    String getCurrencyID();
-
+    CmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException;
 
     /**
      * The result is in the currency of the transaction.<br/>
@@ -140,14 +130,18 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
     FixedPointNumber getBalance();
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransaction#getBalance()
      */
-    String getBalanceFormatted();
+    String getBalanceFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
      * @see GnucashTransaction#getBalance()
      */
-    String getBalanceFormatted(Locale loc);
+    String getBalanceFormatted(Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     /**
      * The result is in the currency of the transaction.<br/>
@@ -158,14 +152,20 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
     FixedPointNumber getNegatedBalance();
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      * @see GnucashTransaction#getNegatedBalance()
      */
-    String getNegatedBalanceFormatted();
+    String getNegatedBalanceFormatted() throws NumberFormatException, InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
     /**
      * The result is in the currency of the transaction.
+     * @throws InvalidCmdtyCurrIDException 
+     * @throws InvalidCmdtyCurrTypeException 
+     * @throws NumberFormatException 
      * @see GnucashTransaction#getNegatedBalance()
      */
-    String getNegatedBalanceFormatted(Locale loc);
+    String getNegatedBalanceFormatted(Locale lcl) throws NumberFormatException, InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     /**
      * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.

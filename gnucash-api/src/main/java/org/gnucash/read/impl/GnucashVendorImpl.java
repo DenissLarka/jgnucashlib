@@ -246,12 +246,12 @@ public class GnucashVendorImpl extends GnucashObjectImpl
     }
 
     /**
-     * @param l the locale to format for
+     * @param lcl the locale to format for
      * @return formatted acording to the given locale's currency-format
      * @see #getExpensesGenerated()
      */
-    public String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) {
-	return NumberFormat.getCurrencyInstance(l).format(getExpensesGenerated(readVar));
+    public String getExpensesGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale lcl) {
+	return NumberFormat.getCurrencyInstance(lcl).format(getExpensesGenerated(readVar));
     }
 
     // -------------------------------------
@@ -330,8 +330,8 @@ public class GnucashVendorImpl extends GnucashObjectImpl
      * @see #getOutstandingValue() Formatted acording to the given locale's
      *      currency-format
      */
-    public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) throws WrongInvoiceTypeException {
-	return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue(readVar));
+    public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale lcl) throws WrongInvoiceTypeException {
+	return NumberFormat.getCurrencyInstance(lcl).format(getOutstandingValue(readVar));
     }
 
     // -----------------------------------------------------------------

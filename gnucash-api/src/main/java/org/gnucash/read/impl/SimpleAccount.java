@@ -466,9 +466,9 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 *
 	 * @see #getBalance(LocalDate)
 	 */
-	public String getBalanceFormatted(final Locale loc) throws InvalidCmdtyCurrTypeException {
+	public String getBalanceFormatted(final Locale lcl) throws InvalidCmdtyCurrTypeException {
 
-		NumberFormat cf = NumberFormat.getCurrencyInstance(loc);
+		NumberFormat cf = NumberFormat.getCurrencyInstance(lcl);
 		cf.setCurrency(getCurrency());
 		return cf.format(getBalance());
 	}
