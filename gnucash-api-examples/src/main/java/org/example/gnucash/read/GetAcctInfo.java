@@ -10,6 +10,7 @@ public class GetAcctInfo {
     // BEGIN Example data -- adapt to your needs
     private static String gcshFileName = "example_in.gnucash";
     private static String acctID       = "xyz";
+    private static String acctName     = "abc";
     // END Example data
 
     // -----------------------------------------------------------------
@@ -28,7 +29,9 @@ public class GetAcctInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// Choose one of the following variants:
 	GnucashAccount acct = gcshFile.getAccountByID(acctID);
+	// GnucashAccount acct = gcshFile.getAccountByName(acctName);
 
 	printAcctInfo(acct, 0);
     }

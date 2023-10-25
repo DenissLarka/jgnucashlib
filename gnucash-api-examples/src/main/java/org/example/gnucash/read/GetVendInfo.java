@@ -16,6 +16,7 @@ public class GetVendInfo {
     // BEGIN Example data -- adapt to your needs
     private static String gcshFileName = "example_in.gnucash";
     private static String vendID       = "xyz";
+    private static String vendName     = "abc";
     // END Example data
 
     // -----------------------------------------------------------------
@@ -34,7 +35,9 @@ public class GetVendInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// Choose one of the following variants:
 	GnucashVendor vend = gcshFile.getVendorByID(vendID);
+	// GnucashVendor vend = gcshFile.getVendorByName(vendName);
 
 	try {
 	    System.out.println("ID:                " + vend.getId());

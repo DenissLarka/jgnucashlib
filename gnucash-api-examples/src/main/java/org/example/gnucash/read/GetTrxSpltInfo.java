@@ -27,6 +27,9 @@ public class GetTrxSpltInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// You normally would get the transaction-split-ID by first choosing
+	// a specific transaction (cf. GetTrxInfo), getting its list of splits
+	// and then choosing from them.
 	GnucashTransactionSplit splt = gcshFile.getTransactionSplitByID(spltID);
 
 	try {

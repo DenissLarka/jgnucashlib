@@ -11,6 +11,7 @@ public class GetJobInfo {
     // BEGIN Example data -- adapt to your needs
     private static String gcshFileName = "example_in.gnucash";
     private static String jobID        = "xyz";
+    private static String jobName      = "abc";
     // END Example data
 
     // -----------------------------------------------------------------
@@ -29,7 +30,9 @@ public class GetJobInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// Choose one of the following variants:
 	GnucashGenerJob job = gcshFile.getGenerJobByID(jobID);
+	// GnucashGenerJob job = gcshFile.getGenerJobByName(jobName);
 
 	try {
 	    System.out.println("ID:              " + job.getId());

@@ -16,6 +16,7 @@ public class GetCustInfo {
     // BEGIN Example data -- adapt to your needs
     private static String gcshFileName = "example_in.gnucash";
     private static String custID       = "xyz";
+    private static String custName     = "abc";
     // END Example data
 
     // -----------------------------------------------------------------
@@ -34,7 +35,9 @@ public class GetCustInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// Choose one of the following variants:
 	GnucashCustomer cust = gcshFile.getCustomerByID(custID);
+	// GnucashCustomer cust = gcshFile.getCustomerByName(custName);
 
 	try {
 	    System.out.println("ID:                " + cust.getId());

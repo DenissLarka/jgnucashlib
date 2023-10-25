@@ -31,6 +31,9 @@ public class GetInvcEntryInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// You normally would get the invoice-entry-ID by first choosing
+	// a specific invoice (cf. GetInvcInfo), getting its list of entries
+	// and then choosing from them.
 	GnucashGenerInvoiceEntry entr = gcshFile.getGenerInvoiceEntryByID(invcEntrID);
 
 	try {

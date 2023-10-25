@@ -39,6 +39,10 @@ public class GetInvcInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// You normally would get the invoice-ID by first getting
+	// the list of invoices/bills for a customer/vendor/job 
+	// (cf. GetCustInfo, GetVendInfo, GetJobInfo), getting its
+	// list of invoices and then choosing from them.
 	GnucashGenerInvoice invc = gcshFile.getGenerInvoiceByID(invcID);
 
 	try {

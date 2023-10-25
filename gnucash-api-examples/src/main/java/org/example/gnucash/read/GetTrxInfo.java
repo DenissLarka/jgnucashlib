@@ -28,6 +28,9 @@ public class GetTrxInfo {
     protected void kernel() throws Exception {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
+	// You normally would get the transaction-ID by first choosing 
+	// a specific account (cf. GetAcctInfo), getting its list of 
+	// transactions and then choosing from them.
 	GnucashTransaction trx = gcshFile.getTransactionByID(trxID);
 
 	try {
