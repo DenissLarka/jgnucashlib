@@ -1,6 +1,7 @@
 package org.example.gnucash.read;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransaction;
@@ -30,8 +31,11 @@ public class GetAcctInfo {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
 	// Choose one of the following variants:
+	// Var. 1)
 	GnucashAccount acct = gcshFile.getAccountByID(acctID);
-	// GnucashAccount acct = gcshFile.getAccountByName(acctName);
+	// Var. 2)
+	// Collection<GnucashAccount> acctList = gcshFile.getAccountsByName(acctName);
+	// GnucashAccount acct = acctList.iterator().next(); // first element
 
 	printAcctInfo(acct, 0);
     }

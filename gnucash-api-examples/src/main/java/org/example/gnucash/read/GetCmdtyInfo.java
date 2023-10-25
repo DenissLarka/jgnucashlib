@@ -1,6 +1,7 @@
 package org.example.gnucash.read;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.currency.InvalidCmdtyCurrTypeException;

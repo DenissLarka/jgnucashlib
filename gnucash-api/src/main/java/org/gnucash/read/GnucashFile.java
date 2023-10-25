@@ -133,6 +133,12 @@ public interface GnucashFile extends GnucashObject {
      */
     GnucashGenerJob getGenerJobByID(String id);
 
+    Collection<GnucashGenerJob> getGenerJobsByName(String expr);
+
+    Collection<GnucashGenerJob> getGenerJobsByName(String expr, boolean relaxed);
+
+    GnucashGenerJob getGenerJobByNameUniq(String expr) throws NoEntryFoundException, TooManyEntriesFoundException;
+
     /**
      * @return a (possibly read-only) collection of all jobs Do not modify the
      *         returned collection!
@@ -429,7 +435,11 @@ public interface GnucashFile extends GnucashObject {
      * @return null if not found
      * @see #getAccountByID(String)
      */
-    GnucashAccount getAccountByName(String name);
+    Collection<GnucashAccount> getAccountsByName(String expr);
+
+    Collection<GnucashAccount> getAccountsByName(String expr, boolean qualif, boolean relaxed);
+
+    GnucashAccount getAccountByNameUniq(String expr, boolean qualif) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     /**
      * warning: this function has to traverse all accounts. If it much faster to try
@@ -438,10 +448,12 @@ public interface GnucashFile extends GnucashObject {
      *
      * @param name the regular expression of the name to look for
      * @return null if not found
+     * @throws TooManyEntriesFoundException 
+     * @throws NoEntryFoundException 
      * @see #getAccountByID(String)
-     * @see #getAccountByName(String)
+     * @see #getAccountsByName(String)
      */
-    GnucashAccount getAccountByNameEx(String name);
+    GnucashAccount getAccountByNameEx(String name) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     /**
      * First try to fetch the account by id, then fall back to traversing all
@@ -450,10 +462,12 @@ public interface GnucashFile extends GnucashObject {
      * @param id   the id to look for
      * @param name the name to look for if nothing is found for the id
      * @return null if not found
+     * @throws TooManyEntriesFoundException 
+     * @throws NoEntryFoundException 
      * @see #getAccountByID(String)
-     * @see #getAccountByName(String)
+     * @see #getAccountsByName(String)
      */
-    GnucashAccount getAccountByIDorName(String id, String name);
+    GnucashAccount getAccountByIDorName(String id, String name) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     /**
      * First try to fetch the account by id, then fall back to traversing all
@@ -463,10 +477,12 @@ public interface GnucashFile extends GnucashObject {
      * @param name the regular expression of the name to look for if nothing is
      *             found for the id
      * @return null if not found
+     * @throws TooManyEntriesFoundException 
+     * @throws NoEntryFoundException 
      * @see #getAccountByID(String)
-     * @see #getAccountByName(String)
+     * @see #getAccountsByName(String)
      */
-    GnucashAccount getAccountByIDorNameEx(String id, String name);
+    GnucashAccount getAccountByIDorNameEx(String id, String name) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     // ----------------------------
 
@@ -485,7 +501,11 @@ public interface GnucashFile extends GnucashObject {
      * @return null if not found
      * @see #getCustomerByID(String)
      */
-    GnucashCustomer getCustomerByName(String name);
+    Collection<GnucashCustomer> getCustomersByName(String expr);
+
+    Collection<GnucashCustomer> getCustomersByName(String expr, boolean relaxed);
+
+    GnucashCustomer getCustomerByNameUniq(String expr) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     /**
      * @return a (possibly read-only) collection of all customers Do not modify the
@@ -510,7 +530,11 @@ public interface GnucashFile extends GnucashObject {
      * @return null if not found
      * @see #getVendorByID(String)
      */
-    GnucashVendor getVendorByName(String name);
+    Collection<GnucashVendor> getVendorsByName(String expr);
+
+    Collection<GnucashVendor> getVendorsByName(String expr, boolean relaxed);
+
+    GnucashVendor getVendorByNameUniq(String expr) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     /**
      * @return a (possibly read-only) collection of all vendors Do not modify the
@@ -553,7 +577,11 @@ public interface GnucashFile extends GnucashObject {
      * @return null if not found
      * @see #getCommodityByID(String)
      */
-    Collection<GnucashCommodity> getCommoditiesByName(String name);
+    Collection<GnucashCommodity> getCommoditiesByName(String expr);
+
+    Collection<GnucashCommodity> getCommoditiesByName(String expr, boolean relaxed);
+
+    GnucashCommodity getCommodityByNameUniq(String expr) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     /**
      * @return a (possibly read-only) collection of all currencies/securities/commodities Do not modify the

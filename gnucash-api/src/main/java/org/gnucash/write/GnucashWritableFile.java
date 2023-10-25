@@ -14,6 +14,8 @@ import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.NoEntryFoundException;
+import org.gnucash.read.TooManyEntriesFoundException;
 import org.gnucash.read.impl.aux.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.ObjectCascadeException;
@@ -106,11 +108,11 @@ public interface GnucashWritableFile extends GnucashFile,
     GnucashWritableGenerInvoice getGenerInvoiceByID(String id);
 
     /**
-     * @see GnucashFile#getAccountByName(String)
+     * @see GnucashFile#getAccountsByName(String)
      * @param name the name to look for
      * @return A changable version of the account.
      */
-    GnucashWritableAccount getAccountByName(String name);
+    GnucashWritableAccount getAccountByNameUniq(String name, boolean qualif) throws NoEntryFoundException, TooManyEntriesFoundException;
 
     /**
      * @param type the type to look for

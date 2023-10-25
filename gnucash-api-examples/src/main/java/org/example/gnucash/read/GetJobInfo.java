@@ -1,6 +1,7 @@
 package org.example.gnucash.read;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.impl.GnucashFileImpl;
@@ -31,8 +32,11 @@ public class GetJobInfo {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
 	// Choose one of the following variants:
+	// Var. 1)
 	GnucashGenerJob job = gcshFile.getGenerJobByID(jobID);
-	// GnucashGenerJob job = gcshFile.getGenerJobByName(jobName);
+	// Var. 2)
+	// Collection<GnucashGenerJob> jobList = gcshFile.getGenerJobsByName(jobName);
+	// GnucashGenerJob job = jobList.iterator().next(); // first element
 
 	try {
 	    System.out.println("ID:              " + job.getId());

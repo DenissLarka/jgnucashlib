@@ -1,6 +1,7 @@
 package org.example.gnucash.read;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;
@@ -36,8 +37,11 @@ public class GetCustInfo {
 	GnucashFileImpl gcshFile = new GnucashFileImpl(new File(gcshFileName));
 
 	// Choose one of the following variants:
+	// Var. 1)
 	GnucashCustomer cust = gcshFile.getCustomerByID(custID);
-	// GnucashCustomer cust = gcshFile.getCustomerByName(custName);
+	// Var. 2)
+	// Collection<GnucashCustomer> custList = gcshFile.getCustomersByName(custName);
+	// GnucashCustomer cust = custList.iterator().next(); // first element
 
 	try {
 	    System.out.println("ID:                " + cust.getId());

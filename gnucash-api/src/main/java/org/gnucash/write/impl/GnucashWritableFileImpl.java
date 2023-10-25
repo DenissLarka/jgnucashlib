@@ -39,6 +39,8 @@ import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashVendor;
+import org.gnucash.read.NoEntryFoundException;
+import org.gnucash.read.TooManyEntriesFoundException;
 import org.gnucash.read.aux.GCshPrice;
 import org.gnucash.read.aux.GCshTaxTable;
 import org.gnucash.read.impl.GnucashAccountImpl;
@@ -751,16 +753,6 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     }
 
     /**
-     * @param name the name of the account
-     * @return A changable version of the first account with that name.
-     * @see GnucashFile#getAccountByName(String)
-     */
-    @Override
-    public GnucashWritableAccount getAccountByName(final String name) {
-	return (GnucashWritableAccount) super.getAccountByName(name);
-    }
-
-    /**
      * @param id the unique account-id
      * @return A changable version of the account or null if not found.
      * @see GnucashFile#getAccountByID(String)
@@ -768,6 +760,16 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     @Override
     public GnucashWritableAccount getAccountByID(final String id) {
 	return (GnucashWritableAccount) super.getAccountByID(id);
+    }
+
+    /**
+     * @param name the name of the account
+     * @return A changable version of the first account with that name.
+     * @see GnucashFile#getAccountsByName(String)
+     */
+    @Override
+    public GnucashWritableAccount getAccountByNameUniq(final String name, final boolean qualif) throws NoEntryFoundException, TooManyEntriesFoundException {
+	return (GnucashWritableAccount) super.getAccountByNameUniq(name, qualif);
     }
 
     /**
