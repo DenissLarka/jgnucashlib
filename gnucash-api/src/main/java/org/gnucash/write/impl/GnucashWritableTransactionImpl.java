@@ -288,6 +288,7 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
     public void setCmdtyCurrID(final CmdtyCurrID cmdtyCurrID) {
 	this.getJwsdpPeer().getTrnCurrency().setCmdtySpace(cmdtyCurrID.getNameSpace());
 	this.getJwsdpPeer().getTrnCurrency().setCmdtyId(cmdtyCurrID.getCode());
+	getWritingFile().setModified(true);
     }
 
     /**

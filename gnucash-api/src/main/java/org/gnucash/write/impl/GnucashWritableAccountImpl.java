@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.Const;
+import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
@@ -248,35 +249,17 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			propertyChangeFirer.firePropertyChange("code", oldCode, code);
 		}
 	}
-
-	/**
-	 * @param currencyID the new currency
-	 * @see #setCurrencyNameSpace(String)
-	 * @see {@link GnucashAccount#getCurrencyID()}
-	 */
-	public void setCurrencyID(final String currencyID) {
-		if (currencyID == null) {
-			throw new IllegalArgumentException("null or empty currencyID given!");
-		}
-
-		String oldCurrencyId = getJwsdpPeer().getActCommodity().getCmdtyId();
-		if (oldCurrencyId == currencyID) {
-			return; // nothing has changed
-		}
-		this.getJwsdpPeer().getActCommodity().setCmdtyId(currencyID);
-		setIsModified();
-		// <<insert code to react further to this change here
-		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
-		if (propertyChangeFirer != null) {
-			propertyChangeFirer.firePropertyChange("currencyID", oldCurrencyId, currencyID);
-		}
-	}
+	
+	public void setCmdtyCurrID(final CmdtyCurrID cmdtyCurrID) {
+	    setCmdtyCurrNameSpace(cmdtyCurrID.getNameSpace());
+	    setCmdtyCurrCode(cmdtyCurrID.getCode());
+	}	
 
 	/**
 	 * @param currNameSpace the new namespace
 	 * @see {@link GnucashAccount#getCurrencyNameSpace()}
 	 */
-	public void setCurrencyNameSpace(final String currNameSpace) {
+	private void setCmdtyCurrNameSpace(final String currNameSpace) {
 		if (currNameSpace == null) {
 			throw new IllegalArgumentException("null or empty currencyNameSpace given!");
 		}
@@ -291,6 +274,29 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
 		if (propertyChangeFirer != null) {
 			propertyChangeFirer.firePropertyChange("currencyNameSpace", oldCurrNameSpace, currNameSpace);
+		}
+	}
+
+	/**
+	 * @param currencyID the new currency
+	 * @see #setCurrencyNameSpace(String)
+	 * @see {@link GnucashAccount#getCurrencyID()}
+	 */
+	private void setCmdtyCurrCode(final String currencyID) {
+		if (currencyID == null) {
+			throw new IllegalArgumentException("null or empty currencyID given!");
+		}
+
+		String oldCurrencyId = getJwsdpPeer().getActCommodity().getCmdtyId();
+		if (oldCurrencyId == currencyID) {
+			return; // nothing has changed
+		}
+		this.getJwsdpPeer().getActCommodity().setCmdtyId(currencyID);
+		setIsModified();
+		// <<insert code to react further to this change here
+		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();
+		if (propertyChangeFirer != null) {
+			propertyChangeFirer.firePropertyChange("currencyID", oldCurrencyId, currencyID);
 		}
 	}
 
