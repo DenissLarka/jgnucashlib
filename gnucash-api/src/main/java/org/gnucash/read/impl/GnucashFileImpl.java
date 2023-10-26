@@ -2042,6 +2042,16 @@ public class GnucashFileImpl implements GnucashFile {
     }
 
     @Override
+    public GnucashCommodity getCommodityByQualifID(final GCshCmdtyCurrNameSpace.MIC mic, String id) {
+	return getCommodityByQualifID(mic.toString() + GCshCmdtyCurrID.SEPARATOR + id);
+    }
+
+    @Override
+    public GnucashCommodity getCommodityByQualifID(final GCshCmdtyCurrNameSpace.SecIdType secIdType, String id) {
+	return getCommodityByQualifID(secIdType.toString() + GCshCmdtyCurrID.SEPARATOR + id);
+    }
+
+    @Override
     public GnucashCommodity getCommodityByQualifID(final String qualifID) {
 	if (qualifID == null) {
 	    throw new IllegalStateException("null string given");

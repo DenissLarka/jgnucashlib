@@ -213,7 +213,7 @@
     <slot:value type="string">true</slot:value>
   </slot>
 </book:slots>
-<gnc:count-data cd:type="commodity">3</gnc:count-data>
+<gnc:count-data cd:type="commodity">7</gnc:count-data>
 <gnc:count-data cd:type="account">92</gnc:count-data>
 <gnc:count-data cd:type="transaction">12</gnc:count-data>
 <gnc:count-data cd:type="price">7</gnc:count-data>
@@ -251,6 +251,58 @@
   <cmdty:name>SAP SE</cmdty:name>
   <cmdty:xcode>DE0007164600</cmdty:xcode>
   <cmdty:fraction>10000</cmdty:fraction>
+</gnc:commodity>
+<gnc:commodity version="2.0.0">
+  <cmdty:space>ISIN</cmdty:space>
+  <cmdty:id>DE000BASF111</cmdty:id>
+  <cmdty:name>BASF SE</cmdty:name>
+  <cmdty:xcode>DE000BASF111</cmdty:xcode>
+  <cmdty:fraction>10000</cmdty:fraction>
+  <cmdty:slots>
+    <slot>
+      <slot:key>user_symbol</slot:key>
+      <slot:value type="string">BAS</slot:value>
+    </slot>
+  </cmdty:slots>
+</gnc:commodity>
+<gnc:commodity version="2.0.0">
+  <cmdty:space>ISIN</cmdty:space>
+  <cmdty:id>FR0000120644</cmdty:id>
+  <cmdty:name>Danone</cmdty:name>
+  <cmdty:xcode>FR0000120644</cmdty:xcode>
+  <cmdty:fraction>10000</cmdty:fraction>
+  <cmdty:slots>
+    <slot>
+      <slot:key>user_symbol</slot:key>
+      <slot:value type="string">BN</slot:value>
+    </slot>
+  </cmdty:slots>
+</gnc:commodity>
+<gnc:commodity version="2.0.0">
+  <cmdty:space>ISIN</cmdty:space>
+  <cmdty:id>GB0009895292</cmdty:id>
+  <cmdty:name>AstraZeneca Plc</cmdty:name>
+  <cmdty:xcode>GB0009895292</cmdty:xcode>
+  <cmdty:fraction>10000</cmdty:fraction>
+  <cmdty:slots>
+    <slot>
+      <slot:key>user_symbol</slot:key>
+      <slot:value type="string">AZN</slot:value>
+    </slot>
+  </cmdty:slots>
+</gnc:commodity>
+<gnc:commodity version="2.0.0">
+  <cmdty:space>ISIN</cmdty:space>
+  <cmdty:id>US1912161007</cmdty:id>
+  <cmdty:name>The Coca-Cola Co.</cmdty:name>
+  <cmdty:xcode>US1912161007</cmdty:xcode>
+  <cmdty:fraction>10000</cmdty:fraction>
+  <cmdty:slots>
+    <slot>
+      <slot:key>user_symbol</slot:key>
+      <slot:value type="string">KO</slot:value>
+    </slot>
+  </cmdty:slots>
 </gnc:commodity>
 <gnc:commodity version="2.0.0">
   <cmdty:space>template</cmdty:space>

@@ -12,10 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.gnucash.ConstTest;
-import org.gnucash.basetypes.GCshCmdtyCurrID;
 import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
 import org.gnucash.basetypes.GCshCmdtyID_Exchange;
-import org.gnucash.read.GnucashCommodity;
+import org.gnucash.basetypes.GCshCmdtyID_MIC;
+import org.gnucash.basetypes.GCshCmdtyID_SecIdType;
 import org.gnucash.write.GnucashWritableCommodity;
 import org.junit.Before;
 import org.junit.Rule;
@@ -154,7 +154,7 @@ public class TestGnucashWritableCommodityImpl
 //      System.err.println("xxxx XML normalized");
       
       NodeList nList = document.getElementsByTagName("gnc:commodity");
-      assertEquals(6, nList.getLength()); // <-- CAUTION: includes "CURRENCY:EUR" and "template:template"
+      assertEquals(10, nList.getLength()); // <-- CAUTION: includes "CURRENCY:EUR" and "template:template"
 
       // Last (new) node
       Node lastNode = nList.item(nList.getLength() - 1);
@@ -173,14 +173,22 @@ public class TestGnucashWritableCommodityImpl
       GnucashWritableCommodity cmdty1 = gcshInFile.createWritableCommodity();
       cmdty1.setQualifId(new GCshCmdtyID_Exchange(GCshCmdtyCurrNameSpace.Exchange.NASDAQ, "SCAM"));
       cmdty1.setName("Scam and Screw Corp.");
+      cmdty1.setXCode("US0123456789");
       
       GnucashWritableCommodity cmdty2 = gcshInFile.createWritableCommodity();
-      cmdty2.setQualifId(new GCshCmdtyID_Exchange(GCshCmdtyCurrNameSpace.Exchange.XETRA, "TEUR"));
-      cmdty2.setName("Total Überteuert AG");
+      cmdty2.setQualifId(new GCshCmdtyID_MIC(GCshCmdtyCurrNameSpace.MIC.XBRU, "CHOC"));
+      cmdty2.setName("Chocolaterie de la Grande Place");
+      cmdty2.setXCode("BE0123456789");
       
       GnucashWritableCommodity cmdty3 = gcshInFile.createWritableCommodity();
       cmdty3.setQualifId(new GCshCmdtyID_Exchange(GCshCmdtyCurrNameSpace.Exchange.EURONEXT, "FOUS"));
       cmdty3.setName("Ils sont fous ces dingos!");
+      cmdty3.setXCode("FR0123456789");
+      
+      GnucashWritableCommodity cmdty4 = gcshInFile.createWritableCommodity();
+      cmdty4.setQualifId(new GCshCmdtyID_SecIdType(GCshCmdtyCurrNameSpace.SecIdType.ISIN, "GB10000A2222"));
+      cmdty4.setName("Ye Ole National British Trade Company Ltd.");
+      cmdty4.setXCode("GB10000A2222"); // sic, has to be set redundantly
       
       File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
       // System.err.println("Outfile for TestGnucashWritableCommodityImpl.test02_1: '" + outFile.getPath() + "'");
@@ -211,29 +219,40 @@ public class TestGnucashWritableCommodityImpl
 //      System.err.println("xxxx XML normalized");
       
       NodeList nList = document.getElementsByTagName("gnc:commodity");
-      assertEquals(8, nList.getLength()); // <-- CAUTION: includes "CURRENCY:EUR" and "template:template"
+      assertEquals(13, nList.getLength()); // <-- CAUTION: includes "CURRENCY:EUR" and "template:template"
 
       // Last three nodes (the new ones)
-      Node node = nList.item(nList.getLength() - 3);
+      Node node = nList.item(nList.getLength() - 4);
       assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       Element elt = (Element) node;
       assertEquals("Scam and Screw Corp.", elt.getElementsByTagName("cmdty:name").item(0).getTextContent());
       assertEquals(GCshCmdtyCurrNameSpace.Exchange.NASDAQ.toString(), elt.getElementsByTagName("cmdty:space").item(0).getTextContent());
       assertEquals("SCAM", elt.getElementsByTagName("cmdty:id").item(0).getTextContent());
+      assertEquals("US0123456789", elt.getElementsByTagName("cmdty:xcode").item(0).getTextContent());
 
-      node = nList.item(nList.getLength() - 2);
+      node = nList.item(nList.getLength() - 3);
       assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       elt = (Element) node;
-      assertEquals("Total Überteuert AG", elt.getElementsByTagName("cmdty:name").item(0).getTextContent());
-      assertEquals(GCshCmdtyCurrNameSpace.Exchange.XETRA.toString(), elt.getElementsByTagName("cmdty:space").item(0).getTextContent());
-      assertEquals("TEUR", elt.getElementsByTagName("cmdty:id").item(0).getTextContent());
+      assertEquals("Chocolaterie de la Grande Place", elt.getElementsByTagName("cmdty:name").item(0).getTextContent());
+      assertEquals(GCshCmdtyCurrNameSpace.MIC.XBRU.toString(), elt.getElementsByTagName("cmdty:space").item(0).getTextContent());
+      assertEquals("CHOC", elt.getElementsByTagName("cmdty:id").item(0).getTextContent());
+      assertEquals("BE0123456789", elt.getElementsByTagName("cmdty:xcode").item(0).getTextContent());
 
-      node = nList.item(nList.getLength() - 1);
+      node = nList.item(nList.getLength() - 2);
       assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       elt = (Element) node;
       assertEquals("Ils sont fous ces dingos!", elt.getElementsByTagName("cmdty:name").item(0).getTextContent());
       assertEquals(GCshCmdtyCurrNameSpace.Exchange.EURONEXT.toString(), elt.getElementsByTagName("cmdty:space").item(0).getTextContent());
       assertEquals("FOUS", elt.getElementsByTagName("cmdty:id").item(0).getTextContent());
+      assertEquals("FR0123456789", elt.getElementsByTagName("cmdty:xcode").item(0).getTextContent());
+
+      node = nList.item(nList.getLength() - 1);
+      assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
+      elt = (Element) node;
+      assertEquals("Ye Ole National British Trade Company Ltd.", elt.getElementsByTagName("cmdty:name").item(0).getTextContent());
+      assertEquals(GCshCmdtyCurrNameSpace.SecIdType.ISIN.toString(), elt.getElementsByTagName("cmdty:space").item(0).getTextContent());
+      assertEquals("GB10000A2222", elt.getElementsByTagName("cmdty:id").item(0).getTextContent());
+      assertEquals("GB10000A2222", elt.getElementsByTagName("cmdty:xcode").item(0).getTextContent());
   }
 
 //  @AfterClass

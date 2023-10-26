@@ -554,6 +554,10 @@ public interface GnucashFile extends GnucashObject {
 
     GnucashCommodity getCommodityByQualifID(GCshCmdtyCurrNameSpace.Exchange exchange, String id);
 
+    GnucashCommodity getCommodityByQualifID(GCshCmdtyCurrNameSpace.MIC mic, String id);
+
+    GnucashCommodity getCommodityByQualifID(GCshCmdtyCurrNameSpace.SecIdType secIdType, String id);
+
     /**
      * @param id the unique id of the currency/security/commodity to look for
      * @return the currency/security/commodity or null if it's not found
