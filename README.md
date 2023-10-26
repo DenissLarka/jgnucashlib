@@ -29,23 +29,35 @@ In this context, the following was also necessary/also made sense:
 
 * Introduced auxiliary interface/class `GCshPrice(Impl)` representing an entry of the GnuCash price database.
 
-* Introduced auxiliary class `CmdtyCurrID` (essentially a pair of commodity name space and commodity code), which represents a security-style pseudo-ID for commodities (thus, including currencies, cf. above). In addition to that, introduced (grand-)child classes `CommodityID`, `CurrencyID`, `CommodityID_Exchange` and `CommodityID_MIC` to represent various variants with adequate type-safety, i.e. for both easy and safe handling of read and write operations. 
+* Introduced auxiliary class `GCshCmdtyCurrID` (essentially a pair of commodity name space and commodity code), which represents a security-style pseudo-ID for commodities (thus, including currencies, cf. above). In addition to that, introduced (grand-)child classes `GCshCmdtyID`, `GCshCurrID`, `GCshCmdtyID_Exchange`, `GCshCmdtyID_MIC` and `GCshCmdtyID_SecIDType` to represent various variants with adequate type-safety, i.e. for both easy and safe handling of read and write operations. 
 
-  Note that, as opposed to all other entities in the GnuCash XML file, commodities have no internal UUID (a fact that the author finds irritating).
+  Note that, as opposed to all other entities in the GnuCash XML file, commodities have no internal UUID (a fact that the author finds irritating). This is one of the reasons why (pseudo-)currencies necessitate a fundamentally different approach.
 
-* Closely linked to `CmdtyCurrID` and its descendants: Major rework on the class `CmdtyCurrNameSpace` (formerly `CurrencyNameSpace`): introduced several enums for enhanced type safety.
+* Closely linked to `GCshCmdtyCurrID` and its descendants: Major rework on the class `GCshCmdtyCurrNameSpace` (formerly `CurrencyNameSpace`): introduced several enums for enhanced type safety.
 
   *Background*: In and of itself, GnuCash's commodity name space can be freely defined; only suggestions are made on how to define it, e.g. a major stock exchange's abbreviation or a major securities index name. But you *need* not do it like that. The author is well aware of the fact that the GnuCash developers have -- likely after having weighed the pros and cons -- purposefully decided *not* to enforce any pre-defined values. 
 
-  In this lib, we follow this spirit (as well as the path that the original author Marcus Wolschon followed): We *allow* the users to freely define any name space they want, but we *encourage* them to use one of the pre-defined enums in `CmdtyCurrNameSpace` (expecting that buying, holding and selling conventional securities on major markets will be the most typical use case by far).
+  In this lib, we follow this spirit (as well as the path that the original author Marcus Wolschon followed): We *allow* the users to freely define any name space they want, but we *encourage* them to use one of the pre-defined enums in `GCshCmdtyCurrNameSpace` (expecting that buying, holding and selling conventional securities on major markets will be the most typical use case by far).
 
-  *Note that the current definition of the enums in the class `CmdtyCurrNameSpace` is by no means final and "once and for all". The author rather expects some re-work iterations on the existing ones and the introduction of new ones.*
+  *Note that the current definition of the enums in the class `GCshCmdtyCurrNameSpace` is by no means final and "once and for all". The author rather expects some re-work iterations on the existing ones and the introduction of new ones.*
 
-Finally: 
+  [ Some readers might be interested in the fact that the author uses the name space `GCshCmdtyCurrNameSpace.SecIdType.ISIN`, because he believes that this is the only one that allows easy and consistent handling of a global portfolio (and the fact that he is not so much interested in where a specific security is traded, because he follows a buy-and-hold investment strategy). ]
+
+Further improvements:
+
+* Interface changes in:
+
+  * `Gnucash(Writable)Account`
+  * `Gnucash(Writable)Transaction`
+  * `Gnucash(Writable)File`
+
+  Essentially leveraging improved type safety and robustness, primarily through use of `GCshCmdtyCurrID` and descendants.
+
+* Improved retrieval of objects in `GnucashFileImpl` with `getXYZByName()`-methods (e.g., `getAccountsByName()`): There are now two variants for (almost) each of them: One with exact matching and one with relaxed matching, the latter one possibly returning several objects. (Still some work to be done here (esp. with account variants.) Cf. test cases and example programs.
 
 * Improved test coverage.
 
-* Some minor big-fixing here and there.
+* Some minor bug-fixing here and there.
 
 ## V. 1.0 &rarr; 1.1
 * Reading and writing of (technical/generic) invoices: Not just customer invoices, but also vendor bills now. According to the internal XML structure and the part of the code that is generated from it (i.e., the XSD file), both derive from a common class that represents a "generic" invoice. In addition to that, there is also a third type: job invoice (cf. next item).
@@ -102,7 +114,9 @@ It should go without saying, but the following points are of course subject to c
 
 * Invoices and bills: Support more variants, such as choosing the terms of payment or the "tax included" flag for entries.
 
-* Generalizing (technically) locale-specific code (e.g., GnuCash stores certain interal XML-tags with locale-specific values for transaction splits' actions). Currently, all this is too tightly tied to the german locale (de_DE).
+* Generalize (technically) locale-specific code (e.g., GnuCash stores certain interal XML-tags with locale-specific values for transaction splits' actions). Currently, all this is too tightly tied to the german locale (de_DE).
+
+* Re-iterate package `org.gnucash.currency`: leverage `GCshCmdtyCurrID` and descendtants.
 
 * Get rid of ugly code redundancies here and there, esp. in the class `Gnucash(Writable)GenerInvoiceImpl`.
 

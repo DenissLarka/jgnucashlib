@@ -18,7 +18,7 @@ Each of these programs contains a section for test data. It has to be adapted to
 
 [ Part of the test data (e.g., the account IDs) refers to the data in the test data GnuCash file, but that does not mean that they actually have to / should be used with this file. Instead, the references are only used to clarify the meaning of the parameter / variable, if appropriate. ]
 
-Each of the example programs compiles as it is (the authoer always gets mad when he sees example code in other projects that does not even compile, let alone work). And yes, they actually work, because they are not just code snippets, but complete, self-contained programs, and they actually have been tried out.
+Each of the example programs compiles as it is (the author always gets mad when he sees example code in other projects that does not even compile, let alone work). And they are not just code snippets, but complete, self-contained programs that actually have run.
 
 Thus, the suggested workflow is:
 
