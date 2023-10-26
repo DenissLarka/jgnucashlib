@@ -1168,8 +1168,8 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 		if (gnucashAccount == null) {
 		    continue;
 		}
-		if (gnucashAccount.getType() != null && 
-	            gnucashAccount.getType().equals(GnucashAccount.TYPE_ROOT)) {
+		if ( gnucashAccount.getType() != null && 
+	             gnucashAccount.getType() == GnucashAccount.Type.ROOT ) {
 		    root = gnucashAccount;
 		    continue;
 		}

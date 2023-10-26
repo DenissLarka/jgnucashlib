@@ -279,7 +279,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
       FixedPointNumber takenFromReceivableAccount = new FixedPointNumber();
 		for ( GnucashTransaction trx : getPayingTransactions() ) {
 			for ( GnucashTransactionSplit split : trx.getSplits() ) {
-				if ( split.getAccount().getType().equals(GnucashAccount.TYPE_RECEIVABLE) ) {
+				if ( split.getAccount().getType() == GnucashAccount.Type.RECEIVABLE ) {
 				  if ( ! split.getValue().isPositive() ) { 
 				    takenFromReceivableAccount.subtract(split.getValue());
 				  }
@@ -419,7 +419,7 @@ public class GnucashGenerInvoiceImpl implements GnucashGenerInvoice {
       FixedPointNumber takenFromPayableAccount = new FixedPointNumber();
         for ( GnucashTransaction trx : getPayingTransactions() ) {
             for ( GnucashTransactionSplit split : trx.getSplits() ) {
-                if ( split.getAccount().getType().equals(GnucashAccount.TYPE_PAYABLE) ) {
+                if ( split.getAccount().getType() == GnucashAccount.Type.PAYABLE ) {
                   if ( split.getValue().isPositive() ) {
                     takenFromPayableAccount.add(split.getValue());
                   }

@@ -84,7 +84,7 @@ public class GenInvc {
 	    System.err.println("Income account:     " + "Code: " + incAcct.getCode() + ", " + "Type: "
 		    + incAcct.getType() + ", " + "Name: '" + incAcct.getQualifiedName() + "'");
 
-	    if ( ! incAcct.getType().equals(GnucashAccount.TYPE_INCOME) ) {
+	    if ( ! incAcct.getType().equals(GnucashAccount.Type.INCOME) ) {
 		System.err.println("Error: Account is not an income account");
 		throw new WrongAccountTypeException();
 	    }
@@ -98,7 +98,7 @@ public class GenInvc {
 	    System.err.println("Expenses account:     " + "Code: " + expAcct.getCode() + ", " + "Type: "
 		    + expAcct.getType() + ", " + "Name: '" + expAcct.getQualifiedName() + "'");
 
-	    if ( ! expAcct.getType().equals(GnucashAccount.TYPE_EXPENSE) ) {
+	    if ( ! expAcct.getType().equals(GnucashAccount.Type.EXPENSE) ) {
 		System.err.println("Error: Account is not an expenses account");
 		throw new WrongAccountTypeException();
 	    }
@@ -112,7 +112,7 @@ public class GenInvc {
 	    System.err.println("Accounts-receivable account: " + "Code: " + recvblAcct.getCode() + ", " + "Type: "
 		    + recvblAcct.getType() + ", " + "Name: '" + recvblAcct.getQualifiedName() + "'");
 
-	    if ( ! recvblAcct.getType().equals(GnucashAccount.TYPE_RECEIVABLE) ) {
+	    if ( ! recvblAcct.getType().equals(GnucashAccount.Type.RECEIVABLE) ) {
 		System.err.println("Error: Account is not an accounts-receivable account");
 		throw new WrongAccountTypeException();
 	    }
@@ -126,7 +126,7 @@ public class GenInvc {
 	    System.err.println("Accounts-payable account: " + "Code: " + payblAcct.getCode() + ", " + "Type: "
 		    + payblAcct.getType() + ", " + "Name: '" + payblAcct.getQualifiedName() + "'");
 
-	    if ( ! payblAcct.getType().equals(GnucashAccount.TYPE_PAYABLE) ) {
+	    if ( ! payblAcct.getType().equals(GnucashAccount.Type.PAYABLE) ) {
 		System.err.println("Error: Account is not an accounts-payable account");
 		throw new WrongAccountTypeException();
 	    }

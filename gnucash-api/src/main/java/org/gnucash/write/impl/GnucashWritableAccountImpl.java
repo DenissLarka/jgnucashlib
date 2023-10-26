@@ -13,6 +13,7 @@ import java.util.List;
 import org.gnucash.Const;
 import org.gnucash.basetypes.GCshCmdtyCurrID;
 import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -105,7 +106,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		account.setActName("UNNAMED");
 		//      left unset account.setActNonStandardScu();
 		//left unset account.setActParent())
-		account.setActType(GnucashAccount.TYPE_BANK);
+		account.setActType(GnucashAccount.Type.BANK.toString());
 
 		account.setVersion(Const.XML_FORMAT_VERSION);
 
@@ -216,7 +217,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			throw new IllegalArgumentException("null or empty name given!");
 		}
 
-		String oldName = getJwsdpPeer().getActName();
+		String oldName = getName();
 		if (oldName == name) {
 			return; // nothing has changed
 		}
@@ -237,7 +238,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			throw new IllegalArgumentException("null or empty code given!");
 		}
 
-		String oldCode = getJwsdpPeer().getActCode();
+		String oldCode = getCode();
 		if (oldCode == code) {
 			return; // nothing has changed
 		}
@@ -250,21 +251,22 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		}
 	}
 	
-	public void setCmdtyCurrID(final GCshCmdtyCurrID cmdtyCurrID) {
+	public void setCmdtyCurrID(final GCshCmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException {
 	    setCmdtyCurrNameSpace(cmdtyCurrID.getNameSpace());
 	    setCmdtyCurrCode(cmdtyCurrID.getCode());
 	}	
 
 	/**
 	 * @param currNameSpace the new namespace
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see {@link GnucashAccount#getCurrencyNameSpace()}
 	 */
-	private void setCmdtyCurrNameSpace(final String currNameSpace) {
+	private void setCmdtyCurrNameSpace(final String currNameSpace) throws InvalidCmdtyCurrTypeException {
 		if (currNameSpace == null) {
 			throw new IllegalArgumentException("null or empty currencyNameSpace given!");
 		}
 
-		String oldCurrNameSpace = getJwsdpPeer().getActCommodity().getCmdtySpace();
+		String oldCurrNameSpace = getCmdtyCurrID().getNameSpace();
 		if (oldCurrNameSpace == currNameSpace) {
 			return; // nothing has changed
 		}
@@ -279,15 +281,16 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 
 	/**
 	 * @param currencyID the new currency
+	 * @throws InvalidCmdtyCurrTypeException 
 	 * @see #setCurrencyNameSpace(String)
 	 * @see {@link GnucashAccount#getCurrencyID()}
 	 */
-	private void setCmdtyCurrCode(final String currencyID) {
+	private void setCmdtyCurrCode(final String currencyID) throws InvalidCmdtyCurrTypeException {
 		if (currencyID == null) {
 			throw new IllegalArgumentException("null or empty currencyID given!");
 		}
 
-		String oldCurrencyId = getJwsdpPeer().getActCommodity().getCmdtyId();
+		String oldCurrencyId = getCmdtyCurrID().getCode();
 		if (oldCurrencyId == currencyID) {
 			return; // nothing has changed
 		}
@@ -398,7 +401,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 			throw new IllegalArgumentException("null or empty description given!");
 		}
 
-		String oldDescr = getJwsdpPeer().getActDescription();
+		String oldDescr = getDescription();
 		if (oldDescr == descr) {
 			return; // nothing has changed
 		}
@@ -414,16 +417,12 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 	/**
 	 * @see GnucashWritableAccount#setInvcType(java.lang.String)
 	 */
-	public void setType(final String type) {
-		if (type == null) {
-			throw new IllegalArgumentException("null type given!");
-		}
-
-		String oldType = getJwsdpPeer().getActDescription();
+	public void setType(final Type type) {
+		Type oldType = getType();
 		if (oldType == type) {
 			return; // nothing has changed
 		}
-		getJwsdpPeer().setActType(type);
+		getJwsdpPeer().setActType(type.toString());
 		setIsModified();
 		// <<insert code to react further to this change here
 		PropertyChangeSupport propertyChangeFirer = getPropertyChangeSupport();

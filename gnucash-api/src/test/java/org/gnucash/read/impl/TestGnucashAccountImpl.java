@@ -74,7 +74,7 @@ public class TestGnucashAccountImpl
     acct = gcshFile.getAccountByID(ACCT_1_ID);
     
     assertEquals(ACCT_1_ID, acct.getId());
-    assertEquals(GnucashAccount.TYPE_BANK, acct.getType());
+    assertEquals(GnucashAccount.Type.BANK, acct.getType());
     assertEquals("Giro RaiBa", acct.getName());
     assertEquals("Root Account::Aktiva::Sichteinlagen::KK::Giro RaiBa", acct.getQualifiedName());
     assertEquals("Girokonto 1", acct.getDescription());
@@ -100,7 +100,7 @@ public class TestGnucashAccountImpl
     acct = gcshFile.getAccountByID(ACCT_2_ID);
     
     assertEquals(ACCT_2_ID, acct.getId());
-    assertEquals(GnucashAccount.TYPE_ASSET, acct.getType());
+    assertEquals(GnucashAccount.Type.ASSET, acct.getType());
     assertEquals("Depot RaiBa", acct.getName());
     assertEquals("Root Account::Aktiva::Depots::Depot RaiBa", acct.getQualifiedName());
     assertEquals("Aktiendepot 1", acct.getDescription());
@@ -124,7 +124,7 @@ public class TestGnucashAccountImpl
     acct = gcshFile.getAccountByID(ACCT_3_ID);
     
     assertEquals(ACCT_3_ID, acct.getId());
-    assertEquals(GnucashAccount.TYPE_LIABILITY, acct.getType());
+    assertEquals(GnucashAccount.Type.LIABILITY, acct.getType());
     assertEquals("Fremdkapital", acct.getName());
     assertEquals("Root Account::Fremdkapital", acct.getQualifiedName());
     assertEquals("alle Verbindlichkeiten", acct.getDescription());
@@ -147,7 +147,7 @@ public class TestGnucashAccountImpl
     acct = gcshFile.getAccountByID(ACCT_4_ID);
     
     assertEquals(ACCT_4_ID, acct.getId());
-    assertEquals(GnucashAccount.TYPE_PAYABLE, acct.getType());
+    assertEquals(GnucashAccount.Type.PAYABLE, acct.getType());
     assertEquals("Lieferfanto", acct.getName());
     assertEquals("Root Account::Fremdkapital::Lieferanten::Lieferfanto", acct.getQualifiedName());
     assertEquals(null, acct.getDescription());
@@ -171,7 +171,7 @@ public class TestGnucashAccountImpl
     acct = gcshFile.getAccountByID(ACCT_5_ID);
     
     assertEquals(ACCT_5_ID, acct.getId());
-    assertEquals(GnucashAccount.TYPE_RECEIVABLE, acct.getType());
+    assertEquals(GnucashAccount.Type.RECEIVABLE, acct.getType());
     assertEquals("Unfug_Quatsch", acct.getName());
     assertEquals("Root Account::Aktiva::Forderungen::Unfug_Quatsch", acct.getQualifiedName());
     assertEquals(null, acct.getDescription());
@@ -195,7 +195,7 @@ public class TestGnucashAccountImpl
     acct = gcshFile.getAccountByID(ACCT_6_ID);
     
     assertEquals(ACCT_6_ID, acct.getId());
-    assertEquals(GnucashAccount.TYPE_EQUITY, acct.getType());
+    assertEquals(GnucashAccount.Type.EQUITY, acct.getType());
     assertEquals("Anfangsbestand", acct.getName());
     assertEquals("Root Account::Anfangsbestand", acct.getQualifiedName());
     assertEquals("Anfangsbestand", acct.getDescription());
@@ -217,7 +217,7 @@ public class TestGnucashAccountImpl
     acct = gcshFile.getAccountByID(ACCT_7_ID);
     
     assertEquals(ACCT_7_ID, acct.getId());
-    assertEquals(GnucashAccount.TYPE_STOCK, acct.getType());
+    assertEquals(GnucashAccount.Type.STOCK, acct.getType());
     assertEquals("DE0007100000 Mercedes-Benz", acct.getName());
     assertEquals("Root Account::Aktiva::Depots::Depot RaiBa::DE0007100000 Mercedes-Benz", acct.getQualifiedName());
     assertEquals("Mercedes-Benz Group AG", acct.getDescription());

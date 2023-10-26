@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 
 import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashObject;
@@ -70,14 +71,15 @@ public interface GnucashWritableAccount extends GnucashAccount,
      * @param type the new type.
      * @see {@link GnucashAccount#getType()}
      */
-    void setType(String type);
+    void setType(Type type);
 
     /**
      * @param id the new currency
+     * @throws InvalidCmdtyCurrTypeException 
      * @see #setCurrencyNameSpace(String)
      * @see {@link GnucashAccount#getCurrencyID()}
      */
-    void setCmdtyCurrID(final GCshCmdtyCurrID cmdtyCurrID);
+    void setCmdtyCurrID(final GCshCmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException;
 
     /**
      * @param newparent the new account or null to make it a top-level-account

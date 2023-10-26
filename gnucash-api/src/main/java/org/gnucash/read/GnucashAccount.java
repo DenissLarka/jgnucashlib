@@ -41,21 +41,23 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
     // - TYPE_TRADING = "TRADING";
 
     // ::MAGIC
-    public static final String TYPE_BANK       = "BANK";
-    public static final String TYPE_CASH       = "CASH";
-    public static final String TYPE_CREDIT     = "CREDIT";
-    public static final String TYPE_ASSET      = "ASSET";
-    public static final String TYPE_LIABILITY  = "LIABILITY";
-    public static final String TYPE_STOCK      = "STOCK";
-    public static final String TYPE_MUTUAL     = "MUTUAL";
-    public static final String TYPE_CURRENCY   = "CURRENCY";
-    public static final String TYPE_INCOME     = "INCOME";
-    public static final String TYPE_EXPENSE    = "EXPENSE";
-    public static final String TYPE_EQUITY     = "EQUITY";
-    public static final String TYPE_RECEIVABLE = "RECEIVABLE";
-    public static final String TYPE_PAYABLE    = "PAYABLE";
-    public static final String TYPE_ROOT       = "ROOT";
-    public static final String TYPE_TRADING    = "TRADING";
+    public enum Type {
+	BANK,
+	CASH,
+	CREDIT,
+	ASSET,
+	LIABILITY,
+	STOCK,
+	MUTUAL,
+	CURRENCY,
+	INCOME,
+	EXPENSE,
+	EQUITY,
+	RECEIVABLE,
+	PAYABLE,
+	ROOT,
+	TRADING
+    }
 
     // -----------------------------------------------------------------
 
@@ -124,7 +126,7 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
      * @see #TYPE_PAYABLE
      * @see #TYPE_RECEIVABLE there are other types too
      */
-    String getType();
+    Type getType();
 
     /**
      */
