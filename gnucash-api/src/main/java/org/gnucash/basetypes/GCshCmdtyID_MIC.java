@@ -31,6 +31,7 @@ public class GCshCmdtyID_MIC extends GCshCmdtyID {
     public GCshCmdtyID_MIC() {
 	super();
 	type = Type.SECURITY_MIC;
+	mic = GCshCmdtyCurrNameSpace.MIC.UNSET;
     }
 
     public GCshCmdtyID_MIC(GCshCmdtyCurrNameSpace.MIC mic, String secCode) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {

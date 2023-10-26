@@ -31,6 +31,7 @@ public class GCshCmdtyID_SecIdType extends GCshCmdtyID {
     public GCshCmdtyID_SecIdType() {
 	super();
 	type = Type.SECURITY_SECIDTYPE;
+	secIdType = GCshCmdtyCurrNameSpace.SecIdType.UNSET;
     }
 
     public GCshCmdtyID_SecIdType(GCshCmdtyCurrNameSpace.SecIdType secIdType, String secCode) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {

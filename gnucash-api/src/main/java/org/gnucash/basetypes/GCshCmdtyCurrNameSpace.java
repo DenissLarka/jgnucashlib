@@ -278,14 +278,39 @@ public class GCshCmdtyCurrNameSpace {
 	UNSET
     }
     
-    // Widely-used security ID types  
+    // Widely-used security ID types/systems
     public enum SecIdType {
-	ISIN,  // Truly international -- "works" even for USA/Canada
-	       // (although in practice, this is a little difficult, as these
-	       // two insist on having their own system and ignore e.t. else)
-	CUSIP, // USA and Canada -- can be mapped to an ISIN
-	SEDOL, // UK -- can be mapped to an ISIN
-	WKN,   // Germany, Austria, Switzerland -- can be mapped to an ISIN
+	ISIN,  // Truly global
+	       // Cf. https://en.wikipedia.org/wiki/International_Securities_Identification_Number
+	
+	// Region/country-specific:
+	
+	CUSIP, // Covers USA and Canada -- can easily be converted to an ISIN
+	       // (In practice, it's sometimes a little difficult to get a 
+	       // security's CUSIP because in these two countries, many individuals 
+	       // and even organizations insist on using the hopelessly obsolete and
+	       // market-specific tickers and treat the CUSIP as a sort of secret and/or
+	       // irrelevant)
+	       // Cf. https://en.wikipedia.org/wiki/CUSIP
+	
+	SEDOL, // Covers the UK and Ireland -- can easily be converted to an ISIN
+	       // Cf. https://en.wikipedia.org/wiki/SEDOL
+	
+	WKN,   // Covers Germany, Austria and Switzerland -- can easily be converted 
+	       // to an ISIN
+	       // Cf. https://en.wikipedia.org/wiki/Wertpapierkennnummer
+	
+	// Others? Not that I knew...
+	// Note that market-specific code systems, such as:
+	// - Tokyo exchange codes
+	// - Hong Kong exchange codes
+	// - etc.
+	// *could*, in theory, be added here, but it is discouraged,
+	// because they are market-specific and thus implicitly covered by
+	// the other enums above.
+	// (Granted, things are not always that simple: One could argue, e.g.,
+	// that Tokyo-codes effectively cover a whole country, the TSE being the
+	// only internationally relevant exchange in Japan...)
 	
 	UNSET
     }

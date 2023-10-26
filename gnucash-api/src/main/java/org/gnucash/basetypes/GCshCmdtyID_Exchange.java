@@ -31,6 +31,7 @@ public class GCshCmdtyID_Exchange extends GCshCmdtyID {
     public GCshCmdtyID_Exchange() {
 	super();
 	type = Type.SECURITY_EXCHANGE;
+	exchange = GCshCmdtyCurrNameSpace.Exchange.UNSET;
     }
 
     public GCshCmdtyID_Exchange(GCshCmdtyCurrNameSpace.Exchange exchange, String secCode) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
