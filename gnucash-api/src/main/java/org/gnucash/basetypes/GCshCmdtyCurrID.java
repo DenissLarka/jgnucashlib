@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,21 +18,22 @@ import org.slf4j.LoggerFactory;
  * @param exchange
  * @param code
  */
-public class CmdtyCurrID {
+public class GCshCmdtyCurrID {
     
     // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/gnc-commodity.h#L108
     // We do not use the GnuCash-internally used "NONCURRENCY"
     public enum Type {
 	CURRENCY,
-	SECURITY_EXCHANGE, // name space is semi-formal abbrev. of major world exchange
-	SECURITY_MIC,      // name space is formal abbrev. of major world exchange
-	SECURITY_GENERAL,  // name space can be freely chosen
+	SECURITY_EXCHANGE,  // name space is semi-formal abbrev. of major world exchange
+	SECURITY_MIC,       // name space is formal abbrev. of major world exchange
+	SECURITY_SECIDTYPE, // name space is widely-used security ID type/scheme
+	SECURITY_GENERAL,   // name space can be freely chosen
 	UNSET
     }
     
     // ---------------------------------------------------------------
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CmdtyCurrID.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GCshCmdtyCurrID.class);
 
     public static final char SEPARATOR = ':';
 
@@ -44,11 +45,11 @@ public class CmdtyCurrID {
 
     // ---------------------------------------------------------------
     
-    public CmdtyCurrID() {
+    public GCshCmdtyCurrID() {
 	this.type = Type.UNSET;
     }
 
-    public CmdtyCurrID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException {
+    public GCshCmdtyCurrID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException {
 	
 	if ( nameSpaceFree == null )
 	    throw new IllegalArgumentException("Name space is null");
@@ -62,7 +63,7 @@ public class CmdtyCurrID {
 	if ( code.trim().equals("") )
 	    throw new IllegalArgumentException("Security code is empty");
 
-	if ( nameSpaceFree.trim().equals(CmdtyCurrNameSpace.CURRENCY) ) {
+	if ( nameSpaceFree.trim().equals(GCshCmdtyCurrNameSpace.CURRENCY) ) {
 	    this.type = Type.CURRENCY;
 	} else {
 	    this.type = Type.SECURITY_GENERAL;
@@ -138,14 +139,14 @@ public class CmdtyCurrID {
     
     // ---------------------------------------------------------------
     
-    public static CmdtyCurrID parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+    public static GCshCmdtyCurrID parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 	if ( str == null )
 	    throw new IllegalArgumentException("Argument string is null");
 
 	if ( str.equals("") )
 	    throw new IllegalArgumentException("Argument string is empty");
 
-	CmdtyCurrID result = new CmdtyCurrID();
+	GCshCmdtyCurrID result = new GCshCmdtyCurrID();
 	
 	int posSep = str.indexOf(SEPARATOR);
 	// Plausi ::MAGIC
@@ -156,10 +157,10 @@ public class CmdtyCurrID {
 	String nameSpaceLoc = str.substring(0, posSep).trim();
 	String currSecCodeLoc = str.substring(posSep + 1, str.length()).trim();
 	
-	if ( nameSpaceLoc.equals(CmdtyCurrNameSpace.CURRENCY) )
+	if ( nameSpaceLoc.equals(GCshCmdtyCurrNameSpace.CURRENCY) )
 	{
 	    result.setType(Type.CURRENCY);
-	    result.setNameSpace(CmdtyCurrNameSpace.CURRENCY);
+	    result.setNameSpace(GCshCmdtyCurrNameSpace.CURRENCY);
 	    result.setCode(currSecCodeLoc);
 	}	
 	else 
@@ -192,7 +193,7 @@ public class CmdtyCurrID {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	CmdtyCurrID other = (CmdtyCurrID) obj;
+	GCshCmdtyCurrID other = (GCshCmdtyCurrID) obj;
 	if (type != other.type)
 	    return false;
 	if (nameSpace == null) {

@@ -10,8 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashAccount;
@@ -171,7 +171,7 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
 	{
 	    GncTransaction.TrnCurrency currency = factory.createGncTransactionTrnCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
-	    currency.setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
+	    currency.setCmdtySpace(GCshCmdtyCurrNameSpace.CURRENCY);
 	    transaction.setTrnCurrency(currency);
 	}
 
@@ -285,7 +285,7 @@ public class GnucashWritableTransactionImpl extends GnucashTransactionImpl
      * @see #setCurrencyNameSpace(String)
      * @see {@link GnucashTransaction#getCurrencyID()}
      */
-    public void setCmdtyCurrID(final CmdtyCurrID cmdtyCurrID) {
+    public void setCmdtyCurrID(final GCshCmdtyCurrID cmdtyCurrID) {
 	this.getJwsdpPeer().getTrnCurrency().setCmdtySpace(cmdtyCurrID.getNameSpace());
 	this.getJwsdpPeer().getTrnCurrency().setCmdtyId(cmdtyCurrID.getCode());
 	getWritingFile().setModified(true);

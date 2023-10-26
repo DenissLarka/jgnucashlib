@@ -1,9 +1,9 @@
 package org.gnucash.write;
 
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.read.GnucashCommodity;
-import org.gnucash.currency.CmdtyCurrID;
 import org.gnucash.write.impl.ObjectCascadeException;
 
 /**
@@ -16,7 +16,7 @@ public interface GnucashWritableCommodity extends GnucashCommodity
     
     // ---------------------------------------------------------------
 
-    public void setQualifId(CmdtyCurrID qualifId) throws InvalidCmdtyCurrTypeException;
+    public void setQualifId(GCshCmdtyCurrID qualifId) throws InvalidCmdtyCurrTypeException;
 
     public void setXCode(String xCode);
 

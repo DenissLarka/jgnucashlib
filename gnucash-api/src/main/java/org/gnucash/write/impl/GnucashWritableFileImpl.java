@@ -20,10 +20,10 @@ import java.util.TreeSet;
 import java.util.zip.GZIPOutputStream;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CmdtyCurrNameSpace;
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
@@ -815,7 +815,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
 
 	GncV2.GncBook.GncPricedb.Price.PriceCurrency baseCurrency = getObjectFactory()
 		.createGncV2GncBookGncPricedbPricePriceCurrency();
-	baseCurrency.setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
+	baseCurrency.setCmdtySpace(GCshCmdtyCurrNameSpace.CURRENCY);
 	baseCurrency.setCmdtyId(getDefaultCurrencyID());
 
 	GncV2.GncBook.GncPricedb.Price newQuote = getObjectFactory().createGncV2GncBookGncPricedbPrice();
@@ -1211,7 +1211,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl
     @Override
     public void removeCommodity(GnucashWritableCommodity cmdty) throws InvalidCmdtyCurrTypeException, ObjectCascadeException, InvalidCmdtyCurrIDException {
 	if ( cmdty.getQualifId().toString().
-		startsWith(CmdtyCurrNameSpace.CURRENCY + CmdtyCurrID.SEPARATOR) )
+		startsWith(GCshCmdtyCurrNameSpace.CURRENCY + GCshCmdtyCurrID.SEPARATOR) )
 	    throw new IllegalArgumentException("Currency commodities may not be removed");
 	
 	if ( existPriceObjects(cmdty) )

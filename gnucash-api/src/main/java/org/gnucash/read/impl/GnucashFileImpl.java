@@ -28,10 +28,10 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.currency.ComplexCurrencyTable;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
@@ -1427,7 +1427,7 @@ public class GnucashFileImpl implements GnucashFile {
 	    
 	    GncAccount jwsdpAccount = (GncAccount) bookElement;
 	    if ( jwsdpAccount.getActCommodity() != null ) {
-		 if ( jwsdpAccount.getActCommodity().getCmdtySpace().equals(CmdtyCurrNameSpace.CURRENCY) ) {
+		 if ( jwsdpAccount.getActCommodity().getCmdtySpace().equals(GCshCmdtyCurrNameSpace.CURRENCY) ) {
 		     return jwsdpAccount.getActCommodity().getCmdtyId();
 		 }
 	    }
@@ -1455,7 +1455,7 @@ public class GnucashFileImpl implements GnucashFile {
 			+ priceDB.getVersion() + " prices will not be loaded!");
 	    } else {
 		getCurrencyTable().clear();
-		getCurrencyTable().setConversionFactor(CmdtyCurrNameSpace.CURRENCY, 
+		getCurrencyTable().setConversionFactor(GCshCmdtyCurrNameSpace.CURRENCY, 
 			                               getDefaultCurrencyID(), 
 			                               new FixedPointNumber(1));
 
@@ -1471,7 +1471,7 @@ public class GnucashFileImpl implements GnucashFile {
 		    }
 
 		    String baseCurrency = getDefaultCurrencyID();
-		    if ( comodity.getCmdtySpace().equals(CmdtyCurrNameSpace.CURRENCY) && 
+		    if ( comodity.getCmdtySpace().equals(GCshCmdtyCurrNameSpace.CURRENCY) && 
 			 comodity.getCmdtyId().equals(baseCurrency) ) {
 			LOGGER.warn("Ignoring price-quote for " + baseCurrency + " because " + baseCurrency + " is"
 				+ "our base-currency.");
@@ -1583,7 +1583,7 @@ public class GnucashFileImpl implements GnucashFile {
 		     * priceQuote.getPriceType() + "' expecting 'last' "); continue; }
 		     */
 
-		    if (!priceQuote.getPriceCurrency().getCmdtySpace().equals(CmdtyCurrNameSpace.CURRENCY)) {
+		    if (!priceQuote.getPriceCurrency().getCmdtySpace().equals(GCshCmdtyCurrNameSpace.CURRENCY)) {
 			if (depth > maxRecursionDepth) {
 			    LOGGER.warn("ignoring price-quote that is not in an ISO4217-currency but in '"
 				    + priceQuote.getPriceCurrency().getCmdtyId());
@@ -2027,18 +2027,18 @@ public class GnucashFileImpl implements GnucashFile {
     // ---------------------------------------------------------------
 
     @Override
-    public GnucashCommodity getCommodityByQualifID(final CmdtyCurrID qualifID) {
+    public GnucashCommodity getCommodityByQualifID(final GCshCmdtyCurrID qualifID) {
 	return getCommodityByQualifID(qualifID.toString());
     }
 
     @Override
     public GnucashCommodity getCommodityByQualifID(final String nameSpace, final String id) {
-	return getCommodityByQualifID(nameSpace + CmdtyCurrID.SEPARATOR + id);
+	return getCommodityByQualifID(nameSpace + GCshCmdtyCurrID.SEPARATOR + id);
     }
 
     @Override
-    public GnucashCommodity getCommodityByQualifID(final CmdtyCurrNameSpace.Exchange exchange, String id) {
-	return getCommodityByQualifID(exchange.toString() + CmdtyCurrID.SEPARATOR + id);
+    public GnucashCommodity getCommodityByQualifID(final GCshCmdtyCurrNameSpace.Exchange exchange, String id) {
+	return getCommodityByQualifID(exchange.toString() + GCshCmdtyCurrID.SEPARATOR + id);
     }
 
     @Override

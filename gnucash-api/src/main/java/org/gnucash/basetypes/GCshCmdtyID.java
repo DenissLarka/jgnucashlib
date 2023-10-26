@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
  * @param exchange
  * @param secCode
  */
-public class CommodityID extends CmdtyCurrID {
+public class GCshCmdtyID extends GCshCmdtyCurrID {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommodityID.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GCshCmdtyID.class);
 
     // ---------------------------------------------------------------
 
@@ -28,12 +28,12 @@ public class CommodityID extends CmdtyCurrID {
 
     // ---------------------------------------------------------------
     
-    public CommodityID() {
+    public GCshCmdtyID() {
 	super();
 	type = Type.SECURITY_GENERAL;
     }
 
-    public CommodityID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCmdtyID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	
 	super(nameSpaceFree, code);
 	
@@ -43,7 +43,7 @@ public class CommodityID extends CmdtyCurrID {
 	setType(Type.SECURITY_GENERAL);
     }
 
-    public CommodityID(CmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCmdtyID(GCshCmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	
 	super(cmdtyCurrID.getNameSpace(), cmdtyCurrID.getCode());
 
@@ -65,14 +65,14 @@ public class CommodityID extends CmdtyCurrID {
     
     // ---------------------------------------------------------------
     
-    public static CommodityID parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+    public static GCshCmdtyID parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 	if ( str == null )
 	    throw new IllegalArgumentException("Argument string is null");
 
 	if ( str.equals("") )
 	    throw new IllegalArgumentException("Argument string is empty");
 
-	CommodityID result = new CommodityID();
+	GCshCmdtyID result = new GCshCmdtyID();
 	
 	int posSep = str.indexOf(SEPARATOR);
 	// Plausi ::MAGIC
@@ -83,7 +83,7 @@ public class CommodityID extends CmdtyCurrID {
 	String nameSpaceLoc = str.substring(0, posSep).trim();
 	String currSecCodeLoc = str.substring(posSep + 1, str.length()).trim();
 	
-	if ( nameSpaceLoc.equals(CmdtyCurrNameSpace.CURRENCY) )
+	if ( nameSpaceLoc.equals(GCshCmdtyCurrNameSpace.CURRENCY) )
 	{
 	    throw new InvalidCmdtyCurrIDException();
 	}	

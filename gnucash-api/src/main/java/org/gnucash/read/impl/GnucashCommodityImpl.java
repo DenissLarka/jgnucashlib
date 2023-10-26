@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashFile;
@@ -75,12 +75,12 @@ public class GnucashCommodityImpl implements GnucashCommodity
      * @throws InvalidCmdtyCurrTypeException 
      */
     @Override
-    public CmdtyCurrID getQualifId() throws InvalidCmdtyCurrTypeException {
+    public GCshCmdtyCurrID getQualifId() throws InvalidCmdtyCurrTypeException {
 	if ( getNameSpace() == null ||
 	     getId() == null )
 	    return null;
 	
-	CmdtyCurrID result = new CmdtyCurrID(getNameSpace(), getId());
+	GCshCmdtyCurrID result = new GCshCmdtyCurrID(getNameSpace(), getId());
 	
 	return result;
     }

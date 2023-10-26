@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashFile;
 
@@ -41,7 +42,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	public ComplexCurrencyTable() {
 		super();
 
-		addNameSpace(CmdtyCurrNameSpace.CURRENCY, new SimpleCurrencyTable());
+		addNameSpace(GCshCmdtyCurrNameSpace.CURRENCY, new SimpleCurrencyTable());
 	}
 
 	// -----------------------------------------------------------
@@ -188,7 +189,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null currency-id given!");
 		}
 
-		return convertFromBaseCurrency(CmdtyCurrNameSpace.CURRENCY, pValue, pIso4217CurrencyCode);
+		return convertFromBaseCurrency(GCshCmdtyCurrNameSpace.CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -248,7 +249,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return convertToBaseCurrency(CmdtyCurrNameSpace.CURRENCY, pValue, pIso4217CurrencyCode);
+		return convertToBaseCurrency(GCshCmdtyCurrNameSpace.CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -259,7 +260,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return getConversionFactor(CmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode);
+		return getConversionFactor(GCshCmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -276,9 +277,9 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null conversion-factor given!");
 		}
 
-		setConversionFactor(CmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode, pFactor);
+		setConversionFactor(GCshCmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode, pFactor);
 
-		fireCurrencyTableChanged(CmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode, pFactor);
+		fireCurrencyTableChanged(GCshCmdtyCurrNameSpace.CURRENCY, pIso4217CurrencyCode, pFactor);
 	}
 
 	/**

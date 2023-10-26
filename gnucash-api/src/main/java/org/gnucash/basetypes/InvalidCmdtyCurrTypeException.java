@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 public class InvalidCmdtyCurrTypeException extends Exception {
 

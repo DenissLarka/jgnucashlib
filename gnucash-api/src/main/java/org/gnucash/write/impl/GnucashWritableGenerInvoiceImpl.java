@@ -10,8 +10,8 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrNameSpace;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
@@ -530,7 +530,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = fact.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
-	    currency.setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
+	    currency.setCmdtySpace(GCshCmdtyCurrNameSpace.CURRENCY);
 	    invc.setInvoiceCurrency(currency);
 	}
 	
@@ -625,7 +625,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = fact.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
-	    currency.setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
+	    currency.setCmdtySpace(GCshCmdtyCurrNameSpace.CURRENCY);
 	    invc.setInvoiceCurrency(currency);
 	}
 	
@@ -721,7 +721,7 @@ public class GnucashWritableGenerInvoiceImpl extends GnucashGenerInvoiceImpl
 	{
 	    GncV2.GncBook.GncGncInvoice.InvoiceCurrency currency = fact.createGncV2GncBookGncGncInvoiceInvoiceCurrency();
 	    currency.setCmdtyId(file.getDefaultCurrencyID());
-	    currency.setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
+	    currency.setCmdtySpace(GCshCmdtyCurrNameSpace.CURRENCY);
 	    invc.setInvoiceCurrency(currency);
 	}
 

@@ -3,8 +3,8 @@ package org.gnucash.read;
 import java.util.Collection;
 import java.util.Locale;
 
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 

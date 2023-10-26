@@ -4,10 +4,10 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CurrencyID;
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
@@ -190,9 +190,9 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      */
     public String getValueFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	NumberFormat nf = getValueCurrencyFormat();
-	if ( getTransaction().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	if ( getTransaction().getCmdtyCurrID().getType() == GCshCmdtyCurrID.Type.CURRENCY ) {
 	    // redundant, but symmetry:
-	    nf.setCurrency(new CurrencyID(getTransaction().getCmdtyCurrID()).getCurrency());
+	    nf.setCurrency(new GCshCurrID(getTransaction().getCmdtyCurrID()).getCurrency());
 	    return nf.format(getValue());
 	}
 	else {
@@ -208,9 +208,9 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
     public String getValueFormatted(final Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 
 	NumberFormat nf = NumberFormat.getInstance(lcl);
-	if ( getTransaction().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
+	if ( getTransaction().getCmdtyCurrID().getType() == GCshCmdtyCurrID.Type.CURRENCY ) {
 	    // redundant, but symmetry:
-	    nf.setCurrency(new CurrencyID(getTransaction().getCmdtyCurrID()).getCurrency());
+	    nf.setCurrency(new GCshCurrID(getTransaction().getCmdtyCurrID()).getCurrency());
 	    return nf.format(getValue());
 	}
 	else {
@@ -273,8 +273,8 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      */
     public String getQuantityFormatted() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	NumberFormat nf = getQuantityCurrencyFormat();
-	if ( getAccount().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
-	    nf.setCurrency(new CurrencyID(getAccount().getCmdtyCurrID()).getCurrency());
+	if ( getAccount().getCmdtyCurrID().getType() == GCshCmdtyCurrID.Type.CURRENCY ) {
+	    nf.setCurrency(new GCshCurrID(getAccount().getCmdtyCurrID()).getCurrency());
 	    return nf.format(getQuantity());
 	}
 	else {
@@ -292,8 +292,8 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl
      */
     public String getQuantityFormatted(final Locale lcl) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	NumberFormat nf = NumberFormat.getCurrencyInstance(lcl);
-	if ( getAccount().getCmdtyCurrID().getType() == CmdtyCurrID.Type.CURRENCY ) {
-	    nf.setCurrency(new CurrencyID(getAccount().getCmdtyCurrID()).getCurrency());
+	if ( getAccount().getCmdtyCurrID().getType() == GCshCmdtyCurrID.Type.CURRENCY ) {
+	    nf.setCurrency(new GCshCurrID(getAccount().getCmdtyCurrID()).getCurrency());
 	    return nf.format(getQuantity());
 	}
 	else {

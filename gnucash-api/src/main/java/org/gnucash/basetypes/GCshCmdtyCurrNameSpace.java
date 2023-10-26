@@ -1,9 +1,9 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
-public class CmdtyCurrNameSpace {
+public class GCshCmdtyCurrNameSpace {
 
     // Currency: Note that the old "ISO4217" has been deprecated
-    public static final String CURRENCY = CmdtyCurrID.Type.CURRENCY.toString();
+    public static final String CURRENCY = GCshCmdtyCurrID.Type.CURRENCY.toString();
     
     // Semi-formal, non-standardized but widely-used abbreviations 
     // of major exchanges
@@ -274,6 +274,18 @@ public class CmdtyCurrNameSpace {
 	XJSE, // Johannesburg Stock Exchange 
 	
 	// ... and many others
+	
+	UNSET
+    }
+    
+    // Widely-used security ID types  
+    public enum SecIdType {
+	ISIN,  // Truly international -- "works" even for USA/Canada
+	       // (although in practice, this is a little difficult, as these
+	       // two insist on having their own system and ignore e.t. else)
+	CUSIP, // USA and Canada -- can be mapped to an ISIN
+	SEDOL, // UK -- can be mapped to an ISIN
+	WKN,   // Germany, Austria, Switzerland -- can be mapped to an ISIN
 	
 	UNSET
     }

@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.impl.SplitNotFoundException;
@@ -119,7 +119,7 @@ public interface GnucashTransaction extends Comparable<GnucashTransaction> {
      */
     boolean isBalanced();
 
-    CmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException;
+    GCshCmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException;
 
     /**
      * The result is in the currency of the transaction.<br/>

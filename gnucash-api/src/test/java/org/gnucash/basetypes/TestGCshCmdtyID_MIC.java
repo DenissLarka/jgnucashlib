@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestCommodityID_MIC
+public class TestGCshCmdtyID_MIC
 {
   public static void main(String[] args) throws Exception
   {
@@ -16,7 +16,7 @@ public class TestCommodityID_MIC
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestCommodityID_MIC.class);  
+    return new JUnit4TestAdapter(TestGCshCmdtyID_MIC.class);  
   }
   
   // -----------------------------------------------------------------
@@ -24,23 +24,23 @@ public class TestCommodityID_MIC
   @Test
   public void test02() throws Exception
   {
-    CommodityID_MIC commCurr = new CommodityID_MIC(CmdtyCurrNameSpace.MIC.XFRA, "MBG");
+    GCshCmdtyID_MIC cmdty = new GCshCmdtyID_MIC(GCshCmdtyCurrNameSpace.MIC.XFRA, "MBG");
     
-    assertEquals(CmdtyCurrID.Type.SECURITY_MIC, commCurr.getType());
-    assertEquals(CmdtyCurrNameSpace.MIC.XFRA, commCurr.getMIC());
-    assertEquals("MBG", commCurr.getCode());
-    assertEquals("XFRA:MBG", commCurr.toString());
+    assertEquals(GCshCmdtyCurrID.Type.SECURITY_MIC, cmdty.getType());
+    assertEquals(GCshCmdtyCurrNameSpace.MIC.XFRA, cmdty.getMIC());
+    assertEquals("MBG", cmdty.getCode());
+    assertEquals("XFRA:MBG", cmdty.toString());
   }
 
   @Test
   public void test03() throws Exception
   {
-    CommodityID_MIC commCurr1  = new CommodityID_MIC(CmdtyCurrNameSpace.MIC.XFRA, "MBG");
-    CommodityID_MIC commCurr2 = new CommodityID_MIC("XFRA", "MBG");
+    GCshCmdtyID_MIC cmdty1  = new GCshCmdtyID_MIC(GCshCmdtyCurrNameSpace.MIC.XFRA, "MBG");
+    GCshCmdtyID_MIC cmdty2 = new GCshCmdtyID_MIC("XFRA", "MBG");
   
-    assertEquals(commCurr1.toString(), commCurr2.toString());
-    assertEquals(commCurr1.toStringLong(), commCurr2.toStringLong());
-    assertEquals(commCurr1, commCurr2);
+    assertEquals(cmdty1.toString(), cmdty2.toString());
+    assertEquals(cmdty1.toStringLong(), cmdty2.toStringLong());
+    assertEquals(cmdty1, cmdty2);
       
     // ---
 
@@ -55,14 +55,14 @@ public class TestCommodityID_MIC
   @Test
   public void test04_2() throws Exception
   {
-      CommodityID_MIC commCurrPrs = CommodityID_MIC.parse("XFRA:SAP");
-      CommodityID_MIC commCurrRef = new CommodityID_MIC(CmdtyCurrNameSpace.MIC.XFRA, "SAP");
+      GCshCmdtyID_MIC cmdtyPrs = GCshCmdtyID_MIC.parse("XFRA:SAP");
+      GCshCmdtyID_MIC cmdtyRef = new GCshCmdtyID_MIC(GCshCmdtyCurrNameSpace.MIC.XFRA, "SAP");
       
-      assertEquals(CmdtyCurrID.Type.SECURITY_MIC, commCurrPrs.getType());
-      assertEquals("XFRA:SAP", commCurrPrs.toString());
-      assertEquals(commCurrRef.toString(), commCurrPrs.toString());
-      assertEquals(commCurrRef.toStringLong(), commCurrPrs.toStringLong());
-      assertEquals(commCurrRef, commCurrPrs);
+      assertEquals(GCshCmdtyCurrID.Type.SECURITY_MIC, cmdtyPrs.getType());
+      assertEquals("XFRA:SAP", cmdtyPrs.toString());
+      assertEquals(cmdtyRef.toString(), cmdtyPrs.toString());
+      assertEquals(cmdtyRef.toStringLong(), cmdtyPrs.toStringLong());
+      assertEquals(cmdtyRef, cmdtyPrs);
 
 //      // ---
 //      
@@ -78,7 +78,7 @@ public class TestCommodityID_MIC
   {
       try 
       {
-	  CommodityID_MIC commCurrPrs = CommodityID_MIC.parse("FUXNSTUELL:BURP");
+	  GCshCmdtyID_MIC cmdtyPrs = GCshCmdtyID_MIC.parse("FUXNSTUELL:BURP");
       }
       catch ( Exception exc )
       {

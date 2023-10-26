@@ -11,8 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CmdtyCurrNameSpace;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Slot;
@@ -112,7 +112,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		{
 			GncAccount.ActCommodity currency = factory.createGncAccountActCommodity();
 			currency.setCmdtyId(file.getDefaultCurrencyID());
-			currency.setCmdtySpace(CmdtyCurrNameSpace.CURRENCY);
+			currency.setCmdtySpace(GCshCmdtyCurrNameSpace.CURRENCY);
 			account.setActCommodity(currency);
 		}
 
@@ -250,7 +250,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 		}
 	}
 	
-	public void setCmdtyCurrID(final CmdtyCurrID cmdtyCurrID) {
+	public void setCmdtyCurrID(final GCshCmdtyCurrID cmdtyCurrID) {
 	    setCmdtyCurrNameSpace(cmdtyCurrID.getNameSpace());
 	    setCmdtyCurrCode(cmdtyCurrID.getCode());
 	}	

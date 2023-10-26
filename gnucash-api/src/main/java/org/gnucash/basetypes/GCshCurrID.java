@@ -1,8 +1,7 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import java.util.Currency;
 
-import org.gnucash.currency.CmdtyCurrID.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +20,9 @@ import org.slf4j.LoggerFactory;
  * @param exchange
  * @param secCode
  */
-public class CurrencyID extends CmdtyCurrID {
+public class GCshCurrID extends GCshCmdtyCurrID {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CurrencyID.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GCshCurrID.class);
 
     // ---------------------------------------------------------------
 
@@ -31,28 +30,28 @@ public class CurrencyID extends CmdtyCurrID {
 
     // ---------------------------------------------------------------
     
-    public CurrencyID() {
+    public GCshCurrID() {
 	super();
 	type = Type.CURRENCY;
     }
 
-    public CurrencyID(Currency curr) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+    public GCshCurrID(Currency curr) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 
-	super(CmdtyCurrNameSpace.CURRENCY, curr.getCurrencyCode());
+	super(GCshCmdtyCurrNameSpace.CURRENCY, curr.getCurrencyCode());
 	
 	setType(Type.CURRENCY);
 	setCurrency(curr);
     }
 
-    public CurrencyID(String currStr) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+    public GCshCurrID(String currStr) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 
-	super(CmdtyCurrNameSpace.CURRENCY, currStr);
+	super(GCshCmdtyCurrNameSpace.CURRENCY, currStr);
 	
 	setType(Type.CURRENCY);
 	setCurrency(currStr);
     }
 
-    public CurrencyID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCurrID(String nameSpaceFree, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	
 	super(nameSpaceFree, code);
 
@@ -63,7 +62,7 @@ public class CurrencyID extends CmdtyCurrID {
 	setCurrency(code);
     }
 
-    public CurrencyID(CmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCurrID(GCshCmdtyCurrID cmdtyCurrID) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	
 	super(cmdtyCurrID.getNameSpace(), cmdtyCurrID.getCode());
 
@@ -112,14 +111,14 @@ public class CurrencyID extends CmdtyCurrID {
 
     // ---------------------------------------------------------------
     
-    public static CurrencyID parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+    public static GCshCurrID parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 	if ( str == null )
 	    throw new IllegalArgumentException("Argument string is null");
 
 	if ( str.equals("") )
 	    throw new IllegalArgumentException("Argument string is empty");
 
-	CurrencyID result = new CurrencyID();
+	GCshCurrID result = new GCshCurrID();
 	
 	int posSep = str.indexOf(SEPARATOR);
 	// Plausi ::MAGIC
@@ -130,7 +129,7 @@ public class CurrencyID extends CmdtyCurrID {
 	String nameSpaceLoc = str.substring(0, posSep).trim();
 	String currSecCodeLoc = str.substring(posSep + 1, str.length()).trim();
 	
-	if ( nameSpaceLoc.equals(CmdtyCurrNameSpace.CURRENCY) )
+	if ( nameSpaceLoc.equals(GCshCmdtyCurrNameSpace.CURRENCY) )
 	{
 	    result.setType(Type.CURRENCY);
 	    result.setNameSpace(nameSpaceLoc);
@@ -164,7 +163,7 @@ public class CurrencyID extends CmdtyCurrID {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	CurrencyID other = (CurrencyID) obj;
+	GCshCurrID other = (GCshCurrID) obj;
 	if (type != other.type)
 	    return false;
 	if (currency == null) {
@@ -187,7 +186,7 @@ public class CurrencyID extends CmdtyCurrID {
 	if (type != Type.CURRENCY)
 	    return "ERROR";
 
-	String result = CmdtyCurrNameSpace.CURRENCY.toString() + 
+	String result = GCshCmdtyCurrNameSpace.CURRENCY.toString() + 
 		        SEPARATOR + 
 		        currency.getCurrencyCode();
 

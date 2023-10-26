@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import org.gnucash.currency.CurrencyID;
+import org.gnucash.basetypes.GCshCurrID;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashTransaction;
@@ -49,7 +49,7 @@ public class GenTrx2 {
 
 	GnucashWritableTransaction writableTransaction = gnucashFile.createWritableTransaction();
 	writableTransaction.setDescription("check");
-	writableTransaction.setCmdtyCurrID(new CurrencyID("EUR"));
+	writableTransaction.setCmdtyCurrID(new GCshCurrID("EUR"));
 	writableTransaction.setDateEntered(LocalDateTime.now());
 
 	GnucashAccount acct = null;

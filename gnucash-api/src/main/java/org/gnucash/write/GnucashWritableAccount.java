@@ -3,7 +3,7 @@ package org.gnucash.write;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 
-import org.gnucash.currency.CmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashObject;
@@ -77,7 +77,7 @@ public interface GnucashWritableAccount extends GnucashAccount,
      * @see #setCurrencyNameSpace(String)
      * @see {@link GnucashAccount#getCurrencyID()}
      */
-    void setCmdtyCurrID(final CmdtyCurrID cmdtyCurrID);
+    void setCmdtyCurrID(final GCshCmdtyCurrID cmdtyCurrID);
 
     /**
      * @param newparent the new account or null to make it a top-level-account

@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,48 +12,48 @@ import org.slf4j.LoggerFactory;
  * Yes, there are exceptions to this rule, but we currently do not 
  * support these but rather profit from enhanced type safety instead.
  * (Apart from that, nothing stops you from adding new exchange codes
- * to the enum CmdtyCurrNameSpace.Exchange or to open another enum
+ * to the enum CmdtyCurrNameSpace.SecIdType or to open another enum
  * in this class, if you absolutely need it. After all, this is FOSS...)
  *  
  * @param exchange
  * @param secCode
  */
-public class CommodityID_Exchange extends CommodityID {
+public class GCshCmdtyID_SecIdType extends GCshCmdtyID {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommodityID_Exchange.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GCshCmdtyID_SecIdType.class);
 
     // ---------------------------------------------------------------
 
-    private CmdtyCurrNameSpace.Exchange exchange;
+    private GCshCmdtyCurrNameSpace.SecIdType secIdType;
 
     // ---------------------------------------------------------------
     
-    public CommodityID_Exchange() {
+    public GCshCmdtyID_SecIdType() {
 	super();
-	type = Type.SECURITY_EXCHANGE;
+	type = Type.SECURITY_SECIDTYPE;
     }
 
-    public CommodityID_Exchange(CmdtyCurrNameSpace.Exchange exchange, String secCode) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCmdtyID_SecIdType(GCshCmdtyCurrNameSpace.SecIdType secIdType, String secCode) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	
-	super(exchange.toString(), secCode);
+	super(secIdType.toString(), secCode);
 	
-	setType(Type.SECURITY_EXCHANGE);
-	setExchange(exchange);
+	setType(Type.SECURITY_SECIDTYPE);
+	setSecIdType(secIdType);
     }
 
-    public CommodityID_Exchange(String nameSpace, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCmdtyID_SecIdType(String nameSpace, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 
 	super(nameSpace, code);
 
-	setType(Type.SECURITY_EXCHANGE);
-	setExchange(nameSpace);
+	setType(Type.SECURITY_SECIDTYPE);
+	setSecIdType(nameSpace);
     }
 
     // ---------------------------------------------------------------
 
     @Override
     public void setType(Type type) throws InvalidCmdtyCurrIDException {
-//        if ( type != Type.SECURITY_EXCHANGE )
+//        if ( type != Type.SECURITY_SECIDTYPE )
 //            throw new InvalidCmdtyCurrIDException();
 
         super.setType(type);
@@ -61,40 +61,40 @@ public class CommodityID_Exchange extends CommodityID {
     
     // ----------------------------
     
-    public CmdtyCurrNameSpace.Exchange getExchange() throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_EXCHANGE )
+    public GCshCmdtyCurrNameSpace.SecIdType getSecIdType() throws InvalidCmdtyCurrTypeException {
+	if ( type != Type.SECURITY_SECIDTYPE )
 	    throw new InvalidCmdtyCurrTypeException();
 	
-        return exchange;
+        return secIdType;
     }
     
-    public void setExchange(CmdtyCurrNameSpace.Exchange exchange) throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_EXCHANGE )
+    public void setSecIdType(GCshCmdtyCurrNameSpace.SecIdType secIdType) throws InvalidCmdtyCurrTypeException {
+	if ( type != Type.SECURITY_SECIDTYPE )
 	    throw new InvalidCmdtyCurrTypeException();
 	
-        this.exchange = exchange;
+        this.secIdType = secIdType;
     }
     
-    public void setExchange(String exchangeStr) throws InvalidCmdtyCurrTypeException {
-	if ( exchangeStr == null )
-	    throw new IllegalArgumentException("Exchange string is null");
+    public void setSecIdType(String secIdTypeStr) throws InvalidCmdtyCurrTypeException {
+	if ( secIdTypeStr == null )
+	    throw new IllegalArgumentException("Security ID type string is null");
 
-	if ( exchangeStr.trim().equals("") )
-	    throw new IllegalArgumentException("Exchange string is empty");
+	if ( secIdTypeStr.trim().equals("") )
+	    throw new IllegalArgumentException("Security ID type string is empty");
 
-        setExchange(CmdtyCurrNameSpace.Exchange.valueOf(exchangeStr.trim()));
+        setSecIdType(GCshCmdtyCurrNameSpace.SecIdType.valueOf(secIdTypeStr.trim()));
     }
     
     // ---------------------------------------------------------------
     
-    public static CommodityID_Exchange parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+    public static GCshCmdtyID_SecIdType parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 	if ( str == null )
 	    throw new IllegalArgumentException("Argument string is null");
 
 	if ( str.equals("") )
 	    throw new IllegalArgumentException("Argument string is empty");
 
-	CommodityID_Exchange result = new CommodityID_Exchange();
+	GCshCmdtyID_SecIdType result = new GCshCmdtyID_SecIdType();
 	
 	int posSep = str.indexOf(SEPARATOR);
 	// Plausi ::MAGIC
@@ -105,15 +105,15 @@ public class CommodityID_Exchange extends CommodityID {
 	String nameSpaceLoc = str.substring(0, posSep).trim();
 	String currSecCodeLoc = str.substring(posSep + 1, str.length()).trim();
 	
-	if ( nameSpaceLoc.equals(CmdtyCurrNameSpace.CURRENCY) )
+	if ( nameSpaceLoc.equals(GCshCmdtyCurrNameSpace.CURRENCY) )
 	{
 	    throw new InvalidCmdtyCurrTypeException();
 	}	
 	else 
 	{
-	    result.setType(Type.SECURITY_EXCHANGE);
+	    result.setType(Type.SECURITY_SECIDTYPE);
 	    result.setNameSpace(nameSpaceLoc);
-	    result.setExchange(nameSpaceLoc);
+	    result.setSecIdType(nameSpaceLoc);
 	    result.setCode(currSecCodeLoc);
 	}
 	
@@ -129,7 +129,7 @@ public class CommodityID_Exchange extends CommodityID {
 	result = prime * result + ((type == null) ? 0 : type.hashCode());
 	result = prime * result + ((nameSpace == null) ? 0 : nameSpace.hashCode());
 	result = prime * result + ((code == null) ? 0 : code.hashCode());
-	result = prime * result + ((exchange == null) ? 0 : exchange.hashCode());
+	result = prime * result + ((secIdType == null) ? 0 : secIdType.hashCode());
 	return result;
     }
 
@@ -141,10 +141,10 @@ public class CommodityID_Exchange extends CommodityID {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	CommodityID_Exchange other = (CommodityID_Exchange) obj;
+	GCshCmdtyID_SecIdType other = (GCshCmdtyID_SecIdType) obj;
 	if (type != other.type)
 	    return false;
-	if (exchange != other.exchange)
+	if (secIdType != other.secIdType)
 	    return false;
 	if (nameSpace == null) {
 	    if (other.nameSpace != null)
@@ -168,27 +168,27 @@ public class CommodityID_Exchange extends CommodityID {
 
     @Override
     public String toStringShort() {
-	if ( type != Type.SECURITY_EXCHANGE )
+	if ( type != Type.SECURITY_SECIDTYPE )
 	    return "ERROR";
 
-	String result = exchange.toString() + SEPARATOR + code;
+	String result = secIdType.toString() + SEPARATOR + code;
 
 	return result;
     }
 
     @Override
     public String toStringLong() {
-	if ( type != Type.SECURITY_EXCHANGE )
+	if ( type != Type.SECURITY_SECIDTYPE )
 	    return "ERROR";
 
-	String result = "CommodityID_Exchange [";
+	String result = "CommodityID_SecIdType [";
 	
 	result += "namespace='" + getNameSpace() + "'";
 	
 	try {
-	    result += ", exchange='" + getExchange() + "'";
+	    result += ", secidtype='" + getSecIdType() + "'";
 	} catch (InvalidCmdtyCurrTypeException e) {
-	    result += ", exchange=" + "ERROR";
+	    result += ", secidtype=" + "ERROR";
 	}
 	
 	result += ", secCode='" + getCode() + "'";

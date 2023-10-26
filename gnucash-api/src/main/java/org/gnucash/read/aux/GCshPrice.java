@@ -2,11 +2,11 @@ package org.gnucash.read.aux;
 
 import java.time.LocalDate;
 
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CommodityID;
-import org.gnucash.currency.CurrencyID;
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyID;
+import org.gnucash.basetypes.GCshCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCommodity;
 
@@ -33,11 +33,11 @@ public interface GCshPrice {
 
     // ----------------------------
 
-    CmdtyCurrID getFromCmdtyCurrQualifId() throws InvalidCmdtyCurrTypeException;
+    GCshCmdtyCurrID getFromCmdtyCurrQualifId() throws InvalidCmdtyCurrTypeException;
 
-    CommodityID getFromCommodityQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
+    GCshCmdtyID getFromCommodityQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
-    CurrencyID getFromCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
+    GCshCurrID getFromCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     GnucashCommodity getFromCommodity() throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException;
 
@@ -47,7 +47,7 @@ public interface GCshPrice {
     
     // ----------------------------
 
-    CurrencyID getToCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
+    GCshCurrID getToCurrencyQualifId() throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException;
 
     String getToCurrencyCode() throws InvalidCmdtyCurrTypeException;
 

@@ -1,7 +1,6 @@
 package org.example.gnucash.read;
 
 import java.io.File;
-import java.util.Collection;
 
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;

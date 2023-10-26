@@ -1,12 +1,12 @@
 package org.gnucash.write.impl;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CmdtyCurrNameSpace;
-import org.gnucash.currency.CommodityID_Exchange;
-import org.gnucash.currency.CurrencyID;
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.GCshCmdtyID_Exchange;
+import org.gnucash.basetypes.GCshCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.impl.GnucashCommodityImpl;
 import org.gnucash.write.GnucashWritableCommodity;
@@ -85,7 +85,7 @@ public class GnucashWritableCommodityImpl extends GnucashCommodityImpl
 	cmdty.setCmdtyFraction(Const.CMDTY_FRACTION_DEFAULT);
 	cmdty.setVersion(Const.XML_FORMAT_VERSION);
 	cmdty.setCmdtyName("no name given");
-	cmdty.setCmdtySpace(CmdtyCurrNameSpace.Exchange.EURONEXT.toString()); // ::TODO : soft
+	cmdty.setCmdtySpace(GCshCmdtyCurrNameSpace.Exchange.EURONEXT.toString()); // ::TODO : soft
 	cmdty.setCmdtyId("XYZ"); // ::TODO
 	cmdty.setCmdtyXcode(Const.CMDTY_XCODE_DEFAULT);
 
@@ -98,7 +98,7 @@ public class GnucashWritableCommodityImpl extends GnucashCommodityImpl
     // ---------------------------------------------------------------
 
     @Override
-    public void setQualifId(CmdtyCurrID qualifId) throws InvalidCmdtyCurrTypeException {
+    public void setQualifId(GCshCmdtyCurrID qualifId) throws InvalidCmdtyCurrTypeException {
 	getJwsdpPeer().setCmdtySpace(qualifId.getNameSpace());
 	getJwsdpPeer().setCmdtyId(qualifId.getCode());
 

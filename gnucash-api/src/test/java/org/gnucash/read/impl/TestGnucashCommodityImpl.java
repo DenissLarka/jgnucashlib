@@ -7,9 +7,9 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CmdtyCurrNameSpace;
-import org.gnucash.currency.CommodityID_Exchange;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.GCshCmdtyID_Exchange;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashFile;
 import org.junit.Before;
@@ -20,12 +20,12 @@ import junit.framework.JUnit4TestAdapter;
 public class TestGnucashCommodityImpl
 {
   // Mercedes-Benz Group AG
-  public static final CmdtyCurrNameSpace.Exchange CMDTY_1_EXCH = CmdtyCurrNameSpace.Exchange.EURONEXT;
+  public static final GCshCmdtyCurrNameSpace.Exchange CMDTY_1_EXCH = GCshCmdtyCurrNameSpace.Exchange.EURONEXT;
   public static final String CMDTY_1_ID                        = "MBG";   
   public static final String CMDTY_1_ISIN                      = "DE0007100000";
   
   // SAP SE
-  public static final CmdtyCurrNameSpace.Exchange CMDTY_2_EXCH = CmdtyCurrNameSpace.Exchange.EURONEXT;
+  public static final GCshCmdtyCurrNameSpace.Exchange CMDTY_2_EXCH = GCshCmdtyCurrNameSpace.Exchange.EURONEXT;
   public static final String CMDTY_2_ID                        = "SAP";   
   public static final String CMDTY_2_ISIN                      = "DE0007164600";
     
@@ -34,8 +34,8 @@ public class TestGnucashCommodityImpl
   private GnucashFile      gcshFile = null;
   private GnucashCommodity cmdty = null;
   
-  private CmdtyCurrID cmdtyCurrID1 = null;
-  private CmdtyCurrID cmdtyCurrID2 = null;
+  private GCshCmdtyCurrID cmdtyCurrID1 = null;
+  private GCshCmdtyCurrID cmdtyCurrID2 = null;
   
   // -----------------------------------------------------------------
   
@@ -79,8 +79,8 @@ public class TestGnucashCommodityImpl
     
     // ---
     
-    cmdtyCurrID1 = new CommodityID_Exchange(CMDTY_1_EXCH, CMDTY_1_ID);
-    cmdtyCurrID2 = new CommodityID_Exchange(CMDTY_2_EXCH, CMDTY_2_ID);
+    cmdtyCurrID1 = new GCshCmdtyID_Exchange(CMDTY_1_EXCH, CMDTY_1_ID);
+    cmdtyCurrID2 = new GCshCmdtyID_Exchange(CMDTY_2_EXCH, CMDTY_2_ID);
   }
 
   // -----------------------------------------------------------------
@@ -89,8 +89,8 @@ public class TestGnucashCommodityImpl
   public void test00() throws Exception
   {
       // Cf. TestCmdtyCurrID -- let's just double-check 
-      assertEquals(CMDTY_1_EXCH.toString() + CmdtyCurrID.SEPARATOR + CMDTY_1_ID, cmdtyCurrID1.toString());
-      assertEquals(CMDTY_2_EXCH.toString() + CmdtyCurrID.SEPARATOR + CMDTY_2_ID, cmdtyCurrID2.toString());
+      assertEquals(CMDTY_1_EXCH.toString() + GCshCmdtyCurrID.SEPARATOR + CMDTY_1_ID, cmdtyCurrID1.toString());
+      assertEquals(CMDTY_2_EXCH.toString() + GCshCmdtyCurrID.SEPARATOR + CMDTY_2_ID, cmdtyCurrID2.toString());
   }
   
   // ------------------------------

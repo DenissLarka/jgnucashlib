@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestCmdtyCurrID
+public class TestGCshCmdtyCurrID
 {
   public static void main(String[] args) throws Exception
   {
@@ -17,7 +17,7 @@ public class TestCmdtyCurrID
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestCmdtyCurrID.class);  
+    return new JUnit4TestAdapter(TestGCshCmdtyCurrID.class);  
   }
   
   // -----------------------------------------------------------------
@@ -25,28 +25,28 @@ public class TestCmdtyCurrID
   @Test
   public void test01() throws Exception
   {
-    CmdtyCurrID commCurr = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "EUR");
+    GCshCmdtyCurrID commCurr = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "EUR");
     
-    assertEquals(CmdtyCurrID.Type.CURRENCY, commCurr.getType());
-    assertEquals(CmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
+    assertEquals(GCshCmdtyCurrID.Type.CURRENCY, commCurr.getType());
+    assertEquals(GCshCmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
     assertEquals("EUR", commCurr.getCode());
     assertEquals("CURRENCY:EUR", commCurr.toString());
     
     // ---
     
-    commCurr = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "USD");
+    commCurr = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "USD");
     
-    assertEquals(CmdtyCurrID.Type.CURRENCY, commCurr.getType());
-    assertEquals(CmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
+    assertEquals(GCshCmdtyCurrID.Type.CURRENCY, commCurr.getType());
+    assertEquals(GCshCmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
     assertEquals("USD", commCurr.getCode());
     assertEquals("CURRENCY:USD", commCurr.toString());
 
     // ---
     
-    commCurr = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "XYZ"); // Wrong, but no check on this level
+    commCurr = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "XYZ"); // Wrong, but no check on this level
     
-    assertEquals(CmdtyCurrID.Type.CURRENCY, commCurr.getType());
-    assertEquals(CmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
+    assertEquals(GCshCmdtyCurrID.Type.CURRENCY, commCurr.getType());
+    assertEquals(GCshCmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
     assertEquals("XYZ", commCurr.getCode());
     assertEquals("CURRENCY:XYZ", commCurr.toString());
 
@@ -55,9 +55,9 @@ public class TestCmdtyCurrID
   @Test
   public void test02() throws Exception
   {
-    CmdtyCurrID commCurr = new CmdtyCurrID("EURONEXT", "MBG");
+    GCshCmdtyCurrID commCurr = new GCshCmdtyCurrID("EURONEXT", "MBG");
     
-    assertEquals(CmdtyCurrID.Type.SECURITY_GENERAL, commCurr.getType());
+    assertEquals(GCshCmdtyCurrID.Type.SECURITY_GENERAL, commCurr.getType());
     assertEquals("EURONEXT", commCurr.getNameSpace());
     assertEquals("MBG", commCurr.getCode());
     assertEquals("EURONEXT:MBG", commCurr.toString());
@@ -66,8 +66,8 @@ public class TestCmdtyCurrID
   @Test
   public void test03() throws Exception
   {
-    CmdtyCurrID commCurr1  = new CmdtyCurrID("EURONEXT", "MBG");
-    CmdtyCurrID commCurr2 = new CmdtyCurrID("EURONEXT", "MBG");
+    GCshCmdtyCurrID commCurr1  = new GCshCmdtyCurrID("EURONEXT", "MBG");
+    GCshCmdtyCurrID commCurr2 = new GCshCmdtyCurrID("EURONEXT", "MBG");
   
     assertEquals(commCurr1.toString(), commCurr2.toString());
     assertEquals(commCurr1.toStringLong(), commCurr2.toStringLong());
@@ -75,8 +75,8 @@ public class TestCmdtyCurrID
       
     // ---
 
-    CmdtyCurrID commCurr31 = new CmdtyCurrID("NYSE", "MBG");
-    CmdtyCurrID commCurr32 = new CmdtyCurrID("EURONEXT", "DIS");
+    GCshCmdtyCurrID commCurr31 = new GCshCmdtyCurrID("NYSE", "MBG");
+    GCshCmdtyCurrID commCurr32 = new GCshCmdtyCurrID("EURONEXT", "DIS");
     
     assertNotEquals(commCurr1, commCurr31);
     assertNotEquals(commCurr1, commCurr32);
@@ -84,8 +84,8 @@ public class TestCmdtyCurrID
     
     // ---
 
-    CmdtyCurrID commCurr4 = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "EUR");
-    CmdtyCurrID commCurr5 = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "EUR");
+    GCshCmdtyCurrID commCurr4 = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "EUR");
+    GCshCmdtyCurrID commCurr5 = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "EUR");
   
     assertEquals(commCurr4, commCurr5);
     assertNotEquals(commCurr1, commCurr4);
@@ -93,7 +93,7 @@ public class TestCmdtyCurrID
     assertNotEquals(commCurr31, commCurr4);
     assertNotEquals(commCurr32, commCurr4);
     
-    CmdtyCurrID commCurr6 = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "JPY");
+    GCshCmdtyCurrID commCurr6 = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "JPY");
     
     assertNotEquals(commCurr4, commCurr6);
   }
@@ -101,10 +101,10 @@ public class TestCmdtyCurrID
   @Test
   public void test04_1() throws Exception
   {
-      CmdtyCurrID commCurrPrs = CmdtyCurrID.parse("CURRENCY:EUR");
-      CmdtyCurrID commCurrRef = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "EUR");
+      GCshCmdtyCurrID commCurrPrs = GCshCmdtyCurrID.parse("CURRENCY:EUR");
+      GCshCmdtyCurrID commCurrRef = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "EUR");
       
-      assertEquals(CmdtyCurrID.Type.CURRENCY, commCurrPrs.getType());
+      assertEquals(GCshCmdtyCurrID.Type.CURRENCY, commCurrPrs.getType());
       assertEquals("CURRENCY:EUR", commCurrPrs.toString());
       assertEquals(commCurrRef.toString(), commCurrPrs.toString());
       assertEquals(commCurrRef.toStringLong(), commCurrPrs.toStringLong());
@@ -112,10 +112,10 @@ public class TestCmdtyCurrID
 
       // ---
       
-      commCurrPrs = CmdtyCurrID.parse("CURRENCY:USD");
-      commCurrRef = new CmdtyCurrID(CmdtyCurrNameSpace.CURRENCY, "USD");
+      commCurrPrs = GCshCmdtyCurrID.parse("CURRENCY:USD");
+      commCurrRef = new GCshCmdtyCurrID(GCshCmdtyCurrNameSpace.CURRENCY, "USD");
       
-      assertEquals(CmdtyCurrID.Type.CURRENCY, commCurrPrs.getType());
+      assertEquals(GCshCmdtyCurrID.Type.CURRENCY, commCurrPrs.getType());
       assertEquals("CURRENCY:USD", commCurrPrs.toString());
       assertEquals(commCurrRef.toString(), commCurrPrs.toString());
       assertEquals(commCurrRef.toStringLong(), commCurrPrs.toStringLong());
@@ -125,10 +125,10 @@ public class TestCmdtyCurrID
   @Test
   public void test04_2() throws Exception
   {
-      CmdtyCurrID commCurrPrs = CmdtyCurrID.parse("EURONEXT:SAP");
-      CmdtyCurrID commCurrRef = new CmdtyCurrID("EURONEXT", "SAP");
+      GCshCmdtyCurrID commCurrPrs = GCshCmdtyCurrID.parse("EURONEXT:SAP");
+      GCshCmdtyCurrID commCurrRef = new GCshCmdtyCurrID("EURONEXT", "SAP");
       
-      assertEquals(CmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
+      assertEquals(GCshCmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
       assertEquals("EURONEXT:SAP", commCurrPrs.toString());
       assertEquals(commCurrRef.toString(), commCurrPrs.toString());
       assertEquals(commCurrRef.toStringLong(), commCurrPrs.toStringLong());
@@ -146,13 +146,13 @@ public class TestCmdtyCurrID
   @Test
   public void test04_3() throws Exception
   {
-      CmdtyCurrID commCurrPrs = CmdtyCurrID.parse("FUXNSTUELL:BURP"); // Wrong, but not check on this level
-      CmdtyCurrID commCurrRef = new CmdtyCurrID();
-      commCurrRef.setType(CmdtyCurrID.Type.SECURITY_GENERAL);
+      GCshCmdtyCurrID commCurrPrs = GCshCmdtyCurrID.parse("FUXNSTUELL:BURP"); // Wrong, but not check on this level
+      GCshCmdtyCurrID commCurrRef = new GCshCmdtyCurrID();
+      commCurrRef.setType(GCshCmdtyCurrID.Type.SECURITY_GENERAL);
       commCurrRef.setNameSpace("FUXNSTUELL");
       commCurrRef.setCode("BURP");
       
-      assertEquals(CmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
+      assertEquals(GCshCmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
       assertEquals("FUXNSTUELL:BURP", commCurrPrs.toString());
       assertEquals(commCurrRef, commCurrPrs);
 

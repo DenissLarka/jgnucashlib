@@ -8,11 +8,11 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CmdtyCurrNameSpace;
-import org.gnucash.currency.CommodityID;
-import org.gnucash.currency.CommodityID_Exchange;
-import org.gnucash.currency.CurrencyID;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.GCshCmdtyID;
+import org.gnucash.basetypes.GCshCmdtyID_Exchange;
+import org.gnucash.basetypes.GCshCurrID;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.GnucashFile;
@@ -37,13 +37,13 @@ public class TestGCshPriceImpl
   private GnucashFile  gcshFile = null;
   private GCshPrice    prc = null;
   
-  CommodityID          cmdtyID11 = null;
-  CommodityID_Exchange cmdtyID12 = null;
+  GCshCmdtyID          cmdtyID11 = null;
+  GCshCmdtyID_Exchange cmdtyID12 = null;
 
-  CommodityID          cmdtyID21 = null;
-  CommodityID_Exchange cmdtyID22 = null;
+  GCshCmdtyID          cmdtyID21 = null;
+  GCshCmdtyID_Exchange cmdtyID22 = null;
   
-  CurrencyID           currID1   = null;
+  GCshCurrID           currID1   = null;
   
   // -----------------------------------------------------------------
   
@@ -87,13 +87,13 @@ public class TestGCshPriceImpl
     
     // ---
     
-    cmdtyID11 = new CommodityID("EURONEXT", "MBG");
-    cmdtyID12 = new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.EURONEXT, "MBG");
+    cmdtyID11 = new GCshCmdtyID("EURONEXT", "MBG");
+    cmdtyID12 = new GCshCmdtyID_Exchange(GCshCmdtyCurrNameSpace.Exchange.EURONEXT, "MBG");
 
-    cmdtyID21 = new CommodityID("EURONEXT", "SAP");
-    cmdtyID22 = new CommodityID_Exchange(CmdtyCurrNameSpace.Exchange.EURONEXT, "SAP");
+    cmdtyID21 = new GCshCmdtyID("EURONEXT", "SAP");
+    cmdtyID22 = new GCshCmdtyID_Exchange(GCshCmdtyCurrNameSpace.Exchange.EURONEXT, "SAP");
     
-    currID1   = new CurrencyID("USD");
+    currID1   = new GCshCurrID("USD");
   }
 
   // -----------------------------------------------------------------
@@ -133,7 +133,7 @@ public class TestGCshPriceImpl
       
       try
       {
-	  CurrencyID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
+	  GCshCurrID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
       }
       catch ( Exception exc )
       {
@@ -179,7 +179,7 @@ public class TestGCshPriceImpl
     
       try
       {
-	  CurrencyID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
+	  GCshCurrID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
       }
       catch ( Exception exc )
       {
@@ -225,7 +225,7 @@ public class TestGCshPriceImpl
       
       try
       {
-	  CurrencyID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
+	  GCshCurrID dummy = prc.getFromCurrencyQualifId(); // illegal call in this context
       }
       catch ( Exception exc )
       {
@@ -269,7 +269,7 @@ public class TestGCshPriceImpl
       
       try
       {
-	  CommodityID dummy = prc.getFromCommodityQualifId(); // illegal call in this context
+	  GCshCmdtyID dummy = prc.getFromCommodityQualifId(); // illegal call in this context
       }
       catch ( Exception exc )
       {

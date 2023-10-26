@@ -3,9 +3,9 @@ package org.gnucash.write.impl;
 import java.text.ParseException;
 
 import org.gnucash.Const;
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.InvalidCmdtyCurrIDException;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrIDException;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
@@ -215,13 +215,13 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		if (transaction == null) {
 			return false;
 		}
-		CmdtyCurrID acctCmdtyCurrID = acct.getCmdtyCurrID();
+		GCshCmdtyCurrID acctCmdtyCurrID = acct.getCmdtyCurrID();
 		if (acctCmdtyCurrID == null) {
 			return false;
 		}
 	
 		// Important: Don't forget to cast the IDs to their most basic type
-		return ((CmdtyCurrID) acctCmdtyCurrID).equals((CmdtyCurrID) transaction.getCmdtyCurrID());
+		return ((GCshCmdtyCurrID) acctCmdtyCurrID).equals((GCshCmdtyCurrID) transaction.getCmdtyCurrID());
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestCurrencyID
+public class TestGCshCurrID
 {
   public static void main(String[] args) throws Exception
   {
@@ -18,7 +18,7 @@ public class TestCurrencyID
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestCurrencyID.class);  
+    return new JUnit4TestAdapter(TestGCshCurrID.class);  
   }
   
   // -----------------------------------------------------------------
@@ -26,20 +26,20 @@ public class TestCurrencyID
   @Test
   public void test01() throws Exception
   {
-      CurrencyID commCurr = new CurrencyID(Currency.getInstance("EUR"));
+      GCshCurrID commCurr = new GCshCurrID(Currency.getInstance("EUR"));
     
-    assertEquals(CurrencyID.Type.CURRENCY, commCurr.getType());
-    assertEquals(CmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
+    assertEquals(GCshCurrID.Type.CURRENCY, commCurr.getType());
+    assertEquals(GCshCmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
     assertEquals("EUR", commCurr.getCode());
     assertEquals("EUR", commCurr.getCurrency().getCurrencyCode());
     assertEquals("CURRENCY:EUR", commCurr.toString());
     
     // ---
     
-    commCurr = new CurrencyID(Currency.getInstance("USD"));
+    commCurr = new GCshCurrID(Currency.getInstance("USD"));
     
-    assertEquals(CurrencyID.Type.CURRENCY, commCurr.getType());
-    assertEquals(CmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
+    assertEquals(GCshCurrID.Type.CURRENCY, commCurr.getType());
+    assertEquals(GCshCmdtyCurrNameSpace.CURRENCY, commCurr.getNameSpace());
     assertEquals("USD", commCurr.getCode());
     assertEquals("USD", commCurr.getCurrency().getCurrencyCode());
     assertEquals("CURRENCY:USD", commCurr.toString());
@@ -48,7 +48,7 @@ public class TestCurrencyID
     
     try 
     {
-	commCurr = new CurrencyID(Currency.getInstance("XYZ")); // invalid code
+	commCurr = new GCshCurrID(Currency.getInstance("XYZ")); // invalid code
     }
     catch (Exception exc)
     {
@@ -60,19 +60,19 @@ public class TestCurrencyID
   @Test
   public void test04_1() throws Exception
   {
-      CurrencyID commCurrPrs = CurrencyID.parse("CURRENCY:EUR");
-      CurrencyID commCurrRef = new CurrencyID(Currency.getInstance("EUR"));
+      GCshCurrID commCurrPrs = GCshCurrID.parse("CURRENCY:EUR");
+      GCshCurrID commCurrRef = new GCshCurrID(Currency.getInstance("EUR"));
       
-      assertEquals(CurrencyID.Type.CURRENCY, commCurrPrs.getType());
+      assertEquals(GCshCurrID.Type.CURRENCY, commCurrPrs.getType());
       assertEquals("CURRENCY:EUR", commCurrPrs.toString());
       assertEquals(commCurrRef, commCurrPrs);
 
       // ---
       
-      commCurrPrs = CurrencyID.parse("CURRENCY:USD");
-      commCurrRef = new CurrencyID(Currency.getInstance("USD"));
+      commCurrPrs = GCshCurrID.parse("CURRENCY:USD");
+      commCurrRef = new GCshCurrID(Currency.getInstance("USD"));
       
-      assertEquals(CurrencyID.Type.CURRENCY, commCurrPrs.getType());
+      assertEquals(GCshCurrID.Type.CURRENCY, commCurrPrs.getType());
       assertEquals("CURRENCY:USD", commCurrPrs.toString());
       assertEquals(commCurrRef, commCurrPrs);
   }
@@ -82,7 +82,7 @@ public class TestCurrencyID
   {
       try 
       {
-	  CurrencyID commCurrPrs = CurrencyID.parse("EURONEXT:SAP");
+	  GCshCurrID commCurrPrs = GCshCurrID.parse("EURONEXT:SAP");
       }
       catch ( Exception exc )
       {
@@ -95,7 +95,7 @@ public class TestCurrencyID
   {
       try 
       {
-	  CurrencyID commCurrPrs = CurrencyID.parse("FUXNSTUELL:BURP");
+	  GCshCurrID commCurrPrs = GCshCurrID.parse("FUXNSTUELL:BURP");
       }
       catch ( Exception exc )
       {

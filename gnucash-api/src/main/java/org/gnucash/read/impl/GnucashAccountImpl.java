@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.CurrencyID;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.GCshCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.read.GnucashAccount;
@@ -111,13 +111,13 @@ public class GnucashAccountImpl extends SimpleAccount
      * {@inheritDoc}
      * @throws InvalidCmdtyCurrTypeException 
      */
-    public CmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException {
+    public GCshCmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException {
 	if ( jwsdpPeer.getActCommodity() == null &&
 	     jwsdpPeer.getActType().equals(TYPE_ROOT) ) {
-	    return new CurrencyID(); // default-currency because gnucash 2.2 has no currency on the root-account
+	    return new GCshCurrID(); // default-currency because gnucash 2.2 has no currency on the root-account
 	}
 	
-	CmdtyCurrID result = new CmdtyCurrID(jwsdpPeer.getActCommodity().getCmdtySpace(),
+	GCshCmdtyCurrID result = new GCshCmdtyCurrID(jwsdpPeer.getActCommodity().getCmdtySpace(),
 		                             jwsdpPeer.getActCommodity().getCmdtyId()); 
 	
 	return result;

@@ -1,7 +1,5 @@
 package org.gnucash.read.impl;
 
-//other imports
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
@@ -15,9 +13,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.currency.ComplexCurrencyTable;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
-import org.gnucash.currency.CmdtyCurrNameSpace;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
@@ -171,7 +169,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		// is conversion needed?
-		if ( getCmdtyCurrID().getNameSpace().equals(CmdtyCurrNameSpace.CURRENCY) &&
+		if ( getCmdtyCurrID().getNameSpace().equals(GCshCmdtyCurrNameSpace.CURRENCY) &&
 		     getCmdtyCurrID().getCode().equals(currency.getCurrencyCode()) ) {
 			return retval;
 		}
@@ -420,7 +418,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 	 */
 	public Currency getCurrency() throws InvalidCmdtyCurrTypeException {
 
-		if ( ! getCmdtyCurrID().getNameSpace().equals(CmdtyCurrNameSpace.CURRENCY) ) {
+		if ( ! getCmdtyCurrID().getNameSpace().equals(GCshCmdtyCurrNameSpace.CURRENCY) ) {
 			return null;
 		}
 
@@ -438,7 +436,7 @@ public abstract class SimpleAccount implements GnucashAccount {
 		}
 
 		    // the currency may have changed
-		if ( this.getCmdtyCurrID().getNameSpace().equals(CmdtyCurrNameSpace.CURRENCY) ) {
+		if ( this.getCmdtyCurrID().getNameSpace().equals(GCshCmdtyCurrNameSpace.CURRENCY) ) {
 			Currency currency = getCurrency();
 			currencyFormat.setCurrency(currency);
 		} else {

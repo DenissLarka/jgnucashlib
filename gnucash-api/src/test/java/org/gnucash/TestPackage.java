@@ -15,7 +15,7 @@ public class TestPackage extends TestCase
   {
     TestSuite suite = new TestSuite();
     
-    suite.addTest(org.gnucash.currency.TestPackage.suite());
+    suite.addTest(org.gnucash.basetypes.TestPackage.suite());
     suite.addTest(org.gnucash.read.TestPackage.suite());
     suite.addTest(org.gnucash.write.TestPackage.suite());
 

@@ -1,7 +1,7 @@
 package org.gnucash.read;
 
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.numbers.FixedPointNumber;
 
 import java.time.LocalDate;
@@ -128,7 +128,7 @@ public interface GnucashAccount extends Comparable<GnucashAccount> {
 
     /**
      */
-    CmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException;
+    GCshCmdtyCurrID getCmdtyCurrID() throws InvalidCmdtyCurrTypeException;
 
     /**
      * The returned list ist sorted by the natural order of the Transaction-Splits.

@@ -2,8 +2,8 @@ package org.gnucash.read;
 
 import java.util.Collection;
 
-import org.gnucash.currency.CmdtyCurrID;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrID;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.read.aux.GCshPrice;
 
 public interface GnucashCommodity {
@@ -14,7 +14,7 @@ public interface GnucashCommodity {
      *         a real ID (i.e., unique).
      * @throws InvalidCmdtyCurrTypeException 
      */
-    CmdtyCurrID getQualifId() throws InvalidCmdtyCurrTypeException;
+    GCshCmdtyCurrID getQualifId() throws InvalidCmdtyCurrTypeException;
 
     /**
      * @return the "extended" code of a commodity

@@ -1,19 +1,17 @@
 package org.example.gnucash.read;
 
 import java.io.File;
-import java.util.Collection;
 
-import org.gnucash.currency.CmdtyCurrNameSpace;
-import org.gnucash.currency.InvalidCmdtyCurrTypeException;
+import org.gnucash.basetypes.GCshCmdtyCurrNameSpace;
+import org.gnucash.basetypes.InvalidCmdtyCurrTypeException;
 import org.gnucash.read.GnucashCommodity;
 import org.gnucash.read.aux.GCshPrice;
 import org.gnucash.read.impl.GnucashFileImpl;
-import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 public class GetCmdtyInfo {
     // BEGIN Example data -- adapt to your needs
     private static String gcshFileName                  = "example_in.gnucash";
-    private static CmdtyCurrNameSpace.Exchange exchange = CmdtyCurrNameSpace.Exchange.EURONEXT;
+    private static GCshCmdtyCurrNameSpace.Exchange exchange = GCshCmdtyCurrNameSpace.Exchange.EURONEXT;
     private static String ticker                        = "MBG";
     private static String isin                          = "DE0007100000";
     private static String searchName                    = "merced";

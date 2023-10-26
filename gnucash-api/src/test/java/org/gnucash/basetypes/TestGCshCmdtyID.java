@@ -1,4 +1,4 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 
-public class TestCommodityID
+public class TestGCshCmdtyID
 {
   public static void main(String[] args) throws Exception
   {
@@ -17,7 +17,7 @@ public class TestCommodityID
   @SuppressWarnings("exports")
   public static junit.framework.Test suite() 
   {
-    return new JUnit4TestAdapter(TestCommodityID.class);  
+    return new JUnit4TestAdapter(TestGCshCmdtyID.class);  
   }
   
   // -----------------------------------------------------------------
@@ -27,7 +27,7 @@ public class TestCommodityID
   {
     try 
     {
-	CommodityID commCurr = new CommodityID(CmdtyCurrNameSpace.CURRENCY, "EUR");
+	GCshCmdtyID commCurr = new GCshCmdtyID(GCshCmdtyCurrNameSpace.CURRENCY, "EUR");
     }
     catch ( Exception exc ) 
     {
@@ -38,9 +38,9 @@ public class TestCommodityID
   @Test
   public void test02() throws Exception
   {
-      CommodityID commCurr = new CommodityID("EURONEXT", "MBG");
+      GCshCmdtyID commCurr = new GCshCmdtyID("EURONEXT", "MBG");
     
-    assertEquals(CmdtyCurrID.Type.SECURITY_GENERAL, commCurr.getType());
+    assertEquals(GCshCmdtyCurrID.Type.SECURITY_GENERAL, commCurr.getType());
     assertEquals("EURONEXT", commCurr.getNameSpace());
     assertEquals("MBG", commCurr.getCode());
     assertEquals("EURONEXT:MBG", commCurr.toString());
@@ -49,8 +49,8 @@ public class TestCommodityID
   @Test
   public void test03() throws Exception
   {
-    CommodityID commCurr1  = new CommodityID("EURONEXT", "MBG");
-    CommodityID commCurr2 = new CommodityID("EURONEXT", "MBG");
+    GCshCmdtyID commCurr1  = new GCshCmdtyID("EURONEXT", "MBG");
+    GCshCmdtyID commCurr2 = new GCshCmdtyID("EURONEXT", "MBG");
   
     assertEquals(commCurr1.toString(), commCurr2.toString());
     assertEquals(commCurr1.toStringLong(), commCurr2.toStringLong());
@@ -58,8 +58,8 @@ public class TestCommodityID
       
     // ---
 
-    CommodityID commCurr31 = new CommodityID("NYSE", "MBG");
-    CommodityID commCurr32 = new CommodityID("EURONEXT", "DIS");
+    GCshCmdtyID commCurr31 = new GCshCmdtyID("NYSE", "MBG");
+    GCshCmdtyID commCurr32 = new GCshCmdtyID("EURONEXT", "DIS");
     
     assertNotEquals(commCurr1, commCurr31);
     assertNotEquals(commCurr1, commCurr32);
@@ -67,8 +67,8 @@ public class TestCommodityID
     
     // ---
 
-    CommodityID commCurr4 = new CommodityID(CmdtyCurrNameSpace.CURRENCY, "EUR");
-    CommodityID commCurr5 = new CommodityID(CmdtyCurrNameSpace.CURRENCY, "EUR");
+    GCshCmdtyID commCurr4 = new GCshCmdtyID(GCshCmdtyCurrNameSpace.CURRENCY, "EUR");
+    GCshCmdtyID commCurr5 = new GCshCmdtyID(GCshCmdtyCurrNameSpace.CURRENCY, "EUR");
   
     assertEquals(commCurr4, commCurr5);
     assertNotEquals(commCurr1, commCurr4);
@@ -76,7 +76,7 @@ public class TestCommodityID
     assertNotEquals(commCurr31, commCurr4);
     assertNotEquals(commCurr32, commCurr4);
     
-    CommodityID commCurr6 = new CommodityID(CmdtyCurrNameSpace.CURRENCY, "JPY");
+    GCshCmdtyID commCurr6 = new GCshCmdtyID(GCshCmdtyCurrNameSpace.CURRENCY, "JPY");
     
     assertNotEquals(commCurr4, commCurr6);
   }
@@ -86,7 +86,7 @@ public class TestCommodityID
   {
       try 
       {
-	CommodityID commCurrPrs = CommodityID.parse("CURRENCY:EUR");
+	GCshCmdtyID commCurrPrs = GCshCmdtyID.parse("CURRENCY:EUR");
       }
       catch ( Exception exc )
       {
@@ -97,7 +97,7 @@ public class TestCommodityID
       
       try 
       {
-	CommodityID commCurrPrs = CommodityID.parse("CURRENCY:USD");
+	GCshCmdtyID commCurrPrs = GCshCmdtyID.parse("CURRENCY:USD");
       }
       catch ( Exception exc )
       {
@@ -109,10 +109,10 @@ public class TestCommodityID
   @Test
   public void test04_2() throws Exception
   {
-      CommodityID commCurrPrs = CommodityID.parse("XFRA:SAP");
-      CommodityID commCurrRef = new CommodityID("XFRA", "SAP");
+      GCshCmdtyID commCurrPrs = GCshCmdtyID.parse("XFRA:SAP");
+      GCshCmdtyID commCurrRef = new GCshCmdtyID("XFRA", "SAP");
       
-      assertEquals(CmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
+      assertEquals(GCshCmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
       assertEquals("XFRA:SAP", commCurrPrs.toString());
       assertEquals(commCurrRef.toString(), commCurrPrs.toString());
       assertEquals(commCurrRef.toStringLong(), commCurrPrs.toStringLong());
@@ -130,13 +130,13 @@ public class TestCommodityID
   @Test
   public void test04_3() throws Exception
   {
-      CommodityID commCurrPrs = CommodityID.parse("FUXNSTUELL:BURP"); // Wrong, but not check on this level
-      CommodityID commCurrRef = new CommodityID();
-      commCurrRef.setType(CmdtyCurrID.Type.SECURITY_GENERAL);
+      GCshCmdtyID commCurrPrs = GCshCmdtyID.parse("FUXNSTUELL:BURP"); // Wrong, but not check on this level
+      GCshCmdtyID commCurrRef = new GCshCmdtyID();
+      commCurrRef.setType(GCshCmdtyCurrID.Type.SECURITY_GENERAL);
       commCurrRef.setNameSpace("FUXNSTUELL");
       commCurrRef.setCode("BURP");
       
-      assertEquals(CmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
+      assertEquals(GCshCmdtyCurrID.Type.SECURITY_GENERAL, commCurrPrs.getType());
       assertEquals("FUXNSTUELL:BURP", commCurrPrs.toString());
       assertEquals(commCurrRef, commCurrPrs);
 

@@ -1,6 +1,5 @@
-package org.gnucash.currency;
+package org.gnucash.basetypes;
 
-import org.gnucash.currency.CmdtyCurrID.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,48 +12,48 @@ import org.slf4j.LoggerFactory;
  * Yes, there are exceptions to this rule, but we currently do not 
  * support these but rather profit from enhanced type safety instead.
  * (Apart from that, nothing stops you from adding new exchange codes
- * to the enum CmdtyCurrNameSpace.MIC or to open another enum
+ * to the enum CmdtyCurrNameSpace.Exchange or to open another enum
  * in this class, if you absolutely need it. After all, this is FOSS...)
  *  
- * @param mic
+ * @param exchange
  * @param secCode
  */
-public class CommodityID_MIC extends CommodityID {
+public class GCshCmdtyID_Exchange extends GCshCmdtyID {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommodityID_MIC.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GCshCmdtyID_Exchange.class);
 
     // ---------------------------------------------------------------
 
-    private CmdtyCurrNameSpace.MIC mic;
+    private GCshCmdtyCurrNameSpace.Exchange exchange;
 
     // ---------------------------------------------------------------
     
-    public CommodityID_MIC() {
+    public GCshCmdtyID_Exchange() {
 	super();
-	type = Type.SECURITY_MIC;
+	type = Type.SECURITY_EXCHANGE;
     }
 
-    public CommodityID_MIC(CmdtyCurrNameSpace.MIC mic, String secCode) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCmdtyID_Exchange(GCshCmdtyCurrNameSpace.Exchange exchange, String secCode) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 	
-	super(mic.toString(), secCode);
+	super(exchange.toString(), secCode);
 	
-	setType(Type.SECURITY_MIC);
-	setMIC(mic);
+	setType(Type.SECURITY_EXCHANGE);
+	setExchange(exchange);
     }
 
-    public CommodityID_MIC(String nameSpace, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
+    public GCshCmdtyID_Exchange(String nameSpace, String code) throws InvalidCmdtyCurrTypeException, InvalidCmdtyCurrIDException {
 
 	super(nameSpace, code);
 
-	setType(Type.SECURITY_MIC);
-	setMIC(nameSpace);
+	setType(Type.SECURITY_EXCHANGE);
+	setExchange(nameSpace);
     }
 
     // ---------------------------------------------------------------
 
     @Override
     public void setType(Type type) throws InvalidCmdtyCurrIDException {
-//        if ( type != Type.SECURITY_MIC )
+//        if ( type != Type.SECURITY_EXCHANGE )
 //            throw new InvalidCmdtyCurrIDException();
 
         super.setType(type);
@@ -62,40 +61,40 @@ public class CommodityID_MIC extends CommodityID {
     
     // ----------------------------
     
-    public CmdtyCurrNameSpace.MIC getMIC() throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_MIC )
+    public GCshCmdtyCurrNameSpace.Exchange getExchange() throws InvalidCmdtyCurrTypeException {
+	if ( type != Type.SECURITY_EXCHANGE )
 	    throw new InvalidCmdtyCurrTypeException();
 	
-        return mic;
+        return exchange;
     }
     
-    public void setMIC(CmdtyCurrNameSpace.MIC mic) throws InvalidCmdtyCurrTypeException {
-	if ( type != Type.SECURITY_MIC )
+    public void setExchange(GCshCmdtyCurrNameSpace.Exchange exchange) throws InvalidCmdtyCurrTypeException {
+	if ( type != Type.SECURITY_EXCHANGE )
 	    throw new InvalidCmdtyCurrTypeException();
 	
-        this.mic = mic;
+        this.exchange = exchange;
     }
     
-    public void setMIC(String micStr) throws InvalidCmdtyCurrTypeException {
-	if ( micStr == null )
-	    throw new IllegalArgumentException("MIC string is null");
+    public void setExchange(String exchangeStr) throws InvalidCmdtyCurrTypeException {
+	if ( exchangeStr == null )
+	    throw new IllegalArgumentException("Exchange string is null");
 
-	if ( micStr.trim().equals("") )
-	    throw new IllegalArgumentException("MIC string is empty");
+	if ( exchangeStr.trim().equals("") )
+	    throw new IllegalArgumentException("Exchange string is empty");
 
-        setMIC(CmdtyCurrNameSpace.MIC.valueOf(micStr.trim()));
+        setExchange(GCshCmdtyCurrNameSpace.Exchange.valueOf(exchangeStr.trim()));
     }
     
     // ---------------------------------------------------------------
     
-    public static CommodityID_MIC parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
+    public static GCshCmdtyID_Exchange parse(String str) throws InvalidCmdtyCurrIDException, InvalidCmdtyCurrTypeException {
 	if ( str == null )
 	    throw new IllegalArgumentException("Argument string is null");
 
 	if ( str.equals("") )
 	    throw new IllegalArgumentException("Argument string is empty");
 
-	CommodityID_MIC result = new CommodityID_MIC();
+	GCshCmdtyID_Exchange result = new GCshCmdtyID_Exchange();
 	
 	int posSep = str.indexOf(SEPARATOR);
 	// Plausi ::MAGIC
@@ -106,15 +105,15 @@ public class CommodityID_MIC extends CommodityID {
 	String nameSpaceLoc = str.substring(0, posSep).trim();
 	String currSecCodeLoc = str.substring(posSep + 1, str.length()).trim();
 	
-	if ( nameSpaceLoc.equals(CmdtyCurrNameSpace.CURRENCY) )
+	if ( nameSpaceLoc.equals(GCshCmdtyCurrNameSpace.CURRENCY) )
 	{
 	    throw new InvalidCmdtyCurrTypeException();
 	}	
 	else 
 	{
-	    result.setType(Type.SECURITY_MIC);
+	    result.setType(Type.SECURITY_EXCHANGE);
 	    result.setNameSpace(nameSpaceLoc);
-	    result.setMIC(nameSpaceLoc);
+	    result.setExchange(nameSpaceLoc);
 	    result.setCode(currSecCodeLoc);
 	}
 	
@@ -130,7 +129,7 @@ public class CommodityID_MIC extends CommodityID {
 	result = prime * result + ((type == null) ? 0 : type.hashCode());
 	result = prime * result + ((nameSpace == null) ? 0 : nameSpace.hashCode());
 	result = prime * result + ((code == null) ? 0 : code.hashCode());
-	result = prime * result + ((mic == null) ? 0 : mic.hashCode());
+	result = prime * result + ((exchange == null) ? 0 : exchange.hashCode());
 	return result;
     }
 
@@ -142,10 +141,10 @@ public class CommodityID_MIC extends CommodityID {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	CommodityID_MIC other = (CommodityID_MIC) obj;
+	GCshCmdtyID_Exchange other = (GCshCmdtyID_Exchange) obj;
 	if (type != other.type)
 	    return false;
-	if (mic != other.mic)
+	if (exchange != other.exchange)
 	    return false;
 	if (nameSpace == null) {
 	    if (other.nameSpace != null)
@@ -169,27 +168,27 @@ public class CommodityID_MIC extends CommodityID {
 
     @Override
     public String toStringShort() {
-	if ( type != Type.SECURITY_MIC )
+	if ( type != Type.SECURITY_EXCHANGE )
 	    return "ERROR";
 
-	String result = mic.toString() + SEPARATOR + code;
+	String result = exchange.toString() + SEPARATOR + code;
 
 	return result;
     }
 
     @Override
     public String toStringLong() {
-	if ( type != Type.SECURITY_MIC )
+	if ( type != Type.SECURITY_EXCHANGE )
 	    return "ERROR";
 
-	String result = "CommodityID_MIC [";
+	String result = "CommodityID_Exchange [";
 	
 	result += "namespace='" + getNameSpace() + "'";
 	
 	try {
-	    result += ", mic='" + getMIC() + "'";
+	    result += ", exchange='" + getExchange() + "'";
 	} catch (InvalidCmdtyCurrTypeException e) {
-	    result += ", mic=" + "ERROR";
+	    result += ", exchange=" + "ERROR";
 	}
 	
 	result += ", secCode='" + getCode() + "'";
