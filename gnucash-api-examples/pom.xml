@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.gnucash</groupId>
 		<artifactId>gnucash</artifactId>
-		<version>1.2.0-SNAPSHOT</version>
+		<version>1.2.0-RELEASE</version>
 	</parent>
 
 	<artifactId>gnucash-api-examples</artifactId>
@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>org.gnucash</groupId>
 			<artifactId>gnucash-api</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>1.2.0-RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 		
