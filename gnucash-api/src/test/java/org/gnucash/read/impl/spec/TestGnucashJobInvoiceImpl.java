@@ -1,7 +1,5 @@
 package org.gnucash.read.impl.spec;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.InputStream;
 import java.util.TreeSet;
 
@@ -13,154 +11,97 @@ import org.gnucash.read.impl.TestGnucashGenerInvoiceImpl;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashJobInvoiceEntry;
 import org.gnucash.read.spec.SpecInvoiceCommon;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import junit.framework.JUnit4TestAdapter;
+public class TestGnucashJobInvoiceImpl {
+	private GnucashFile gcshFile = null;
+	private GnucashGenerInvoice invcGen = null;
+	private GnucashJobInvoice invcSpec = null;
 
-public class TestGnucashJobInvoiceImpl
-{
-  private GnucashFile         gcshFile = null;
-  private GnucashGenerInvoice invcGen = null;
-  private GnucashJobInvoice   invcSpec = null;
-  
-  private static final String INVC_3_ID = TestGnucashGenerInvoiceImpl.INVC_3_ID;
-  
-  // -----------------------------------------------------------------
-  
-  public static void main(String[] args) throws Exception
-  {
-    junit.textui.TestRunner.run(suite());
-  }
+	private static final String INVC_3_ID = TestGnucashGenerInvoiceImpl.INVC_3_ID;
 
-  @SuppressWarnings("exports")
-  public static junit.framework.Test suite() 
-  {
-    return new JUnit4TestAdapter(TestGnucashJobInvoiceImpl.class);  
-  }
-  
-  @Before
-  public void initialize() throws Exception
-  {
-    ClassLoader classLoader = getClass().getClassLoader();
-    // URL gcshFileURL = classLoader.getResource(Const.GCSH_FILENAME);
-    // System.err.println("GnuCash test file resource: '" + gcshFileURL + "'");
-    InputStream gcshFileStream = null;
-    try 
-    {
-      gcshFileStream = classLoader.getResourceAsStream(ConstTest.GCSH_FILENAME);
-    } 
-    catch ( Exception exc ) 
-    {
-      System.err.println("Cannot generate input stream from resource");
-      return;
-    }
-    
-    try
-    {
-      gcshFile = new GnucashFileImpl(gcshFileStream);
-    }
-    catch ( Exception exc )
-    {
-      System.err.println("Cannot parse GnuCash file");
-      exc.printStackTrace();
-    }
-  }
+	@BeforeMethod
+	public void initialize() throws Exception {
+		ClassLoader classLoader = getClass().getClassLoader();
+		// URL gcshFileURL = classLoader.getResource(Const.GCSH_FILENAME);
+		// System.err.println("GnuCash test file resource: '" + gcshFileURL + "'");
+		InputStream gcshFileStream = null;
+		try {
+			gcshFileStream = classLoader.getResourceAsStream(ConstTest.GCSH_FILENAME);
+		}
+		catch (Exception exc) {
+			System.err.println("Cannot generate input stream from resource");
+			return;
+		}
 
-  // -----------------------------------------------------------------
+		try {
+			gcshFile = new GnucashFileImpl(gcshFileStream);
+		}
+		catch (Exception exc) {
+			System.err.println("Cannot parse GnuCash file");
+			exc.printStackTrace();
+		}
+	}
 
-  @Test
-  public void test01_1() throws Exception
-  {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
-    invcSpec = new GnucashJobInvoiceImpl(invcGen);
-    
-    assertEquals(true, invcSpec instanceof GnucashJobInvoiceImpl);
-    assertEquals(INVC_3_ID, invcSpec.getId());
-    assertEquals("gncJob", invcSpec.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT));
-    assertEquals("R94871", invcSpec.getNumber());
-    assertEquals("With customer job / with taxes", invcSpec.getDescription());
+	// -----------------------------------------------------------------
 
-    assertEquals("2023-09-20T10:59Z", invcSpec.getDateOpened().toString());
-    assertEquals("2023-09-20T10:59Z", invcSpec.getDatePosted().toString());
-  }
+	@Test
+	public void test01_1() throws Exception {
+		invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+		invcSpec = new GnucashJobInvoiceImpl(invcGen);
 
-  @Test
-  public void test02_1() throws Exception
-  {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
-    invcSpec = new GnucashJobInvoiceImpl(invcGen);
+		Assert.assertEquals( invcSpec instanceof GnucashJobInvoiceImpl,true);
+		Assert.assertEquals( invcSpec.getId(),INVC_3_ID);
+		Assert.assertEquals( invcSpec.getOwnerType(GnucashGenerInvoice.ReadVariant.DIRECT),"gncJob");
+		Assert.assertEquals( invcSpec.getNumber(),"R94871");
+		Assert.assertEquals( invcSpec.getDescription(),"With customer job / with taxes");
 
-    // Note: That the following three return the same result
-    // is *not* trivial (in fact, a serious implemetation error was
-    // found with this test)
-    assertEquals(3, invcGen.getGenerEntries().size());
-    assertEquals(3, invcSpec.getGenerEntries().size());
-    assertEquals(3, invcSpec.getEntries().size());
+		Assert.assertEquals( invcSpec.getDateOpened().toString(),"2023-09-20T10:59Z");
+		Assert.assertEquals( invcSpec.getDatePosted().toString(),"2023-09-20T10:59Z");
+	}
 
-    TreeSet entrList = new TreeSet(); // sort elements of HashSet
-    entrList.addAll(invcSpec.getEntries());
-    assertEquals("fa483972d10a4ce0abf2a7e1319706e7", 
-                 ((GnucashJobInvoiceEntry) entrList.toArray()[0]).getId());
-    assertEquals("eb5eb3b7c1e34965b36fb6d5af183e82", 
-                 ((GnucashJobInvoiceEntry) entrList.toArray()[1]).getId());
-    assertEquals("993eae09ce664094adf63b85509de2bc", 
-                 ((GnucashJobInvoiceEntry) entrList.toArray()[2]).getId());
-  }
+	@Test
+	public void test02_1() throws Exception {
+		invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+		invcSpec = new GnucashJobInvoiceImpl(invcGen);
 
-  @Test
-  public void test03_1() throws Exception
-  {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
-    invcSpec = new GnucashJobInvoiceImpl(invcGen);
+		// Note: That the following three return the same result
+		// is *not* trivial (in fact, a serious implemetation error was
+		// found with this test)
+		Assert.assertEquals( invcGen.getGenerEntries().size(),3);
+		Assert.assertEquals( invcSpec.getGenerEntries().size(),3);
+		Assert.assertEquals( invcSpec.getEntries().size(),3);
 
-    // Note: That the following three return the same result
-    // is *not* trivial (in fact, a serious implemetation error was
-    // found with this test)
-    // ::TODO
-//    assertEquals(1327.60, invcGen.getJobAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-//    assertEquals(1327.60, invcSpec.getJobAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(4125.0, ((SpecInvoiceCommon) invcSpec).getAmountWithoutTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    
-    // Note: That the following three return the same result
-    // is *not* trivial (in fact, a serious implemetation error was
-    // found with this test)
-    // ::TODO
-//    assertEquals(1327.60, invcGen.getJobAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-//    assertEquals(1327.60, invcSpec.getJobAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-    assertEquals(4908.75, ((SpecInvoiceCommon) invcSpec).getAmountWithTaxes().doubleValue(), ConstTest.DIFF_TOLERANCE);
-  }
+		TreeSet entrList = new TreeSet(); // sort elements of HashSet
+		entrList.addAll(invcSpec.getEntries());
+		Assert.assertEquals( ((GnucashJobInvoiceEntry) entrList.toArray()[0]).getId(),"fa483972d10a4ce0abf2a7e1319706e7");
+		Assert.assertEquals( ((GnucashJobInvoiceEntry) entrList.toArray()[1]).getId(),"eb5eb3b7c1e34965b36fb6d5af183e82");
+		Assert.assertEquals( ((GnucashJobInvoiceEntry) entrList.toArray()[2]).getId(),"993eae09ce664094adf63b85509de2bc");
+	}
 
-  // ::TODO
-  @Test
-  public void test04_1() throws Exception
-  {
-    invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
-    invcSpec = new GnucashJobInvoiceImpl(invcGen);
+	@Test
+	public void test03_1() throws Exception {
+		invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+		invcSpec = new GnucashJobInvoiceImpl(invcGen);
 
-    // ::TODO
-    // Note: That the following two return the same result
-    // is *not* trivial (in fact, a serious implemetation error was
-    // found with this test)
-//    assertEquals("c97032ba41684b2bb5d1391c9d7547e9", invcGen.getPostTransaction().getId());
-//    assertEquals("c97032ba41684b2bb5d1391c9d7547e9", invcSpec.getPostTransaction().getId());
-    
-    // Note: That the following two return the same result
-    // is *not* trivial (in fact, a serious implemetation error was
-    // found with this test)
-    assertEquals(0, invcGen.getPayingTransactions().size());
-    assertEquals(0, invcSpec.getPayingTransactions().size());
+		Assert.assertEquals( ConstTest.DIFF_TOLERANCE,4125.0, ((SpecInvoiceCommon) invcSpec).getAmountWithoutTaxes().doubleValue());
 
-//    LinkedList<GnucashTransaction> trxList = (LinkedList<GnucashTransaction>) invcSpec.getPayingTransactions();
-//    Collections.sort(trxList);
-//    assertEquals("29557cfdf4594eb68b1a1b710722f991", 
-//                 ((GnucashTransaction) trxList.toArray()[0]).getId());
+		Assert.assertEquals( ConstTest.DIFF_TOLERANCE,4908.75, ((SpecInvoiceCommon) invcSpec).getAmountWithTaxes().doubleValue());
+	}
 
-    // Note: That the following three return the same result
-    // is *not* trivial (in fact, a serious implemetation error was
-    // found with this test)
-    assertEquals(false, invcGen.isInvcFullyPaid());
-    assertEquals(false, invcSpec.isInvcFullyPaid());
-    assertEquals(false, ((SpecInvoiceCommon) invcSpec).isFullyPaid());
-  }
+	// ::TODO
+	@Test
+	public void test04_1() throws Exception {
+		invcGen = gcshFile.getGenerInvoiceByID(INVC_3_ID);
+		invcSpec = new GnucashJobInvoiceImpl(invcGen);
+
+		Assert.assertEquals( invcGen.getPayingTransactions().size(),0);
+		Assert.assertEquals( invcSpec.getPayingTransactions().size(),0);
+
+		Assert.assertEquals( invcGen.isInvcFullyPaid(),false);
+		Assert.assertEquals( invcSpec.isInvcFullyPaid(),false);
+		Assert.assertEquals( ((SpecInvoiceCommon) invcSpec).isFullyPaid(),false);
+	}
 }

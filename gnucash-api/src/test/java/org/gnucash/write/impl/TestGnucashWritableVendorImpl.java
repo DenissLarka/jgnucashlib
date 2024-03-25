@@ -1,11 +1,9 @@
 package org.gnucash.write.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,16 +12,13 @@ import org.apache.commons.io.FileUtils;
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.write.GnucashWritableVendor;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashWritableVendorImpl
 {
@@ -31,25 +26,8 @@ public class TestGnucashWritableVendorImpl
     private String outFileGlobNameAbs = null;
     private File outFileGlob = null;
 
-    // https://stackoverflow.com/questions/11884141/deleting-file-and-directory-in-junit
-    @SuppressWarnings("exports")
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-    
-    // -----------------------------------------------------------------
-  
-  public static void main(String[] args) throws Exception
-  {
-    junit.textui.TestRunner.run(suite());
-  }
 
-  @SuppressWarnings("exports")
-  public static junit.framework.Test suite() 
-  {
-    return new JUnit4TestAdapter(TestGnucashWritableVendorImpl.class);  
-  }
-  
-  @Before
+  @BeforeMethod
   public void initialize() throws Exception
   {
     ClassLoader classLoader = getClass().getClassLoader();
@@ -93,7 +71,7 @@ public class TestGnucashWritableVendorImpl
       vend.setNumber(GnucashVendor.getNewNumber(vend));
       vend.setName("Norma Jean Baker");
       
-      File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
+      File outFile = Files.createTempFile("gc", ConstTest.GCSH_FILENAME_OUT).toFile();
       // System.err.println("Outfile for TestGnucashWritableVendorImpl.test01_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
@@ -137,8 +115,8 @@ public class TestGnucashWritableVendorImpl
   @Test
   public void test01_3() throws Exception
   {
-      assertNotEquals(null, outFileGlob);
-      assertEquals(true, outFileGlob.exists());
+      Assert.assertNotEquals(null, outFileGlob);
+      Assert.assertEquals(true, outFileGlob.exists());
 
       // Build document
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -151,14 +129,14 @@ public class TestGnucashWritableVendorImpl
 //      System.err.println("xxxx XML normalized");
       
       NodeList nList = document.getElementsByTagName("gnc:GncVendor");
-      assertEquals(4, nList.getLength());
+      Assert.assertEquals(4, nList.getLength());
 
       // Last (new) node
       Node lastNode = nList.item(nList.getLength() - 1);
-      assertEquals(lastNode.getNodeType(), Node.ELEMENT_NODE);
+      Assert.assertEquals(lastNode.getNodeType(), Node.ELEMENT_NODE);
       Element elt = (Element) lastNode;
-      assertEquals("Norma Jean Baker", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
-      assertEquals("000004", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
+      Assert.assertEquals("Norma Jean Baker", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      Assert.assertEquals("000004", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
   }
 
   // -----------------------------------------------------------------
@@ -178,7 +156,7 @@ public class TestGnucashWritableVendorImpl
       vend3.setNumber(GnucashVendor.getNewNumber(vend3));
       vend3.setName("Rowan Atkinson");
       
-      File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
+      File outFile = Files.createTempFile("gc", ConstTest.GCSH_FILENAME_OUT).toFile();
 //      System.err.println("Outfile for TestGnucashWritableVendorImpl.test02_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
@@ -193,8 +171,8 @@ public class TestGnucashWritableVendorImpl
   @Test
   public void test02_3() throws Exception
   {
-      assertNotEquals(null, outFileGlob);
-      assertEquals(true, outFileGlob.exists());
+      Assert.assertNotEquals(null, outFileGlob);
+      Assert.assertEquals(true, outFileGlob.exists());
 
       // Build document
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -207,32 +185,28 @@ public class TestGnucashWritableVendorImpl
 //      System.err.println("xxxx XML normalized");
       
       NodeList nList = document.getElementsByTagName("gnc:GncVendor");
-      assertEquals(6, nList.getLength());
+      Assert.assertEquals(6, nList.getLength());
 
       // Last three nodes (the new ones)
       Node node = nList.item(nList.getLength() - 3);
-      assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
+      Assert.assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       Element elt = (Element) node;
-      assertEquals("Norma Jean Baker", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
-      assertEquals("000004", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
+      Assert.assertEquals("Norma Jean Baker", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      Assert.assertEquals("000004", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
 
       node = nList.item(nList.getLength() - 2);
-      assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
+      Assert.assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       elt = (Element) node;
-      assertEquals("Madonna Louise Ciccone", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
-      assertEquals("000005", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
+      Assert.assertEquals("Madonna Louise Ciccone", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      Assert.assertEquals("000005", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
 
       node = nList.item(nList.getLength() - 1);
-      assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
+      Assert.assertEquals(node.getNodeType(), Node.ELEMENT_NODE);
       elt = (Element) node;
-      assertEquals("Rowan Atkinson", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
-      assertEquals("000006", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
+      Assert.assertEquals("Rowan Atkinson", elt.getElementsByTagName("vendor:name").item(0).getTextContent());
+      Assert.assertEquals("000006", elt.getElementsByTagName("vendor:id").item(0).getTextContent());
   }
 
-//  @AfterClass
-//  public void after() throws Exception
-//  {
-//      FileUtils.delete(outFileGlob);
-//  }
+
 
 }

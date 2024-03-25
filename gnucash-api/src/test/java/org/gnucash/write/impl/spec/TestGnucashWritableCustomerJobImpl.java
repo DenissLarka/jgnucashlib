@@ -1,11 +1,9 @@
 package org.gnucash.write.impl.spec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,17 +18,14 @@ import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
 import org.gnucash.read.spec.GnucashCustomerJob;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.spec.GnucashWritableCustomerJob;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashWritableCustomerJobImpl
 {
@@ -45,27 +40,10 @@ public class TestGnucashWritableCustomerJobImpl
 
     private GnucashCustomer cust1 = null;
     
-    // ----------------------------
 
-    // https://stackoverflow.com/questions/11884141/deleting-file-and-directory-in-junit
-    @SuppressWarnings("exports")
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-    
-    // -----------------------------------------------------------------
   
-  public static void main(String[] args) throws Exception
-  {
-    junit.textui.TestRunner.run(suite());
-  }
 
-  @SuppressWarnings("exports")
-  public static junit.framework.Test suite() 
-  {
-    return new JUnit4TestAdapter(TestGnucashWritableCustomerJobImpl.class);  
-  }
-  
-  @Before
+  @BeforeMethod
   public void initialize() throws Exception
   {
     ClassLoader classLoader = getClass().getClassLoader();
@@ -106,13 +84,13 @@ public class TestGnucashWritableCustomerJobImpl
 	      						cust1, "J123", 
 	      						"New job for customer 1");
       
-      assertNotEquals(null, job);
+      Assert.assertNotEquals(null, job);
       String newJobID = job.getId();
 //      System.out.println("New Job ID (1): " + newJobID);
-      
-      assertEquals("J123", job.getNumber());
 
-      File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
+      Assert.assertEquals("J123", job.getNumber());
+
+      File outFile = Files.createTempFile("gc", ConstTest.GCSH_FILENAME_OUT).toFile();
 //      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test01_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
@@ -145,17 +123,17 @@ public class TestGnucashWritableCustomerJobImpl
 //      System.err.println("xxxx XML normalized");
       
       NodeList nList = document.getElementsByTagName("gnc:GncJob");
-      assertEquals(3, nList.getLength());
+      Assert.assertEquals(3, nList.getLength());
 
       // Last (new) node
       Node lastNode = nList.item(nList.getLength() - 1);
-      assertEquals(lastNode.getNodeType(), Node.ELEMENT_NODE);
+      Assert.assertEquals(lastNode.getNodeType(), Node.ELEMENT_NODE);
       
       Element elt = (Element) lastNode;
-      assertEquals("J123", elt.getElementsByTagName("job:id").item(0).getTextContent());
+      Assert.assertEquals("J123", elt.getElementsByTagName("job:id").item(0).getTextContent());
       String locNewJobID = elt.getElementsByTagName("job:guid").item(0).getTextContent();
 //      System.out.println("New Job ID (2): " + locNewJobID);
-      assertEquals(newJobID, locNewJobID);
+      Assert.assertEquals(newJobID, locNewJobID);
   }
 
   private void test01_4(File outFile, String newInvcID) throws Exception
@@ -167,22 +145,22 @@ public class TestGnucashWritableCustomerJobImpl
       
 //      System.out.println("New Job ID (3): " + newJobID);
       GnucashGenerJob jobGener = gcshOutFile.getGenerJobByID(newInvcID);
-      assertNotEquals(null, jobGener);
+      Assert.assertNotEquals(null, jobGener);
       GnucashCustomerJob jobSpec = new GnucashCustomerJobImpl(jobGener);
-      assertNotEquals(null, jobSpec);
-      
-      assertEquals(newInvcID, jobGener.getId());
-      assertEquals(newInvcID, jobSpec.getId());
-      
-      assertEquals(CUST_1_ID, jobGener.getOwnerId());
-      assertEquals(CUST_1_ID, jobSpec.getOwnerId());
-      assertEquals(CUST_1_ID, jobSpec.getCustomerId());
-      
-      assertEquals("J123", jobGener.getNumber());
-      assertEquals("J123", jobSpec.getNumber());
-      
-      assertEquals("New job for customer 1", jobGener.getName());
-      assertEquals("New job for customer 1", jobSpec.getName());      
+      Assert.assertNotEquals(null, jobSpec);
+
+      Assert.assertEquals(newInvcID, jobGener.getId());
+      Assert.assertEquals(newInvcID, jobSpec.getId());
+
+      Assert.assertEquals(CUST_1_ID, jobGener.getOwnerId());
+      Assert.assertEquals(CUST_1_ID, jobSpec.getOwnerId());
+      Assert.assertEquals(CUST_1_ID, jobSpec.getCustomerId());
+
+      Assert.assertEquals("J123", jobGener.getNumber());
+      Assert.assertEquals("J123", jobSpec.getNumber());
+
+      Assert.assertEquals("New job for customer 1", jobGener.getName());
+      Assert.assertEquals("New job for customer 1", jobSpec.getName());
   }
 
 //  @AfterClass

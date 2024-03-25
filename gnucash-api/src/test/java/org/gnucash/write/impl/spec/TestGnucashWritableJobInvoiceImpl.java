@@ -1,11 +1,9 @@
 package org.gnucash.write.impl.spec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.time.LocalDate;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,17 +21,14 @@ import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.spec.GnucashWritableJobInvoice;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class TestGnucashWritableJobInvoiceImpl
 {
@@ -58,27 +53,11 @@ public class TestGnucashWritableJobInvoiceImpl
     private GnucashAccount  receivableAcct = null;
     private GnucashAccount  payableAcct = null;
     
-    // ----------------------------
-
-    // https://stackoverflow.com/questions/11884141/deleting-file-and-directory-in-junit
-    @SuppressWarnings("exports")
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-    
-    // -----------------------------------------------------------------
   
-  public static void main(String[] args) throws Exception
-  {
-    junit.textui.TestRunner.run(suite());
-  }
-
-  @SuppressWarnings("exports")
-  public static junit.framework.Test suite() 
-  {
-    return new JUnit4TestAdapter(TestGnucashWritableJobInvoiceImpl.class);  
-  }
   
-  @Before
+ 
+
+  @BeforeMethod
   public void initialize() throws Exception
   {
     ClassLoader classLoader = getClass().getClassLoader();
@@ -133,13 +112,13 @@ public class TestGnucashWritableJobInvoiceImpl
 //                                                                  new FixedPointNumber(12), 
 //                                                                  new FixedPointNumber(13));
 
-      assertNotEquals(null, invc);
+      Assert.assertNotEquals(null, invc);
       String newInvcID = invc.getId();
 //      System.out.println("New Invoice ID (1): " + newInvcID);
-      
-      assertEquals("19327", invc.getNumber());
 
-      File outFile = folder.newFile(ConstTest.GCSH_FILENAME_OUT);
+      Assert.assertEquals( invc.getNumber(),"19327");
+
+      File outFile = Files.createTempFile("gc", ConstTest.GCSH_FILENAME_OUT).toFile();
 //      System.err.println("Outfile for TestGnucashWritableCustomerImpl.test01_1: '" + outFile.getPath() + "'");
       outFile.delete(); // sic, the temp. file is already generated (empty), 
                         // and the GnuCash file writer does not like that.
@@ -168,7 +147,7 @@ public class TestGnucashWritableJobInvoiceImpl
   private void test01_3(File outFile, String newInvcID) throws ParserConfigurationException, SAXException, IOException 
   {
       //    assertNotEquals(null, outFileGlob);
-      //    assertEquals(true, outFileGlob.exists());
+      //    assertEquals( outFileGlob.exists(),true);
 
       // Build document
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -181,65 +160,65 @@ public class TestGnucashWritableJobInvoiceImpl
 //      System.err.println("xxxx XML normalized");
       
       NodeList nList = document.getElementsByTagName("gnc:GncInvoice");
-      assertEquals(7, nList.getLength());
+      Assert.assertEquals( nList.getLength(),7);
 
       // Last (new) node
       Node lastNode = nList.item(nList.getLength() - 1);
-      assertEquals(lastNode.getNodeType(), Node.ELEMENT_NODE);
+      Assert.assertEquals( Node.ELEMENT_NODE,lastNode.getNodeType());
       
       Element elt = (Element) lastNode;
-      assertEquals("19327", elt.getElementsByTagName("invoice:id").item(0).getTextContent());
+      Assert.assertEquals( elt.getElementsByTagName("invoice:id").item(0).getTextContent(),"19327");
       String locNewInvcID = elt.getElementsByTagName("invoice:guid").item(0).getTextContent();
 //      System.out.println("New Invoice ID (2): " + locNewInvcID);
-      assertEquals(newInvcID, locNewInvcID);
+      Assert.assertEquals( locNewInvcID,newInvcID);
   }
 
   // Before post
   private void test01_4(File outFile, String newInvcID) throws Exception
   {
 //      assertNotEquals(null, outFileGlob);
-//      assertEquals(true, outFileGlob.exists());
+//      assertEquals( outFileGlob.exists(),true);
 
       gcshOutFile = new GnucashFileImpl(outFile);
       
 //      System.out.println("New Invoice ID (3): " + newInvcID);
       GnucashGenerInvoice invcGener = gcshOutFile.getGenerInvoiceByID(newInvcID);
-      assertNotEquals(null, invcGener);
+      Assert.assertNotEquals(null, invcGener);
       GnucashJobInvoice invcSpec = new GnucashJobInvoiceImpl(invcGener);
-      assertNotEquals(null, invcSpec);
-      
-      assertEquals("19327", invcSpec.getNumber());
-      assertEquals(null, invcSpec.getPostAccountId());      
-      assertEquals(null, invcSpec.getPostTransactionId());
+      Assert.assertNotEquals(null, invcSpec);
+
+      Assert.assertEquals( invcSpec.getNumber(),"19327");
+      Assert.assertEquals( invcSpec.getPostAccountId(),null);
+      Assert.assertEquals( invcSpec.getPostTransactionId(),null);
   }
 
   // After post
   private void test01_5(File outFile, String newInvcID) throws Exception
   {
 //      assertNotEquals(null, outFileGlob);
-//      assertEquals(true, outFileGlob.exists());
+//      assertEquals( outFileGlob.exists(),true);
 
       gcshOutFile = new GnucashFileImpl(outFile);
       
 //      System.out.println("New Invoice ID (3): " + newInvcID);
       GnucashGenerInvoice invcGener = gcshOutFile.getGenerInvoiceByID(newInvcID);
-      assertNotEquals(null, invcGener);
+      Assert.assertNotEquals(null, invcGener);
       GnucashJobInvoice invcSpec = new GnucashJobInvoiceImpl(invcGener);
-      assertNotEquals(null, invcSpec);
-      
-      assertEquals("19327", invcSpec.getNumber());
-      assertEquals(RECEIVABLE_ACCT_ID, invcSpec.getPostAccountId());
-      
-      assertNotEquals(null, invcSpec.getPostTransactionId());
+      Assert.assertNotEquals(null, invcSpec);
+
+      Assert.assertEquals( invcSpec.getNumber(),"19327");
+      Assert.assertEquals( invcSpec.getPostAccountId(),RECEIVABLE_ACCT_ID);
+
+      Assert.assertNotEquals(null, invcSpec.getPostTransactionId());
       GnucashTransaction postTrx = gcshOutFile.getTransactionByID(invcSpec.getPostTransactionId());
-      assertNotEquals(null, postTrx);
-      assertEquals(2, postTrx.getSplits().size());
+      Assert.assertNotEquals(null, postTrx);
+      Assert.assertEquals( postTrx.getSplits().size(),2);
       String postTrxFirstSpltId = postTrx.getFirstSplit().getId();
-      assertNotEquals(postTrxFirstSpltId, postTrx);
+      Assert.assertNotEquals(postTrxFirstSpltId, postTrx);
       String postTrxFirstSpltAcctId = postTrx.getFirstSplit().getAccount().getId();
-      assertNotEquals(postTrxFirstSpltAcctId, postTrx);
+      Assert.assertNotEquals(postTrxFirstSpltAcctId, postTrx);
       String postTrxSecondSpltAcctId = postTrx.getSecondSplit().getAccount().getId();
-      assertNotEquals(postTrxSecondSpltAcctId, postTrx);
+      Assert.assertNotEquals(postTrxSecondSpltAcctId, postTrx);
 //      System.out.println("ptrx1 " + postTrxFirstSpltAcctId);
 //      System.out.println("ptrx2 " + postTrxSecondSpltAcctId);
   }

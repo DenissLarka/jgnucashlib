@@ -23,4 +23,6 @@ module gnucash.api {
 	exports org.gnucash.write.impl;
 	exports org.gnucash.write.impl.aux;
 	exports org.gnucash.write.impl.spec;
+
+	opens org.gnucash.generated to jakarta.xml.bind;
 }
