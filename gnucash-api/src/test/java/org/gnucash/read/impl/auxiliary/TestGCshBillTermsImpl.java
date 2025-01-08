@@ -1,13 +1,13 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import java.io.InputStream;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.aux.GCshBillTerms;
-import org.gnucash.read.aux.GCshBillTermsDays;
-import org.gnucash.read.aux.GCshBillTermsProximo;
+import org.gnucash.read.auxiliary.GCshBillTerms;
+import org.gnucash.read.auxiliary.GCshBillTermsDays;
+import org.gnucash.read.auxiliary.GCshBillTermsProximo;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

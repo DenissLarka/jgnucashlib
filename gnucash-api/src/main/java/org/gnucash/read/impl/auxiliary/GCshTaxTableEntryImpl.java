@@ -1,11 +1,11 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.aux.GCshTaxTableEntry;
+import org.gnucash.read.auxiliary.GCshTaxTableEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

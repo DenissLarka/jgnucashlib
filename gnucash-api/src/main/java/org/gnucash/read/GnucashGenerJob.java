@@ -6,7 +6,7 @@ import java.util.Locale;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncJob.JobOwner;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.aux.GCshOwner;
+import org.gnucash.read.auxiliary.GCshOwner;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 

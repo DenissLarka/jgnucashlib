@@ -16,7 +16,7 @@ import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoice.ReadVariant;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.IllegalGenerInvoiceEntryActionException;
-import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.impl.GnucashGenerInvoiceEntryImpl;
 import org.gnucash.read.impl.TaxTableNotFoundException;

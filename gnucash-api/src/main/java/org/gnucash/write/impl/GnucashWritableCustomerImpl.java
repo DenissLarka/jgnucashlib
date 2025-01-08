@@ -8,13 +8,13 @@ import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
-import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.auxiliary.GCshAddress;
 import org.gnucash.read.impl.GnucashCustomerImpl;
 import org.gnucash.write.GnucashWritableCustomer;
 import org.gnucash.write.GnucashWritableFile;
 import org.gnucash.write.GnucashWritableObject;
-import org.gnucash.write.aux.GCshWritableAddress;
-import org.gnucash.write.impl.aux.GCshWritableAddressImpl;
+import org.gnucash.write.auxiliary.GCshWritableAddress;
+import org.gnucash.write.impl.auxiliary.GCshWritableAddressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

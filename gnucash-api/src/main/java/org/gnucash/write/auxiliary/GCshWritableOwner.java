@@ -1,6 +1,6 @@
-package org.gnucash.write.aux;
+package org.gnucash.write.auxiliary;
 
-import org.gnucash.read.aux.GCshOwner;
+import org.gnucash.read.auxiliary.GCshOwner;
 
 public interface GCshWritableOwner extends GCshOwner {
 

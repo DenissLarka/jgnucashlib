@@ -13,7 +13,7 @@ import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
 import org.gnucash.read.impl.TaxTableNotFoundException;
-import org.gnucash.read.impl.aux.WrongOwnerTypeException;
+import org.gnucash.read.impl.auxiliary.WrongOwnerTypeException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.GnucashWritableFileImpl;
 import org.gnucash.write.impl.UnknownInvoiceTypeException;

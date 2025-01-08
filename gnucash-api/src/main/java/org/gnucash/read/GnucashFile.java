@@ -5,8 +5,8 @@ import java.util.Collection;
 
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.aux.GCshBillTerms;
-import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshBillTerms;
+import org.gnucash.read.auxiliary.GCshTaxTable;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;

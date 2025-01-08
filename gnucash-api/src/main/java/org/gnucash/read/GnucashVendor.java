@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.Locale;
 
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.aux.GCshAddress;
-import org.gnucash.read.aux.GCshBillTerms;
-import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshAddress;
+import org.gnucash.read.auxiliary.GCshBillTerms;
+import org.gnucash.read.auxiliary.GCshTaxTable;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.GnucashVendorBill;
 import org.gnucash.read.spec.GnucashVendorJob;

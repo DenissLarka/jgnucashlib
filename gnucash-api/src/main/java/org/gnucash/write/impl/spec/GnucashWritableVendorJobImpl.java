@@ -10,7 +10,7 @@ import org.gnucash.generated.OwnerId;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GCshOwner;
+import org.gnucash.read.auxiliary.GCshOwner;
 import org.gnucash.read.impl.spec.GnucashVendorJobImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.GnucashWritableFileImpl;

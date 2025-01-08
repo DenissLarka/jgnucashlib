@@ -3,8 +3,8 @@ package org.gnucash.write;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashObject;
-import org.gnucash.read.aux.GCshAddress;
-import org.gnucash.write.aux.GCshWritableAddress;
+import org.gnucash.read.auxiliary.GCshAddress;
+import org.gnucash.write.auxiliary.GCshWritableAddress;
 
 /**
  * Customer that can be modified

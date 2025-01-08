@@ -1,4 +1,4 @@
-package org.gnucash.read.aux;
+package org.gnucash.read.auxiliary;
 
 public class WrongOwnerJITypeException extends Exception {
 

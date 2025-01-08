@@ -22,7 +22,7 @@ import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashGenerJob;
 import org.gnucash.read.GnucashTransaction;
 import org.gnucash.read.GnucashTransactionSplit;
-import org.gnucash.read.impl.aux.GCshTaxedSumImpl;
+import org.gnucash.read.impl.auxiliary.GCshTaxedSumImpl;
 import org.gnucash.read.impl.spec.GnucashJobInvoiceImpl;
 import org.gnucash.read.spec.GnucashJobInvoice;
 import org.gnucash.read.spec.WrongInvoiceTypeException;

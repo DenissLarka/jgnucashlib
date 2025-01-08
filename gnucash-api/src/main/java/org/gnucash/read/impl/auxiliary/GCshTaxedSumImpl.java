@@ -1,4 +1,4 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import org.gnucash.numbers.FixedPointNumber;
 

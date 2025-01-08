@@ -1,6 +1,6 @@
-package org.gnucash.write.aux;
+package org.gnucash.write.auxiliary;
 
-import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.auxiliary.GCshAddress;
 
 public interface GCshWritableAddress extends GCshAddress {
 

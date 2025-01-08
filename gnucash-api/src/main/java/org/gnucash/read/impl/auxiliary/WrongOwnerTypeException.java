@@ -1,4 +1,4 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 public class WrongOwnerTypeException extends Exception {
 

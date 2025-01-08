@@ -1,19 +1,19 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.aux.GCshBillTermsProximo;
+import org.gnucash.read.auxiliary.GCshBillTermsDays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GCshBillTermsProximoImpl implements GCshBillTermsProximo {
+public class GCshBillTermsDaysImpl implements GCshBillTermsDays {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GCshBillTermsProximoImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GCshBillTermsDaysImpl.class);
 
     /**
      * the JWSDP-object we are facading.
      */
-    private final GncV2.GncBook.GncGncBillTerm.BilltermProximo jwsdpPeer;
+    private final GncV2.GncBook.GncGncBillTerm.BilltermDays jwsdpPeer;
 
     // ---------------------------------------------------------------
 
@@ -23,7 +23,7 @@ public class GCshBillTermsProximoImpl implements GCshBillTermsProximo {
      * @param gncFile the file to register under
      */
     @SuppressWarnings("exports")
-    public GCshBillTermsProximoImpl(final GncV2.GncBook.GncGncBillTerm.BilltermProximo peer) {
+    public GCshBillTermsDaysImpl(final GncV2.GncBook.GncGncBillTerm.BilltermDays peer) {
 	super();
 
 	jwsdpPeer = peer;
@@ -32,21 +32,21 @@ public class GCshBillTermsProximoImpl implements GCshBillTermsProximo {
     // ---------------------------------------------------------------
 
     @Override
-    public Integer getDueDay() {
-	return jwsdpPeer.getBtProxDueDay();
+    public Integer getDueDays() {
+	return jwsdpPeer.getBtDaysDueDays();
     }
 
     @Override
-    public Integer getDiscountDay() {
-	return jwsdpPeer.getBtProxDiscDay();
+    public Integer getDiscountDays() {
+	return jwsdpPeer.getBtDaysDiscDays();
     }
 
     @Override
     public FixedPointNumber getDiscount() {
-	if ( jwsdpPeer.getBtProxDiscount() == null )
+	if ( jwsdpPeer.getBtDaysDiscount() == null )
 	    return null;
 	
-	return new FixedPointNumber(jwsdpPeer.getBtProxDiscount());
+	return new FixedPointNumber(jwsdpPeer.getBtDaysDiscount());
     }
 
     // ---------------------------------------------------------------
@@ -54,13 +54,13 @@ public class GCshBillTermsProximoImpl implements GCshBillTermsProximo {
     @Override
     public String toString() {
 	StringBuffer buffer = new StringBuffer();
-	buffer.append("[GCshBillTermsProximoImpl:");
+	buffer.append("[GCshBillTermsDaysImpl:");
 
-	buffer.append(" due-day: ");
-	buffer.append(getDueDay());
+	buffer.append(" due-days: ");
+	buffer.append(getDueDays());
 
-	buffer.append(" discount-day: ");
-	buffer.append(getDiscountDay());
+	buffer.append(" discount-days: ");
+	buffer.append(getDiscountDays());
 
 	buffer.append(" discount: ");
 	buffer.append(getDiscount());

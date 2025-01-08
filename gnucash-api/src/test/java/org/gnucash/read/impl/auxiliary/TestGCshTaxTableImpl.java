@@ -1,12 +1,12 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import java.io.InputStream;
 import java.util.Collection;
 
 import org.gnucash.ConstTest;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.aux.GCshTaxTableEntry;
+import org.gnucash.read.auxiliary.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshTaxTableEntry;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

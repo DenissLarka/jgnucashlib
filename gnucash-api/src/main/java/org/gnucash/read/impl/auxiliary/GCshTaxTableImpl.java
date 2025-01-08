@@ -1,4 +1,4 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,8 @@ import java.util.Iterator;
 import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.aux.GCshTaxTable;
-import org.gnucash.read.aux.GCshTaxTableEntry;
+import org.gnucash.read.auxiliary.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshTaxTableEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

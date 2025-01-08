@@ -1,4 +1,4 @@
-package org.gnucash.read.aux;
+package org.gnucash.read.auxiliary;
 
 import java.util.List;
 

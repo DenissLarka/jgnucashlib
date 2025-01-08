@@ -4,8 +4,8 @@ import java.io.File;
 
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashGenerInvoice;
-import org.gnucash.read.aux.GCshBillTerms;
-import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshBillTerms;
+import org.gnucash.read.auxiliary.GCshTaxTable;
 import org.gnucash.read.impl.GnucashFileImpl;
 import org.gnucash.read.spec.GnucashCustomerInvoice;
 import org.gnucash.read.spec.GnucashCustomerJob;

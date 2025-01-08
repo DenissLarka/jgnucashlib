@@ -1,8 +1,8 @@
-package org.gnucash.write.impl.aux;
+package org.gnucash.write.impl.auxiliary;
 
-import org.gnucash.read.impl.aux.GCshAddressImpl;
+import org.gnucash.read.impl.auxiliary.GCshAddressImpl;
 import org.gnucash.write.GnucashWritableCustomer;
-import org.gnucash.write.aux.GCshWritableAddress;
+import org.gnucash.write.auxiliary.GCshWritableAddress;
 
 /**
  * Writable implementation in {@link GCshAddressImpl}

@@ -1,14 +1,14 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.GncV2.GncBook.GncGncBillTerm.BilltermChild;
-import org.gnucash.read.aux.BillTermsTypeException;
-import org.gnucash.read.aux.GCshBillTerms;
-import org.gnucash.read.aux.GCshBillTermsDays;
-import org.gnucash.read.aux.GCshBillTermsProximo;
+import org.gnucash.read.auxiliary.BillTermsTypeException;
+import org.gnucash.read.auxiliary.GCshBillTerms;
+import org.gnucash.read.auxiliary.GCshBillTermsDays;
+import org.gnucash.read.auxiliary.GCshBillTermsProximo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,7 +1,7 @@
-package org.gnucash.read.impl.aux;
+package org.gnucash.read.impl.auxiliary;
 
 import org.gnucash.read.GnucashVendor;
-import org.gnucash.read.aux.GCshAddress;
+import org.gnucash.read.auxiliary.GCshAddress;
 
 public class GCshAddressImpl implements GCshAddress {
 

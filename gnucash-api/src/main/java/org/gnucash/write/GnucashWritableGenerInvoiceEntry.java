@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
 import org.gnucash.read.GnucashObject;
-import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshTaxTable;
 import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.impl.UnknownInvoiceTypeException;

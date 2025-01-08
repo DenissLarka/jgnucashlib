@@ -1,7 +1,7 @@
 package org.gnucash.write.spec;
 
 import org.gnucash.numbers.FixedPointNumber;
-import org.gnucash.read.aux.GCshTaxTable;
+import org.gnucash.read.auxiliary.GCshTaxTable;
 import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 import org.gnucash.write.GnucashWritableGenerInvoiceEntry;
