@@ -9,7 +9,7 @@ import org.gnucash.read.impl.GnucashFileImpl;
 public class GetAcctInfo {
     // BEGIN Example data -- adapt to your needs
     private static String gcshFileName = "example_in.gnucash";
-    private static String acctID       = "xyz";
+    private static String acctID       = "714995684aa34753acad6f6c40ecc517";
     // END Example data
 
     // -----------------------------------------------------------------
