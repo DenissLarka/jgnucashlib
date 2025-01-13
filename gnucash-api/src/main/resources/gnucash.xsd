@@ -78,71 +78,6 @@
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="gnc_pricedb" type="gnc_pricedb" minOccurs="0" maxOccurs="1">
-				<!--
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="price" minOccurs="0" maxOccurs="unbounded">
-
-                <xs:complexType>
-								<xs:sequence>
-									<xs:element name="price_id">
-										<xs:complexType>
-											<xs:simpleContent>
-												<xs:extension base="xs:string">
-													<xs:attribute name="type" type="xs:string" use="required"/>
-												</xs:extension>
-											</xs:simpleContent>
-										</xs:complexType>
-									</xs:element>
-									<xs:element name="price_commodity">
-										<xs:complexType>
-											<xs:sequence>
-												<xs:element ref="cmdty_space"/>
-												<xs:element ref="cmdty_id"/>
-											</xs:sequence>
-										</xs:complexType>
-									</xs:element>
-									<xs:element name="price_currency">
-										<xs:complexType>
-											<xs:sequence>
-												<xs:element ref="cmdty_space"/>
-												<xs:element ref="cmdty_id"/>
-											</xs:sequence>
-										</xs:complexType>
-									</xs:element>
-									<xs:element name="price_time">
-										<xs:complexType>
-											<xs:sequence>
-												<xs:element ref="ts_date"/>
-											</xs:sequence>
-										</xs:complexType>
-									</xs:element>
-									<xs:element name="price_source">
-										<xs:simpleType>
-											<xs:restriction base="xs:string">
-												<xs:enumeration value="Finance::Quote"/>
-												<xs:enumeration value="user:price-editor"/>
-												<xs:enumeration value="user:xfer-dialog"/>
-											</xs:restriction>
-										</xs:simpleType>
-									</xs:element>
-									<xs:element name="price_type" minOccurs="0" maxOccurs="1">
-										<xs:simpleType>
-											<xs:restriction base="xs:string">
-												<xs:enumeration value="last"/>
-												<xs:enumeration value="nav"/>
-											</xs:restriction>
-										</xs:simpleType>
-									</xs:element>
-									<xs:element name="price_value" type="xs:string"/>
-								</xs:sequence>
-							</xs:complexType>
- 
-						</xs:element>
-					</xs:sequence>
-					<xs:attribute name="version" type="xs:int" use="required"/>
-				</xs:complexType>
-                                         -->
 			</xs:element>
 
 			<!-- ============================================================== -->
@@ -1122,7 +1057,6 @@
 		</xs:simpleType>
 	</xs:element>
 
-
 	<xs:element name="slot_value">
 		<xs:complexType mixed="true">
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -1279,8 +1213,6 @@
             <xs:element name="price_value" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
-    
-   
     
 </xs:schema>
 

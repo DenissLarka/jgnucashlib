@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.gnucash.numbers.FixedPointNumber;
 
-public interface GnucashStock {
+public interface GnucashPriceDB {
   /**
    * The gnucash-file is the top-level class to contain everything.
    * 
