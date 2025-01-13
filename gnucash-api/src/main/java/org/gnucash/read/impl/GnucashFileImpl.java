@@ -32,6 +32,7 @@ import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.GncBudget;
 import org.gnucash.generated.GncCountData;
+import org.gnucash.generated.GncPricedb;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
@@ -1067,7 +1068,7 @@ public class GnucashFileImpl implements GnucashFile {
       if (bookElement instanceof GncV2.GncBook.GncCommodity) {
         continue;
       }
-      if (bookElement instanceof GncV2.GncBook.GncPricedb) {
+      if (bookElement instanceof GncPricedb) {
         continue;
       }
       if (bookElement instanceof GncV2.GncBook.GncGncTaxTable) {
@@ -1288,11 +1289,11 @@ public class GnucashFileImpl implements GnucashFile {
     boolean noPriceDB = true;
     List<Object> bookElements = pRootElement.getGncBook().getBookElements();
     for (Object bookElement : bookElements) {
-      if (!(bookElement instanceof GncV2.GncBook.GncPricedb)) {
+      if (!(bookElement instanceof GncPricedb)) {
         continue;
       }
       noPriceDB = false;
-      GncV2.GncBook.GncPricedb priceDB = (GncV2.GncBook.GncPricedb) bookElement;
+      GncPricedb priceDB = (GncPricedb) bookElement;
 
       if (priceDB.getVersion() != 1) {
 
@@ -1367,10 +1368,10 @@ public class GnucashFileImpl implements GnucashFile {
     final int maxRecursionDepth = 5;
 
     for (Object bookElement : getRootElement().getGncBook().getBookElements()) {
-      if (!(bookElement instanceof GncV2.GncBook.GncPricedb)) {
+      if (!(bookElement instanceof GncPricedb)) {
         continue;
       }
-      GncV2.GncBook.GncPricedb priceDB = (GncV2.GncBook.GncPricedb) bookElement;
+      GncPricedb priceDB = (GncPricedb) bookElement;
       for (Price priceQuote : (List<Price>) priceDB.getPrice()) {
 
         try {
