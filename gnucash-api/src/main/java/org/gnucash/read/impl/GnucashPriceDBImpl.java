@@ -207,7 +207,6 @@ public class GnucashPriceDBImpl implements GnucashPriceDB {
               + a_CommoditieSpace + "', String pCmdtyId='" + a_Commodity + "')! Ignoring a bad price-quote '"
               + priceQuote + "'", e);
         }
-
       }
     }
 
@@ -224,5 +223,18 @@ public class GnucashPriceDBImpl implements GnucashPriceDB {
 
     return factor.multiply(latestQuote);
   }
+
+  public List<Price> getPrices(String a_Commoditie) {
+    List<Price> l_Prices = new ArrayList<Price>();
+    if (b_PriceDBPresent) {
+      for (Iterator<Price> iter = priceDB.getPrice().iterator(); iter.hasNext();) {
+        Price price = iter.next();
+        if (price.getPriceCommodity().getCmdtyId().equals(a_Commoditie)) {
+          l_Prices.add(price);
+        }
+      }
+    }
+    return l_Prices;
+  };
 
 }

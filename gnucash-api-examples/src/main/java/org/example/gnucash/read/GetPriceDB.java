@@ -80,6 +80,16 @@ public class GetPriceDB {
     pr = pdb.getPrice("SAP", parsedDate);
     System.out.println(dateString + " " + pr.toString());
 
+    List<Price> lst_prices = pdb.getPrices("SAP");
+    System.out.println(" ==============");
+    System.out.println("SAP prices ");
+    System.out.println("Source    | Date                     | Type| Value");
+    lst_prices.forEach(prc -> {
+      System.out.println(prc.getPriceSource() + "| " + prc.getPriceTime().getTsDate() + "| " + prc.getPriceType() + "| "
+          + prc.getPriceValue() + "|");
+
+    });
+
   }
 
   // -----------------------------------------------------------------
