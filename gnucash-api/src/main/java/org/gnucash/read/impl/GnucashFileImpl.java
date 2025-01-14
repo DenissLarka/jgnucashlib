@@ -1627,7 +1627,7 @@ public class GnucashFileImpl implements GnucashFile {
     loadInputStream(in);
 
     long end = System.currentTimeMillis();
-    LOGGER.info("GnucashFileImpl.loadFile took " + (end - start) + " ms (total) ");
+    LOGGER.debug("GnucashFileImpl.loadFile took " + (end - start) + " ms (total) ");
 
   }
 
@@ -1644,7 +1644,7 @@ public class GnucashFileImpl implements GnucashFile {
       long start2 = System.currentTimeMillis();
       setRootElement(o);
       long end = System.currentTimeMillis();
-      LOGGER.info("GnucashFileImpl.loadFileInputStream took " + (end - start) + " ms (total) " + (start2 - start)
+      LOGGER.debug("GnucashFileImpl.loadFileInputStream took " + (end - start) + " ms (total) " + (start2 - start)
           + " ms (jaxb-loading)" + (end - start2) + " ms (building facades)");
 
     } catch (JAXBException e) {
