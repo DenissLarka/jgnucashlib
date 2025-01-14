@@ -1283,6 +1283,11 @@ public class GnucashFileImpl implements GnucashFile {
   }
 
   /**
+   * priceDB Price database
+   */
+  GncPricedb priceDB;
+
+  /**
    * @param pRootElement the root-element of the Gnucash-file
    */
   private void loadPriceDatabase(final GncV2 pRootElement) {
@@ -1293,7 +1298,7 @@ public class GnucashFileImpl implements GnucashFile {
         continue;
       }
       noPriceDB = false;
-      GncPricedb priceDB = (GncPricedb) bookElement;
+      priceDB = (GncPricedb) bookElement;
 
       if (priceDB.getVersion() != 1) {
 
@@ -1340,6 +1345,14 @@ public class GnucashFileImpl implements GnucashFile {
     }
   }
 
+  public int getNofEntriesPricesInDB() {
+    return priceDB.getPrice().size();
+  }
+
+  public GncPricedb getPriceDB() {
+    return priceDB;
+  }
+
   /**
    * @see {@link #getLatestPrice(String, String)}
    */
@@ -1349,7 +1362,7 @@ public class GnucashFileImpl implements GnucashFile {
    * @param pCmdtySpace the namespace for pCmdtyId
    * @param pCmdtyId    the currency-name
    * @param depth       used for recursion. Allways call with '0' for aborting recursive quotes (quotes to other then
-   *                    the base- currency) we abort if the depth reached 6.
+   *                    the base- currency) we abort if the depth reached maxRecursionDepth+1.
    * @return the latest price-quote in the gnucash-file in the default-currency
    * @see {@link GnucashFile#getLatestPrice(String, String)}
    * @see #getDefaultCurrencyID()
@@ -1650,7 +1663,6 @@ public class GnucashFileImpl implements GnucashFile {
   /**
    * @return the jaxb object-factory used to create new peer-objects to extend this
    */
-  @SuppressWarnings("exports")
   public ObjectFactory getObjectFactory() {
     if (myJAXBFactory == null) {
       myJAXBFactory = new ObjectFactory();

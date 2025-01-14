@@ -13,8 +13,14 @@ public interface GnucashPriceDB {
    */
   GnucashFile getFile();
 
-  List<String> getStocks();
+  List<String> getCommoditieSpaces();
 
-  FixedPointNumber getPrice(String a_Stock, LocalDate d);
+  List<String> getCommodities();
+
+  List<String> getCommodities(String a_CommoditieSpace);
+
+  FixedPointNumber getPrice(String a_Commoditie, LocalDate d);
+
+  FixedPointNumber getPrice(String a_CommoditieSpace, String a_Commodity, LocalDate d, int depth);
 
 }
