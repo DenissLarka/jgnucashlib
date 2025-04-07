@@ -81,10 +81,6 @@ import jakarta.xml.bind.Marshaller;
 public class GnucashWritableFileImpl extends GnucashFileImpl implements GnucashWritableFile {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableFileImpl.class);
 
-  // ::MAGIC
-  private static final int HEX = 16;
-  private static final String CODEPAGE = "UTF-8";
-
   // ---------------------------------------------------------------
 
   /**
@@ -378,7 +374,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl implements GnucashW
       out = new GZIPOutputStream(out);
     }
 
-    Writer writer = new NamespaceAdderWriter(new OutputStreamWriter(out, CODEPAGE));
+    Writer writer = new NamespaceAdderWriter(new OutputStreamWriter(out, Const.CODEPAGE));
     try {
       JAXBContext context = getJAXBContext();
       Marshaller marsh = context.createMarshaller();
@@ -436,7 +432,7 @@ public class GnucashWritableFileImpl extends GnucashFileImpl implements GnucashW
     StringBuffer sb = new StringBuffer(Long.toHexString(System.currentTimeMillis()));
 
     while (sb.length() < len) {
-      sb.append(Integer.toHexString((int) (Math.random() * HEX)).charAt(0));
+      sb.append(Integer.toHexString((int) (Math.random() * Const.HEX)).charAt(0));
     }
 
     return sb.toString();

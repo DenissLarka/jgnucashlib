@@ -11,20 +11,19 @@ import org.gnucash.read.impl.auxiliary.GCshTaxedSumImpl;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
- * This class represents an invoice that is sent to a customer
- * so (s)he knows what to pay you. <br>
+ * This class represents an invoice that is sent to a customer so (s)he knows what to pay you. <br>
  * <br>
- * Implementations of this interface are comparable and sorts primarily on the date the Invoice was
- * created and secondarily on the date it should be paid.
+ * Implementations of this interface are comparable and sorts primarily on the date the Invoice was created and
+ * secondarily on the date it should be paid.
  *
  * @see GnucashGenerJob
  * @see GnucashCustomer
  */
 public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
-  
+
   // For the following types cf.:
   // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/gncInvoice.h
-  
+
   /**
    * @deprecated Use {@link GCshOwner#TYPE_CUSTOMER} instead
    */
@@ -32,7 +31,7 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   /**
    * @deprecated Use {@link GCshOwner#TYPE_VENDOR} instead
    */
-  public static final String TYPE_VENDOR   = GCshOwner.TYPE_VENDOR;
+  public static final String TYPE_VENDOR = GCshOwner.TYPE_VENDOR;
   /**
    * @deprecated Use {@link GCshOwner#TYPE_EMPLOYEE} instead
    */
@@ -40,35 +39,33 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   /**
    * @deprecated Use {@link GCshOwner#TYPE_JOB} instead
    */
-  public static final String TYPE_JOB      = GCshOwner.TYPE_JOB;
-  
+  public static final String TYPE_JOB = GCshOwner.TYPE_JOB;
+
   // ------------------------------
 
   public enum ReadVariant {
-    DIRECT,  // The entity that directly owns the
-             // invoice, be it a customer invoice, 
-             // a vendor bill or a job invoice (thus,
-             // the customer's / vendor's / job's ID.
+    DIRECT, // The entity that directly owns the
+            // invoice, be it a customer invoice,
+            // a vendor bill or a job invoice (thus,
+            // the customer's / vendor's / job's ID.
     VIA_JOB, // If it's a job invoice, then this option means
-             // that we want the ID of the customer / vendor 
+             // that we want the ID of the customer / vendor
              // who is the owner of the job (depending of the
              // job's type).
   }
-  
+
   // -----------------------------------------------------------------
 
   /**
    *
-   * @return the unique-id to identify this object with across name- and
-   *         hirarchy-changes
+   * @return the unique-id to identify this object with across name- and hirarchy-changes
    */
   String getId();
 
   String getType();
 
   /**
-   * @return the user-defined description for this object (may contain multiple
-   *         lines and non-ascii-characters)
+   * @return the user-defined description for this object (may contain multiple lines and non-ascii-characters)
    */
   String getDescription();
 
@@ -107,8 +104,7 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   String getDatePostedFormatted();
 
   /**
-   * @return the lot-id that identifies transactions to belong to an invoice with
-   *         that lot-id.
+   * @return the lot-id that identifies transactions to belong to an invoice with that lot-id.
    */
   String getLotID();
 
@@ -361,7 +357,7 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
    * @return the id of the {@link GnucashAccount} the payment is made to.
    */
   String getPostAccountId();
-  
+
   String getPostTransactionId();
 
   // ---------------------------------------------------------------
@@ -369,8 +365,8 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   GnucashAccount getPostAccount();
 
   /**
-   * @return the transaction that transferes the money from the customer to the
-   *         account for money you are to get and the one you owe the taxes.
+   * @return the transaction that transferes the money from the customer to the account for money you are to get and the
+   *         one you owe the taxes.
    */
   GnucashTransaction getPostTransaction();
 
@@ -388,8 +384,7 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
 
   /**
    *
-   * @param trans a transaction that is the transaction due to handing out this
-   *              invoice
+   * @param trans a transaction that is the transaction due to handing out this invoice
    */
   void addTransaction(GnucashTransaction trans);
 
@@ -437,7 +432,6 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
 
   // ---------------------------------------------------------------
 
-  @SuppressWarnings("exports")
   InvoiceOwner getOwnerPeerObj();
 
 }
