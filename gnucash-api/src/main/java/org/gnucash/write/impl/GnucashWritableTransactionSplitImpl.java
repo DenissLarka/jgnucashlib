@@ -20,26 +20,24 @@ import org.slf4j.LoggerFactory;
 /**
  * Transaction-Split that can be newly created or removed from it's transaction.
  */
-public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplitImpl 
-                                                 implements GnucashWritableTransactionSplit 
-{
-    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableTransactionSplitImpl.class);
+public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplitImpl implements GnucashWritableTransactionSplit {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableTransactionSplitImpl.class);
 
-    	/**
+	/**
 	 * Our helper to implement the GnucashWritableObject-interface.
 	 */
 	private final GnucashWritableObjectImpl helper = new GnucashWritableObjectImpl(this);
 
 	// -----------------------------------------------------------
-	
+
 	/**
 	 * @param jwsdpPeer   the JWSDP-object we are facading.
 	 * @param transaction the transaction we belong to
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableTransactionSplitImpl(
-		final GncTransaction.TrnSplits.TrnSplit jwsdpPeer, 
-		final GnucashWritableTransaction transaction) {
+			final GncTransaction.TrnSplits.TrnSplit jwsdpPeer,
+			final GnucashWritableTransaction transaction) {
 		super(jwsdpPeer, transaction);
 	}
 
@@ -50,10 +48,10 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 * @param account     the account we take money (or other things) from or give it to
 	 */
 	public GnucashWritableTransactionSplitImpl(
-		final GnucashWritableTransactionImpl transaction, 
-		final GnucashAccount account) {
-		super(createTransactionSplit(transaction, account, 
-				(transaction.getWritingFile()).createGUID()), 
+			final GnucashWritableTransactionImpl transaction,
+			final GnucashAccount account) {
+		super(createTransactionSplit(transaction, account,
+						(transaction.getWritingFile()).createGUID()),
 				transaction);
 
 		// this is a workaound.
@@ -68,11 +66,11 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	}
 
 	public GnucashWritableTransactionSplitImpl(GnucashTransactionSplit split) {
-	    super(split.getJwsdpPeer(), split.getTransaction());
+		super(split.getJwsdpPeer(), split.getTransaction());
 	}
 
 	// -----------------------------------------------------------
-	
+
 	/**
 	 * @see GnucashWritableObject#setUserDefinedAttribute(java.lang.String, java.lang.String)
 	 */
@@ -93,9 +91,9 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 * Don't modify the ID of the new transaction!
 	 */
 	protected static GncTransaction.TrnSplits.TrnSplit createTransactionSplit(
-		final GnucashWritableTransactionImpl transaction,
-		final GnucashAccount account,
-		final String pSplitID) {
+			final GnucashWritableTransactionImpl transaction,
+			final GnucashAccount account,
+			final String pSplitID) {
 
 		if (transaction == null) {
 			throw new IllegalArgumentException("null transaction given");
@@ -326,17 +324,16 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 	 * an invoice's lot.
 	 *
 	 * @param action null, or one of the defined ACTION_xyz values
-	 * @throws IllegalTransactionSplitActionException 
 	 */
 	public void setAction(final String action) throws IllegalTransactionSplitActionException {
-//		if ( action != null &&
-//             ! action.equals(ACTION_PAYMENT) &&
-//             ! action.equals(ACTION_INVOICE) &&
-//             ! action.equals(ACTION_BILL) && 
-//             ! action.equals(ACTION_BUY) && 
-//             ! action.equals(ACTION_SELL) ) {
-//                throw new IllegalSplitActionException();
-//		}
+		//		if ( action != null &&
+		//             ! action.equals(ACTION_PAYMENT) &&
+		//             ! action.equals(ACTION_INVOICE) &&
+		//             ! action.equals(ACTION_BILL) &&
+		//             ! action.equals(ACTION_BUY) &&
+		//             ! action.equals(ACTION_SELL) ) {
+		//                throw new IllegalSplitActionException();
+		//		}
 
 		String old = getJwsdpPeer().getSplitAction();
 		getJwsdpPeer().setSplitAction(action);
@@ -366,21 +363,21 @@ public class GnucashWritableTransactionSplitImpl extends GnucashTransactionSplit
 		// ::TODO ::CHECK
 		// 09.10.2023: This code, in the current setting, generates wrong
 		// output (a closing split slot tag without an opening one, and 
-                // we don't (always?) need a split slot anyway.
-//		SlotsType slots = getJwsdpPeer().getSplitSlots();
-//		if (slots == null) {
-//			slots = factory.createSlotsType();
-//			getJwsdpPeer().setSplitSlots(slots);
-//		}
-//		if (slots.getSlot() == null) {
-//			Slot slot = factory.createSlot();
-//			slot.setSlotKey("trans-txn-type");
-//			SlotValue value = factory.createSlotValue();
-//			value.setType("string");
-//			value.getContent().add(GnucashTransaction.TYPE_PAYMENT);
-//			slot.setSlotValue(value);
-//			slots.getSlot().add(slot);
-//		}
+		// we don't (always?) need a split slot anyway.
+		//		SlotsType slots = getJwsdpPeer().getSplitSlots();
+		//		if (slots == null) {
+		//			slots = factory.createSlotsType();
+		//			getJwsdpPeer().setSplitSlots(slots);
+		//		}
+		//		if (slots.getSlot() == null) {
+		//			Slot slot = factory.createSlot();
+		//			slot.setSlotKey("trans-txn-type");
+		//			SlotValue value = factory.createSlotValue();
+		//			value.setType("string");
+		//			value.getContent().add(GnucashTransaction.TYPE_PAYMENT);
+		//			slot.setSlotValue(value);
+		//			slots.getSlot().add(slot);
+		//		}
 
 	}
 

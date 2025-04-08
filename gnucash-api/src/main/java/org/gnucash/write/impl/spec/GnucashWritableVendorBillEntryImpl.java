@@ -28,10 +28,8 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * Entry-Line in an invoice that can be created or removed.
  */
-public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvoiceEntryImpl 
-                                                implements GnucashWritableVendorBillEntry
-{
-    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableVendorBillEntryImpl.class);
+public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvoiceEntryImpl implements GnucashWritableVendorBillEntry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableVendorBillEntryImpl.class);
 
 	/**
 	 * @param file      the file we belong to
@@ -40,22 +38,22 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableVendorBillEntryImpl(
-		final GncV2.GncBook.GncGncEntry jwsdpPeer, 
-		final GnucashWritableFileImpl file) {
+			final GncV2.GncBook.GncGncEntry jwsdpPeer,
+			final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
 	/**
-	 * @param bll   tne vendor bill this entry shall belong to
+	 * @param bll       tne vendor bill this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableVendorBillEntryImpl(
-		final GnucashWritableVendorBillImpl bll,
-		final GncV2.GncBook.GncGncEntry jwsdpPeer) {
+			final GnucashWritableVendorBillImpl bll,
+			final GncV2.GncBook.GncGncEntry jwsdpPeer) {
 		super(bll, jwsdpPeer);
-		
+
 		this.myInvoice = bll;
 	}
 
@@ -64,21 +62,19 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	 * (It has the tax table of the vendor with a fallback
 	 * to the first tax table found assigned)
 	 *
-	 * @param bll  the vendor bill to add this split to
+	 * @param bll      the vendor bill to add this split to
 	 * @param account  the expenses-account the money comes from
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
-	 * @throws WrongInvoiceTypeException 
-	 * @throws TaxTableNotFoundException 
 	 */
 	public GnucashWritableVendorBillEntryImpl(
-		final GnucashWritableVendorBillImpl bll,
-		final GnucashAccount account,
-		final FixedPointNumber quantity,
-		final FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
-		super(bll, 
-		      createVendBillEntry_int(bll, account, quantity, price));
-		
+			final GnucashWritableVendorBillImpl bll,
+			final GnucashAccount account,
+			final FixedPointNumber quantity,
+			final FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
+		super(bll,
+				createVendBillEntry_int(bll, account, quantity, price));
+
 		// Caution: Call addBillEntry one level above now
 		// (GnucashWritableVendorBillImpl.createVendBillEntry)
 		// bll.addBillEntry(this);
@@ -86,50 +82,50 @@ public class GnucashWritableVendorBillEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	public GnucashWritableVendorBillEntryImpl(final GnucashGenerInvoiceEntry entry) {
-	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
+		super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
 	}
 
 	public GnucashWritableVendorBillEntryImpl(final GnucashVendorBillEntry entry) {
-	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
+		super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
 	}
 
 	// -----------------------------------------------------------
 
 	@Override
 	public GnucashWritableFile getWritableGnucashFile() {
-	    // TODO Auto-generated method stub
-	    return null;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void setUserDefinedAttribute(String name, String value) {
-	    // TODO Auto-generated method stub
-	    
+		// TODO Auto-generated method stub
+
 	}
 
 	// -----------------------------------------------------------
 
 	@Override
 	public void setTaxable(boolean val)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
-	    setBillTaxable(val);
+			throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
+		setBillTaxable(val);
 	}
 
 	@Override
 	public void setTaxTable(GCshTaxTable taxTab)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
-	    setBillTaxTable(taxTab);
+			throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
+		setBillTaxTable(taxTab);
 	}
 
 	@Override
 	public void setPrice(String price)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
-	    setBillPrice(price);
+			throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException {
+		setBillPrice(price);
 	}
 
 	@Override
 	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
-	    setBillPrice(price);
+		setBillPrice(price);
 	}
 
 }

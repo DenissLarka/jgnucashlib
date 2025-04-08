@@ -4,35 +4,35 @@ import java.util.List;
 
 public interface GCshBillTerms {
 
-    public enum Type {
-	DAYS,
-	PROXIMO
-    }
+	enum Type {
+		DAYS,
+		PROXIMO
+	}
 
-    // -----------------------------------------------------------
+	// -----------------------------------------------------------
 
-    public String getId();
+	String getId();
 
-    public int getRefcount();
+	int getRefcount();
 
-    public String getName();
+	String getName();
 
-    public String getDescription();
+	String getDescription();
 
-    public boolean isInvisible();
-    
-    // ----------------------------
-    
-    public Type getType() throws BillTermsTypeException;
+	boolean isInvisible();
 
-    public GCshBillTermsDays getDays();
+	// ----------------------------
 
-    public GCshBillTermsProximo getProximo();
+	Type getType() throws BillTermsTypeException;
 
-    // ----------------------------
-    
-    public String getParentId();
+	GCshBillTermsDays getDays();
 
-    public List<String> getChildren();
+	GCshBillTermsProximo getProximo();
+
+	// ----------------------------
+
+	String getParentId();
+
+	List<String> getChildren();
 
 }

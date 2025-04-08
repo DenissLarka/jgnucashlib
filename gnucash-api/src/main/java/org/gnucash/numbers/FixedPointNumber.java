@@ -476,13 +476,13 @@ public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 		return isGreaterThan(other.getBigDecimal());
 	}
 
-    /**
-     * @param other the value to compare to
-     * @return as ifGreaterThan, but with given tolerance allowed
-     */
-    public boolean isGreaterThan(final FixedPointNumber other, double tolerance) {
-      return isGreaterThan(other.getBigDecimal(), tolerance);
-    }
+	/**
+	 * @param other the value to compare to
+	 * @return as ifGreaterThan, but with given tolerance allowed
+	 */
+	public boolean isGreaterThan(final FixedPointNumber other, double tolerance) {
+		return isGreaterThan(other.getBigDecimal(), tolerance);
+	}
 
 	/**
 	 * @param other the value to compare to
@@ -492,32 +492,27 @@ public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 		return value.compareTo(other) > 0.0;
 	}
 
-    /**
-     * @param other the value to compare to
-     * @return as ifGreaterThan, but with given tolerance allowed
-     */
-    public boolean isGreaterThan(final BigDecimal other, double tolerance) {
-      if ( tolerance <= 0.0 )
-        throw new IllegalArgumentException("Tolerance must be > 0.0");
+	/**
+	 * @param other the value to compare to
+	 * @return as ifGreaterThan, but with given tolerance allowed
+	 */
+	public boolean isGreaterThan(final BigDecimal other, double tolerance) {
+		if (tolerance <= 0.0) {
+			throw new IllegalArgumentException("Tolerance must be > 0.0");
+		}
 
-      BigDecimal diff = value.subtract(other);
-      
-      if ( diff.doubleValue() > tolerance )
-      {
-        return true;
-      }
-      else
-      {
-        if ( Math.abs(diff.doubleValue()) <= tolerance )
-        {
-          return false;
-        }
-        else
-        {
-          return true;
-        }
-      }
-    }
+		BigDecimal diff = value.subtract(other);
+
+		if (diff.doubleValue() > tolerance) {
+			return true;
+		} else {
+			if (Math.abs(diff.doubleValue()) <= tolerance) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
 
 	/**
 	 * @param other the value to compare to
@@ -527,9 +522,9 @@ public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 		return isLessThan(other.getBigDecimal());
 	}
 
-    public boolean isLessThan(final FixedPointNumber other, double tolerance) {
-      return isLessThan(other.getBigDecimal(), tolerance);
-    }
+	public boolean isLessThan(final FixedPointNumber other, double tolerance) {
+		return isLessThan(other.getBigDecimal(), tolerance);
+	}
 
 	/**
 	 * @param other the value to compare to
@@ -539,28 +534,23 @@ public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 		return value.compareTo(other) < 0.0;
 	}
 
-    public boolean isLessThan(final BigDecimal other, double tolerance) {
-      if ( tolerance <= 0.0 )
-        throw new IllegalArgumentException("Tolerance must be > 0.0");
-      
-      BigDecimal diff = value.subtract(other);
-      
-      if ( diff.doubleValue() < - tolerance )
-      {
-        return true;
-      }
-      else
-      {
-        if ( Math.abs(diff.doubleValue()) <= tolerance )
-        {
-          return false;
-        }
-        else
-        {
-          return true;
-        }
-      }
-    }
+	public boolean isLessThan(final BigDecimal other, double tolerance) {
+		if (tolerance <= 0.0) {
+			throw new IllegalArgumentException("Tolerance must be > 0.0");
+		}
+
+		BigDecimal diff = value.subtract(other);
+
+		if (diff.doubleValue() < -tolerance) {
+			return true;
+		} else {
+			if (Math.abs(diff.doubleValue()) <= tolerance) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
 
 	/**
 	 * @see java.lang.Object#hashCode()

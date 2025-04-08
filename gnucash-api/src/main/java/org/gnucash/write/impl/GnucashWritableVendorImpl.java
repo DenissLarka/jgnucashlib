@@ -17,9 +17,7 @@ import org.gnucash.write.impl.auxiliary.GCshWritableAddressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnucashWritableVendorImpl extends GnucashVendorImpl 
-                                      implements GnucashWritableVendor 
-{
+public class GnucashWritableVendorImpl extends GnucashVendorImpl implements GnucashWritableVendor {
 	/**
 	 * Automatically created logger for debug and error-output.
 	 */
@@ -44,8 +42,8 @@ public class GnucashWritableVendorImpl extends GnucashVendorImpl
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 */
 	protected GnucashWritableVendorImpl(
-		final GncV2.GncBook.GncGncVendor jwsdpPeer, 
-		final GnucashWritableFileImpl file) {
+			final GncV2.GncBook.GncGncVendor jwsdpPeer,
+			final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
@@ -127,7 +125,7 @@ public class GnucashWritableVendorImpl extends GnucashVendorImpl
 
 		file.getRootElement().getGncBook().getBookElements().add(vend);
 		file.setModified(true);
-		
+
 		return vend;
 	}
 
@@ -154,7 +152,7 @@ public class GnucashWritableVendorImpl extends GnucashVendorImpl
 	 * @see GnucashWritableVendor#setNumber(java.lang.String)
 	 */
 	public void setNumber(final String number) {
-	    String oldNumber = getNumber();
+		String oldNumber = getNumber();
 		getJwsdpPeer().setVendorId(number);
 		getGnucashFile().setModified(true);
 
@@ -168,7 +166,7 @@ public class GnucashWritableVendorImpl extends GnucashVendorImpl
 	 * @see GnucashWritableVendor#setName(java.lang.String)
 	 */
 	public void setName(final String name) {
-	    String oldName = getName();
+		String oldName = getName();
 		getJwsdpPeer().setVendorName(name);
 		getGnucashFile().setModified(true);
 

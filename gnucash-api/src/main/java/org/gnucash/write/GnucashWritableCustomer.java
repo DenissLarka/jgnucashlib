@@ -9,16 +9,13 @@ import org.gnucash.write.auxiliary.GCshWritableAddress;
 /**
  * Customer that can be modified
  */
-public interface GnucashWritableCustomer extends GnucashCustomer, 
-                                                 GnucashWritableObject 
-{
+public interface GnucashWritableCustomer extends GnucashCustomer, GnucashWritableObject {
 
 	void remove();
 
-
 	/**
-	 * @see {@link GnucashCustomer#getNumber()}
 	 * @param number the user-assigned number of this customer (may contain non-digits)
+	 * @see {@link GnucashCustomer#getNumber()}
 	 */
 	void setNumber(String number);
 
@@ -30,7 +27,6 @@ public interface GnucashWritableCustomer extends GnucashCustomer,
 	 * @param notes user-defined notes about the customer (may be null)
 	 */
 	void setNotes(String notes);
-
 
 	void setName(String name);
 
@@ -46,9 +42,8 @@ public interface GnucashWritableCustomer extends GnucashCustomer,
 
 	GCshWritableAddress getShippingAddress();
 
-
 	/**
-	 * @param name the name of the user-defined attribute
+	 * @param name  the name of the user-defined attribute
 	 * @param value the value or null if not set
 	 * @see {@link GnucashObject#getUserDefinedAttribute(String)}
 	 */

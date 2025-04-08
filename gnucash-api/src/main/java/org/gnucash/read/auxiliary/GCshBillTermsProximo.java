@@ -4,10 +4,10 @@ import org.gnucash.numbers.FixedPointNumber;
 
 public interface GCshBillTermsProximo {
 
-    public Integer getDueDay();
+	Integer getDueDay();
 
-    public Integer getDiscountDay();
+	Integer getDiscountDay();
 
-    public FixedPointNumber getDiscount();
+	FixedPointNumber getDiscount();
 
 }

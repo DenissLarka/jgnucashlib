@@ -78,7 +78,6 @@ public interface GnucashGenerJob {
     /**
      *
      * @return the id of the customer this job is from.
-     * @see #getCustomer()
      */
     String getOwnerId();
     
