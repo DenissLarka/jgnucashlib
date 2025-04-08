@@ -15,7 +15,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 	</properties>
 
 
@@ -81,7 +80,7 @@
 					<!-- The package of your generated sources -->
 					<packageName>org.gnucash.generated</packageName>
 					<sources>
-						<source>src/main/resources</source>
+						<source>src/main/resources/xsd</source>
 					</sources>
 				</configuration>
 			</plugin>

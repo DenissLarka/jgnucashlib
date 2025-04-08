@@ -9,20 +9,13 @@ import org.gnucash.read.impl.TaxTableNotFoundException;
 import org.gnucash.read.spec.WrongInvoiceTypeException;
 
 /**
- * Entry-Line in an invoice stating one position
- * with it's name, single-unit-price and count.
+ * Entry-Line in an invoice stating one position with it's name, single-unit-price and count.
  */
 public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoiceEntry> {
 
   // For the following enumerations cf.:
   // https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/gncEntry.h
-  
-  // ::TODO: Locale-specific, make generic
-  // ::MAGIC
-  public static final String ACTION_JOB      = "Auftrag";
-  public static final String ACTION_MATERIAL = "Material";
-  public static final String ACTION_HOURS    = "Stunden";
-  
+
   // Not yet, for future releases:
 //  public static final String ENTRY_DATE          = "date";
 //  public static final String ENTRY_DATE_ENTERED  = "date-entered";
@@ -51,19 +44,17 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
 //  public static final String ENTRY_BILL_TAX_INC  = "bill-tax-included";
 //  public static final String ENTRY_INV_DISCOUNT  = "invoice-discount";
 //  public static final String ENTRY_BILL_PAY_TYPE = "bill-payment-type";
-  
+
   // -----------------------------------------------------------------
 
   /**
-   * @return the unique-id to identify this object with across name- and
-   *         hirarchy-changes
+   * @return the unique-id to identify this object with across name- and hirarchy-changes
    */
   String getId();
 
   /**
-   * @return the type of the customer/vendor invoice entry, i.e. the owner type of
-   *         the entry's invoice
- * @throws WrongInvoiceTypeException 
+   * @return the type of the customer/vendor invoice entry, i.e. the owner type of the entry's invoice
+   * @throws WrongInvoiceTypeException
    */
   String getType() throws WrongInvoiceTypeException;
 
@@ -82,20 +73,20 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   // ---------------------------------------------------------------
 
   /**
-   * @return For a customer invoice, return the price of one single of the
-   *         ${@link #getQuantity()} items of type ${@link #getAction()}.
+   * @return For a customer invoice, return the price of one single of the ${@link #getQuantity()} items of type
+   *         ${@link #getAction()}.
    */
   FixedPointNumber getInvcPrice() throws WrongInvoiceTypeException;
 
   /**
-   * @return For a vendor bill, return the price of one single of the
-   *         ${@link #getQuantity()} items of type ${@link #getAction()}.
+   * @return For a vendor bill, return the price of one single of the ${@link #getQuantity()} items of type
+   *         ${@link #getAction()}.
    */
   FixedPointNumber getBillPrice() throws WrongInvoiceTypeException;
 
   /**
-   * @return For a job invoice, return the price of one single of the
-   *         ${@link #getQuantity()} items of type ${@link #getAction()}.
+   * @return For a job invoice, return the price of one single of the ${@link #getQuantity()} items of type
+   *         ${@link #getAction()}.
    */
   FixedPointNumber getJobPrice() throws WrongInvoiceTypeException;
 
@@ -119,22 +110,19 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   // ---------------------------------------------------------------
 
   /**
-   * The returned text is saved locale-specific. E.g. "Stunden" instead of "hours"
-   * for Germany.
+   * The returned text is saved locale-specific. E.g. "Stunden" instead of "hours" for Germany.
    * 
    * @return HOURS or ITEMS, ....
    */
   String getAction();
 
   /**
-   * @return the number of items of price ${@link #getInvcPrice()} and type
-   *         ${@link #getAction()}.
+   * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
    */
   FixedPointNumber getQuantity();
 
   /**
-   * @return the number of items of price ${@link #getInvcPrice()} and type
-   *         ${@link #getAction()}.
+   * @return the number of items of price ${@link #getInvcPrice()} and type ${@link #getAction()}.
    */
   String getQuantityFormatted();
 
@@ -149,8 +137,7 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   String getDateFormatted();
 
   /**
-   * @return the user-defined description for this object (may contain multiple
-   *         lines and non-ascii-characters)
+   * @return the user-defined description for this object (may contain multiple lines and non-ascii-characters)
    */
   String getDescription();
 
@@ -159,19 +146,19 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   /**
    *
    * @return true if any sales-tax applies at all to this item.
-   * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   boolean isInvcTaxable() throws WrongInvoiceTypeException;
 
   /**
    *
    * @return true if any sales-tax applies at all to this item.
-   * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   boolean isBillTaxable() throws WrongInvoiceTypeException;
 
   boolean isJobTaxable() throws WrongInvoiceTypeException;
-  
+
   // ------------------------------
 
   public GCshTaxTable getInvcTaxTable() throws TaxTableNotFoundException, WrongInvoiceTypeException;
@@ -185,21 +172,21 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   /**
    *
    * @return e.g. "0.16" for "16%"
- * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   FixedPointNumber getInvcApplicableTaxPercent() throws WrongInvoiceTypeException;
 
   /**
    *
    * @return e.g. "0.16" for "16%"
- * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   FixedPointNumber getBillApplicableTaxPercent() throws WrongInvoiceTypeException;
 
   /**
    *
    * @return e.g. "0.16" for "16%"
- * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   FixedPointNumber getJobApplicableTaxPercent() throws WrongInvoiceTypeException;
 
@@ -207,27 +194,26 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
 
   /**
    * @return never null, "0%" if no taxtable is there
-   * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   String getInvcApplicableTaxPercentFormatted() throws WrongInvoiceTypeException;
 
   /**
    * @return never null, "0%" if no taxtable is there
- * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   String getBillApplicableTaxPercentFormatted() throws WrongInvoiceTypeException;
 
   /**
    * @return never null, "0%" if no taxtable is there
- * @throws WrongInvoiceTypeException 
+   * @throws WrongInvoiceTypeException
    */
   String getJobApplicableTaxPercentFormatted() throws WrongInvoiceTypeException;
 
   // ---------------------------------------------------------------
 
   /**
-   * This is the customer invoice sum as entered by the user. The user can decide
-   * to include or exclude taxes.
+   * This is the customer invoice sum as entered by the user. The user can decide to include or exclude taxes.
    * 
    * @return count*single-unit-price excluding or including taxes.
    * @throws WrongInvoiceTypeException
@@ -279,8 +265,7 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   // ----------------------------
 
   /**
-   * This is the vendor bill sum as entered by the user. The user can decide to
-   * include or exclude taxes.
+   * This is the vendor bill sum as entered by the user. The user can decide to include or exclude taxes.
    * 
    * @return count*single-unit-price excluding or including taxes.
    * @throws WrongInvoiceTypeException
@@ -304,8 +289,7 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
   // ----------------------------
 
   /**
-   * This is the vendor bill sum as entered by the user. The user can decide to
-   * include or exclude taxes.
+   * This is the vendor bill sum as entered by the user. The user can decide to include or exclude taxes.
    * 
    * @return count*single-unit-price excluding or including taxes.
    * @throws WrongInvoiceTypeException
@@ -328,6 +312,5 @@ public interface GnucashGenerInvoiceEntry extends Comparable<GnucashGenerInvoice
 
   // ---------------------------------------------------------------
 
-  @SuppressWarnings("exports")
   GncV2.GncBook.GncGncEntry getJwsdpPeer();
 }
