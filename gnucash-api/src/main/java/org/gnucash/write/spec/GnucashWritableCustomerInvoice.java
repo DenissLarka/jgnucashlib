@@ -16,44 +16,43 @@ import org.gnucash.write.GnucashWritableGenerInvoice;
  */
 public interface GnucashWritableCustomerInvoice extends GnucashWritableGenerInvoice {
 
-    GnucashWritableCustomerInvoiceEntry getWritableEntryById(String id);
-    
-    // ---------------------------------------------------------------
+	GnucashWritableCustomerInvoiceEntry getWritableEntryById(String id);
 
-    /**
-     * Will throw an IllegalStateException if there are invoices for this customer.<br/>
-     * 
-     * @param cust the customer to whom we send an invoice to
-     * @throws WrongInvoiceTypeException
-     */
-    void setCustomer(GnucashCustomer cust) throws WrongInvoiceTypeException;
+	// ---------------------------------------------------------------
 
-    // ---------------------------------------------------------------
+	/**
+	 * Will throw an IllegalStateException if there are invoices for this customer.<br/>
+	 *
+	 * @param cust the customer to whom we send an invoice to
+	 */
+	void setCustomer(GnucashCustomer cust) throws WrongInvoiceTypeException;
 
-    GnucashWritableCustomerInvoiceEntry createEntry(
-	    GnucashAccount acct, 
-	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	// ---------------------------------------------------------------
 
-    GnucashWritableCustomerInvoiceEntry createEntry(
-	    GnucashAccount acct, 
-	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, 
-	    final String taxTabName)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	GnucashWritableCustomerInvoiceEntry createEntry(
+			GnucashAccount acct,
+			final FixedPointNumber singleUnitPrice,
+			final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
-    GnucashWritableCustomerInvoiceEntry createEntry(
-	    GnucashAccount acct, 
-	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, 
-	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException;
+	GnucashWritableCustomerInvoiceEntry createEntry(
+			GnucashAccount acct,
+			final FixedPointNumber singleUnitPrice,
+			final FixedPointNumber quantity,
+			final String taxTabName)
+			throws WrongInvoiceTypeException, TaxTableNotFoundException;
 
-    // ---------------------------------------------------------------
-    
-    void post(final GnucashAccount incomeAcct,
-	      final GnucashAccount receivableAcct,
-	      final LocalDate postDate,
-	      final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
+	GnucashWritableCustomerInvoiceEntry createEntry(
+			GnucashAccount acct,
+			final FixedPointNumber singleUnitPrice,
+			final FixedPointNumber quantity,
+			final GCshTaxTable taxTab)
+			throws WrongInvoiceTypeException, TaxTableNotFoundException;
+
+	// ---------------------------------------------------------------
+
+	void post(final GnucashAccount incomeAcct,
+			final GnucashAccount receivableAcct,
+			final LocalDate postDate,
+			final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
 
 }

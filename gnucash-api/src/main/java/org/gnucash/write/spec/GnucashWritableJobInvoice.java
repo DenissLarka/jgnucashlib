@@ -19,60 +19,57 @@ import org.gnucash.write.impl.UnknownInvoiceTypeException;
  */
 public interface GnucashWritableJobInvoice extends GnucashWritableGenerInvoice {
 
-    GnucashWritableJobInvoiceEntry getWritableEntryById(String id);
-    
-    // ---------------------------------------------------------------
+	GnucashWritableJobInvoiceEntry getWritableEntryById(String id);
 
-    /**
-     * Will throw an IllegalStateException if there are invoices for this job.<br/>
-     * 
-     * @param job the customer/vendor job that we link this invoice to.
-     * @throws WrongInvoiceTypeException
-     */
-    void setGenerJob(GnucashGenerJob job) throws WrongInvoiceTypeException;
+	// ---------------------------------------------------------------
 
-    /**
-     * Will throw an IllegalStateException if there are invoices for this job.<br/>
-     * 
-     * @param job the customer job that we link this invoice to.
-     * @throws WrongInvoiceTypeException
-     */
-    void setCustomerJob(GnucashCustomerJob job) throws WrongInvoiceTypeException;
+	/**
+	 * Will throw an IllegalStateException if there are invoices for this job.<br/>
+	 *
+	 * @param job the customer/vendor job that we link this invoice to.
+	 */
+	void setGenerJob(GnucashGenerJob job) throws WrongInvoiceTypeException;
 
-    /**
-     * Will throw an IllegalStateException if there are invoices for this job.<br/>
-     * 
-     * @param job the vendor job that we link this invoice to.
-     * @throws WrongInvoiceTypeException
-     */
-    void setVendorJob(GnucashVendorJob job) throws WrongInvoiceTypeException;
+	/**
+	 * Will throw an IllegalStateException if there are invoices for this job.<br/>
+	 *
+	 * @param job the customer job that we link this invoice to.
+	 */
+	void setCustomerJob(GnucashCustomerJob job) throws WrongInvoiceTypeException;
 
-    // ---------------------------------------------------------------
+	/**
+	 * Will throw an IllegalStateException if there are invoices for this job.<br/>
+	 *
+	 * @param job the vendor job that we link this invoice to.
+	 */
+	void setVendorJob(GnucashVendorJob job) throws WrongInvoiceTypeException;
 
-    GnucashWritableJobInvoiceEntry createEntry(
-	    GnucashAccount acct, 
-	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+	// ---------------------------------------------------------------
 
-    GnucashWritableJobInvoiceEntry createEntry(
-	    GnucashAccount acct, 
-	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, 
-	    final String taxTabName)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+	GnucashWritableJobInvoiceEntry createEntry(
+			GnucashAccount acct,
+			final FixedPointNumber singleUnitPrice,
+			final FixedPointNumber quantity) throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
-    GnucashWritableJobInvoiceEntry createEntry(
-	    GnucashAccount acct, 
-	    final FixedPointNumber singleUnitPrice,
-	    final FixedPointNumber quantity, 
-	    final GCshTaxTable taxTab)
-	    throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+	GnucashWritableJobInvoiceEntry createEntry(
+			GnucashAccount acct,
+			final FixedPointNumber singleUnitPrice,
+			final FixedPointNumber quantity,
+			final String taxTabName)
+			throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
 
-    // ---------------------------------------------------------------
-    
-    void post(final GnucashAccount incExpAcct,
-	      final GnucashAccount recvblPayablAcct,
-	      final LocalDate postDate,
-	      final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
+	GnucashWritableJobInvoiceEntry createEntry(
+			GnucashAccount acct,
+			final FixedPointNumber singleUnitPrice,
+			final FixedPointNumber quantity,
+			final GCshTaxTable taxTab)
+			throws WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException;
+
+	// ---------------------------------------------------------------
+
+	void post(final GnucashAccount incExpAcct,
+			final GnucashAccount recvblPayablAcct,
+			final LocalDate postDate,
+			final LocalDate dueDate) throws WrongInvoiceTypeException, WrongOwnerTypeException;
 
 }

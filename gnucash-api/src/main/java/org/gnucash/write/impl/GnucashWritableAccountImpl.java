@@ -45,9 +45,7 @@ import org.slf4j.LoggerFactory;
  * <li>transactionSplits (not giving the old value of the list)</li>
  * </ul>
  */
-public class GnucashWritableAccountImpl extends GnucashAccountImpl 
-                                        implements GnucashWritableAccount 
-{
+public class GnucashWritableAccountImpl extends GnucashAccountImpl implements GnucashWritableAccount {
 	/**
 	 * Our logger for debug- and error-ourput.
 	 */
@@ -90,8 +88,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 	}
 
 	/**
-	 * @param file
-	 * @return
+	 *
 	 */
 	private static GncAccount createAccount(final GnucashWritableFileImpl file, final String accountguid) {
 		ObjectFactory factory = file.getObjectFactory();
@@ -363,7 +360,7 @@ public class GnucashWritableAccountImpl extends GnucashAccountImpl
 								if (!(split instanceof GnucashWritableTransactionSplit)
 										||
 										splitsWeAreAddedTo.contains(split)
-										) {
+								) {
 									continue;
 								}
 								GnucashWritableTransactionSplit splitw = (GnucashWritableTransactionSplit) split;

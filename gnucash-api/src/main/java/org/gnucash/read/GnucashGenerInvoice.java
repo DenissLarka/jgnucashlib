@@ -401,7 +401,7 @@ public interface GnucashGenerInvoice extends Comparable<GnucashGenerInvoice> {
   /**
    *
    * @return the content of the invoice
-   * @see ${@link GnucashGenerInvoiceEntry}
+   * @see {@link GnucashGenerInvoiceEntry}
    */
   Collection<GnucashGenerInvoiceEntry> getGenerEntries();
 

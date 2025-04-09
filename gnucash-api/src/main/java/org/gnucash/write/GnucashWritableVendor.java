@@ -8,15 +8,13 @@ import org.gnucash.read.GnucashObject;
 /**
  * Vendor that can be modified
  */
-public interface GnucashWritableVendor extends GnucashVendor, 
-                                               GnucashWritableObject 
-{
+public interface GnucashWritableVendor extends GnucashVendor, GnucashWritableObject {
 
 	void remove();
 
 	/**
-	 * @see {@link GnucashVendor#getNumber()}
 	 * @param number the user-assigned number of this Vendor (may contain non-digits)
+	 * @see {@link GnucashVendor#getNumber()}
 	 */
 	void setNumber(String number);
 
@@ -28,9 +26,8 @@ public interface GnucashWritableVendor extends GnucashVendor,
 
 	GCshWritableAddress getAddress();
 
-
 	/**
-	 * @param name the name of the user-defined attribute
+	 * @param name  the name of the user-defined attribute
 	 * @param value the value or null if not set
 	 * @see {@link GnucashObject#getUserDefinedAttribute(String)}
 	 */

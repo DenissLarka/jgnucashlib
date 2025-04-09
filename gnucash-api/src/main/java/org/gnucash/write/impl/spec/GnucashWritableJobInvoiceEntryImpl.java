@@ -29,10 +29,8 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * Entry-Line in an invoice that can be created or removed.
  */
-public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvoiceEntryImpl 
-                                                implements GnucashWritableJobInvoiceEntry
-{
-    private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableJobInvoiceEntryImpl.class);
+public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvoiceEntryImpl implements GnucashWritableJobInvoiceEntry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableJobInvoiceEntryImpl.class);
 
 	/**
 	 * @param file      the file we belong to
@@ -41,22 +39,22 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableJobInvoiceEntryImpl(
-		final GncV2.GncBook.GncGncEntry jwsdpPeer, 
-		final GnucashWritableFileImpl file) {
+			final GncV2.GncBook.GncGncEntry jwsdpPeer,
+			final GnucashWritableFileImpl file) {
 		super(jwsdpPeer, file);
 	}
 
 	/**
-	 * @param invc   tne job invoice this entry shall belong to
+	 * @param invc      tne job invoice this entry shall belong to
 	 * @param jwsdpPeer the JWSDP-object we are facading.
 	 * @see GnucashGenerInvoiceEntryImpl#GnucashInvoiceEntryImpl(GnucashGenerInvoice, GncV2.GncBook.GncGncEntry)
 	 */
 	@SuppressWarnings("exports")
 	public GnucashWritableJobInvoiceEntryImpl(
-		final GnucashWritableJobInvoiceImpl invc,
-		final GncV2.GncBook.GncGncEntry jwsdpPeer) {
+			final GnucashWritableJobInvoiceImpl invc,
+			final GncV2.GncBook.GncGncEntry jwsdpPeer) {
 		super(invc, jwsdpPeer);
-		
+
 		this.myInvoice = invc;
 	}
 
@@ -65,21 +63,19 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 	 * (It has the tax table of the job with a fallback
 	 * to the first tax table found assigned)
 	 *
-	 * @param invc  the job invoice to add this split to
+	 * @param invc     the job invoice to add this split to
 	 * @param account  the income/expenses-account the money comes from
 	 * @param quantity see ${@link GnucashGenerInvoiceEntry#getQuantity()}
 	 * @param price    see ${@link GnucashGenerInvoiceEntry#getInvcPrice()}}
-	 * @throws WrongInvoiceTypeException 
-	 * @throws TaxTableNotFoundException 
 	 */
 	public GnucashWritableJobInvoiceEntryImpl(
-		final GnucashWritableJobInvoiceImpl invc,
-		final GnucashAccount account,
-		final FixedPointNumber quantity,
-		final FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
-		super(invc, 
-		      createJobInvoiceEntry_int(invc, account, quantity, price));
-		
+			final GnucashWritableJobInvoiceImpl invc,
+			final GnucashAccount account,
+			final FixedPointNumber quantity,
+			final FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException {
+		super(invc,
+				createJobInvoiceEntry_int(invc, account, quantity, price));
+
 		// Caution: Call addJobEntry one level above now
 		// (GnucashWritableJobInvoiceImpl.createJobInvcEntry)
 		// invc.addJobEntry(this);
@@ -87,50 +83,51 @@ public class GnucashWritableJobInvoiceEntryImpl extends GnucashWritableGenerInvo
 	}
 
 	public GnucashWritableJobInvoiceEntryImpl(final GnucashGenerInvoiceEntry entry) {
-	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
+		super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
 	}
 
 	public GnucashWritableJobInvoiceEntryImpl(final GnucashJobInvoiceEntry entry) {
-	    super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
+		super(entry.getJwsdpPeer(), (GnucashWritableFileImpl) entry.getGenerInvoice().getFile());
 	}
 
 	// -----------------------------------------------------------
 
 	@Override
 	public GnucashWritableFile getWritableGnucashFile() {
-	    // TODO Auto-generated method stub
-	    return null;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void setUserDefinedAttribute(String name, String value) {
-	    // TODO Auto-generated method stub
-	    
+		// TODO Auto-generated method stub
+
 	}
 
 	// -----------------------------------------------------------
 
 	@Override
 	public void setTaxable(boolean val)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
-	    setJobTaxable(val);
+			throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
+		setJobTaxable(val);
 	}
 
 	@Override
 	public void setTaxTable(GCshTaxTable taxTab)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
-	    setJobTaxTable(taxTab);
+			throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
+		setJobTaxTable(taxTab);
 	}
 
 	@Override
 	public void setPrice(String price)
-		throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
-	    setJobPrice(price);
+			throws NumberFormatException, WrongInvoiceTypeException, TaxTableNotFoundException, UnknownInvoiceTypeException {
+		setJobPrice(price);
 	}
 
 	@Override
-	public void setPrice(FixedPointNumber price) throws WrongInvoiceTypeException, TaxTableNotFoundException, NumberFormatException, UnknownInvoiceTypeException {
-	    setJobPrice(price);
+	public void setPrice(FixedPointNumber price)
+			throws WrongInvoiceTypeException, TaxTableNotFoundException, NumberFormatException, UnknownInvoiceTypeException {
+		setJobPrice(price);
 	}
 
 }

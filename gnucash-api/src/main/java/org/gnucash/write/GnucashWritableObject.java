@@ -7,15 +7,15 @@ import org.gnucash.read.GnucashObject;
  */
 public interface GnucashWritableObject {
 
-    /**
-     * @return the File we belong to.
-     */
-    GnucashWritableFile getWritableGnucashFile();
+	/**
+	 * @return the File we belong to.
+	 */
+	GnucashWritableFile getWritableGnucashFile();
 
-    /**
-     * @param name the name of the user-defined attribute
-     * @param value the value or null if not set
-     * @see {@link GnucashObject#getUserDefinedAttribute(String)}
-     */
-    void setUserDefinedAttribute(String name, String value);
+	/**
+	 * @param name  the name of the user-defined attribute
+	 * @param value the value or null if not set
+	 * @see {@link GnucashObject#getUserDefinedAttribute(String)}
+	 */
+	void setUserDefinedAttribute(String name, String value);
 }
