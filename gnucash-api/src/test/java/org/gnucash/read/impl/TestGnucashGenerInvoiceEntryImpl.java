@@ -2,8 +2,8 @@ package org.gnucash.read.impl;
 
 import java.io.InputStream;
 
-import org.gnucash.Const;
 import org.gnucash.ConstTest;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.read.GnucashFile;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
@@ -12,6 +12,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class TestGnucashGenerInvoiceEntryImpl {
+  private static ApplicationMessages bundle;
+
   private GnucashFile gcshFile = null;
   private GnucashGenerInvoiceEntry invcEntr = null;
 
@@ -26,6 +28,9 @@ public class TestGnucashGenerInvoiceEntryImpl {
     ClassLoader classLoader = getClass().getClassLoader();
     // URL gcshFileURL = classLoader.getResource(Const.GCSH_FILENAME);
     // System.err.println("GnuCash test file resource: '" + gcshFileURL + "'");
+    ApplicationMessages.setup();
+    bundle = ApplicationMessages.getInstance();
+
     InputStream gcshFileStream = null;
     try {
       gcshFileStream = classLoader.getResourceAsStream(ConstTest.GCSH_FILENAME);
@@ -72,7 +77,7 @@ public class TestGnucashGenerInvoiceEntryImpl {
     Assert.assertEquals(invcEntr.getId(), INVCENTR_2_ID);
     Assert.assertEquals(invcEntr.getType(), GnucashGenerInvoice.TYPE_VENDOR);
     Assert.assertEquals(invcEntr.getGenerInvoiceID(), "4eb0dc387c3f4daba57b11b2a657d8a4");
-    Assert.assertEquals(invcEntr.getAction(), Const.ACTION_HOURS);
+    Assert.assertEquals(invcEntr.getAction(), bundle.getMessage("ACTION_HOURS"));
     Assert.assertEquals(invcEntr.getDescription(), "Gefälligkeiten");
 
     Assert.assertEquals(invcEntr.isBillTaxable(), true);
@@ -91,7 +96,7 @@ public class TestGnucashGenerInvoiceEntryImpl {
     Assert.assertEquals(invcEntr.getId(), INVCENTR_3_ID);
     Assert.assertEquals(invcEntr.getType(), GnucashGenerInvoice.TYPE_CUSTOMER);
     Assert.assertEquals(invcEntr.getGenerInvoiceID(), "6588f1757b9e4e24b62ad5b37b8d8e07");
-    Assert.assertEquals(invcEntr.getAction(), Const.ACTION_MATERIAL);
+    Assert.assertEquals(invcEntr.getAction(), bundle.getMessage("ACTION_MATERIAL"));
     Assert.assertEquals(invcEntr.getDescription(), "Posten 3");
 
     Assert.assertEquals(invcEntr.isInvcTaxable(), true);

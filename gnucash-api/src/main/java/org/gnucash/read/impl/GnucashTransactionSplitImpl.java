@@ -8,6 +8,7 @@ import org.gnucash.Const;
 import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.ObjectFactory;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashGenerInvoice;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements GnucashTransactionSplit {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashTransactionSplitImpl.class);
+  private static ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   /**
    * the JWSDP-object we are facading.
@@ -64,7 +66,7 @@ public class GnucashTransactionSplitImpl extends GnucashObjectImpl implements Gn
         if (lotID != null && lotID.equals(lot)) {
           // Check if it's a payment transaction.
           // If so, add it to the invoice's list of payment transactions.
-          if (getAction().equals(Const.ACTION_PAYMENT)) {
+          if (getAction().equals(bundle.getMessage("ACTION_PAYMENT"))) {
             invc.addPayingTransaction(this);
           }
         }

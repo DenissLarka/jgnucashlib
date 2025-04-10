@@ -3,8 +3,8 @@ package org.gnucash.read.impl.spec;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.gnucash.Const;
 import org.gnucash.generated.GncV2.GncBook.GncGncInvoice;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class GnucashJobInvoiceImpl extends GnucashGenerInvoiceImpl implements GnucashJobInvoice, SpecInvoiceCommon {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashJobInvoiceImpl.class);
+  private static ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   @SuppressWarnings("exports")
   public GnucashJobInvoiceImpl(final GncGncInvoice peer, final GnucashFile gncFile) {
@@ -54,7 +55,7 @@ public class GnucashJobInvoiceImpl extends GnucashGenerInvoiceImpl implements Gn
             if (lotID != null && lotID.equals(lot)) {
               // Check if it's a payment transaction.
               // If so, add it to the invoice's list of payment transactions.
-              if (splt.getAction().equals(Const.ACTION_PAYMENT)) {
+              if (splt.getAction().equals(bundle.getMessage("ACTION_PAYMENT"))) {
                 addPayingTransaction(splt);
               }
             } // if lotID
