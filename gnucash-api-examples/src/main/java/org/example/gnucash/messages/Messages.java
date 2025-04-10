@@ -1,4 +1,4 @@
-package sandbox;
+package org.example.gnucash.messages;
 
 import java.util.Locale;
 import java.util.Set;
@@ -44,6 +44,17 @@ public class Messages {
 
     str = bundle.getMessage("INVC_READ_ONLY_SLOT_TEXT");
     System.out.print("NL: " + str + " | equals: ");
+    System.out.println(INVC_READ_ONLY_SLOT_TEXT.contentEquals(str));
+
+    System.out.println();
+    Locale localeEn = new Locale("en", "UK");
+    bundle.setLocale(localeEn);
+
+    str = bundle.getMessage("ACTION_HOURS");
+    System.out.println("EN: " + str);
+
+    str = bundle.getMessage("INVC_READ_ONLY_SLOT_TEXT");
+    System.out.print("EN: " + str + " | equals: ");
     System.out.println(INVC_READ_ONLY_SLOT_TEXT.contentEquals(str));
   }
 
