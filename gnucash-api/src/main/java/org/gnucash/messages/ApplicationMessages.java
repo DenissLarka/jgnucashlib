@@ -1,5 +1,8 @@
 package org.gnucash.messages;
 
+/**
+ * Locale support Application messages.
+ */
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -80,15 +83,6 @@ public class ApplicationMessages {
       Locale newLocale = Locale.of(languageCode);
       setLocale(newLocale);
     }
-  }
-
-  /**
-   * Initiate instance and set to German Locale. Used for Test purposes.
-   */
-  public static void setup() {
-    // ApplicationMessages appmsg = getInstance(); // Initiate instance
-    Locale localeDe = new Locale("de", "DE");
-    setLocale(localeDe);
   }
 
   /**
@@ -184,7 +178,15 @@ public class ApplicationMessages {
     return formattedMessage;
   }
 
-  // Privates
+  // Private and Test
+  /**
+   * Initiate instance and set to German Locale. Only used for Test purposes.
+   */
+  public static void setup() {
+    Locale locale = new Locale("de", "DE");
+    setLocale(locale);
+  }
+
   /**
    * Create list of available languages
    */
@@ -200,5 +202,4 @@ public class ApplicationMessages {
       }
     }
   }
-
 }
