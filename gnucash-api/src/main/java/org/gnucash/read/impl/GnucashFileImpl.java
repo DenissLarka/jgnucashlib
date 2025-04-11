@@ -37,6 +37,7 @@ import org.gnucash.generated.GncTransaction;
 import org.gnucash.generated.GncV2;
 import org.gnucash.generated.ObjectFactory;
 import org.gnucash.generated.Price;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
@@ -78,6 +79,7 @@ import jakarta.xml.bind.Unmarshaller;
 public class GnucashFileImpl implements GnucashFile {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(GnucashFileImpl.class);
+  private ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   /**
    * my CurrencyTable.
@@ -485,7 +487,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getPaidInvoices: Serious error");
+          LOGGER.error("getPaidInvoices: Serious error", e);
         }
       } else if (invc.getType().equals(GnucashGenerInvoice.TYPE_VENDOR)) {
         try {
@@ -494,7 +496,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getPaidInvoices: Serious error");
+          LOGGER.error("getPaidInvoices: Serious error", e);
         }
       } else if (invc.getType().equals(GnucashGenerInvoice.TYPE_JOB)) {
         try {
@@ -503,7 +505,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getPaidInvoices: Serious error");
+          LOGGER.error("getPaidInvoices: Serious error", e);
         }
       }
     }

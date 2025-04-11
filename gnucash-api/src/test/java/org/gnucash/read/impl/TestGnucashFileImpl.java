@@ -3,6 +3,7 @@ package org.gnucash.read.impl;
 import java.io.InputStream;
 
 import org.gnucash.ConstTest;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.read.GnucashFile;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -18,6 +19,7 @@ public class TestGnucashFileImpl {
     ClassLoader classLoader = getClass().getClassLoader();
     // URL gcshFileURL = classLoader.getResource(Const.GCSH_FILENAME);
     // System.err.println("GnuCash test file resource: '" + gcshFileURL + "'");
+    ApplicationMessages.setup();
     InputStream gcshFileStream = null;
     try {
       gcshFileStream = classLoader.getResourceAsStream(ConstTest.GCSH_FILENAME);

@@ -6,8 +6,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.gnucash.Const;
 import org.gnucash.generated.GncV2;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashCustomer;
@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvoiceImpl
     implements GnucashWritableCustomerInvoice {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashWritableCustomerInvoiceImpl.class);
+  private static ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   /**
    * Create an editable invoice facading an existing JWSDP-peer.
@@ -103,7 +104,7 @@ public class GnucashWritableCustomerInvoiceImpl extends GnucashWritableGenerInvo
             if (lotID != null && lotID.equals(lot)) {
               // Check if it's a payment transaction.
               // If so, add it to the invoice's list of payment transactions.
-              if (splt.getAction().equals(Const.ACTION_PAYMENT)) {
+              if (splt.getAction().equals(bundle.getMessage("ACTION_PAYMENT"))) {
                 addPayingTransaction(splt);
               }
             } // if lotID

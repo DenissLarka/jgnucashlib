@@ -9,6 +9,7 @@ import org.gnucash.Const;
 import org.gnucash.ConstTest;
 import org.gnucash.generated.GncPricedb;
 import org.gnucash.generated.Price;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -23,6 +24,8 @@ public class TestGnucashPriceDB {
     ClassLoader classLoader = getClass().getClassLoader();
     // URL gcshFileURL = classLoader.getResource(Const.GCSH_FILENAME);
     // System.err.println("TestGnucashPriceDB GnuCash test file: '" + gcshFile + "'");
+    ApplicationMessages.setup();
+
     InputStream gcshFileStream = null;
     try {
       gcshFileStream = classLoader.getResourceAsStream(ConstTest.GCSH_FILENAME);
