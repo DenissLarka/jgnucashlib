@@ -9,3 +9,4 @@ target/*
 .project
 .classpath
 .settings
+gnucash-api/test-output/
