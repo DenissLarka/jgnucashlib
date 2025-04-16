@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import org.gnucash.currency.ComplexCurrencyTable;
 import org.gnucash.currency.CurrencyNameSpace;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
@@ -31,8 +32,8 @@ import org.slf4j.LoggerFactory;
  * convenience-methods.<br/>
  */
 public abstract class SimpleAccount implements GnucashAccount {
-
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAccount.class);
+  private static ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   /**
    * The file we belong to.
@@ -346,7 +347,7 @@ public abstract class SimpleAccount implements GnucashAccount {
     FixedPointNumber retval = getBalance(date);
 
     if (retval == null) {
-      LOGGER.error("SimpleAccount.getBalance() - " + "error creating balance!");
+      LOGGER.error(bundle.getMessage("Err_SimpAccBalance"));
       return null;
     }
 
@@ -358,23 +359,20 @@ public abstract class SimpleAccount implements GnucashAccount {
     ComplexCurrencyTable currencyTable = getGnucashFile().getCurrencyTable();
 
     if (currencyTable == null) {
-      LOGGER.error(
-          "SimpleAccount.getBalance() - cannot transfer " + "to given currency because we have no currency-table!");
+      LOGGER.error(bundle.getMessage("Err_SimpAccBalNoCurrTab"));
       return null;
     }
 
     if (!currencyTable.convertToBaseCurrency(getCurrencyNameSpace(), retval, getCurrencyID())) {
       Collection<String> currencies = getGnucashFile().getCurrencyTable().getCurrencies(getCurrencyNameSpace());
-      LOGGER.error("SimpleAccount.getBalance() - cannot transfer " + "from our currency '" + getCurrencyNameSpace()
-          + "'-'" + getCurrencyID() + "' to the base-currency!" + " \n(we know "
-          + getGnucashFile().getCurrencyTable().getNameSpaces().size() + " currency-namespaces and "
-          + (currencies == null ? "no" : "" + currencies.size()) + " currencies in our namespace)");
+      String msg = (currencies == null ? "no" : "" + currencies.size());
+      LOGGER.error(bundle.getMessage("Err_SimpAccNoTransfer", getCurrencyNameSpace(), getCurrencyID(),
+          Integer.toString(getGnucashFile().getCurrencyTable().getNameSpaces().size()), msg));
       return null;
     }
 
     if (!currencyTable.convertFromBaseCurrency(currencyNameSpace, retval, currencyName)) {
-      LOGGER.error("SimpleAccount.getBalance() - cannot transfer " + "from base-currenty to given currency '"
-          + currencyNameSpace + "-" + currencyName + "'!");
+      LOGGER.error(bundle.getMessage("Err_SimpAccNoConv", currencyNameSpace, currencyName));
       return null;
     }
 

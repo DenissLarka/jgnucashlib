@@ -314,10 +314,10 @@ public class GnucashFileImpl implements GnucashFile {
 
       return retval;
     } catch (RuntimeException e) {
-      LOGGER.error("Problem getting all root-account", e);
+      LOGGER.error(bundle.getMessage("FatNoRootAccounts"));
       throw e;
     } catch (Throwable e) {
-      LOGGER.error("SERIOUS Problem getting all root-account", e);
+      LOGGER.error(bundle.getMessage("FatSerRootAccounts"));
       return new LinkedList<GnucashAccount>();
     }
   }
@@ -449,8 +449,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     GnucashGenerInvoice retval = invoiceID2invoice.get(id);
     if (retval == null) {
-      LOGGER
-          .error("No (generic) Invoice with id '" + id + "'. " + "We know " + invoiceID2invoice.size() + " accounts.");
+      LOGGER.error(bundle.getMessage("Err_NoGenInvid", id, invoiceID2invoice.size()));
     }
 
     return retval;
@@ -487,7 +486,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getPaidInvoices: Serious error", e);
+          LOGGER.error(bundle.getMessage("FatSerPaidInv"));
         }
       } else if (invc.getType().equals(GnucashGenerInvoice.TYPE_VENDOR)) {
         try {
@@ -496,7 +495,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getPaidInvoices: Serious error", e);
+          LOGGER.error(bundle.getMessage("FatSerPaidInv"));
         }
       } else if (invc.getType().equals(GnucashGenerInvoice.TYPE_JOB)) {
         try {
@@ -505,7 +504,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getPaidInvoices: Serious error", e);
+          LOGGER.error(bundle.getMessage("FatSerPaidInv"));
         }
       }
     }
@@ -531,7 +530,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getUnpaidInvoices: Serious error");
+          LOGGER.error(bundle.getMessage("FatUnpInv"), e);
         }
       } else if (invc.getType().equals(GnucashGenerInvoice.TYPE_VENDOR)) {
         try {
@@ -540,7 +539,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getUnpaidInvoices: Serious error");
+          LOGGER.error(bundle.getMessage("FatUnpInv"), e);
         }
       } else if (invc.getType().equals(GnucashGenerInvoice.TYPE_JOB)) {
         try {
@@ -549,7 +548,7 @@ public class GnucashFileImpl implements GnucashFile {
           }
         } catch (WrongInvoiceTypeException e) {
           // This should not happen
-          LOGGER.error("getUnpaidInvoices: Serious error");
+          LOGGER.error(bundle.getMessage("FatUnpInv"), e);
         }
       }
     }
@@ -574,7 +573,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getInvoicesForCustomer: Cannot instantiate GnucashCustomerInvoiceImpl");
+          LOGGER.error(bundle.getMessage("FatNotInstCustInv", "getInvoicesForCustomer_direct"));
         }
       }
     }
@@ -614,7 +613,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getPaidInvoicesForCustomer_direct: Cannot instantiate GnucashCustomerInvoiceImpl");
+          LOGGER.error(bundle.getMessage("FatPaidInvNoCustInv"), e);
         }
       }
     }
@@ -654,7 +653,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getUnpaidInvoicesForCustomer_direct: Cannot instantiate GnucashCustomerInvoiceImpl");
+          LOGGER.error(bundle.getMessage("FatNotInstCustInv", "getUnpaidInvoicesForCustomer_direct"));
         }
       }
     }
@@ -696,7 +695,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getBillsForVendor: Cannot instantiate GnucashVendorBillImpl");
+          LOGGER.error(bundle.getMessage("FatNotInstVendBill", "getBillsForVendor"), e);
         }
       }
     }
@@ -736,7 +735,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getPaidBillsForVendor_direct: Cannot instantiate GnucashVendorBillImpl");
+          LOGGER.error(bundle.getMessage("FatNotInstVendBill", "getPaidBillsForVendor_direct"), e);
         }
       }
     }
@@ -776,7 +775,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getUnpaidBillsForVendor_direct: Cannot instantiate GnucashVendorBillImpl");
+          LOGGER.error(bundle.getMessage("getUnpaidBillsForVendor_direct", "getPaidBillsForVendor_direct"), e);
         }
       }
     }
@@ -817,7 +816,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getInvoicesForJob: Cannot instantiate GnucashJobInvoiceImpl");
+          LOGGER.error(bundle.getMessage("FatNotInstJobInv", "getInvoicesForJob"), e);
         }
       }
     }
@@ -840,7 +839,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getPaidInvoicesForJob: Cannot instantiate GnucashJobInvoiceImpl");
+          LOGGER.error(bundle.getMessage("FatNotInstJobInv", "getPaidInvoicesForJob"), e);
         }
       }
     }
@@ -863,7 +862,7 @@ public class GnucashFileImpl implements GnucashFile {
         } catch (WrongInvoiceTypeException e) {
           // This really should not happen, one can almost
           // throw a fatal log here.
-          LOGGER.error("getUnpaidInvoicesForJob: Cannot instantiate GnucashJobInvoiceImpl");
+          LOGGER.error(bundle.getMessage("FatNotInstJobInv", "getUnpaidInvoicesForJob"), e);
         }
       }
     }
@@ -883,8 +882,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     GnucashGenerInvoiceEntry retval = invoiceEntryID2invoiceEntry.get(id);
     if (retval == null) {
-      LOGGER.error("No (generic) Invoice-Entry with id '" + id + "'. " + "We know " + invoiceEntryID2invoiceEntry.size()
-          + " accounts.");
+      LOGGER.error(bundle.getMessage("Err_NoInvoiceEntry", id, invoiceEntryID2invoiceEntry.size()));
     }
 
     return retval;
@@ -1107,8 +1105,8 @@ public class GnucashFileImpl implements GnucashFile {
         GnucashAccount acct = createAccount(jwsdpAcct);
         accountID2account.put(acct.getId(), acct);
       } catch (RuntimeException e) {
-        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initAccountMap: "
-            + "ignoring illegal Account-Entry with id=" + jwsdpAcct.getActId().getValue(), e);
+        LOGGER.error(bundle.getMessage("Err_RuntimeExcpIgn", getClass().getName(), "initAccountMap", "Account-Entry",
+            jwsdpAcct.getActId().getValue()));
       }
     } // for
 
@@ -1129,8 +1127,8 @@ public class GnucashFileImpl implements GnucashFile {
         GnucashGenerInvoice invc = createGenerInvoice(jwsdpInvc);
         invoiceID2invoice.put(invc.getId(), invc);
       } catch (RuntimeException e) {
-        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initInvoiceMap: "
-            + "ignoring illegal (generic) Invoice-Entry with id=" + jwsdpInvc.getInvoiceId(), e);
+        LOGGER.error(bundle.getMessage("Err_RuntimeExcpIgn", getClass().getName(), "initInvoiceMap", "Invoice-Entry",
+            jwsdpInvc.getInvoiceId()));
       }
     } // for
 
@@ -1151,10 +1149,8 @@ public class GnucashFileImpl implements GnucashFile {
         GnucashGenerInvoiceEntry invcEntr = createGenerInvoiceEntry(jwsdpInvcEntr);
         invoiceEntryID2invoiceEntry.put(invcEntr.getId(), invcEntr);
       } catch (RuntimeException e) {
-        LOGGER.error(
-            "[RuntimeException] Problem in " + getClass().getName() + ".initInvoiceEntryMap: "
-                + "ignoring illegal (generic) Invoice-Entry-Entry with id=" + jwsdpInvcEntr.getEntryGuid().getValue(),
-            e);
+        LOGGER.error(bundle.getMessage("Err_RuntimeExcpIgn", getClass().getName(), "initInvoiceEntryMap",
+            "(generic) Invoice-Entry-Entry", jwsdpInvcEntr.getEntryGuid().getValue()));
       }
     } // for
 
@@ -1179,8 +1175,8 @@ public class GnucashFileImpl implements GnucashFile {
           transactionSplitID2transactionSplit.put(splt.getId(), splt);
         }
       } catch (RuntimeException e) {
-        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initTransactionMap: "
-            + "ignoring illegal Transaction-Entry with id=" + jwsdpTrx.getTrnId().getValue(), e);
+        LOGGER.error(bundle.getMessage("Err_RuntimeExcpIgn", getClass().getName(), "initTransactionMap",
+            "Transaction-Entry", jwsdpTrx.getTrnId().getValue()));
       }
     } // for
 
@@ -1201,8 +1197,8 @@ public class GnucashFileImpl implements GnucashFile {
         GnucashCustomerImpl cust = createCustomer(jwsdpCust);
         customerID2customer.put(cust.getId(), cust);
       } catch (RuntimeException e) {
-        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initCustomerMap: "
-            + "ignoring illegal Customer-Entry with id=" + jwsdpCust.getCustId(), e);
+        LOGGER.error(bundle.getMessage("Err_RuntimeExcpIgn", getClass().getName(), "initCustomerMap", "Customer-Entry",
+            jwsdpCust.getCustId()));
       }
     } // for
 
@@ -1223,8 +1219,8 @@ public class GnucashFileImpl implements GnucashFile {
         GnucashVendorImpl vend = createVendor(jwsdpVend);
         vendorID2vendor.put(vend.getId(), vend);
       } catch (RuntimeException e) {
-        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initVendorMap: "
-            + "ignoring illegal Vendor-Entry with id=" + jwsdpVend.getVendorId(), e);
+        LOGGER.error(bundle.getMessage("Err_RuntimeExcpIgn", getClass().getName(), "initVendorMap", "Vendor-Entry",
+            jwsdpVend.getVendorId()));
       }
     } // for
 
@@ -1245,13 +1241,13 @@ public class GnucashFileImpl implements GnucashFile {
         GnucashGenerJobImpl job = createGenerJob(jwsdpJob);
         String jobID = job.getId();
         if (jobID == null) {
-          LOGGER.error("File contains a customer/vendor job w/o an ID. indexing it with the ID ''");
+          LOGGER.error(bundle.getMessage("Err_NoVendorId"));
           jobID = "";
         }
         jobID2job.put(job.getId(), job);
       } catch (RuntimeException e) {
-        LOGGER.error("[RuntimeException] Problem in " + getClass().getName() + ".initJobMap: "
-            + "ignoring illegal Customer/Vendor-Job-Entry with id=" + jwsdpJob.getJobId(), e);
+        LOGGER.error(bundle.getMessage("Err_RuntimeExcpIgn", getClass().getName(), "initJobMap",
+            "Customer/Vendor-Job-Entry", jwsdpJob.getJobId()));
       }
     } // for
 
@@ -1303,9 +1299,7 @@ public class GnucashFileImpl implements GnucashFile {
       priceDB = (GncPricedb) bookElement;
 
       if (priceDB.getVersion() != 1) {
-
-        LOGGER.warn("We know only the format of the price-db 1, " + "the file has version " + priceDB.getVersion()
-            + " prices will not be loaded!");
+        LOGGER.warn(bundle.getMessage("Warn_WrgVersPriceDb", priceDB.getVersion()));
       } else {
         getCurrencyTable().clear();
         getCurrencyTable().setConversionFactor("ISO4217", getDefaultCurrencyID(), new FixedPointNumber(1));
@@ -1322,8 +1316,7 @@ public class GnucashFileImpl implements GnucashFile {
 
           String baseCurrency = getDefaultCurrencyID();
           if (comodity.getCmdtySpace().equals("ISO4217") && comodity.getCmdtyId().equals(baseCurrency)) {
-            LOGGER.warn(
-                "Ignoring price-quote for " + baseCurrency + " because " + baseCurrency + " is" + "our base-currency.");
+            LOGGER.warn(bundle.getMessage("Warn_IgnProiceQuote", baseCurrency, baseCurrency));
             continue;
           }
 
@@ -1334,8 +1327,7 @@ public class GnucashFileImpl implements GnucashFile {
           if (factor != null) {
             getCurrencyTable().setConversionFactor(comodity.getCmdtySpace(), comodity.getCmdtyId(), factor);
           } else {
-            LOGGER.warn("The gnucash-file defines a factor for a comodity '" + comodity.getCmdtySpace() + "' - '"
-                + comodity.getCmdtyId() + "' but has no comodity for it");
+            LOGGER.warn(bundle.getMessage("Warn_NoFactForCommodity", comodity.getCmdtySpace(), comodity.getCmdtyId()));
           }
         }
       }
@@ -1391,32 +1383,28 @@ public class GnucashFileImpl implements GnucashFile {
 
         try {
           if (priceQuote == null) {
-            LOGGER.warn("gnucash-file contains null price-quotes" + " there may be a problem with JWSDP");
+            LOGGER.warn(bundle.getMessage("Warn_NullPriceQuotes"));
             continue;
           }
           if (priceQuote.getPriceCurrency() == null) {
-            LOGGER.warn("gnucash-file contains price-quotes" + " with no currency id='"
-                + priceQuote.getPriceId().getValue() + "'");
+            LOGGER.warn(bundle.getMessage("Warn_PriceQuotesNoId", "currency", priceQuote.getPriceId().getValue()));
             continue;
           }
           if (priceQuote.getPriceCurrency().getCmdtyId() == null) {
-            LOGGER.warn("gnucash-file contains price-quotes" + " with no currency-id id='"
-                + priceQuote.getPriceId().getValue() + "'");
+            LOGGER.warn(bundle.getMessage("Warn_PriceQuotesNoId", "currency-id", priceQuote.getPriceId().getValue()));
             continue;
           }
           if (priceQuote.getPriceCurrency().getCmdtySpace() == null) {
-            LOGGER.warn("gnucash-file contains price-quotes" + " with no currency-namespace id='"
-                + priceQuote.getPriceId().getValue() + "'");
+            LOGGER.warn(
+                bundle.getMessage("Warn_PriceQuotesNoId", "currency-namespace", priceQuote.getPriceId().getValue()));
             continue;
           }
           if (priceQuote.getPriceTime() == null) {
-            LOGGER.warn("gnucash-file contains price-quotes" + " with no timestamp id='"
-                + priceQuote.getPriceId().getValue() + "'");
+            LOGGER.warn(bundle.getMessage("Warn_PriceQuotesNoId", "timestamp", priceQuote.getPriceId().getValue()));
             continue;
           }
           if (priceQuote.getPriceValue() == null) {
-            LOGGER.warn("gnucash-file contains price-quotes" + " with no value id='"
-                + priceQuote.getPriceId().getValue() + "'");
+            LOGGER.warn(bundle.getMessage("Warn_PriceQuotesNoId", "value", priceQuote.getPriceId().getValue()));
             continue;
           }
           /*
@@ -1438,8 +1426,8 @@ public class GnucashFileImpl implements GnucashFile {
 
           if (!priceQuote.getPriceCurrency().getCmdtySpace().equals("ISO4217")) {
             if (depth > maxRecursionDepth) {
-              LOGGER.warn("ignoring price-quote that is not in an" + " ISO4217 -currency but in '"
-                  + priceQuote.getPriceCurrency().getCmdtyId());
+              LOGGER
+                  .warn(bundle.getMessage("Err_IgnPriceQuote", "ISO4217", priceQuote.getPriceCurrency().getCmdtyId()));
               continue;
             }
             factor = getLatestPrice(priceQuote.getPriceCurrency().getCmdtySpace(),
@@ -1447,8 +1435,8 @@ public class GnucashFileImpl implements GnucashFile {
           } else {
             if (!priceQuote.getPriceCurrency().getCmdtyId().equals(getDefaultCurrencyID())) {
               if (depth > maxRecursionDepth) {
-                LOGGER.warn("ignoring price-quote that is not in " + getDefaultCurrencyID() + " " + "but in  '"
-                    + priceQuote.getPriceCurrency().getCmdtyId());
+                LOGGER.warn(bundle.getMessage("Err_IgnPriceQuote", getDefaultCurrencyID(),
+                    priceQuote.getPriceCurrency().getCmdtyId()));
                 continue;
               }
               factor = getLatestPrice(priceQuote.getPriceCurrency().getCmdtySpace(),
@@ -1466,23 +1454,18 @@ public class GnucashFileImpl implements GnucashFile {
           }
 
         } catch (NumberFormatException e) {
-          LOGGER.error("[NumberFormatException] Problem in " + getClass().getName() + ".getLatestPrice(pCmdtySpace='"
-              + pCmdtySpace + "', String pCmdtyId='" + pCmdtyId + "')! Ignoring a bad price-quote '" + priceQuote + "'",
-              e);
+          LOGGER.error(bundle.getMessage("FatExcpIgnPrcQuote", "NumberFormatException", getClass().getName(),
+              "getLatestPrice(pCmdtySpace", pCmdtySpace, pCmdtyId));
         } catch (ParseException e) {
-          LOGGER.error("[ParseException] Problem in " + getClass().getName() + ".getLatestPrice(pCmdtySpace='"
-              + pCmdtySpace + "', String pCmdtyId='" + pCmdtyId + "')! Ignoring a bad price-quote '" + priceQuote + "'",
-              e);
+          LOGGER.error(bundle.getMessage("FatExcpIgnPrcQuote", "ParseException", getClass().getName(),
+              "getLatestPrice(pCmdtySpace", pCmdtySpace, pCmdtyId));
         } catch (NullPointerException e) {
-          LOGGER.error("[NullPointerException] Problem in " + getClass().getName() + ".getLatestPrice(pCmdtySpace='"
-              + pCmdtySpace + "', String pCmdtyId='" + pCmdtyId + "')! Ignoring a bad price-quote '" + priceQuote + "'",
-              e);
+          LOGGER.error(bundle.getMessage("FatExcpIgnPrcQuote", "NullPointerException", getClass().getName(),
+              "getLatestPrice(pCmdtySpace", pCmdtySpace, pCmdtyId));
         } catch (ArithmeticException e) {
-          LOGGER.error("[ArithmeticException] Problem in " + getClass().getName() + ".getLatestPrice(pCmdtySpace='"
-              + pCmdtySpace + "', String pCmdtyId='" + pCmdtyId + "')! Ignoring a bad price-quote '" + priceQuote + "'",
-              e);
+          LOGGER.error(bundle.getMessage("FatExcpIgnPrcQuote", "ArithmeticException", getClass().getName(),
+              "getLatestPrice(pCmdtySpace", pCmdtySpace, pCmdtyId));
         }
-
       }
     }
 
@@ -1723,7 +1706,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     GnucashAccount retval = accountID2account.get(id);
     if (retval == null) {
-      LOGGER.error("No Account with id '" + id + "'. " + "We know " + accountID2account.size() + " accounts.");
+      LOGGER.error(bundle.getMessage("Err_NoAccountId", id, accountID2account.size()));
     }
     return retval;
   }
@@ -1740,7 +1723,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     GnucashCustomer retval = customerID2customer.get(id);
     if (retval == null) {
-      LOGGER.warn("No Customer with id '" + id + "'. We know " + customerID2customer.size() + " customers.");
+      LOGGER.warn(bundle.getMessage("Warn_NoObjectWithId", "Customer", id, customerID2customer.size(), "customers"));
     }
     return retval;
   }
@@ -1779,7 +1762,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     GnucashVendor retval = vendorID2vendor.get(id);
     if (retval == null) {
-      LOGGER.warn("No Vendor with id '" + id + "'. We know " + vendorID2vendor.size() + " vendors.");
+      LOGGER.warn(bundle.getMessage("Warn_NoObjectWithId", "Vendor", id, vendorID2vendor.size(), "vendors"));
     }
     return retval;
   }
@@ -1855,7 +1838,7 @@ public class GnucashFileImpl implements GnucashFile {
 
     GnucashGenerJob retval = jobID2job.get(id);
     if (retval == null) {
-      LOGGER.warn("No Job with id '" + id + "'. We know " + jobID2job.size() + " jobs.");
+      LOGGER.warn(bundle.getMessage("Warn_NoObjectWithId", "Job", id, jobID2job.size(), "jobs"));
     }
 
     return retval;
@@ -1897,8 +1880,8 @@ public class GnucashFileImpl implements GnucashFile {
 
     GnucashTransactionSplit retval = transactionSplitID2transactionSplit.get(id);
     if (retval == null) {
-      LOGGER.warn("No Transaction-Split with id '" + id + "'. We know " + transactionSplitID2transactionSplit.size()
-          + " transactions.");
+      LOGGER.warn(bundle.getMessage("Warn_NoObjectWithId", "Transaction-Split", id,
+          transactionSplitID2transactionSplit.size(), "transactions"));
     }
     return retval;
   }
@@ -2273,7 +2256,7 @@ public class GnucashFileImpl implements GnucashFile {
         // createWritableCustomer() method at first generates
         // an object whose number is equal to its GUID.
         // ==> ::TODO Adapt how a customer object is created.
-        LOGGER.warn("getHighestCustomerNumber: Found customer with non-numerical number");
+        LOGGER.warn(bundle.getMessage("Warn_GetHighestObj", "getHighestCustomerNumber"));
       }
     }
 
@@ -2297,7 +2280,7 @@ public class GnucashFileImpl implements GnucashFile {
       } catch (Exception exc) {
         // Cf. .getHighestCustomerNumber() above.
         // ==> ::TODO Adapt how a vendor object is created.
-        LOGGER.warn("getHighestVendorNumber: Found vendor with non-numerical number");
+        LOGGER.warn(bundle.getMessage("Warn_GetHighestObj", "getHighestVendorNumber"));
       }
     }
 
@@ -2327,7 +2310,7 @@ public class GnucashFileImpl implements GnucashFile {
         // createWritableCustomer() method at first generates
         // an object whose number is equal to its GUID.
         // ==> ::TODO Adapt how a customer object is created.
-        LOGGER.warn("getHighestJobNumber: Found job with non-numerical number");
+        LOGGER.warn(bundle.getMessage("Warn_GetHighestObj", "getHighestJobNumber"));
       }
     }
 

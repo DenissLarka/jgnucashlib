@@ -56,6 +56,13 @@ public class Messages {
     str = bundle.getMessage("INVC_READ_ONLY_SLOT_TEXT");
     System.out.print("EN: " + str + " | equals: ");
     System.out.println(INVC_READ_ONLY_SLOT_TEXT.contentEquals(str));
+
+    str = bundle.getMessage("Err_NoVendorId");
+    System.out.println("EN: " + str);
+
+    str = bundle.getMessage("Err_NoInvoiceEntry", "Aap", 5);
+    System.out.println("EN: " + str);
+
   }
 
 }

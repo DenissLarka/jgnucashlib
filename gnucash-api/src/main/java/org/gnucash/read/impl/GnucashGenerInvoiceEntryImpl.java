@@ -13,6 +13,7 @@ import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryBill;
 import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryITaxtable;
 import org.gnucash.generated.GncV2.GncBook.GncGncEntry.EntryInvoice;
 import org.gnucash.generated.ObjectFactory;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashGenerInvoice;
 import org.gnucash.read.GnucashGenerInvoiceEntry;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements GnucashGenerInvoiceEntry {
   private static final Logger LOGGER = LoggerFactory.getLogger(GnucashGenerInvoiceEntryImpl.class);
+  private static ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   protected static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
   protected static final DateTimeFormatter DATE_FORMAT_BOOK = DateTimeFormatter.ofPattern(Const.STANDARD_DATE_FORMAT);
@@ -189,16 +191,14 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
     }
 
     if (entrInvc == null && entrBill == null) {
-      LOGGER.error("file contains an invoice-entry with GUID=" + getId() + " without an invoice-element (customer) AND "
-          + "without a bill-element (vendor)");
+      LOGGER.error(bundle.getMessage("Err_InvNoCustNoBill", getId()));
       return "ERROR";
     } else if (entrInvc != null && entrBill == null) {
       return entrInvc.getValue();
     } else if (entrInvc == null && entrBill != null) {
       return entrBill.getValue();
     } else if (entrInvc != null && entrBill != null) {
-      LOGGER.error("file contains an invoice-entry with GUID=" + getId()
-          + " with BOTH an invoice-element (customer) and " + "a bill-element (vendor)");
+      LOGGER.error(bundle.getMessage("Err_InvBothCustBill", getId()));
       return "ERROR";
     }
 
@@ -219,8 +219,8 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
       if (invcId != null) {
         myInvoice = getGnucashFile().getGenerInvoiceByID(invcId);
         if (myInvoice == null) {
-          throw new IllegalStateException("No customer/vendor invoice/bill with id '" + getGenerInvoiceID()
-              + "' for invoiceEntry with id '" + getId() + "'");
+          String msgstr = bundle.getMessage("Err_NoCustVendNoInvBill", getGenerInvoiceID(), getId());
+          throw new IllegalStateException(msgstr);
         }
       }
     }
@@ -277,14 +277,13 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
 
       String taxTableId = taxTableEntry.getValue();
       if (taxTableId == null) {
-        LOGGER.error("Customer invoice with id '" + getId() + "' is i-taxable but has empty id for the i-taxtable");
+        LOGGER.error(bundle.getMessage("Err_InvNoTaxId", getId()));
         return null;
       }
       myInvcTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
 
       if (myInvcTaxtable == null) {
-        LOGGER.error("Customer invoice with id '" + getId() + "' is i-taxable but has an unknown " + "i-taxtable-id '"
-            + taxTableId + "'!");
+        LOGGER.error(bundle.getMessage("Err_InvUnkTaxId", getId(), taxTableId));
       }
     } // myInvcTaxtable == null
 
@@ -307,14 +306,13 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
 
       String taxTableId = taxTableEntry.getValue();
       if (taxTableId == null) {
-        LOGGER.error("Vendor bill with id '" + getId() + "' is b-taxable but has empty id for the b-taxtable");
+        LOGGER.error(bundle.getMessage("Err_VendEmpTaxId", getId()));
         return null;
       }
       myBillTaxtable = getGnucashFile().getTaxTableByID(taxTableId);
 
       if (myBillTaxtable == null) {
-        LOGGER.error("Vendor bill with id '" + getId() + "' is b-taxable but has an unknown " + "b-taxtable-id '"
-            + taxTableId + "'!");
+        LOGGER.error(bundle.getMessage("Err_VendUnkTaxId", getId(), taxTableId));
       }
     } // myBillTaxtable == null
 
@@ -363,8 +361,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
     try {
       taxTab = getInvcTaxTable();
     } catch (TaxTableNotFoundException exc) {
-      LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId()
-          + "' is taxable but JWSDP peer has no i-taxtable-entry! " + "Assuming 0%");
+      LOGGER.error(bundle.getMessage("Err_NoTaxEntryCustInv"));
       return new FixedPointNumber("0");
     }
 
@@ -386,8 +383,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
     // }
     // Instead:
     if (taxTab == null) {
-      LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId()
-          + "' is taxable but has an unknown i-taxtable! " + "Assuming 0%");
+      LOGGER.error(bundle.getMessage("Err_CustInvUnkTaxId", getId()));
       return new FixedPointNumber("0");
     }
 
@@ -407,9 +403,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
     // Instead:
     // ::TODO
     if (taxTabEntr.getType().equals(GCshTaxTableEntry.TYPE_VALUE)) {
-      LOGGER.error("getInvcApplicableTaxPercent: Customer invoice entry with id '" + getId()
-          + "' is taxable but has a i-taxtable of type '" + taxTabEntr.getType() + "'! " + "NOT IMPLEMENTED YET "
-          + "Assuming 0%");
+      LOGGER.error(bundle.getMessage("NotImplCustInvTax", getId(), taxTabEntr.getType()));
       return new FixedPointNumber("0");
     }
 
@@ -435,8 +429,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
 
     if (jwsdpPeer.getEntryBTaxtable() != null) {
       if (!jwsdpPeer.getEntryBTaxtable().getType().equals(Const.XML_DATA_TYPE_GUID)) {
-        LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId()
-            + "' has b-taxtable with type='" + jwsdpPeer.getEntryBTaxtable().getType() + "' != 'guid'");
+        LOGGER.error(bundle.getMessage("Err_VendBillWrgGUID", getId(), jwsdpPeer.getEntryBTaxtable().getType()));
       }
     }
 
@@ -444,15 +437,13 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
     try {
       taxTab = getBillTaxTable();
     } catch (TaxTableNotFoundException exc) {
-      LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId()
-          + "' is taxable but JWSDP peer has no b-taxtable-entry! " + "Assuming 0%");
+      LOGGER.error(bundle.getMessage("Err_VendBillNoTaxId", getId()));
       return new FixedPointNumber("0");
     }
 
     // Cf. getInvcApplicableTaxPercent()
     if (taxTab == null) {
-      LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId()
-          + "' is taxable but has an unknown b-taxtable! " + "Assuming 0%");
+      LOGGER.error(bundle.getMessage("Err_VendBillNoTaxId", getId()));
       return new FixedPointNumber("0");
     }
 
@@ -461,9 +452,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
     // Cf. getInvcApplicableTaxPercent()
     // ::TODO
     if (taxTabEntr.getType().equals(GCshTaxTableEntry.TYPE_VALUE)) {
-      LOGGER.error("getBillApplicableTaxPercent: Vendor bill entry with id '" + getId()
-          + "' is taxable but has a b-taxtable of type '" + taxTabEntr.getType() + "'! " + "NOT IMPLEMENTED YET "
-          + "Assuming 0%");
+      LOGGER.error(bundle.getMessage("NotImplVendBillTax", getId(), taxTabEntr.getType()));
       return new FixedPointNumber("0");
     }
 
@@ -961,7 +950,7 @@ public class GnucashGenerInvoiceEntryImpl extends GnucashObjectImpl implements G
       }
 
       if (otherEntr != this) {
-        LOGGER.error("Duplicate invoice-entry-id!! " + otherEntr.getId() + " and " + getId());
+        LOGGER.error(bundle.getMessage("Err_DuplInvcId", otherEntr.getId(), getId()));
       }
 
       return 0;
