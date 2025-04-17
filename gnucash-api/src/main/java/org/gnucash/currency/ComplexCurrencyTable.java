@@ -1,8 +1,3 @@
-/**
- * ComplexCurrencyTable.java
- * created: 28.08.2005 15:04:10
- * (c) 2005 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- */
 package org.gnucash.currency;
 
 //automatically created logger for debug and error -output
@@ -17,22 +12,15 @@ import java.util.Map;
 
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung</a>.<br/>
- * Project: gnucashReader<br/>
- * ComplexCurrencyTable.java<br/>
- * created: 28.08.2005 15:04:10 <br/>
- * <br/>
  * Currency-Table that can work with multiple namespaces.<br/>
  * By default "ISO4217"-GnucashFile.getDefaultCurrencyID() is added with the value 1. (to be used as a base.currency)
  *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  * @see GnucashFile#getDefaultCurrencyID()
  */
 public class ComplexCurrencyTable extends SimpleCurrencyTable implements Serializable {
+	private static final long serialVersionUID = 7318173535959109553L;
 
 	public interface ComplexCurrencyTableChangeListener {
 		void conversionFactorChanged(final String namespace, final String currency, final FixedPointNumber factor);
@@ -54,7 +42,8 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		listeners.remove(listener);
 	}
 
-	protected void fireCurrencyTableChanged(final String namespace, final String currency, final FixedPointNumber factor) {
+	protected void fireCurrencyTableChanged(final String namespace, final String currency,
+			final FixedPointNumber factor) {
 		if (listeners != null) {
 			for (ComplexCurrencyTableChangeListener listener : listeners) {
 				listener.conversionFactorChanged(namespace, currency, factor);
@@ -67,78 +56,77 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	 */
 	private Map<String, SimpleCurrencyTable> namespace2CurrencyTable;
 
-	//------------------------ support for propertyChangeListeners ------------------
+	// ------------------------ support for propertyChangeListeners ------------------
 	//
-	///**
+	/// **
 	// * support for firing PropertyChangeEvents
 	// * (gets initialized only if we really have listeners)
 	// */
-	//protected volatile PropertyChangeSupport propertyChange = null;
+	// protected volatile PropertyChangeSupport propertyChange = null;
 	//
-	///**
+	/// **
 	// * Add a PropertyChangeListener to the listener list.
 	// * The listener is registered for all properties.
 	// *
-	// * @param listener  The PropertyChangeListener to be added
+	// * @param listener The PropertyChangeListener to be added
 	// */
-	//public final void addPropertyChangeListener(
-	//                                            final PropertyChangeListener listener) {
-	//    if (propertyChange == null) {
-	//        propertyChange = new PropertyChangeSupport(this);
-	//    }
-	//    propertyChange.addPropertyChangeListener(listener);
-	//}
+	// public final void addPropertyChangeListener(
+	// final PropertyChangeListener listener) {
+	// if (propertyChange == null) {
+	// propertyChange = new PropertyChangeSupport(this);
+	// }
+	// propertyChange.addPropertyChangeListener(listener);
+	// }
 	//
-	///**
-	// * Add a PropertyChangeListener for a specific property.  The listener
+	/// **
+	// * Add a PropertyChangeListener for a specific property. The listener
 	// * will be invoked only when a call on firePropertyChange names that
 	// * specific property.
 	// *
-	// * @param propertyName  The name of the property to listen on.
-	// * @param listener  The PropertyChangeListener to be added
+	// * @param propertyName The name of the property to listen on.
+	// * @param listener The PropertyChangeListener to be added
 	// */
-	//public final void addPropertyChangeListener(
-	//                                            final String propertyName,
-	//                                            final PropertyChangeListener listener) {
-	//    if (propertyChange == null) {
-	//        propertyChange = new PropertyChangeSupport(this);
-	//    }
-	//    propertyChange.addPropertyChangeListener(propertyName, listener);
-	//}
+	// public final void addPropertyChangeListener(
+	// final String propertyName,
+	// final PropertyChangeListener listener) {
+	// if (propertyChange == null) {
+	// propertyChange = new PropertyChangeSupport(this);
+	// }
+	// propertyChange.addPropertyChangeListener(propertyName, listener);
+	// }
 	//
-	///**
+	/// **
 	// * Remove a PropertyChangeListener for a specific property.
 	// *
-	// * @param propertyName  The name of the property that was listened on.
-	// * @param listener  The PropertyChangeListener to be removed
+	// * @param propertyName The name of the property that was listened on.
+	// * @param listener The PropertyChangeListener to be removed
 	// */
-	//public final void removePropertyChangeListener(
-	//                                               final String propertyName,
-	//                                               final PropertyChangeListener listener) {
-	//    if (propertyChange != null) {
-	//        propertyChange.removePropertyChangeListener(propertyName, listener);
-	//    }
-	//}
+	// public final void removePropertyChangeListener(
+	// final String propertyName,
+	// final PropertyChangeListener listener) {
+	// if (propertyChange != null) {
+	// propertyChange.removePropertyChangeListener(propertyName, listener);
+	// }
+	// }
 	//
-	///**
+	/// **
 	// * Remove a PropertyChangeListener from the listener list.
 	// * This removes a PropertyChangeListener that was registered
 	// * for all properties.
 	// *
-	// * @param listener  The PropertyChangeListener to be removed
+	// * @param listener The PropertyChangeListener to be removed
 	// */
-	//public synchronized void removePropertyChangeListener(
-	//                                                      final PropertyChangeListener listener) {
-	//    if (propertyChange != null) {
-	//        propertyChange.removePropertyChangeListener(listener);
-	//    }
-	//}
+	// public synchronized void removePropertyChangeListener(
+	// final PropertyChangeListener listener) {
+	// if (propertyChange != null) {
+	// propertyChange.removePropertyChangeListener(listener);
+	// }
+	// }
 	//
-	//-------------------------------------------------------
+	// -------------------------------------------------------
 
 	/**
-	 * Just an overridden ToString to return this classe's name
-	 * and hashCode.
+	 * Just an overridden ToString to return this classe's name and hashCode.
 	 *
 	 * @return className and hashCode
 	 */
@@ -169,8 +157,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	 * @param namespace the new namespace to add.
 	 * @param values    an initial set of conversion-factors.
 	 */
-	public void addNameSpace(final String namespace,
-			final SimpleCurrencyTable values) {
+	public void addNameSpace(final String namespace, final SimpleCurrencyTable values) {
 		if (namespace2CurrencyTable == null) {
 			namespace2CurrencyTable = new HashMap<String, SimpleCurrencyTable>();
 		}
@@ -184,7 +171,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	public void clear() {
 		super.clear();
 		if (namespace2CurrencyTable == null) {
-			namespace2CurrencyTable = new HashMap();
+			namespace2CurrencyTable = new HashMap<String, SimpleCurrencyTable>();
 		}
 		namespace2CurrencyTable.clear();
 	}
@@ -198,15 +185,14 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null currency-id given!");
 		}
 
-		return convertFromBaseCurrency("ISO4217", pValue, pIso4217CurrencyCode);
+		return convertFromBaseCurrency(CurrencyNameSpace.NAMESPACE_CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
 	 * @param namespace e.g. "ISO4217"
 	 * @see SimpleCurrencyTable#convertFromBaseCurrency(FixedPointNumber, String)
 	 */
-	public boolean convertToBaseCurrency(final String namespace,
-			final FixedPointNumber pValue,
+	public boolean convertToBaseCurrency(final String namespace, final FixedPointNumber pValue,
 			final String pIso4217CurrencyCode) {
 
 		if (namespace == null) {
@@ -229,8 +215,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	 * @param namespace e.g. "ISO4217"
 	 * @see SimpleCurrencyTable#convertFromBaseCurrency(FixedPointNumber, String)
 	 */
-	public boolean convertFromBaseCurrency(final String namespace,
-			final FixedPointNumber pValue,
+	public boolean convertFromBaseCurrency(final String namespace, final FixedPointNumber pValue,
 			final String pIso4217CurrencyCode) {
 
 		if (namespace == null) {
@@ -253,12 +238,11 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	 * @see SimpleCurrencyTable#convertToBaseCurrency(FixedPointNumber, java.lang.String)
 	 */
 	@Override
-	public boolean convertToBaseCurrency(final FixedPointNumber pValue,
-			final String pIso4217CurrencyCode) {
+	public boolean convertToBaseCurrency(final FixedPointNumber pValue, final String pIso4217CurrencyCode) {
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return convertToBaseCurrency("ISO4217", pValue, pIso4217CurrencyCode);
+		return convertToBaseCurrency(CurrencyNameSpace.NAMESPACE_CURRENCY, pValue, pIso4217CurrencyCode);
 	}
 
 	/**
@@ -269,15 +253,14 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
 		}
-		return getConversionFactor("ISO4217", pIso4217CurrencyCode);
+		return getConversionFactor(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode);
 	}
 
 	/**
 	 * @see SimpleCurrencyTable#setConversionFactor(java.lang.String, FixedPointNumber)
 	 */
 	@Override
-	public void setConversionFactor(final String pIso4217CurrencyCode,
-			final FixedPointNumber pFactor) {
+	public void setConversionFactor(final String pIso4217CurrencyCode, final FixedPointNumber pFactor) {
 
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
@@ -286,9 +269,9 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 			throw new IllegalArgumentException("null conversion-factor given!");
 		}
 
-		setConversionFactor("ISO4217", pIso4217CurrencyCode, pFactor);
+		setConversionFactor(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode, pFactor);
 
-		fireCurrencyTableChanged("ISO4217", pIso4217CurrencyCode, pFactor);
+		fireCurrencyTableChanged(CurrencyNameSpace.NAMESPACE_CURRENCY, pIso4217CurrencyCode, pFactor);
 	}
 
 	/**
@@ -296,8 +279,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	 *
 	 * @see SimpleCurrencyTable#setConversionFactor(java.lang.String, FixedPointNumber)
 	 */
-	public void setConversionFactor(final String namespace,
-			final String pIso4217CurrencyCode,
+	public void setConversionFactor(final String namespace, final String pIso4217CurrencyCode,
 			final FixedPointNumber pFactor) {
 
 		if (namespace == null) {
@@ -324,8 +306,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	/**
 	 * @see SimpleCurrencyTable#setConversionFactor(java.lang.String, FixedPointNumber)
 	 */
-	public FixedPointNumber getConversionFactor(final String namespace,
-			final String pIso4217CurrencyCode) {
+	public FixedPointNumber getConversionFactor(final String namespace, final String pIso4217CurrencyCode) {
 
 		if (pIso4217CurrencyCode == null) {
 			throw new IllegalArgumentException("null currency-id given!");
@@ -348,8 +329,7 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	}
 
 	/**
-	 * @param namespace
-	 * @return
+	 *
 	 */
 	protected SimpleCurrencyTable getNamespace(String namespace) {
 		if (namespace == null) {
@@ -369,11 +349,11 @@ public class ComplexCurrencyTable extends SimpleCurrencyTable implements Seriali
 	public ComplexCurrencyTable() {
 		super();
 
-		addNameSpace("ISO4217", new SimpleCurrencyTable());
+		addNameSpace(CurrencyNameSpace.NAMESPACE_CURRENCY, new SimpleCurrencyTable());
 	}
 
 	/**
-	 * @param pNamespace
+	 *
 	 */
 	public Collection<String> getCurrencies(final String pNamespace) {
 		SimpleCurrencyTable namespace = getNamespace(pNamespace);

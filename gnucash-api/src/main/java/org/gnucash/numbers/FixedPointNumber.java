@@ -1,21 +1,12 @@
-/**
- * FixedPointNumber.java Created on 14.05.2005 (c) 2005 by
- * "Wolschon Softwaredesign und Beratung".
- * ----------------------------------------------------------- major Changes:
- * 14.05.2005 - initial version ...
- */
 package org.gnucash.numbers;
 
 import java.math.BigDecimal;
 
 /**
- * created: 14.05.2005 <br/>
  * Implementation of Fixed-point numbers that knows the String-format gnucash
  * uses and returns true if 2 numbers are compared that are mathematically equal
  * even if they have a different representation (unlike BigInteger). internal
  * format: "2/100" means "0.02"
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 
@@ -481,36 +472,84 @@ public class FixedPointNumber extends BigDecimalWrapper implements Cloneable {
 	 * @param other the value to compare to
 	 * @return true if and only if this>other
 	 */
-	public boolean isMoreThen(final FixedPointNumber other) {
+	public boolean isGreaterThan(final FixedPointNumber other) {
+		return isGreaterThan(other.getBigDecimal());
+	}
 
-		return isMoreThen(other.getBigDecimal());
+	/**
+	 * @param other the value to compare to
+	 * @return as ifGreaterThan, but with given tolerance allowed
+	 */
+	public boolean isGreaterThan(final FixedPointNumber other, double tolerance) {
+		return isGreaterThan(other.getBigDecimal(), tolerance);
 	}
 
 	/**
 	 * @param other the value to compare to
 	 * @return true if and only if this>other
 	 */
-	public boolean isMoreThen(final BigDecimal other) {
+	public boolean isGreaterThan(final BigDecimal other) {
+		return value.compareTo(other) > 0.0;
+	}
 
-		return value.compareTo(other) > 0;
+	/**
+	 * @param other the value to compare to
+	 * @return as ifGreaterThan, but with given tolerance allowed
+	 */
+	public boolean isGreaterThan(final BigDecimal other, double tolerance) {
+		if (tolerance <= 0.0) {
+			throw new IllegalArgumentException("Tolerance must be > 0.0");
+		}
+
+		BigDecimal diff = value.subtract(other);
+
+		if (diff.doubleValue() > tolerance) {
+			return true;
+		} else {
+			if (Math.abs(diff.doubleValue()) <= tolerance) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 
 	/**
 	 * @param other the value to compare to
 	 * @return true if and only if this&lt;other
 	 */
-	public boolean isLessThen(final FixedPointNumber other) {
+	public boolean isLessThan(final FixedPointNumber other) {
+		return isLessThan(other.getBigDecimal());
+	}
 
-		return isLessThen(other.getBigDecimal());
+	public boolean isLessThan(final FixedPointNumber other, double tolerance) {
+		return isLessThan(other.getBigDecimal(), tolerance);
 	}
 
 	/**
 	 * @param other the value to compare to
 	 * @return true if and only if this&lt;other
 	 */
-	public boolean isLessThen(final BigDecimal other) {
+	public boolean isLessThan(final BigDecimal other) {
+		return value.compareTo(other) < 0.0;
+	}
 
-		return value.compareTo(other) < 0;
+	public boolean isLessThan(final BigDecimal other, double tolerance) {
+		if (tolerance <= 0.0) {
+			throw new IllegalArgumentException("Tolerance must be > 0.0");
+		}
+
+		BigDecimal diff = value.subtract(other);
+
+		if (diff.doubleValue() < -tolerance) {
+			return true;
+		} else {
+			if (Math.abs(diff.doubleValue()) <= tolerance) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 
 	/**

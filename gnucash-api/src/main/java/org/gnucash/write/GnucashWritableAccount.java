@@ -1,21 +1,3 @@
-/**
- * GnucashWritableAccount.java
- * Created on 11.06.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 11.06.2005 - initial version
- * ...
- */
 package org.gnucash.write;
 
 import java.beans.PropertyChangeListener;
@@ -25,9 +7,7 @@ import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashObject;
 
-
 /**
- * created: 11.06.2005 <br/>
  * Account that can be modified.<br/>
  * Supported properties for the propertyChangeListeners:
  * <ul>
@@ -39,8 +19,6 @@ import org.gnucash.read.GnucashObject;
  * <li>parentAccount</li>
  * <li>transactionSplits (not giving the old value of the list)</li>
  * </ul>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashWritableAccount extends GnucashAccount, GnucashObject, GnucashWritableObject {
 
@@ -50,36 +28,35 @@ public interface GnucashWritableAccount extends GnucashAccount, GnucashObject, G
 	GnucashWritableFile getWritableGnucashFile();
 
 	/**
-	 * Change the user-definable name.
-	 * It should contain no newlines but may contain non-ascii
-	 * and non-western characters.
+	 * Change the user-definable name. It should contain no newlines but may contain
+	 * non-ascii and non-western characters.
 	 *
 	 * @param name the new name (not null)
 	 */
 	void setName(String name);
 
 	/**
-	 * Change the user-definable account-number.
-	 * It should contain no newlines but may contain non-ascii
-	 * and non-western characters.
+	 * Change the user-definable account-number. It should contain no newlines but
+	 * may contain non-ascii and non-western characters.
 	 *
 	 * @param code the new code (not null)
 	 */
 	void setAccountCode(String code);
 
 	/**
-	 * @param desc the user-defined description (may contain multiple lines and non-ascii-characters)
+	 * @param desc the user-defined description (may contain multiple lines and
+	 *             non-ascii-characters)
 	 */
 	void setDescription(String desc);
 
 	/**
-	 * Get the sum of all transaction-splits
-	 * affecting this account in the given time-frame.
+	 * Get the sum of all transaction-splits affecting this account in the given
+	 * time-frame.
 	 *
 	 * @param from when to start, inclusive
 	 * @param to   when to stop, exlusive.
-	 * @return the sum of all transaction-splits
-	 * affecting this account in the given time-frame.
+	 * @return the sum of all transaction-splits affecting this account in the given
+	 * time-frame.
 	 */
 	FixedPointNumber getBalanceChange(LocalDate from, LocalDate to);
 
@@ -123,17 +100,16 @@ public interface GnucashWritableAccount extends GnucashAccount, GnucashObject, G
 	void remove();
 
 	/**
-	 * Add a PropertyChangeListener to the listener list.
-	 * The listener is registered for all properties.
+	 * Add a PropertyChangeListener to the listener list. The listener is registered
+	 * for all properties.
 	 *
 	 * @param listener The PropertyChangeListener to be added
 	 */
 	void addPropertyChangeListener(PropertyChangeListener listener);
 
 	/**
-	 * Add a PropertyChangeListener for a specific property.  The listener
-	 * will be invoked only when a call on firePropertyChange names that
-	 * specific property.
+	 * Add a PropertyChangeListener for a specific property. The listener will be
+	 * invoked only when a call on firePropertyChange names that specific property.
 	 *
 	 * @param propertyName The name of the property to listen on.
 	 * @param listener     The PropertyChangeListener to be added
@@ -149,9 +125,8 @@ public interface GnucashWritableAccount extends GnucashAccount, GnucashObject, G
 	void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
 	/**
-	 * Remove a PropertyChangeListener from the listener list.
-	 * This removes a PropertyChangeListener that was registered
-	 * for all properties.
+	 * Remove a PropertyChangeListener from the listener list. This removes a
+	 * PropertyChangeListener that was registered for all properties.
 	 *
 	 * @param listener The PropertyChangeListener to be removed
 	 */

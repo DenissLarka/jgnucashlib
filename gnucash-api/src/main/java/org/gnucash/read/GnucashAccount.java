@@ -1,33 +1,65 @@
-/**
- * GnucashAccount.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 05.05.2005 - initial version
- * ...
- */
 package org.gnucash.read;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Currency;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import org.gnucash.numbers.FixedPointNumber;
 
-import java.time.LocalDate;
-import java.util.*;
-
 /**
- * <br>
- * created: 05.05.2005
- * <p>
  * An account is a collection of transactions that start or end there. <br>
  * You can compare it's functionality to an abstracted bank account. <br>
  * It has a balance, may have a parent-account(@see #getParentAccount()) and child-accounts(@see #getSubAccounts()) to form
  * a tree. <br>
  *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  * @see #getParentAccount()
  */
-public interface GnucashAccount extends Comparable {
+public interface GnucashAccount extends Comparable<GnucashAccount> {
+
+	// For the following types cf.:
+	// https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Account.h
+	//
+	// Examples (from German accounting):
+	//
+	// - TYPE_BANK = "BANK"; Girokonto, Tagesgeldkonto
+	// - TYPE_CASH = "CASH"; Kasse
+	// - TYPE_CREDIT = "CREDIT"; "Kreditkarte"
+	// - TYPE_ASSET = "ASSET"; Vermögensgegenstaende, "1. Forderungen aus
+	// Lieferungen und Leistungen"
+	// - TYPE_LIABILITY = "LIABILITY"; Verbindlichkeiten ggueber Lieferanten
+	// - TYPE_STOCK = "STOCK"; Aktie
+	// - TYPE_MUTUAL = "MUTUAL"; Investment-Fonds
+	// - TYPE_CURRENCY = "CURRENCY";
+	// - TYPE_INCOME = "INCOME"; "Umsatzerloese 16% USt"
+	// - TYPE_EXPENSE = "EXPENSE"; "private Ausgaben"
+	// - TYPE_EQUITY = "EQUITY"; "Anfangsbestand"
+	// - TYPE_RECEIVABLE = "RECEIVABLE"; "Forderungen aus Lieferungen und
+	// Leistungen"
+	// - TYPE_PAYABLE = "PAYABLE"; "Verbindlichkeiten ggueber Lieferant xyz"
+	// - TYPE_ROOT = "ROOT"; guess ;-)
+	// - TYPE_TRADING = "TRADING";
+
+	// ::MAGIC
+	String TYPE_BANK = "BANK";
+	String TYPE_CASH = "CASH";
+	String TYPE_CREDIT = "CREDIT";
+	String TYPE_ASSET = "ASSET";
+	String TYPE_LIABILITY = "LIABILITY";
+	String TYPE_STOCK = "STOCK";
+	String TYPE_MUTUAL = "MUTUAL";
+	String TYPE_CURRENCY = "CURRENCY";
+	String TYPE_INCOME = "INCOME";
+	String TYPE_EXPENSE = "EXPENSE";
+	String TYPE_EQUITY = "EQUITY";
+	String TYPE_RECEIVABLE = "RECEIVABLE";
+	String TYPE_PAYABLE = "PAYABLE";
+	String TYPE_ROOT = "ROOT";
+	String TYPE_TRADING = "TRADING";
+
+	// -----------------------------------------------------------------
 
 	/**
 	 * @return the unique id for that account (not meaningfull to human users)
@@ -35,17 +67,19 @@ public interface GnucashAccount extends Comparable {
 	String getId();
 
 	/**
-	 * @return a user-defined description to acompany the name of the account. Can encompass many lines.
+	 * @return a user-defined description to acompany the name of the account. Can
+	 * encompass many lines.
 	 */
 	String getDescription();
 
 	/**
 	 * @return the account-number
 	 */
-	String getAccountCode();
+	String getCode();
 
 	/**
-	 * @return user-readable name of this account. Does not contain the name of parent-accounts
+	 * @return user-readable name of this account. Does not contain the name of
+	 * parent-accounts
 	 */
 	String getName();
 
@@ -62,134 +96,43 @@ public interface GnucashAccount extends Comparable {
 	String getParentAccountId();
 
 	/**
-	 * @return the parent-account we are a child of or null
-	 * if we are a top-level account
+	 * @return the parent-account we are a child of or null if we are a top-level
+	 * account
 	 */
 	GnucashAccount getParentAccount();
 
 	/**
-	 * The returned collection is never null
-	 * and is sorted by Account-Name.
+	 * The returned collection is never null and is sorted by Account-Name.
 	 *
 	 * @return all child-accounts
 	 * @see #getChildren()
 	 */
-	Collection getSubAccounts();
+	Collection<GnucashAccount> getSubAccounts();
 
 	/**
-	 * The returned collection is never null
-	 * and is sorted by Account-Name.
+	 * The returned collection is never null and is sorted by Account-Name.
 	 *
 	 * @return all child-accounts
 	 */
 	Collection<GnucashAccount> getChildren();
 
-	/**
-	 * e.g. "Umsatzsteuer 16%"
-	 */
-	String ACCOUNTTYPE_LIABILITY = "LIABILITY";
-
-	/**
-	 * e.g. "Umsatzerl&ouml;e 16% USt"
-	 */
-	String ACCOUNTTYPE_BANK = "BANK";
-
-	/**
-	 * e.g. "Umsatzerl�se 16% USt"
-	 */
-	String ACCOUNTTYPE_INCOME = "INCOME";
-
-	/**
-	 * e.g. "Forderungen aus Lieferungen und Leistungen"
-	 */
-	String ACCOUNTTYPE_RECEIVABLE = "RECEIVABLE";
-
-	/**
-	 * e.g. "1. Forderungen aus Lieferungen und Leistungen"
-	 */
-	String ACCOUNTTYPE_ASSET = "ASSET";
-	/**
-	 * e.g. "private Ausgaben"
-	 */
-	String ACCOUNTTYPE_EXPENSE = "EXPENSE";
-
-	/**
-	 * e.g. "Visa"
-	 */
-	String ACCOUNTTYPE_CREDIT = "CREDIT";
-
-	/**
-	 * e.g. "Anfangsbestand"
-	 */
-	String ACCOUNTTYPE_EQUITY = "EQUITY";
-
-	/**
-	 * e.g. "stock"
-	 */
-	String ACCOUNTTYPE_CASH = "CASH";
-
-	/**
-	 * e.g. "Cash in Wallet"
-	 */
-	String ACCOUNTTYPE_STOCK = "STOCK";
-
-	/**
-	 * e.g. "Lesezeichen"
-	 */
-	String ACCOUNTTYPE_MUTUAL = "MUTUAL";
+	// ----------------------------
 
 	/**
 	 * @return the type-string for this account.
-	 * @see #ACCOUNTTYPE_ASSET
-	 * @see #ACCOUNTTYPE_INCOME
-	 * @see #ACCOUNTTYPE_LIABILITY
-	 * @see #ACCOUNTTYPE_RECEIVABLE
-	 * there are other types too
+	 * @see #TYPE_ASSET
+	 * @see #TYPE_INCOME
+	 * @see #TYPE_LIABILITY
+	 * @see #TYPE_PAYABLE
+	 * @see #TYPE_RECEIVABLE there are other types too
 	 */
 	String getType();
 
 	/**
-	 * Values for the currency-namspace ISO4217 .
-	 *
-	 * @see {@link #getCurrencyNameSpace()}
-	 */
-	String CURRENCYNAMESPACE_CURRENCY = "ISO4217";
-
-	/**
-	 * @see {@link #getCurrencyNameSpace()}
-	 */
-	String CURRENCYNAMESPACE_FUND = "FUND";
-
-	/**
-	 * @see {@link #getCurrencyNameSpace()}
-	 */
-	String CURRENCYNAMESPACE_AMEX = "AMEX";
-
-	/**
-	 * @see {@link #getCurrencyNameSpace()}
-	 */
-	String CURRENCYNAMESPACE_EUREX = "EUREX";
-
-	/**
-	 * @see {@link #getCurrencyNameSpace()}
-	 */
-	String CURRENCYNAMESPACE_NASDAQ = "NASDAQ";
-
-	/**
-	 * @see {@link #getCurrencyNameSpace()}
-	 */
-	String CURRENCYNAMESPACE_NYSE = "NYSE";
-
-	/**
-	 * @return "ISO4217" for a currency "FUND" or a fond,...
-	 * @see {@link #CURRENCYNAMESPACE_CURRENCY}
-	 * @see {@link #CURRENCYNAMESPACE_FUND}
 	 */
 	String getCurrencyNameSpace();
 
 	/**
-	 * The name of the currency in the given namespace
-	 * e.g. "EUR" for euro in namespace "ISO4217"= {@link #CURRENCYNAMESPACE_CURRENCY}
 	 *
 	 * @see {@link #getCurrencyNameSpace()}
 	 */
@@ -209,7 +152,7 @@ public interface GnucashAccount extends Comparable {
 	 * @return all splits
 	 * @link GnucashTransaction
 	 */
-	List getTransactions();
+	List<GnucashTransaction> getTransactions();
 
 	/**
 	 * @param split split to add to this transaction
@@ -219,8 +162,7 @@ public interface GnucashAccount extends Comparable {
 	/**
 	 * same as getBalance(new Date()).<br/>
 	 * ignores transactions after the current date+time<br/>
-	 * Be aware that the result is in the currency of this
-	 * account!
+	 * Be aware that the result is in the currency of this account!
 	 *
 	 * @return the balance
 	 */
@@ -229,16 +171,15 @@ public interface GnucashAccount extends Comparable {
 	/**
 	 * same as getBalanceRecursive(new Date()).<br/>
 	 * ignores transactions after the current date+time<br/>
-	 * Be aware that the result is in the currency of this
-	 * account!
+	 * Be aware that the result is in the currency of this account!
 	 *
 	 * @return the balance including sub-accounts
 	 */
 	FixedPointNumber getBalanceRecursive();
 
 	/**
-	 * @return true if ${@link #hasTransactions()} is true for this
-	 * or any sub-accounts
+	 * @return true if ${@link #hasTransactions()} is true for this or any
+	 * sub-accounts
 	 */
 	boolean hasTransactionsRecursive();
 
@@ -258,53 +199,54 @@ public interface GnucashAccount extends Comparable {
 	FixedPointNumber getBalanceRecursive(final LocalDate date, final Currency currency);
 
 	/**
-	 * same as getBalanceRecursive(new Date()).
-	 * ignores transactions after the current date+time
+	 * same as getBalanceRecursive(new Date()). ignores transactions after the
+	 * current date+time
 	 *
-	 * @return the balance including sub-accounts formated using the current locale
+	 * @return the balance including sub-accounts formatted using the current locale
 	 */
-	String getBalanceRecursiveFormated();
+	String getBalanceRecursiveFormatted();
 
 	/**
-	 * same as getBalance(new Date()).
-	 * ignores transactions after the current date+time
+	 * same as getBalance(new Date()). ignores transactions after the current
+	 * date+time
 	 *
-	 * @return the balance formated using the current locale
+	 * @return the balance formatted using the current locale
 	 */
-	String getBalanceFormated();
+	String getBalanceFormatted();
 
 	/**
-	 * same as getBalance(new Date()).
-	 * ignores transactions after the current date+time
+	 * same as getBalance(new Date()). ignores transactions after the current
+	 * date+time
 	 *
 	 * @param locale the locale to use (does not affect the currency)
-	 * @return the balance formated using the given locale
+	 * @return the balance formatted using the given locale
 	 */
-	String getBalanceFormated(Locale locale);
+	String getBalanceFormatted(Locale locale);
 
 	/**
-	 * Be aware that the result is in the currency of this
-	 * account!
+	 * Be aware that the result is in the currency of this account!
 	 *
-	 * @param date if non-null transactions after this date are ignored in the calculation
-	 * @return the balance formated using the current locale
+	 * @param date if non-null transactions after this date are ignored in the
+	 *             calculation
+	 * @return the balance formatted using the current locale
 	 */
 	FixedPointNumber getBalance(LocalDate date);
 
 	/**
-	 * Be aware that the result is in the currency of this
-	 * account!
+	 * Be aware that the result is in the currency of this account!
 	 *
-	 * @param date  if non-null transactions after this date are ignored in the calculation
+	 * @param date  if non-null transactions after this date are ignored in the
+	 *              calculation
 	 * @param after splits that are after date are added here.
-	 * @return the balance formated using the current locale
+	 * @return the balance formatted using the current locale
 	 */
 	FixedPointNumber getBalance(final LocalDate date, final Collection<GnucashTransactionSplit> after);
 
 	/**
 	 * Gets the balance including all sub-accounts.
 	 *
-	 * @param date if non-null transactions after this date are ignored in the calculation
+	 * @param date if non-null transactions after this date are ignored in the
+	 *             calculation
 	 * @return the balance including all sub-accounts
 	 */
 	FixedPointNumber getBalanceRecursive(LocalDate date);
@@ -320,10 +262,11 @@ public interface GnucashAccount extends Comparable {
 	/**
 	 * Gets the balance including all sub-accounts.
 	 *
-	 * @param date if non-null transactions after this date are ignored in the calculation
+	 * @param date if non-null transactions after this date are ignored in the
+	 *             calculation
 	 * @return the balance including all sub-accounts
 	 */
-	String getBalanceRecursiveFormated(LocalDate date);
+	String getBalanceRecursiveFormatted(LocalDate date);
 
 	/**
 	 * @param lastIncludesSplit last split to be included
@@ -355,9 +298,8 @@ public interface GnucashAccount extends Comparable {
 	FixedPointNumber getBalanceRecursive(LocalDate date, String currencyNameSpace, String currencyName);
 
 	/**
-	 * Examples:
-	 * The user-defined-attribute "hidden"="true"/"false"
-	 * was introduced in gnucash2.0 to hide accounts.
+	 * Examples: The user-defined-attribute "hidden"="true"/"false" was introduced
+	 * in gnucash2.0 to hide accounts.
 	 *
 	 * @param name the name of the user-defined attribute
 	 * @return the value or null if not set
@@ -365,7 +307,8 @@ public interface GnucashAccount extends Comparable {
 	String getUserDefinedAttribute(final String name);
 
 	/**
-	 * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.
+	 * @return all keys that can be used with
+	 * ${@link #getUserDefinedAttribute(String)}}.
 	 */
 	Collection<String> getUserDefinedAttributeKeys();
 }

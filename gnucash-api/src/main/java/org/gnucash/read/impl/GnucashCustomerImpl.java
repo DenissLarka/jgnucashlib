@@ -1,16 +1,7 @@
-/**
- * GnucashCustomerImpl.java
- * License: GPLv3 or later
- * Created on 14.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 14.05.2005 - initial version
- * ...
- */
 package org.gnucash.read.impl;
 
 import java.text.NumberFormat;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -20,355 +11,422 @@ import org.gnucash.generated.ObjectFactory;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashFile;
-import org.gnucash.read.GnucashInvoice;
-import org.gnucash.read.GnucashJob;
-import org.gnucash.read.GnucashTaxTable;
+import org.gnucash.read.GnucashGenerInvoice;
+import org.gnucash.read.GnucashGenerJob;
+import org.gnucash.read.auxiliary.GCshAddress;
+import org.gnucash.read.auxiliary.GCshBillTerms;
+import org.gnucash.read.auxiliary.GCshOwner;
+import org.gnucash.read.auxiliary.GCshTaxTable;
+import org.gnucash.read.impl.auxiliary.GCshAddressImpl;
+import org.gnucash.read.impl.spec.GnucashCustomerJobImpl;
+import org.gnucash.read.spec.GnucashCustomerInvoice;
+import org.gnucash.read.spec.GnucashCustomerJob;
+import org.gnucash.read.spec.GnucashJobInvoice;
+import org.gnucash.read.spec.SpecInvoiceCommon;
+import org.gnucash.read.spec.WrongInvoiceTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * created: 14.05.2005 <br/>
- * JWSDP-implementation of the
- * {@link GnucashCustomer}.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
- */
 public class GnucashCustomerImpl extends GnucashObjectImpl implements GnucashCustomer {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GnucashCustomerImpl.class);
 
-	/**
-	 * the JWSDP-object we are facading.
-	 */
-	private final GncV2.GncBook.GncGncCustomer jwsdpPeer;
+  /**
+   * the JWSDP-object we are facading.
+   */
+  private final GncV2.GncBook.GncGncCustomer jwsdpPeer;
 
-	/**
-	 * @param peer    the JWSDP-object we are facading.
-	 * @param gncFile the file to register under
-	 */
-	protected GnucashCustomerImpl(final GncV2.GncBook.GncGncCustomer peer, final GnucashFile gncFile) {
-		super((peer.getCustSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getCustSlots(), gncFile);
-		if (peer.getCustSlots() == null) {
-			peer.setCustSlots(getSlots());
-		}
-		jwsdpPeer = peer;
-	}
+  /**
+   * The currencyFormat to use for default-formating.<br/>
+   * Please access only using {@link #getCurrencyFormat()}.
+   *
+   * @see #getCurrencyFormat()
+   */
+  private NumberFormat currencyFormat = null;
 
-	/**
-	 * @return the JWSDP-object we are wrapping.
-	 */
-	public GncV2.GncBook.GncGncCustomer getJwsdpPeer() {
-		return jwsdpPeer;
-	}
+  // ---------------------------------------------------------------
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getId() {
-		return jwsdpPeer.getCustGuid().getValue();
-	}
+  /**
+   * @param peer    the JWSDP-object we are facading.
+   * @param gncFile the file to register under
+   */
+  protected GnucashCustomerImpl(final GncV2.GncBook.GncGncCustomer peer, final GnucashFile gncFile) {
+    super((peer.getCustSlots() == null) ? new ObjectFactory().createSlotsType() : peer.getCustSlots(), gncFile);
 
-	/**
-	 * @return the jobs that have this customer associated with them.
-	 * @see GnucashCustomer#getJobs()
-	 */
-	public java.util.Collection<GnucashJob> getJobs() {
+    if (peer.getCustSlots() == null) {
+      peer.setCustSlots(getSlots());
+    }
 
-		List<GnucashJob> retval = new LinkedList<GnucashJob>();
+    jwsdpPeer = peer;
+  }
 
-		for (GnucashJob job : getGnucashFile().getJobs()) {
-			if (job.getCustomerId().equals(getId())) {
-				retval.add(job);
-			}
-		}
+  // ---------------------------------------------------------------
 
-		return retval;
-	}
+  /**
+   * @return the JWSDP-object we are wrapping.
+   */
+  @SuppressWarnings("exports")
+  public GncV2.GncBook.GncGncCustomer getJwsdpPeer() {
+    return jwsdpPeer;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDiscount() {
-		return jwsdpPeer.getCustDiscount();
-	}
+  // ---------------------------------------------------------------
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getNotes() {
-		return jwsdpPeer.getCustNotes();
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public String getId() {
+    return jwsdpPeer.getCustGuid().getValue();
+  }
 
-	/**
-	 * date is not checked so invoiced that have entered payments in
-	 * the future are considered payed.
-	 *
-	 * @return the current number of unpayed invoices
-	 */
-	public int getOpenInvoices() {
-		int count = 0;
-		for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
-			if (invoice.getCustomer() != this) {
-				continue;
-			}
+  /**
+   * {@inheritDoc}
+   */
+  public String getNumber() {
+    return jwsdpPeer.getCustId();
+  }
 
-			if (invoice.isNotFullyPayed()) {
-				count++;
-			}
+  /**
+   * {@inheritDoc}
+   */
+  public String getName() {
+    return jwsdpPeer.getCustName();
+  }
 
-		}
-		return count;
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public GCshAddress getAddress() {
+    return new GCshAddressImpl(jwsdpPeer.getCustAddr());
+  }
 
-	/**
-	 * @return the sum of payments for invoices to this client
-	 */
-	public FixedPointNumber getIncomeGenerated() {
-		FixedPointNumber retval = new FixedPointNumber();
+  /**
+   * {@inheritDoc}
+   */
+  public GCshAddress getShippingAddress() {
+    return new GCshAddressImpl(jwsdpPeer.getCustShipaddr());
+  }
 
-		for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
-			if (invoice.getCustomer() != this) {
-				continue;
-			}
-			retval.add(invoice.getAmmountWithoutTaxes());
-		}
+  /**
+   * {@inheritDoc}
+   */
+  public FixedPointNumber getDiscount() {
+    if (jwsdpPeer.getCustDiscount() == null) {
+      return null;
+    }
 
-		return retval;
-	}
+    return new FixedPointNumber(jwsdpPeer.getCustDiscount());
+  }
 
-	/**
-	 * The currencyFormat to use for default-formating.<br/>
-	 * Please access only using {@link #getCurrencyFormat()}.
-	 *
-	 * @see #getCurrencyFormat()
-	 */
-	private NumberFormat currencyFormat = null;
+  /**
+   * {@inheritDoc}
+   */
+  public FixedPointNumber getCredit() {
+    if (jwsdpPeer.getCustCredit() == null) {
+      return null;
+    }
 
-	/**
-	 * @return formated acording to the current locale's currency-format
-	 * @see #getIncomeGenerated()
-	 */
-	public String getIncomeGeneratedFormatet() {
-		return getCurrencyFormat().format(getIncomeGenerated());
+    return new FixedPointNumber(jwsdpPeer.getCustCredit());
+  }
 
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public String getNotes() {
+    return jwsdpPeer.getCustNotes();
+  }
 
-	/**
-	 * @param l the locale to format for
-	 * @return formated acording to the given locale's currency-format
-	 * @see #getIncomeGenerated()
-	 */
-	public String getIncomeGeneratedFormatet(final Locale l) {
-		return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated());
-	}
+  // ---------------------------------------------------------------
 
-	/**
-	 * @return the sum of left to pay unpayed invoiced
-	 */
-	public FixedPointNumber getOutstandingValue() {
-		FixedPointNumber retval = new FixedPointNumber();
+  /**
+   * @return the currency-format to use if no locale is given.
+   */
+  protected NumberFormat getCurrencyFormat() {
+    if (currencyFormat == null) {
+      currencyFormat = NumberFormat.getCurrencyInstance();
+    }
 
-		for (GnucashInvoice invoice : getGnucashFile().getInvoices()) {
-			if (invoice.getCustomer() != this) {
-				continue;
-			}
-			retval.add(invoice.getAmmountUnPayed());
-		}
+    return currencyFormat;
+  }
 
-		return retval;
-	}
+  // ---------------------------------------------------------------
 
-	/**
-	 * @return formatet acording to the current locale's currency-format
-	 * @see #getOutstandingValue()
-	 */
-	public String getOutstandingValueFormatet() {
-		return getCurrencyFormat().format(getOutstandingValue());
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public String getTaxTableID() {
+    GncV2.GncBook.GncGncCustomer.CustTaxtable custTaxtable = jwsdpPeer.getCustTaxtable();
+    if (custTaxtable == null) {
+      return null;
+    }
 
-	/**
-	 * @see #getOutstandingValue()
-	 * formatet acording to the given locale's currency-format
-	 */
-	public String getOutstandingValueFormatet(final Locale l) {
-		return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue());
-	}
+    return custTaxtable.getValue();
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getCustomerNumber() {
-		return jwsdpPeer.getCustId();
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public GCshTaxTable getTaxTable() {
+    String id = getTaxTableID();
+    if (id == null) {
+      return null;
+    }
+    return getGnucashFile().getTaxTableByID(id);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getCustomerTaxTableID() {
-		GncV2.GncBook.GncGncCustomer.CustTaxtable custTaxtable = jwsdpPeer.getCustTaxtable();
-		if (custTaxtable == null) {
-			return null;
-		}
-		return custTaxtable.getValue();
-	}
+  // ---------------------------------------------------------------
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public GnucashTaxTable getCustomerTaxTable() {
-		String id = getCustomerTaxTableID();
-		if (id == null) {
-			return null;
-		}
-		return getGnucashFile().getTaxTableByID(id);
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public String getTermsID() {
+    GncV2.GncBook.GncGncCustomer.CustTerms custTerms = jwsdpPeer.getCustTerms();
+    if (custTerms == null) {
+      return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getName() {
-		return jwsdpPeer.getCustName();
-	}
+    return custTerms.getValue();
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public GnucashCustomer.Address getAddress() {
-		return new AddressImpl(jwsdpPeer.getCustAddr());
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public GCshBillTerms getTerms() {
+    String id = getTermsID();
+    if (id == null) {
+      return null;
+    }
+    return getGnucashFile().getBillTermsByID(id);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public GnucashCustomer.Address getShippingAddress() {
-		return new AddressImpl(jwsdpPeer.getCustShipaddr());
-	}
+  // ---------------------------------------------------------------
 
-	/**
-	 * (c) 2005 by Wolschon Softwaredesign und Beratung.<br/>
-	 * Project: gnucashReader<br/>
-	 * GnucashCustomerImpl.java<br/>
-	 *
-	 * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
-	 * @see Address
-	 */
-	public static class AddressImpl implements Address {
+  /**
+   * date is not checked so invoiced that have entered payments in the future are considered Paid.
+   *
+   * @return the current number of Unpaid invoices
+   */
+  public int getNofOpenInvoices() throws WrongInvoiceTypeException {
+    return getGnucashFile().getUnpaidInvoicesForCustomer_direct(this).size();
+  }
 
-		/**
-		 * The JWSDP-object we are wrapping.
-		 */
-		private final org.gnucash.generated.Address jwsdpPeer;
+  // -------------------------------------
 
-		/**
-		 * @param newPeer the JWSDP-object we are wrapping.
-		 */
-		public AddressImpl(final org.gnucash.generated.Address newPeer) {
-			super();
-			jwsdpPeer = newPeer;
-		}
+  /**
+   * @return the net sum of payments for invoices to this client
+   */
+  public FixedPointNumber getIncomeGenerated(GnucashGenerInvoice.ReadVariant readVar) {
+    if (readVar == GnucashGenerInvoice.ReadVariant.DIRECT) {
+      return getIncomeGenerated_direct();
+    } else if (readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB) {
+      return getIncomeGenerated_viaAllJobs();
+    }
 
-		/**
-		 * @return The JWSDP-object we are wrapping.
-		 */
-		public org.gnucash.generated.Address getJwsdpPeer() {
-			return jwsdpPeer;
-		}
+    return null; // Compiler happy
+  }
 
-		/**
-		 * @see GnucashCustomer.Address#getAddressName()
-		 */
-		public String getAddressName() {
-			if (jwsdpPeer.getAddrName() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrName();
-		}
+  /**
+   * @return the net sum of payments for invoices to this client
+   */
+  public FixedPointNumber getIncomeGenerated_direct() {
+    FixedPointNumber retval = new FixedPointNumber();
 
-		/**
-		 * @see GnucashCustomer.Address#getAddressLine1()
-		 */
-		public String getAddressLine1() {
-			if (jwsdpPeer.getAddrAddr1() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr1();
-		}
+    try {
+      for (GnucashCustomerInvoice invcSpec : getPaidInvoices_direct()) {
+        // if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
+        // GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+        GnucashCustomer cust = invcSpec.getCustomer();
+        if (cust.getId().equals(this.getId())) {
+          retval.add(((SpecInvoiceCommon) invcSpec).getAmountWithoutTaxes());
+        }
+        // } // if invc type
+      } // for
+    } catch (WrongInvoiceTypeException e) {
+      LOGGER.error("getIncomeGenerated_direct: Serious error", e);
+    }
 
-		/**
-		 * @see GnucashCustomer.Address#getAddressLine2()
-		 */
-		public String getAddressLine2() {
-			if (jwsdpPeer.getAddrAddr2() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr2();
-		}
+    return retval;
+  }
 
-		/**
-		 * @return third and last line below the name
-		 */
-		public String getAddressLine3() {
-			if (jwsdpPeer.getAddrAddr3() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr3();
-		}
+  /**
+   * @return the net sum of payments for invoices to this client
+   */
+  public FixedPointNumber getIncomeGenerated_viaAllJobs() {
+    FixedPointNumber retval = new FixedPointNumber();
 
-		/**
-		 * @return fourth and last line below the name
-		 */
-		public String getAddressLine4() {
-			if (jwsdpPeer.getAddrAddr4() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrAddr4();
-		}
+    try {
+      for (GnucashJobInvoice invcSpec : getPaidInvoices_viaAllJobs()) {
+        // if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
+        // GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+        GnucashCustomer cust = invcSpec.getCustomer();
+        if (cust.getId().equals(this.getId())) {
+          retval.add(((SpecInvoiceCommon) invcSpec).getAmountWithoutTaxes());
+        }
+        // } // if invc type
+      } // for
+    } catch (WrongInvoiceTypeException e) {
+      LOGGER.error("getIncomeGenerated_viaAllJobs: Serious error", e);
+    }
 
-		/**
-		 * @return telephone
-		 */
-		public String getTel() {
-			if (jwsdpPeer.getAddrPhone() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrPhone();
-		}
+    return retval;
+  }
 
-		/**
-		 * @return Fax
-		 */
-		public String getFax() {
-			if (jwsdpPeer.getAddrFax() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrFax();
-		}
+  /**
+   * @return formatted acording to the current locale's currency-format
+   * @see #getIncomeGenerated()
+   */
+  public String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar) {
+    return getCurrencyFormat().format(getIncomeGenerated(readVar));
 
-		/**
-		 * @return Email
-		 */
-		public String getEmail() {
-			if (jwsdpPeer.getAddrEmail() == null) {
-				return "";
-			}
-			return jwsdpPeer.getAddrEmail();
-		}
+  }
 
-		/**
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			return getAddressName() + "\n"
-					+ getAddressLine1() + "\n"
-					+ getAddressLine2();
-		}
-	}
+  /**
+   * @param l the locale to format for
+   * @return formatted acording to the given locale's currency-format
+   * @see #getIncomeGenerated()
+   */
+  public String getIncomeGeneratedFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) {
+    return NumberFormat.getCurrencyInstance(l).format(getIncomeGenerated(readVar));
+  }
 
-	/**
-	 * @return the currency-format to use if no locale is given.
-	 */
-	protected NumberFormat getCurrencyFormat() {
-		if (currencyFormat == null) {
-			currencyFormat = NumberFormat.getCurrencyInstance();
-		}
+  // -------------------------------------
 
-		return currencyFormat;
-	}
+  /**
+   * @return the sum of left to pay Unpaid invoiced
+   */
+  public FixedPointNumber getOutstandingValue(GnucashGenerInvoice.ReadVariant readVar) {
+    if (readVar == GnucashGenerInvoice.ReadVariant.DIRECT) {
+      return getOutstandingValue_direct();
+    } else if (readVar == GnucashGenerInvoice.ReadVariant.VIA_JOB) {
+      return getOutstandingValue_viaAllJobs();
+    }
+
+    return null; // Compiler happy
+  }
+
+  /**
+   * @return the sum of left to pay Unpaid invoiced
+   */
+  public FixedPointNumber getOutstandingValue_direct() {
+    FixedPointNumber retval = new FixedPointNumber();
+
+    try {
+      for (GnucashCustomerInvoice invcSpec : getUnpaidInvoices_direct()) {
+        // if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
+        // GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+        GnucashCustomer cust = invcSpec.getCustomer();
+        if (cust.getId().equals(this.getId())) {
+          retval.add(((SpecInvoiceCommon) invcSpec).getAmountUnpaidWithTaxes());
+        }
+        // } // if invc type
+      } // for
+    } catch (WrongInvoiceTypeException e) {
+      LOGGER.error("getOutstandingValue_direct: Serious error", e);
+    }
+
+    return retval;
+  }
+
+  /**
+   * @return the sum of left to pay Unpaid invoiced
+   */
+  public FixedPointNumber getOutstandingValue_viaAllJobs() {
+    FixedPointNumber retval = new FixedPointNumber();
+
+    try {
+      for (GnucashJobInvoice invcSpec : getUnpaidInvoices_viaAllJobs()) {
+        // if ( invcGen.getType().equals(GnucashGenerInvoice.TYPE_CUSTOMER) ) {
+        // GnucashCustomerInvoice invcSpec = new GnucashCustomerInvoiceImpl(invcGen);
+        GnucashCustomer cust = invcSpec.getCustomer();
+        if (cust.getId().equals(this.getId())) {
+          retval.add(((SpecInvoiceCommon) invcSpec).getAmountUnpaidWithTaxes());
+        }
+        // } // if invc type
+      } // for
+    } catch (WrongInvoiceTypeException e) {
+      LOGGER.error("getOutstandingValue_viaAllJobs: Serious error", e);
+    }
+
+    return retval;
+  }
+
+  /**
+   * @return Formatted acording to the current locale's currency-format
+   * @see #getOutstandingValue()
+   */
+  public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar) {
+    return getCurrencyFormat().format(getOutstandingValue(readVar));
+  }
+
+  /**
+   * @see #getOutstandingValue() Formatted acording to the given locale's currency-format
+   */
+  public String getOutstandingValueFormatted(GnucashGenerInvoice.ReadVariant readVar, final Locale l) {
+    return NumberFormat.getCurrencyInstance(l).format(getOutstandingValue(readVar));
+  }
+
+  // -----------------------------------------------------------------
+
+  /**
+   * @return the jobs that have this customer associated with them.
+   * @see GnucashCustomer#getGenerJobs()
+   */
+  public java.util.Collection<GnucashCustomerJob> getJobs() throws WrongInvoiceTypeException {
+
+    List<GnucashCustomerJob> retval = new LinkedList<GnucashCustomerJob>();
+
+    for (GnucashGenerJob jobGener : getGnucashFile().getGenerJobs()) {
+      if (jobGener.getOwnerType().equals(GCshOwner.TYPE_CUSTOMER)) {
+        GnucashCustomerJob jobSpec = new GnucashCustomerJobImpl(jobGener);
+        if (jobSpec.getCustomerId().equals(getId())) {
+          retval.add(jobSpec);
+        }
+      }
+    }
+
+    return retval;
+  }
+
+  // -----------------------------------------------------------------
+
+  @Override
+  public Collection<GnucashGenerInvoice> getInvoices() throws WrongInvoiceTypeException {
+    Collection<GnucashGenerInvoice> retval = new LinkedList<GnucashGenerInvoice>();
+
+    for (GnucashCustomerInvoice invc : getGnucashFile().getInvoicesForCustomer_direct(this)) {
+      retval.add(invc);
+    }
+
+    for (GnucashJobInvoice invc : getGnucashFile().getInvoicesForCustomer_viaAllJobs(this)) {
+      retval.add(invc);
+    }
+
+    return retval;
+  }
+
+  @Override
+  public Collection<GnucashCustomerInvoice> getPaidInvoices_direct() throws WrongInvoiceTypeException {
+    return getGnucashFile().getPaidInvoicesForCustomer_direct(this);
+  }
+
+  @Override
+  public Collection<GnucashJobInvoice> getPaidInvoices_viaAllJobs() throws WrongInvoiceTypeException {
+    return getGnucashFile().getPaidInvoicesForCustomer_viaAllJobs(this);
+  }
+
+  @Override
+  public Collection<GnucashCustomerInvoice> getUnpaidInvoices_direct() throws WrongInvoiceTypeException {
+    return getGnucashFile().getUnpaidInvoicesForCustomer_direct(this);
+  }
+
+  @Override
+  public Collection<GnucashJobInvoice> getUnpaidInvoices_viaAllJobs() throws WrongInvoiceTypeException {
+    return getGnucashFile().getUnpaidInvoicesForCustomer_viaAllJobs(this);
+  }
+
+  // -----------------------------------------------------------------
+
+  public static int getHighestNumber(GnucashCustomer cust) {
+    return cust.getGnucashFile().getHighestCustomerNumber();
+  }
+
 }

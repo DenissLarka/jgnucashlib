@@ -1,11 +1,4 @@
-/**
- * SimpleAccount.java
- * License: GPLv3 or later
- * created: 22.05.2006 17:56:15
- */
 package org.gnucash.read.impl;
-
-//other imports
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -24,6 +17,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.gnucash.currency.ComplexCurrencyTable;
+import org.gnucash.currency.CurrencyNameSpace;
+import org.gnucash.messages.ApplicationMessages;
 import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashAccount;
 import org.gnucash.read.GnucashFile;
@@ -33,23 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * (c) 2006 by Wolschon Softwaredesign und Beratung.<br/>
- * Project: gnucashReader<br/>
- * SimpleAccount.java<br/>
- * created: 22.05.2006 17:56:15 <br/>
- * <br/>
- * <br/>
- * This is a base-class that helps implementing the GnucashAccount -interface
- * with it's extenive number of convenience-methods.<br/>
- *
- * @author <a href="Marcus@Wolschon.biz">Marcus Wolschon</a>
+ * This is a base-class that helps implementing the GnucashAccount -interface with it's extenive number of
+ * convenience-methods.<br/>
  */
 public abstract class SimpleAccount implements GnucashAccount {
-
-  /**
-   * Our logger for debug- and error-output.
-   */
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAccount.class);
+  private static ApplicationMessages bundle = ApplicationMessages.getInstance();
 
   /**
    * The file we belong to.
@@ -163,14 +147,13 @@ public abstract class SimpleAccount implements GnucashAccount {
   /**
    * @see GnucashAccount#getSubAccounts()
    */
-  public Collection getSubAccounts() {
+  public Collection<GnucashAccount> getSubAccounts() {
     return getChildren();
   }
 
   /**
    * @param date     ignores transactions after the given date
-   * @param currency the currency the result shall be in (use account-currency if
-   *                 null)
+   * @param currency the currency the result shall be in (use account-currency if null)
    * @return null if the conversion is not possible
    * @see #getBalance(LocalDate)
    */
@@ -188,7 +171,7 @@ public abstract class SimpleAccount implements GnucashAccount {
     }
 
     // is conversion needed?
-    if (getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)
+    if (getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)
         && getCurrencyID().equals(currency.getCurrencyCode())) {
       return retval;
     }
@@ -217,16 +200,16 @@ public abstract class SimpleAccount implements GnucashAccount {
   }
 
   /**
-   * @see GnucashAccount#getBalanceRecursiveFormated(LocalDate)
+   * @see GnucashAccount#getBalanceRecursiveFormatted(LocalDate)
    */
-  public String getBalanceRecursiveFormated(final LocalDate date) {
+  public String getBalanceRecursiveFormatted(final LocalDate date) {
     return getCurrencyFormat().format(getBalanceRecursive(date));
   }
 
   /**
-   * @see GnucashAccount#getBalanceRecursiveFormated()
+   * @see GnucashAccount#getBalanceRecursiveFormatted()
    */
-  public String getBalanceRecursiveFormated() {
+  public String getBalanceRecursiveFormatted() {
     return getCurrencyFormat().format(getBalanceRecursive());
   }
 
@@ -297,8 +280,7 @@ public abstract class SimpleAccount implements GnucashAccount {
       retval = new FixedPointNumber();
     }
 
-    for (Object element : getChildren()) {
-      GnucashAccount child = (GnucashAccount) element;
+    for (GnucashAccount child : getChildren()) {
       retval.add(child.getBalanceRecursive(date, currencyNameSpace, currencyName));
     }
 
@@ -330,8 +312,7 @@ public abstract class SimpleAccount implements GnucashAccount {
   }
 
   /**
-   * @return true if ${@link #hasTransactions()} is true for this or any
-   *         sub-accounts
+   * @return true if ${@link #hasTransactions()} is true for this or any sub-accounts
    */
   public boolean hasTransactionsRecursive() {
     if (this.hasTransactions()) {
@@ -366,7 +347,7 @@ public abstract class SimpleAccount implements GnucashAccount {
     FixedPointNumber retval = getBalance(date);
 
     if (retval == null) {
-      LOGGER.warn("SimpleAccount.getBalance() - " + "error creating balance!");
+      LOGGER.error(bundle.getMessage("Err_SimpAccBalance"));
       return null;
     }
 
@@ -378,23 +359,20 @@ public abstract class SimpleAccount implements GnucashAccount {
     ComplexCurrencyTable currencyTable = getGnucashFile().getCurrencyTable();
 
     if (currencyTable == null) {
-      LOGGER.warn(
-          "SimpleAccount.getBalance() - cannot transfer " + "to given currency because we have no currency-table!");
+      LOGGER.error(bundle.getMessage("Err_SimpAccBalNoCurrTab"));
       return null;
     }
 
     if (!currencyTable.convertToBaseCurrency(getCurrencyNameSpace(), retval, getCurrencyID())) {
       Collection<String> currencies = getGnucashFile().getCurrencyTable().getCurrencies(getCurrencyNameSpace());
-      LOGGER.warn("SimpleAccount.getBalance() - cannot transfer " + "from our currency '" + getCurrencyNameSpace()
-          + "'-'" + getCurrencyID() + "' to the base-currency!" + " \n(we know "
-          + getGnucashFile().getCurrencyTable().getNameSpaces().size() + " currency-namespaces and "
-          + (currencies == null ? "no" : "" + currencies.size()) + " currencies in our namespace)");
+      String msg = (currencies == null ? "no" : "" + currencies.size());
+      LOGGER.error(bundle.getMessage("Err_SimpAccNoTransfer", getCurrencyNameSpace(), getCurrencyID(),
+          Integer.toString(getGnucashFile().getCurrencyTable().getNameSpaces().size()), msg));
       return null;
     }
 
     if (!currencyTable.convertFromBaseCurrency(currencyNameSpace, retval, currencyName)) {
-      LOGGER.warn("SimpleAccount.getBalance() - cannot transfer " + "from base-currenty to given currency '"
-          + currencyNameSpace + "-" + currencyName + "'!");
+      LOGGER.error(bundle.getMessage("Err_SimpAccNoConv", currencyNameSpace, currencyName));
       return null;
     }
 
@@ -412,7 +390,7 @@ public abstract class SimpleAccount implements GnucashAccount {
    */
   public Currency getCurrency() {
 
-    if (!getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
+    if (!getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
       return null;
     }
 
@@ -429,7 +407,7 @@ public abstract class SimpleAccount implements GnucashAccount {
     }
 
     // the currency may have changed
-    if (this.getCurrencyNameSpace().equals(GnucashAccount.CURRENCYNAMESPACE_CURRENCY)) {
+    if (this.getCurrencyNameSpace().equals(CurrencyNameSpace.NAMESPACE_CURRENCY)) {
       Currency currency = getCurrency();
       currencyFormat.setCurrency(currency);
     } else {
@@ -445,7 +423,7 @@ public abstract class SimpleAccount implements GnucashAccount {
    *
    * @see #getBalance(LocalDate)
    */
-  public String getBalanceFormated() {
+  public String getBalanceFormatted() {
     return getCurrencyFormat().format(getBalance());
   }
 
@@ -455,7 +433,7 @@ public abstract class SimpleAccount implements GnucashAccount {
    *
    * @see #getBalance(LocalDate)
    */
-  public String getBalanceFormated(final Locale loc) {
+  public String getBalanceFormatted(final Locale loc) {
 
     NumberFormat cf = NumberFormat.getCurrencyInstance(loc);
     cf.setCurrency(getCurrency());
@@ -477,7 +455,6 @@ public abstract class SimpleAccount implements GnucashAccount {
    * @see GnucashAccount#getBalance(LocalDate, Collection)
    */
   public FixedPointNumber getBalance(final LocalDate date, final Collection<GnucashTransactionSplit> after) {
-
     FixedPointNumber balance = new FixedPointNumber();
 
     for (Object element : getTransactionSplits()) {
@@ -511,9 +488,8 @@ public abstract class SimpleAccount implements GnucashAccount {
   public FixedPointNumber getBalance(final GnucashTransactionSplit lastIncludesSplit) {
 
     FixedPointNumber balance = new FixedPointNumber();
-    for (Object element : getTransactionSplits()) {
-      GnucashTransactionSplit split = (GnucashTransactionSplit) element;
 
+    for (GnucashTransactionSplit split : getTransactionSplits()) {
       balance.add(split.getQuantity());
 
       if (split == lastIncludesSplit) {
@@ -521,6 +497,7 @@ public abstract class SimpleAccount implements GnucashAccount {
       }
 
     }
+
     return balance;
   }
 
@@ -532,67 +509,56 @@ public abstract class SimpleAccount implements GnucashAccount {
       throw new IllegalArgumentException("null id given!");
     }
 
-    for (Object element2 : getTransactionSplits()) {
-      GnucashTransactionSplit element = (GnucashTransactionSplit) element2;
-      if (id.equals(element.getId())) {
-        return element;
+    for (GnucashTransactionSplit split : getTransactionSplits()) {
+      if (id.equals(split.getId())) {
+        return split;
       }
 
     }
+
     return null;
   }
 
   /**
-   * This is an extension to ${@link #compareNamesTo(Object)} that makes shure
-   * that NEVER 2 accounts with different IDs compare to 0. Compares our name to
-   * o.toString() .<br/>
-   * If both starts with some digits the resulting ${@link java.lang.Integer} are
-   * compared.<br/>
-   * If one starts with a number and the other does not, the one starting with a
-   * number is "bigger"<br/>
-   * else and if both integers are equals a normals comparison of the
-   * ${@link java.lang.String} is done. *
+   * This is an extension to ${@link #compareNamesTo(Object)} that makes shure that NEVER 2 accounts with different IDs
+   * compare to 0. Compares our name to o.toString() .<br/>
+   * If both starts with some digits the resulting ${@link java.lang.Integer} are compared.<br/>
+   * If one starts with a number and the other does not, the one starting with a number is "bigger"<br/>
+   * else and if both integers are equals a normals comparison of the ${@link java.lang.String} is done. *
    *
    * @param o the Object to be compared.
-   * @return a negative integer, zero, or a positive integer as this object is
-   *         less than, equal to, or greater than the specified object.
-   * @throws ClassCastException if the specified object's type prevents it from
-   *                            being compared to this Object.
+   * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the
+   *         specified object.
+   * @throws ClassCastException if the specified object's type prevents it from being compared to this Object.
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
-  public int compareTo(final Object o) {
+  public int compareTo(final GnucashAccount otherAcc) {
 
-    int i = compareNamesTo(o);
+    int i = compareNamesTo(otherAcc);
     if (i != 0) {
       return i;
     }
 
-    if (o instanceof GnucashAccount) {
-      GnucashAccount other = (GnucashAccount) o;
-      i = other.getId().compareTo(getId());
-      if (i != 0) {
-        return i;
-      }
+    GnucashAccount other = otherAcc;
+    i = other.getId().compareTo(getId());
+    if (i != 0) {
+      return i;
     }
 
-    return ("" + hashCode()).compareTo("" + o.hashCode());
+    return ("" + hashCode()).compareTo("" + otherAcc.hashCode());
 
   }
 
   /**
    * Compares our name to o.toString() .<br/>
-   * If both starts with some digits the resulting ${@link java.lang.Integer} are
-   * compared.<br/>
-   * If one starts with a number and the other does not, the one starting with a
-   * number is "bigger"<br/>
-   * else and if both integers are equals a normals comparison of the
-   * �{@link java.lang.String} is done. *
+   * If both starts with some digits the resulting ${@link java.lang.Integer} are compared.<br/>
+   * If one starts with a number and the other does not, the one starting with a number is "bigger"<br/>
+   * else and if both integers are equals a normals comparison of the �{@link java.lang.String} is done. *
    *
    * @param o the Object to be compared.
-   * @return a negative integer, zero, or a positive integer as this object is
-   *         less than, equal to, or greater than the specified object.
-   * @throws ClassCastException if the specified object's type prevents it from
-   *                            being compared to this Object.
+   * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the
+   *         specified object.
+   * @throws ClassCastException if the specified object's type prevents it from being compared to this Object.
    */
   public int compareNamesTo(final Object o) throws ClassCastException {
 
@@ -618,18 +584,13 @@ public abstract class SimpleAccount implements GnucashAccount {
     Long i1 = startsWithNumber(me);
     if (i0 == null && i1 != null) {
       return 1;
-    }
-    if (i1 == null && i0 != null) {
+    } else if (i1 == null && i0 != null) {
       return -1;
-    }
-    if (i0 == null) {
+    } else if (i0 == null) {
       return me.compareTo(other);
-    }
-    if (i1 == null) {
+    } else if (i1 == null) {
       return me.compareTo(other);
-    }
-
-    if (i1.equals(i0)) {
+    } else if (i1.equals(i0)) {
       return me.compareTo(other);
     }
 
@@ -637,8 +598,7 @@ public abstract class SimpleAccount implements GnucashAccount {
   }
 
   /**
-   * Helper used in ${@link #compareTo(Object)} to compare names starting with a
-   * number.
+   * Helper used in ${@link #compareTo(Object)} to compare names starting with a number.
    *
    * @param s the name
    * @return the Integer build from the digits the name starts with or null
@@ -654,12 +614,10 @@ public abstract class SimpleAccount implements GnucashAccount {
     return new Long(s.substring(0, digitCount));
   }
 
-  // ------------------------ support for propertyChangeListeners
-  // ------------------
+  // ------------------------ support for propertyChangeListeners ------------------
 
   /**
-   * support for firing PropertyChangeEvents. (gets initialized only if we really
-   * have listeners)
+   * support for firing PropertyChangeEvents. (gets initialized only if we really have listeners)
    */
   private volatile PropertyChangeSupport myPropertyChange = null;
 
@@ -673,8 +631,7 @@ public abstract class SimpleAccount implements GnucashAccount {
   }
 
   /**
-   * Add a PropertyChangeListener to the listener list. The listener is registered
-   * for all properties.
+   * Add a PropertyChangeListener to the listener list. The listener is registered for all properties.
    *
    * @param listener The PropertyChangeListener to be added
    */
@@ -686,8 +643,8 @@ public abstract class SimpleAccount implements GnucashAccount {
   }
 
   /**
-   * Add a PropertyChangeListener for a specific property. The listener will be
-   * invoked only when a call on firePropertyChange names that specific property.
+   * Add a PropertyChangeListener for a specific property. The listener will be invoked only when a call on
+   * firePropertyChange names that specific property.
    *
    * @param propertyName The name of the property to listen on.
    * @param listener     The PropertyChangeListener to be added
@@ -712,8 +669,8 @@ public abstract class SimpleAccount implements GnucashAccount {
   }
 
   /**
-   * Remove a PropertyChangeListener from the listener list. This removes a
-   * PropertyChangeListener that was registered for all properties.
+   * Remove a PropertyChangeListener from the listener list. This removes a PropertyChangeListener that was registered
+   * for all properties.
    *
    * @param listener The PropertyChangeListener to be removed
    */

@@ -1,87 +1,49 @@
-/**
- * GnucashWritableCustomer.java
- * Created on 11.06.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * <p>
- * Permission is granted to use, modify, publish and sub-license this code
- * as specified in the contract. If nothing else is specified these rights
- * are given non-exclusively with no restrictions solely to the contractor(s).
- * If no specified otherwise I reserve the right to use, modify, publish and
- * sub-license this code to other parties myself.
- * <p>
- * Otherwise, this code is made available under GPLv3 or later.
- * <p>
- * -----------------------------------------------------------
- * major Changes:
- * 11.06.2005 - initial version
- * ...
- */
 package org.gnucash.write;
 
+import org.gnucash.numbers.FixedPointNumber;
 import org.gnucash.read.GnucashCustomer;
 import org.gnucash.read.GnucashObject;
+import org.gnucash.read.auxiliary.GCshAddress;
+import org.gnucash.write.auxiliary.GCshWritableAddress;
 
 /**
- * created: 11.06.2005 .<br/>
  * Customer that can be modified
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public interface GnucashWritableCustomer extends GnucashCustomer, GnucashWritableObject {
 
 	void remove();
 
-
-	interface WritableAddress extends GnucashCustomer.Address {
-
-		void setAddressName(String a);
-
-		void setAddressLine1(String a);
-
-		void setAddressLine2(String a);
-
-		void setAddressLine3(String a);
-
-		void setAddressLine4(String a);
-
-		void setTel(String a);
-
-		void setFax(String a);
-
-		void setEmail(String a);
-	}
-
-
 	/**
-	 * @see {@link GnucashCustomer#getCustomerNumber()}
 	 * @param number the user-assigned number of this customer (may contain non-digits)
+	 * @see {@link GnucashCustomer#getNumber()}
 	 */
-	void setCustomerNumber(String number);
+	void setNumber(String number);
 
-	void setDiscount(String discount);
+	void setDiscount(FixedPointNumber discount);
+
+	void setCredit(FixedPointNumber credit);
 
 	/**
 	 * @param notes user-defined notes about the customer (may be null)
 	 */
 	void setNotes(String notes);
 
-
 	void setName(String name);
 
-	void setAddress(GnucashCustomer.Address adr);
+	void setAddress(GCshAddress adr);
 
-	void setShippingAddress(GnucashCustomer.Address adr);
+	void setShippingAddress(GCshAddress adr);
 
-	GnucashWritableCustomer.WritableAddress getWritableAddress();
+	GCshWritableAddress getWritableAddress();
 
-	GnucashWritableCustomer.WritableAddress getWritableShippingAddress();
+	GCshWritableAddress getWritableShippingAddress();
 
-	GnucashWritableCustomer.WritableAddress getAddress();
+	GCshWritableAddress getAddress();
 
-	GnucashWritableCustomer.WritableAddress getShippingAddress();
-
+	GCshWritableAddress getShippingAddress();
 
 	/**
-	 * @param name the name of the user-defined attribute
+	 * @param name  the name of the user-defined attribute
 	 * @param value the value or null if not set
 	 * @see {@link GnucashObject#getUserDefinedAttribute(String)}
 	 */

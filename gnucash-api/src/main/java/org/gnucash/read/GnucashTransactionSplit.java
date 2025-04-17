@@ -1,161 +1,177 @@
-/**
- * GnucashTransactionSplit.java
- * License: GPLv3 or later
- * Created on 05.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- *
- *
- * -----------------------------------------------------------
- * major Changes:
- *  05.05.2005 - initial version
- * ...
- *
- */
 package org.gnucash.read;
-
-
 
 import java.util.Collection;
 import java.util.Locale;
 
+import org.gnucash.generated.GncTransaction;
 import org.gnucash.numbers.FixedPointNumber;
 
-
-
 /**
- * created: 05.05.2005 <br/>
- * This denotes a single addition or removal of some
- * value from one account in a transaction made up of
- * multiple such splits.
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
+ * This denotes a single addition or removal of some value from one account in a transaction made up of multiple such
+ * splits.
  */
-public interface GnucashTransactionSplit extends Comparable {
+public interface GnucashTransactionSplit extends Comparable<GnucashTransactionSplit> {
 
-    /**
-     *
-     * @return the unique-id to identify this object with across name- and hirarchy-changes
-     */
-    String getId();
+	// For the following enumerations cf.:
+	// https://github.com/Gnucash/gnucash/blob/stable/libgnucash/engine/Split.h
 
-    /**
-     *
-     * @return the id of the account we transfer from/to.
-     */
-    String getAccountID();
+	// Note: The following should be chars, but the method where they are
+	// used is generated and accepts a String.
+	// ::MAGIC
+	String CREC = "c"; // cleared
+	String YREC = "y"; // reconciled
+	String FREC = "f"; // frozen into accounting period
+	String NREC = "n"; // not reconciled or cleared
+	String VREC = "v"; // void
 
-    /**
-     * This may be null if an account-id is specified in
-     * the gnucash-file that does not belong to an account.
-     * @return the account of the account we transfer from/to.
-     */
-    GnucashAccount getAccount();
+	// -----------------------------------------------------------------
 
-    /**
-     * @return the transaction this is a split of.
-     */
-    GnucashTransaction getTransaction();
+	@SuppressWarnings("exports")
+	GncTransaction.TrnSplits.TrnSplit getJwsdpPeer();
 
+	/**
+	 * The gnucash-file is the top-level class to contain everything.
+	 *
+	 * @return the file we are associated with
+	 */
+	GnucashFile getGnucashFile();
 
-    /**
-     * The value is in the currency of the transaction!
-     * @return the value-transfer this represents
-     */
-    FixedPointNumber getValue();
+	// -----------------------------------------------------------------
 
-    /**
-     * The value is in the currency of the transaction!
-     * @return the value-transfer this represents
-     */
-    String getValueFormatet();
-    /**
-     * The value is in the currency of the transaction!
-     * @param locale the locale to use
-     * @return the value-transfer this represents
-     */
-    String getValueFormatet(Locale locale);
-    /**
-     * The value is in the currency of the transaction!
-     * @return the value-transfer this represents
-     */
-    String getValueFormatetForHTML();
-    /**
-     * The value is in the currency of the transaction!
-     * @param locale the locale to use
-     * @return the value-transfer this represents
-     */
-    String getValueFormatetForHTML(Locale locale);
+	/**
+	 * @return the unique-id to identify this object with across name- and hirarchy-changes
+	 */
+	String getId();
 
-    /**
-     * @return the balance of the account (in the account's currency)
-     *         up to this split.
-     */
-    FixedPointNumber getAccountBalance();
+	/**
+	 * @return the id of the account we transfer from/to.
+	 */
+	String getAccountID();
 
-    /**
-     * @return the balance of the account (in the account's currency)
-     *         up to this split.
-     */
-    String getAccountBalanceFormatet();
+	/**
+	 * This may be null if an account-id is specified in the gnucash-file that does not belong to an account.
+	 *
+	 * @return the account of the account we transfer from/to.
+	 */
+	GnucashAccount getAccount();
 
-    /**
-     * @see GnucashAccount#getBalanceFormated()
-     */
-    String getAccountBalanceFormatet(Locale locale);
+	/**
+	 * @return the transaction this is a split of.
+	 */
+	GnucashTransaction getTransaction();
 
-    /**
-     * The quantity is in the currency of the account!
-     * @return the number of items added to the account
-     */
-    FixedPointNumber getQuantity();
+	/**
+	 * The value is in the currency of the transaction!
+	 *
+	 * @return the value-transfer this represents
+	 */
+	FixedPointNumber getValue();
 
-    /**
-     * The quantity is in the currency of the account!
-     * @return the number of items added to the account
-     */
-    String getQuantityFormatet();
+	/**
+	 * The value is in the currency of the transaction!
+	 *
+	 * @return the value-transfer this represents
+	 */
+	String getValueFormatted();
 
-    /**
-     * The quantity is in the currency of the account!
-     * @param locale the locale to use
-     * @return the number of items added to the account
-     */
-    String getQuantityFormatet(Locale locale);
+	/**
+	 * The value is in the currency of the transaction!
+	 *
+	 * @param locale the locale to use
+	 * @return the value-transfer this represents
+	 */
+	String getValueFormatted(Locale locale);
 
-    /**
-     * The quantity is in the currency of the account!
-     * @return the number of items added to the account
-     */
-    String getQuantityFormatetForHTML();
+	/**
+	 * The value is in the currency of the transaction!
+	 *
+	 * @return the value-transfer this represents
+	 */
+	String getValueFormattedForHTML();
 
-    /**
-     * The quantity is in the currency of the account!
-     * @param locale the locale to use
-     * @return the number of items added to the account
-     */
-    String getQuantityFormatetForHTML(Locale locale);
+	/**
+	 * The value is in the currency of the transaction!
+	 *
+	 * @param locale the locale to use
+	 * @return the value-transfer this represents
+	 */
+	String getValueFormattedForHTML(Locale locale);
 
-    /**
-     * @return the user-defined description for this object
-     *         (may contain multiple lines and non-ascii-characters)
-     */
-    String getDescription();
+	/**
+	 * @return the balance of the account (in the account's currency) up to this split.
+	 */
+	FixedPointNumber getAccountBalance();
 
-    /**
-     * Get the type of association this split has with
-     * an invoice's lot.
-     * @return null, "Zahlung" or "Rechnung"
-     */
-    String getSplitAction();
+	/**
+	 * @return the balance of the account (in the account's currency) up to this split.
+	 */
+	String getAccountBalanceFormatted();
 
-    /**
-     * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.
-     */
-    Collection<String> getUserDefinedAttributeKeys();
+	/**
+	 * @see GnucashAccount#getBalanceFormatted()
+	 */
+	String getAccountBalanceFormatted(Locale locale);
 
-    /**
-     * @param name the name of the user-defined attribute
-     * @return the value or null if not set
-     */
-    String getUserDefinedAttribute(final String name);
+	/**
+	 * The quantity is in the currency of the account!
+	 *
+	 * @return the number of items added to the account
+	 */
+	FixedPointNumber getQuantity();
+
+	/**
+	 * The quantity is in the currency of the account!
+	 *
+	 * @return the number of items added to the account
+	 */
+	String getQuantityFormatted();
+
+	/**
+	 * The quantity is in the currency of the account!
+	 *
+	 * @param locale the locale to use
+	 * @return the number of items added to the account
+	 */
+	String getQuantityFormatted(Locale locale);
+
+	/**
+	 * The quantity is in the currency of the account!
+	 *
+	 * @return the number of items added to the account
+	 */
+	String getQuantityFormattedForHTML();
+
+	/**
+	 * The quantity is in the currency of the account!
+	 *
+	 * @param locale the locale to use
+	 * @return the number of items added to the account
+	 */
+	String getQuantityFormattedForHTML(Locale locale);
+
+	/**
+	 * @return the user-defined description for this object (may contain multiple lines and non-ascii-characters)
+	 */
+	String getDescription();
+
+	public String getLotID();
+
+	/**
+	 * Get the type of association this split has with an invoice's lot.
+	 *
+	 * @return null, or one of the ACTION_xyz values defined
+	 */
+	String getAction();
+
+	/**
+	 * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.
+	 */
+	Collection<String> getUserDefinedAttributeKeys();
+
+	/**
+	 * @param name the name of the user-defined attribute
+	 * @return the value or null if not set
+	 */
+	String getUserDefinedAttribute(final String name);
 
 }

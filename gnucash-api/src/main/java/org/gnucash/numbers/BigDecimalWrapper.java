@@ -1,8 +1,3 @@
-/**
- * BigDecimalWrapper.java
- * created: 13.12.2005 17:18:27
- * (c) 2005 by <a href="http://Wolschon.biz">Wolschon Softwaredesign und Beratung</a>
- */
 package org.gnucash.numbers;
 
 //other imports
@@ -14,34 +9,25 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-//automatically created propertyChangeListener-Support
-
 /**
- * (c) 2005 by <a href="http://Wolschon.biz>Wolschon Softwaredesign und Beratung<
- * /a>.<br/>
- * Project: gnucashReader<br/>
- * BigDecimalWrapper.java<br/>
- * created: 13.12.2005 17:18:27 <br/>
- * <br/>
- * This is a helper super-class for classes that can be converted to a BigDecimal
- * and shall extend that class but not use it's state.<br/>
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
+ * This is a helper super-class for classes that can be converted to a BigDecimal and shall extend that class but not
+ * use it's state.<br/>
  */
 public abstract class BigDecimalWrapper extends BigDecimal {
-
-
+	/**
+	 * Generated UID
+	 */
+	private static final long serialVersionUID = 5681463292241201891L;
 
 	/**
 	 * @return the value as a BigDecimal.
 	 */
 	public abstract BigDecimal getBigDecimal();
 
-	//------------------------ support for propertyChangeListeners ------------------
+	// ------------------------ support for propertyChangeListeners ------------------
 
 	/**
-	 * support for firing PropertyChangeEvents.
-	 * (gets initialized only if we really have listeners)
+	 * support for firing PropertyChangeEvents. (gets initialized only if we really have listeners)
 	 */
 	private volatile PropertyChangeSupport myPropertyChange = null;
 
@@ -55,8 +41,7 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	}
 
 	/**
-	 * Add a PropertyChangeListener to the listener list.
-	 * The listener is registered for all properties.
+	 * Add a PropertyChangeListener to the listener list. The listener is registered for all properties.
 	 *
 	 * @param listener The PropertyChangeListener to be added
 	 */
@@ -68,9 +53,8 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	}
 
 	/**
-	 * Add a PropertyChangeListener for a specific property.  The listener
-	 * will be invoked only when a call on firePropertyChange names that
-	 * specific property.
+	 * Add a PropertyChangeListener for a specific property. The listener will be invoked only when a call on
+	 * firePropertyChange names that specific property.
 	 *
 	 * @param propertyName The name of the property to listen on.
 	 * @param listener     The PropertyChangeListener to be added
@@ -95,8 +79,7 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 	}
 
 	/**
-	 * Remove a PropertyChangeListener from the listener list.
-	 * This removes a PropertyChangeListener that was registered
+	 * Remove a PropertyChangeListener from the listener list. This removes a PropertyChangeListener that was registered
 	 * for all properties.
 	 *
 	 * @param listener The PropertyChangeListener to be removed
@@ -107,11 +90,10 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 		}
 	}
 
-	//-------------------------------------------------------
+	// -------------------------------------------------------
 
 	/**
-	 * Just an overridden ToString to return this classe's name
-	 * and hashCode.
+	 * Just an overridden ToString to return this classe's name and hashCode.
 	 *
 	 * @return className and hashCode
 	 */
@@ -567,6 +549,6 @@ public abstract class BigDecimalWrapper extends BigDecimal {
 		return getBigDecimal().shortValue();
 	}
 
-	//------------------------------------------------------- overloaded methods
+	// ------------------------------------------------------- overloaded methods
 
 }

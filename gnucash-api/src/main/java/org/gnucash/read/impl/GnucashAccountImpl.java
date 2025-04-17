@@ -1,13 +1,3 @@
-/**
- * GnucashAccountImpl.java
- * License: GPLv3 or later
- * Created on 13.05.2005
- * (c) 2005 by "Wolschon Softwaredesign und Beratung".
- * -----------------------------------------------------------
- * major Changes:
- * 13.05.2005 - initial version
- * ...
- */
 package org.gnucash.read.impl;
 
 import java.util.Collection;
@@ -15,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gnucash.currency.CurrencyNameSpace;
 import org.gnucash.generated.GncAccount;
 import org.gnucash.generated.ObjectFactory;
 import org.slf4j.Logger;
@@ -26,17 +17,10 @@ import org.gnucash.read.GnucashObject;
 import org.gnucash.read.GnucashTransactionSplit;
 
 /**
- * created: 13.05.2005 <br/>
  * Implementation of GnucashAccount that used a
  * jwsdp-generated backend.
- *
- * @author <a href="mailto:Marcus@Wolschon.biz">Marcus Wolschon</a>
  */
 public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount {
-
-	/**
-	 * Our logger for debug- and error-ourput.
-	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(GnucashAccountImpl.class);
 
 	/**
@@ -46,21 +30,26 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 
 	/**
 	 * @param peer    the JWSDP-object we are facading.
-	 * @param gncfile the file to register under
+	 * @param gncFile the file to register under
 	 */
-	public GnucashAccountImpl(final GncAccount peer, final GnucashFile gncfile) {
-		super(gncfile);
-		jwsdpPeer = peer;
+	@SuppressWarnings("exports")
+	public GnucashAccountImpl(final GncAccount peer, final GnucashFile gncFile) {
+		super(gncFile);
+
 		if (peer.getActSlots() == null) {
 			peer.setActSlots(new ObjectFactory().createSlotsType());
 		}
-		helper = new GnucashObjectImpl(peer.getActSlots(), gncfile);
+
+		jwsdpPeer = peer;
+		// ::TODO
+		// file = gncfile;
+
+		helper = new GnucashObjectImpl(peer.getActSlots(), gncFile);
 	}
 
 	/**
-	 * Examples:
-	 * The user-defined-attribute "hidden"="true"/"false"
-	 * was introduced in gnucash2.0 to hide accounts.
+	 * Examples: The user-defined-attribute "hidden"="true"/"false" was introduced
+	 * in gnucash2.0 to hide accounts.
 	 *
 	 * @param name the name of the user-defined attribute
 	 * @return the value or null if not set
@@ -70,7 +59,8 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	}
 
 	/**
-	 * @return all keys that can be used with ${@link #getUserDefinedAttribute(String)}}.
+	 * @return all keys that can be used with
+	 * ${@link #getUserDefinedAttribute(String)}}.
 	 */
 	public Collection<String> getUserDefinedAttributeKeys() {
 		return helper.getUserDefinedAttributeKeys();
@@ -103,7 +93,7 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	/**
 	 * @see GnucashAccount#getChildren()
 	 */
-	public Collection getChildren() {
+	public Collection<GnucashAccount> getChildren() {
 		return getGnucashFile().getAccountsByParentID(getId());
 	}
 
@@ -120,7 +110,7 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	 */
 	public String getCurrencyNameSpace() {
 		if (jwsdpPeer.getActCommodity() == null) {
-			return "ISO4217"; // default-currency because gnucash 2.2 has no currency on the root-account
+			return CurrencyNameSpace.NAMESPACE_CURRENCY; // default-currency because gnucash 2.2 has no currency on the root-account
 		}
 		return jwsdpPeer.getActCommodity().getCmdtySpace();
 	}
@@ -143,9 +133,9 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	}
 
 	/**
-	 * @see GnucashAccount#getAccountCode()
+	 * @see GnucashAccount#getCode()
 	 */
-	public String getAccountCode() {
+	public String getCode() {
 		return jwsdpPeer.getActCode();
 	}
 
@@ -157,25 +147,22 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	}
 
 	/**
-	 * The splits of this transaction.
-	 * May not be fully initialized during
-	 * loading of the gnucash-file.
+	 * The splits of this transaction. May not be fully initialized during loading
+	 * of the gnucash-file.
 	 *
 	 * @see #mySplitsNeedSorting
 	 */
 	private final List<GnucashTransactionSplit> mySplits = new LinkedList<GnucashTransactionSplit>();
 
 	/**
-	 * If {@link #mySplits} needs to be sorted
-	 * because it was modified.
-	 * Sorting is done in a lazy way.
+	 * If {@link #mySplits} needs to be sorted because it was modified. Sorting is
+	 * done in a lazy way.
 	 */
 	private boolean mySplitsNeedSorting = false;
 
 	/**
 	 * @see GnucashAccount#getTransactionSplits()
 	 */
-	@SuppressWarnings("unchecked")
 	public List<GnucashTransactionSplit> getTransactionSplits() {
 
 		if (mySplitsNeedSorting) {
@@ -210,8 +197,7 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	 * @param transactionSplitByID -
 	 * @param impl                 -
 	 */
-	private void replaceTransactionSplit(
-			final GnucashTransactionSplit transactionSplitByID,
+	private void replaceTransactionSplit(final GnucashTransactionSplit transactionSplitByID,
 			final GnucashTransactionSplit impl) {
 		if (!mySplits.remove(transactionSplitByID)) {
 			throw new IllegalArgumentException("old object not found!");
@@ -223,6 +209,7 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	/**
 	 * @return the JWSDP-object we are wrapping.
 	 */
+	@SuppressWarnings("exports")
 	public GncAccount getJwsdpPeer() {
 		return jwsdpPeer;
 	}
@@ -232,8 +219,7 @@ public class GnucashAccountImpl extends SimpleAccount implements GnucashAccount 
 	 */
 	protected void setJwsdpPeer(final GncAccount newPeer) {
 		if (newPeer == null) {
-			throw new IllegalArgumentException(
-					"null not allowed for field this.jwsdpPeer");
+			throw new IllegalArgumentException("null not allowed for field this.jwsdpPeer");
 		}
 
 		jwsdpPeer = newPeer;

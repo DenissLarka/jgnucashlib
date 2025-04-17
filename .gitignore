@@ -6,4 +6,7 @@ target/*
 *.jar
 *.war
 *.ear
-gnucash-api/.settings/
+.project
+.classpath
+.settings
+gnucash-api/test-output/
