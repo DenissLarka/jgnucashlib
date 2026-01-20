@@ -10,3 +10,4 @@ target/*
 .classpath
 .settings
 gnucash-api/test-output/
+.DS_Store
